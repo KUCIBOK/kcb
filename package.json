@@ -1,0 +1,16 @@
+{
+  "name": "kucibok",
+  "private": true,
+  "version": "3.0.80",
+  "type": "module",
+  "scripts": {
+    "prod": "git pull origin main && cd backend && npm i && pm2 restart --update-env backend && cd ../frontend && npm i && npm run build && clear",
+    "back": "cd backend && npm run dev",
+    "front": "cd frontend && npm run dev",
+    "push": "git add . && git commit -m \"default push\" && git push -u origin main && cls",
+    "dev": "concurrently \"npm run back\" \"npm run front\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

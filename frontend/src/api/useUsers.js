@@ -1,0 +1,121 @@
+import { utils } from "./useAPI";
+const {api, options} = utils
+
+export async function getAllUsers(){
+    try {
+        const response = await fetch(`${api}/auth`, {...options})
+        const users = await response.json()
+        if(users?.length >0){
+            return users
+        }
+        return {
+            error : users?.error || users?.message
+        }
+    } catch (error) {
+        return {
+            error : error.message
+        }
+    }
+}
+
+export async function createUser(payload) {
+    try {
+        const response = await fetch(`${api}/auth`, {
+            ...options,
+            method : "POST",
+            body : JSON.stringify(payload)
+        })
+        const user = await response.json()
+        if(user?._id){
+            return user
+        }
+        return {
+            error : user?.message || user?.error
+        }
+    } catch (error) {
+        return {
+            error : error.message
+        }
+    }
+}
+
+export async function updateUser(id, payload){ //✅
+    try {
+        const { api, options } = utils
+        const response = await fetch(`${api}/auth/${id}`, {
+            ...options,
+            method : 'PUT',
+            body : JSON.stringify({
+                ...payload
+            })
+        })
+        const user = await response.json()
+        if(user?.role || user?.id){
+            return user
+        }
+        return {
+            error : user?.message 
+        }
+    } catch (error) {
+        return {
+            error : error.message
+        }
+    }
+}
+
+export async function deleteUser(id){ //✅
+    try {
+        const { api, options } = utils
+        const response = await fetch(`${api}/auth/${id}`, {
+            ...options,
+            method : 'DELETE',
+        })
+        const user = await response.json()
+        if(user?._id){
+            return user
+        }
+        return {
+            error : user?.message 
+        }
+    } catch (error) {
+        return {
+            error : error.message
+        }
+    }
+}
+
+export async function setUserStatus(id) {
+    try {
+        const response = await fetch(`${api}/auth/status/${id}`, {...options})
+        const user = await response.json()
+        if(user?._id){
+            return user
+        }
+        return {
+            error : user?.error || user?.message
+        }
+    } catch (error) {
+        return {
+            error : error.message
+        }
+    }
+    
+}
+
+export async function exportExcelData(){
+    try {
+        const response = await fetch(`${api}/auth/export/excel`, {
+            ...options,
+            method: 'GET',
+        })
+        if (!response.ok) throw new Error('Erreur lors du téléchargement');
+        const blob = await response.blob();
+        if(blob){
+            return blob
+        }
+    } catch (error) {
+        return {
+            error : error.message
+        }
+    }
+}

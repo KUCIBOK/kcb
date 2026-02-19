@@ -1,0 +1,130 @@
+[
+    {
+      "id": "artwork-1",
+      "title": "Digital Adire",
+      "description": "A contemporary digital reimagining of traditional Yoruba Adire textile patterns.",
+      "image": "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=800&auto=format&fit=crop",
+      "artistId": "artist-1",
+      "price": 2.5,
+      "artist" : "Aurel KOLANI",
+      "acquired" : "2025-02-01",
+      "category" : "photography",
+      "status" : "pending",
+      "forSale" : true,
+      "currency": "ETH",
+      "tags": ["textile", "yoruba", "pattern"],
+      "created": "2023-06-15",
+      "etherscanAddress" : "https://etherscan...",
+      "edition": {
+        "number": 1,
+        "total": 10
+      },
+      "featured": true
+    },
+    {
+      "id": "artwork-2",
+      "title": "Maasai Futures",
+      "description": "A blend of traditional Maasai beadwork patterns with futuristic digital landscapes.",
+      "image": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop",
+      "artistId": "artist-2",
+      "price": 1.8,
+      "artist" : "Aurel KOLANI",
+      "acquired" : "2025-02-01",
+      "category" : "photography",
+      "status" : "approved",
+      "forSale" : true,
+      "currency": "ETH",
+      "tags": ["maasai", "futurism", "landscape"],
+      "created": "2023-07-22",
+      "etherscanAddress" : "https://etherscan...",
+      "edition": {
+        "number": 1,
+        "total": 5
+      },
+      "featured": true
+    },
+    {
+      "id": "artwork-3",
+      "title": "Neo Kente",
+      "description": "Traditional Kente cloth patterns reimagined for the digital age.",
+      "image": "https://images.unsplash.com/photo-1620316526436-9f64be62755b?q=80&w=800&auto=format&fit=crop",
+      "artistId": "artist-3",
+      "price": 3.2,
+      "artist" : "Aurel KOLANI",
+      "acquired" : "2025-02-01",
+      "category" : "pixel-art",
+      "status" : "approved",
+      "forSale" : true,
+      "currency": "ETH",
+      "tags": ["kente", "ghana", "pattern"],
+      "created": "2025-04-06",
+      "etherscanAddress" : "https://etherscan...",
+      "edition": {
+        "number": 1,
+        "total": 7
+      },
+      "featured": true
+    },
+    {
+      "id": "artwork-4",
+      "title": "Urban Ndebele",
+      "description": "A fusion of urban South African scenes with geometric Ndebele patterns.",
+      "image": "https://images.unsplash.com/photo-1583653319911-437933850be3?q=80&w=800&auto=format&fit=crop",
+      "artistId": "artist-4",
+      "price": 1.5,
+      "artist" : "Aurel KOLANI",
+      "acquired" : "2025-02-01",
+      "category" : "photography",
+      "status" : "pending",
+      "forSale" : true,
+      "currency": "ETH",
+      "tags": ["ndebele", "urban", "geometric"],
+      "created": "2023-08-10",
+      "etherscanAddress" : "https://etherscan...",
+      "edition": {
+        "number": 1,
+        "total": 15
+      }
+    },
+    {
+      "id": "artwork-5",
+      "title": "Lagos Nights",
+      "description": "Digital painting capturing the vibrant energy of Lagos at night.",
+      "image": "https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?q=80&w=800&auto=format&fit=crop",
+      "artistId": "artist-1",
+      "price": 1.2,
+      "artist" : "Aurel KOLANI",
+      "acquired" : "2025-02-01",
+      "category" : "photography",
+      "status" : "rejected",
+      "currency": "ETH",
+      "tags": ["lagos", "cityscape", "night"],
+      "created": "2023-09-01",
+      "etherscanAddress" : "https://etherscan...",
+      "edition": {
+        "number": 1,
+        "total": 8
+      }
+    },
+    {
+      "id": "artwork-6",
+      "title": "Serengeti Dreams",
+      "description": "A dreamlike digital landscape inspired by the Serengeti plains.",
+      "image": "https://images.unsplash.com/photo-1621682372775-533449e550ed?q=80&w=800&auto=format&fit=crop",
+      "artistId": "artist-2",
+      "price": 2.0,
+      "artist" : "Aurel KOLANI",
+      "acquired" : "2025-02-01",
+      "category" : "photography",
+      "status" : "approved",
+      "forSale" : true,
+      "currency": "ETH",
+      "tags": ["serengeti", "landscape", "dream"],
+      "created": "2023-06-30",
+      "etherscanAddress" : "https://etherscan...",
+      "edition": {
+        "number": 1,
+        "total": 6
+      }
+    }
+  ]

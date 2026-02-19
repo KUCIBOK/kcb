@@ -1,0 +1,418 @@
+classDiagram
+    class Artist {
+```mermaid
+classDiagram
+    class User {
+        +String name
+        +String email
+        +String password
+        +String role
+        +String country
+        +String telephone
+        +Card card
+        +Boolean profileCompleted
+        +Date lastLogin
+        +Boolean isActive
+        +Date createdAt
+    }
+    class Card {
+        +String cardNumber
+        +String cardName
+        +Number cvc
+        +String expiry
+    }
+    class Profile {
+        +ObjectId userId
+        +String name
+        +String username
+        +String country
+        +String interests
+        +String institution
+        +String qualifications
+        +String image
+    }
+    class Artist {
+        +ObjectId userId
+        +String name
+        +String username
+        +String country
+        +String biography
+        +String portfolio
+        +String image
+        +Socials socials
+        +String artistSheet
+        +Number visited
+        +Boolean featured
+        +Number artworkCount
+        +Number totalSales
+        +Number totalEarnings
+        +Date createdAt
+    }
+    class Socials {
+        +String instagram
+        +String X
+        +String facebook
+        +String linkedin
+    }
+    class Artwork {
+        +ObjectId artistId
+        +String artist
+        +ObjectId userId
+        +ObjectId ownerId
+        +ObjectId collectionId
+        +String image
+        +String title
+        +String description
+        +Number height
+        +Number width
+        +Number weight
+        +Number price
+        +String currency
+        +List~String~ tags
+        +String category
+        +ObjectId categoryId
+        +Date created
+        +String etherscan
+        +Boolean forSale
+        +Boolean sold
+        +Date soldAt
+        +Number soldPrice
+        +String soldCurrency
+        +String deliveryDetails
+        +String isDelivered
+        +Boolean forBid
+        +Edition edition
+        +Boolean featured
+        +Number visited
+        +String status
+        +Number averageRating
+    }
+    class Edition {
+        +Number number
+        +Number total
+    }
+    class Collection {
+        +String title
+        +String description
+        +List~String~ tags
+        +String artist
+        +ObjectId artistId
+        +ObjectId userId
+        +Number artworkCount
+    }
+    class Category {
+        +String title
+        +Date createdAt
+    }
+    class Review {
+        +ObjectId artworkId
+        +ObjectId professionalId
+        +String comment
+        +Number rating
+        +Number technicalReview
+        +Number artisticMerit
+        +Number marketPotential
+        +Date createdAt
+    }
+    class BlogPost {
+        +String title
+        +String excerpt
+        +String content
+        +String image
+        +ObjectId authorId
+        +Date publishDate
+        +List~String~ tags
+        +String status
+        +List~Comment~ comments
+    }
+    class Comment {
+        +ObjectId authorId
+        +String content
+        +Date createdAt
+    }
+    class Subscription {
+        +ObjectId userId
+        +ObjectId planId
+        +String planRole
+        +String planName
+        +Number amount
+        +String currency
+        +Date startDate
+        +Date endDate
+        +String status
+        +String paymentId
+    }
+    class Plan {
+        +String name
+        +String description
+        +Number price
+        +String currency
+        +Number level
+        +String duration
+        +String role
+        +List~String~ features
+        +Boolean isActive
+    }
+    class Wallet {
+        +ObjectId userId
+        +String address
+        +String privateKey
+        +Number balance
+        +String currency
+        +List~ObjectId~ transactions
+    }
+    class Transaction {
+        +ObjectId artworkId
+        +ObjectId sellerId
+        +ObjectId buyerId
+        +Number amount
+        +String currency
+        +String method
+        +String paymentStatus
+        +String transactionId
+        +Number platformFee
+        +Date createdAt
+    }
+    class Log {
+        +String description
+        +ObjectId userId
+        +Date createdAt
+    }
+    class Visitor {
+        +String ipAddress
+        +String userAgent
+        +Date visitDate
+        +String pageVisited
+        +String referrer
+        +String sessionId
+    }
+
+    User o-- Card
+    User "1" -- "1" Profile : userId
+    User "1" -- "*" Artist : userId
+    User "1" -- "*" Wallet : userId
+    User "1" -- "*" Subscription : userId
+    User "1" -- "*" Transaction : buyerId
+    User "1" -- "*" Transaction : sellerId
+    User "1" -- "*" Collection : userId
+    User "1" -- "*" BlogPost : authorId
+    User "1" -- "*" Log : userId
+    User "1" -- "*" Review : professionalId
+    Artist o-- Socials
+    Artist "1" -- "*" Artwork : artistId
+    Artist "1" -- "*" Collection : artistId
+    Artwork o-- Edition
+    Artwork "1" -- "*" Review : artworkId
+    Artwork "1" -- "*" Transaction : artworkId
+    Artwork "1" -- "1" Category : categoryId
+    Artwork "1" -- "1" Collection : collectionId
+    Collection "1" -- "*" Artwork : collectionId
+    Plan "1" -- "*" Subscription : planId
+    Wallet "1" -- "*" Transaction : transactions
+    BlogPost "1" -- "*" Comment : comments
+```
+
+/*
+------------------- dbdiagram.io version -------------------
+Table users {
+  _id varchar [pk]
+  name varchar
+  email varchar [unique]
+  password varchar
+  role varchar
+  country varchar
+  telephone varchar
+  profileCompleted boolean
+  lastLogin datetime
+  isActive boolean
+  createdAt datetime
+}
+Table cards {
+  _id varchar [pk]
+  userId varchar [ref: > users._id]
+  cardNumber varchar
+  cardName varchar
+  cvc int
+  expiry varchar
+}
+Table profiles {
+  _id varchar [pk]
+  userId varchar [ref: > users._id]
+  name varchar
+  username varchar
+  country varchar
+  interests varchar
+  institution varchar
+  qualifications varchar
+  image varchar
+}
+Table artists {
+  _id varchar [pk]
+  userId varchar [ref: > users._id]
+  name varchar
+  username varchar
+  country varchar
+  biography text
+  portfolio varchar
+  image varchar
+  artistSheet varchar
+  visited int
+  featured boolean
+  artworkCount int
+  totalSales int
+  totalEarnings int
+  createdAt datetime
+}
+Table socials {
+  _id varchar [pk]
+  artistId varchar [ref: > artists._id]
+  instagram varchar
+  X varchar
+  facebook varchar
+  linkedin varchar
+}
+Table artworks {
+  _id varchar [pk]
+  artistId varchar [ref: > artists._id]
+  artist varchar
+  userId varchar [ref: > users._id]
+  ownerId varchar [ref: > users._id]
+  collectionId varchar [ref: > collections._id]
+  image varchar
+  title varchar
+  description text
+  height int
+  width int
+  weight int
+  price int
+  currency varchar
+  tags varchar
+  category varchar
+  categoryId varchar [ref: > categories._id]
+  created datetime
+  etherscan varchar
+  forSale boolean
+  sold boolean
+  soldAt datetime
+  soldPrice int
+  soldCurrency varchar
+  deliveryDetails varchar
+  isDelivered varchar
+  forBid boolean
+  editionId varchar [ref: > editions._id]
+  featured boolean
+  visited int
+  status varchar
+  averageRating int
+}
+Table editions {
+  _id varchar [pk]
+  number int
+  total int
+}
+Table collections {
+  _id varchar [pk]
+  title varchar
+  description text
+  tags varchar
+  artist varchar
+  artistId varchar [ref: > artists._id]
+  userId varchar [ref: > users._id]
+  artworkCount int
+}
+Table categories {
+  _id varchar [pk]
+  title varchar
+  createdAt datetime
+}
+Table reviews {
+  _id varchar [pk]
+  artworkId varchar [ref: > artworks._id]
+  professionalId varchar [ref: > users._id]
+  comment text
+  rating int
+  technicalReview int
+  artisticMerit int
+  marketPotential int
+  createdAt datetime
+}
+Table blogposts {
+  _id varchar [pk]
+  title varchar
+  excerpt text
+  content text
+  image varchar
+  authorId varchar [ref: > users._id]
+  publishDate datetime
+  tags varchar
+  status varchar
+}
+Table comments {
+  _id varchar [pk]
+  blogpostId varchar [ref: > blogposts._id]
+  authorId varchar [ref: > users._id]
+  content text
+  createdAt datetime
+}
+Table subscriptions {
+  _id varchar [pk]
+  userId varchar [ref: > users._id]
+  planId varchar [ref: > plans._id]
+  planRole varchar
+  planName varchar
+  amount int
+  currency varchar
+  startDate datetime
+  endDate datetime
+  status varchar
+  paymentId varchar
+}
+Table plans {
+  _id varchar [pk]
+  name varchar
+  description text
+  price int
+  currency varchar
+  level int
+  duration varchar
+  role varchar
+  features varchar
+  isActive boolean
+}
+Table wallets {
+  _id varchar [pk]
+  userId varchar [ref: > users._id]
+  address varchar
+  privateKey varchar
+  balance int
+  currency varchar
+}
+Table transactions {
+  _id varchar [pk]
+  artworkId varchar [ref: > artworks._id]
+  sellerId varchar [ref: > users._id]
+  buyerId varchar [ref: > users._id]
+  amount int
+  currency varchar
+  method varchar
+  paymentStatus varchar
+  transactionId varchar
+  platformFee int
+  createdAt datetime
+}
+Table logs {
+  _id varchar [pk]
+  description text
+  userId varchar [ref: > users._id]
+  createdAt datetime
+}
+Table visitors {
+  _id varchar [pk]
+  ipAddress varchar
+  userAgent varchar
+  visitDate datetime
+  pageVisited varchar
+  referrer varchar
+  sessionId varchar
+}
+*/

@@ -1,0 +1,41 @@
+@apiKey = $2ys6g542sb4fb6b42fb4db409df498fd41682b6df24b884f9852dthv143r4t52trfg4trs6gfcdg53g43g
+@transactionId = 6812d70d1377484ce812b2b5
+
+### Créer une transaction
+POST http://localhost:3000/api/transactions
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "artworkId": "6632345a4fc2b400efcdd44e",
+  "sellerId": "663234c1c012de0b0d159133",
+  "buyerId": "6632ff63c012de0b0d159134",
+  "amount": 2000,
+  "currency": "EUR",
+  "method": "paypal",
+  "paymentStatus": "pending",
+  "transactionId": "TXN123456",
+  "platformFee": 100
+}
+
+### Obtenir toutes les transactions
+GET http://localhost:3000/api/transactions
+x-api-key: {{apiKey}}
+
+### Obtenir une transaction par ID
+GET http://localhost:3000/api/transactions/{{transactionId}}
+x-api-key: {{apiKey}}
+
+### Mettre à jour une transaction
+PUT http://localhost:3000/api/transactions/{{transactionId}}
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "paymentStatus": "completed",
+  "platformFee": 150
+}
+
+### Supprimer une transaction
+DELETE http://localhost:3000/api/transactions/{{transactionId}}
+x-api-key: {{apiKey}}
