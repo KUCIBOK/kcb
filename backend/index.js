@@ -135,21 +135,38 @@ class App {
         protect(req, res, next);
       });
 
-      this.app.post("/api/report-error", async (req, res, next) => {
-        console.log("Received frontend error:", req.body);
+      // P1-SEC-011 — Rate limiter strict pour éviter le spam email admin
+      const reportErrorLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 5,
+        message: { error: "Trop de signalements. Réessayez dans 15 minutes." },
+        standardHeaders: true,
+        legacyHeaders: false,
+      });
+
+      this.app.post("/api/report-error", reportErrorLimiter, async (req, res, next) => {
         try {
             const { error, errorInfo } = req.body;
+
+            // P1-SEC-011 — Validation et assainissement des inputs
+            if (!error || typeof error !== "string") {
+              return res.status(400).json({ error: "Champ 'error' manquant ou invalide." });
+            }
+            const safeError = String(error).slice(0, 1000);
+            const safeInfo = errorInfo
+              ? JSON.stringify(errorInfo).slice(0, 4000)
+              : "(aucune info)";
+
             await transporter.sendMail({
-                from: `"Kucibok Frontend"`,
+                from: `"Kucibok Frontend" <${config.adminEmail}>`,
                 to: config.adminEmail,
                 subject: "[ALERTE FRONTEND] Erreur JS côté client",
-                text: `Erreur: ${error}\n\nInfo: ${JSON.stringify(errorInfo, null, 2)}`,
+                text: `Erreur: ${safeError}\n\nInfo: ${safeInfo}`,
             });
-            console.log("Alert mail sent successfully");
             res.status(200).json({ ok: true });
         } catch (err) {
             console.error("Erreur lors de l'envoi du mail d'alerte frontend:", err);
-            res.status(500).json({ error: err.message });
+            res.status(500).json({ error: "Erreur serveur." });
         }
       });
       this.app.use("/api/artworks", artworksRoutes);
