@@ -1,7 +1,7 @@
 const http = require('http');
 const express = require("express");
 const cors = require("cors");
-
+const helmet = require("helmet");
 const compression = require("compression");
 const path = require("path");
 const connectDatabase = require("./config/database");
@@ -65,6 +65,18 @@ class App {
     }
 
     initializeMiddlewares(){
+        // Headers de sécurité HTTP (P1-SEC-007)
+        this.app.use(helmet({
+            crossOriginResourcePolicy: { policy: "cross-origin" }, // nécessaire pour /uploads/ publics
+            contentSecurityPolicy: {
+                directives: {
+                    defaultSrc: ["'self'"],
+                    imgSrc: ["'self'", "data:", "https:"],
+                    scriptSrc: ["'self'"],
+                    styleSrc: ["'self'", "'unsafe-inline'"],
+                },
+            },
+        }));
         this.app.use(express.json({ limit: "10mb" }));
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(compression());
