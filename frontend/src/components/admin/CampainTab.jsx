@@ -2,10 +2,9 @@ import { useState } from "react";
 import { sendCampaign } from "../../api/useCampaign";
 import { Mail, Users } from "lucide-react";
 import { useUsersContext } from "../../store/UsersStore";
-import dynamic from 'next/dynamic';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Input, Select, Button, toast } from "../ui";
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export function CampainTab() {
   const {artists, collectors, professionals} = useUsersContext();

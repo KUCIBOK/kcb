@@ -2,10 +2,9 @@ import { Archive, Eye, Pen, Upload } from "lucide-react"
 import { useState } from "react"
 import { useBlog } from "../../store/BlogContext"
 import { Link } from "react-router-dom"
-import dynamic from 'next/dynamic';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Modal, Input, Button, toast } from "../ui";
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export function BlogItemActions({post}) {
     const [state, setState] = useState({
