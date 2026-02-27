@@ -84,14 +84,11 @@ export default function CollectorLanding () {
                     <p className="text-base font-semibold mb-1 truncate">{item.title}</p>
                     <p className="text-sm text-gray-400 mb-2">Prix de départ : <span className="font-bold text-white">{item.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {item.currency}</span></p>
                   </div>
-                  <div className="mt-2">
-                    {(() => {
-                      const now = new Date();
-                      const randomDays = 7 + Math.floor(Math.random() * 7);
-                      const randomEnd = new Date(now.getTime() + randomDays * 24 * 60 * 60 * 1000);
-                      return <Countdown endDate={randomEnd} />;
-                    })()}
-                  </div>
+                  {item.endTime && (
+                    <div className="mt-2">
+                      <Countdown endDate={new Date(item.endTime)} />
+                    </div>
+                  )}
                 </div>
               </Link>
             ))}
@@ -129,7 +126,7 @@ export default function CollectorLanding () {
       <RevealOnScroll>
       {/* Services additionnels minimalistes */}
       <section className="w-full mx-auto lg:max-w-4xl py-8 px-2 flex items-center flex-col md:flex-row gap-6 mt-8">
-        <div class="my-auto">
+        <div className="my-auto">
           <img
             loading="lazy"
             src={"/images/collector/services.png"}

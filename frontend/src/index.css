@@ -355,16 +355,8 @@ td {
     text-wrap: balance;
   }
 
-  .bg-gradient {
-    @apply bg-gradient-to-br from-earth to-clay;
-  }
-
   .bg-muted {
     background-color: hsl(220 30% 20%);
-  }
-
-  .text-gradient {
-    @apply bg-gradient-to-r from-earth to-clay bg-clip-text text-transparent;
   }
 
   .hover-card {

@@ -1,11 +1,10 @@
 import { memo, useEffect, useState } from "react";
 import { useAuth } from "../../store/AuthContext";
 import { Camera, Eye, EyeOff } from "lucide-react";
-import { DataLoader } from "../loaders/PageLoader";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ChangePassword } from "../auth/ChangePassword";
-import { Tabs, Input, Select, Button } from "../ui";
+import { Tabs, Input, Select, Button, toast } from "../ui";
 
 export const Profile = () => {
   const { user, collectorProfile, updateUser, updateProfile } = useAuth();
@@ -22,6 +21,7 @@ export const Profile = () => {
 
     countries: [],
     loading: false,
+    error: "",
     show: collectorProfile?.image,
     addresskeyShow: false,
   });
@@ -65,11 +65,13 @@ export const Profile = () => {
       if (state.interests.length > 20) {
         const updatedUser = await updateUser(userPayload);
         const updatedProfile = await updateProfile(formData);
-        if (updatedUser?._id && updatedProfile?._id)
-          setState({ ...state, loading: false });
+        if (updatedUser?._id && updatedProfile?._id) {
+          setState({ ...state, loading: false, error: "" });
+          toast.success("Profil mis à jour !");
+        }
       }
     } catch (error) {
-      setState({ ...state, loading: false });
+      setState({ ...state, loading: false, error: error?.message || "Erreur lors de la sauvegarde." });
     }
   }
 
@@ -190,6 +192,11 @@ export const Profile = () => {
     return (
       <section className="bg-gray-900 rounded-2xl shadow-md border border-gray-800 px-4 py-6 md:px-8 md:py-8 w-full mx-auto">
         <form onSubmit={handleUpdate} method="post" className="space-y-6">
+          {state.error && (
+            <div className="text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
+              {state.error}
+            </div>
+          )}
           {/* Profile Header */}
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Avatar Section */}

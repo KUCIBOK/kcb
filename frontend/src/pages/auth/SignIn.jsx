@@ -1,17 +1,20 @@
 import { useState } from "react";
-import { Mail, Lock, Wallet, EyeClosed, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
-import { DataLoader } from "../../components/loaders/PageLoader";
+import { Wallet, EyeClosed, Eye } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   getMetamaskAddress,
   loginUser,
   MetamaskLogin,
+  loginWithGoogle,
 } from "../../api/useAuth";
 import { useAuth } from "../../store/AuthContext";
 import { Helmet } from "react-helmet";
+import { useGoogleLogin } from "@react-oauth/google";
+import { Button, Input } from "../../components/ui";
 
 export default function SignIn () {
     const {login, setProfile} = useAuth()
+    const navigate = useNavigate();
     const [formState, setFormState] = useState({
         email: "",
         password: "",
@@ -23,13 +26,9 @@ export default function SignIn () {
 
   const handleConnect = async (e) => {
     e.preventDefault();
-    alert("Form submitted - attempting login...");
-    console.log("Form submitted with:", formState.email, formState.password);
     setFormState({ ...formState, loading: true });
     try {
-      console.log("Calling loginUser...");
       const data = await loginUser(formState.email, formState.password);
-      console.log("loginUser returned:", data);
       if(!data?.user?._id || !data?.user?.role) {setFormState({ ...formState, loading: false, error: data?.error }); return;}
       login({ ...data?.user, isLogin: true });
       if (data?.user?.role == "artist") {
@@ -49,6 +48,31 @@ export default function SignIn () {
       window.scrollTo(0, 0);
     }
   };
+
+    const handleGoogleSuccess = async (tokenResponse) => {
+        setFormState(prev => ({ ...prev, loading: true, error: null }));
+        try {
+            const data = await loginWithGoogle(tokenResponse.access_token);
+            if (!data?.user?._id) {
+                setFormState(prev => ({ ...prev, loading: false, error: data?.error || "Échec de la connexion Google" }));
+                return;
+            }
+            login({ ...data.user, isLogin: true });
+            if (data.user.role === "artist") setProfile(data.artist);
+            else setProfile(data.profile);
+            setFormState(prev => ({ ...prev, loading: false, error: "" }));
+            if (data.isNewUser) {
+                navigate("/auth/role-selection");
+            }
+        } catch (err) {
+            setFormState(prev => ({ ...prev, loading: false, error: err?.message }));
+        }
+    };
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: () => setFormState(prev => ({ ...prev, error: "Connexion Google annulée ou refusée." })),
+    });
 
     const handleConnectMetamask = async () => {
         setFormState({ ...formState, error: '', loading: true });
@@ -113,33 +137,47 @@ export default function SignIn () {
             <div className="rounded-xl border border-gray-800 bg-card shadow-sm">
               <div className="p-5">
                 <button
-                  className="w-full flex items-center justify-center gap-2 bg-gray-900 border border-gray-800 hover:bg-gray-800 rounded-md mb-4 font-medium py-3 px-4 text-sm text-white transition"
-                  onClick={async () => await handleConnectMetamask()}
+                  className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 rounded-md mb-3 font-medium py-3 px-4 text-sm text-gray-800 transition border border-gray-200"
+                  onClick={() => googleLogin()}
                   type="button"
+                  disabled={formState.loading}
                 >
-                  <Wallet className="h-5 w-5" />
-                  Connexion MetaMask
+                  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  Se connecter avec Google
                 </button>
+                <Button
+                  variant="outline"
+                  fullWidth
+                  icon={Wallet}
+                  onClick={async () => await handleConnectMetamask()}
+                  disabled={formState.loading}
+                  className="mb-4 py-3 text-sm"
+                >
+                  Connexion MetaMask
+                </Button>
                 <div className="flex items-center my-4">
                   <div className="flex-grow border-t border-gray-700" />
                   <span className="mx-2 text-xs text-gray-500">ou</span>
                   <div className="flex-grow border-t border-gray-700" />
                 </div>
                 <form onSubmit={handleConnect} className="space-y-4" method="post">
-                  <div>
-                    <label htmlFor="email" className="text-xs font-medium text-gray-400">Email</label>
-                    <input
-                      onChange={e => setFormState({ ...formState, email: e.target.value })}
-                      value={formState.email}
-                      type="email"
-                      name="email"
-                      id="email"
-                      required
-                      className="w-full border border-gray-800 bg-gray-900 rounded-md px-3 py-2 mt-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
-                      minLength={6}
-                      placeholder="Votre email"
-                    />
-                  </div>
+                  <Input
+                    label="Email"
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Votre email"
+                    required
+                    minLength={6}
+                    value={formState.email}
+                    onChange={e => setFormState({ ...formState, email: e.target.value })}
+                    size="sm"
+                  />
                   <div>
                     <label htmlFor="password" className="text-xs font-medium text-gray-400">Mot de passe</label>
                     <div className="flex mt-1">
@@ -166,13 +204,14 @@ export default function SignIn () {
                   <div className="flex justify-end mb-2">
                     <Link to="/forgot-password" className="text-xs text-indigo-kcb hover:underline">Mot de passe oublié ?</Link>
                   </div>
-                  <button
+                  <Button
                     type="submit"
-                    onClick={() => alert("Button clicked!")}
-                    className="w-full py-2 rounded-md bg-indigo-kcb text-white font-semibold text-sm hover:bg-indigo-700 transition"
+                    fullWidth
+                    loading={formState.loading}
+                    className="bg-indigo-kcb hover:bg-indigo-700 border-0 text-sm font-semibold"
                   >
-                    {formState.loading ? <DataLoader /> : "Se connecter"}
-                  </button>
+                    Se connecter
+                  </Button>
                 </form>
               </div>
               <div className="flex items-center justify-center border-t border-gray-800 p-4">

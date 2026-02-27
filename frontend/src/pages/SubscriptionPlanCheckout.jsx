@@ -9,6 +9,8 @@ import { usePayment } from "../hooks/usePayment"
 import PaymentMethodSelector from "../components/PaymentMethodSelector"
 import { toast } from "react-hot-toast"
 
+const TVA_RATE = 0.20; // 20% — à synchroniser avec le backend si modifié
+
 export default function SubscriptionPlanCheckout(){
     const {id} = useParams()
     const {user} = useAuth()
@@ -97,7 +99,7 @@ export default function SubscriptionPlanCheckout(){
                         <div className="flex-1 border border-gray-800 rounded-xl p-6 flex flex-col shadow-md">
                             <h2 className="font-serif text-xl text-white font-semibold mb-6">Résumé de votre abonnement</h2>
                             <h2 className="font-serif text-xl text-white font-semibold text-center"> {state?.plan?.name} </h2>
-                            <p className="text-center"><span className="text-xl text-white font-black mb-2"> {state?.plan?.price.toLocaleString('fr-FR').replace(/\s/g, ' ')} {state?.plan?.currency}</span><span classname="text-sm font-normal">/mois</span></p>
+                            <p className="text-center"><span className="text-xl text-white font-black mb-2"> {state?.plan?.price.toLocaleString('fr-FR').replace(/\s/g, ' ')} {state?.plan?.currency}</span><span className="text-sm font-normal">/mois</span></p>
                             <h2 className="font-serif text-lg text-white mb-2"> {state?.plan?.name} </h2>
                             <ul className="list-none pb-4 border-b border-gray-400/70">
                                 {state?.plan?.features?.map((item, idx) => (
@@ -107,11 +109,11 @@ export default function SubscriptionPlanCheckout(){
                             <table className="w-full">
                                 <tr>
                                     <td>Abonnement {state?.plan?.name} </td>
-                                    <td className="text-end"> {(state?.plan?.price - state?.plan?.price/5).toLocaleString('fr-FR').replace(/\s/g, ' ')} <span className="text-xs font-normal text-gray-500">{state?.plan.currency}</span> </td>
+                                    <td className="text-end"> {(state?.plan?.price * (1 - TVA_RATE)).toLocaleString('fr-FR').replace(/\s/g, ' ')} <span className="text-xs font-normal text-gray-500">{state?.plan.currency}</span> </td>
                                 </tr>
                                 <tr>
-                                    <td> TVA (20%) </td>
-                                    <td className="text-end"> {(state?.plan?.price/5).toLocaleString('fr-FR').replace(/\s/g, ' ')} <span className="text-xs font-normal text-gray-500">{state?.plan.currency}</span> </td>
+                                    <td> TVA ({(TVA_RATE * 100).toFixed(0)}%) </td>
+                                    <td className="text-end"> {(state?.plan?.price * TVA_RATE).toLocaleString('fr-FR').replace(/\s/g, ' ')} <span className="text-xs font-normal text-gray-500">{state?.plan.currency}</span> </td>
                                 </tr>
                                 <tr>
                                     <td> Total mensuel </td>

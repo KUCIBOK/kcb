@@ -35,15 +35,15 @@ export default function Artwork() {
 
     const launchDescriptionSpeech = () => {
         try {
-            console.log("Lecture de la description")
             const description = document.getElementById('artwork-description').textContent
             const utterance = new SpeechSynthesisUtterance(description)
-            utterance.lang = "en-EN";
+            utterance.lang = "fr-FR";
             const voices = window.speechSynthesis.getVoices();
-            utterance.voice = voices.find(v => v.lang === "fr-FR");
+            const frVoice = voices.find(v => v.lang === "fr-FR");
+            if (frVoice) utterance.voice = frVoice;
             window.speechSynthesis.speak(utterance)
         } catch (error) {
-            console.log("Erreur lors de la lecture de la description", error.message)
+            // lecture vocale non disponible sur ce navigateur
         }
     }
 

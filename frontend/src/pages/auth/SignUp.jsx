@@ -6,8 +6,10 @@ import { Step3 } from "../../components/auth/Step3";
 import { Step4Artist } from "../../components/auth/Step4Artist";
 import { Step4Collector } from "../../components/auth/Step4Collector";
 import { Step4Professional } from "../../components/auth/Step4Professional";
-import { SignUpUser } from "../../api/useAuth";
+import { SignUpUser, loginWithGoogle } from "../../api/useAuth";
 import { Helmet } from "react-helmet";
+import { useAuth } from "../../store/AuthContext";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function SignUp() {
   // Default countries list as fallback
@@ -89,20 +91,39 @@ export default function SignUp() {
   ];
 
   const navigate = useNavigate();
+  const { login, setProfile } = useAuth();
+
+  const handleGoogleSignupSuccess = async (tokenResponse) => {
+    setFormState(prev => ({ ...prev, loading: true, error: null }));
+    try {
+      const data = await loginWithGoogle(tokenResponse.access_token);
+      if (!data?.user?._id) {
+        setFormState(prev => ({ ...prev, loading: false, error: data?.error || "Échec de l'inscription Google" }));
+        return;
+      }
+      login({ ...data.user, isLogin: true });
+      if (data.user.role === "artist") setProfile(data.artist);
+      else setProfile(data.profile);
+      setFormState(prev => ({ ...prev, loading: false, error: "" }));
+      navigate("/auth/role-selection");
+    } catch (err) {
+      setFormState(prev => ({ ...prev, loading: false, error: err?.message }));
+    }
+  };
+
+  const googleSignup = useGoogleLogin({
+    onSuccess: handleGoogleSignupSuccess,
+    onError: () => setFormState(prev => ({ ...prev, error: "Inscription Google annulée ou refusée." })),
+  });
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
         const response = await fetch("/data/countries.json");
-        if (!response.ok) {
-          throw new Error("Failed to fetch countries");
-        }
+        if (!response.ok) throw new Error("Failed to fetch countries");
         const data = await response.json();
-        console.log("Countries loaded:", data.length);
         setFormState({ ...formState, countries: data });
-      } catch (error) {
-        console.error("Error loading countries:", error);
-        // Use default countries list as fallback
+      } catch {
         setFormState({ ...formState, countries: defaultCountries });
       }
     };
@@ -190,7 +211,7 @@ export default function SignUp() {
   const renderStepContent = () => {
     switch (formState.step) {
       case 0:
-        return <Step1 formState={formState} setFormState={setFormState} />;
+        return <Step1 formState={formState} setFormState={setFormState} onGoogleSignup={() => googleSignup()} />;
       case 1:
         return <Step2 formState={formState} setFormState={setFormState} />;
       case 2:
