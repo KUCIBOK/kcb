@@ -24,6 +24,8 @@ export async function loginUser(email, password) {
       // sécurisation (id + role)
       if (user?.role || user?._id) {
         localStorage.setItem("token", data.token);
+        // P2-ARCH-008 — Stockage du refresh token (30j)
+        if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
         localStorage.setItem("likedArtworks", JSON.stringify(user.likedArtworks));
         return {
           user,
@@ -36,6 +38,38 @@ export async function loginUser(email, password) {
 
     localStorage.removeItem("token");
     return { error: data?.message };
+  } catch (error) {
+    return { error: error?.message };
+  }
+}
+
+// Connexion / Inscription avec Google
+export async function loginWithGoogle(access_token) {
+  try {
+    const response = await fetch(`${utils.api}/auth/google`, {
+      ...utils.options,
+      method: "POST",
+      body: JSON.stringify({ access_token }),
+    });
+
+    const data = await response.json();
+
+    if (data?.token && data?.user) {
+      const user = { ...data.user, token: data.token };
+      if (user?.role || user?._id) {
+        localStorage.setItem("token", data.token);
+        if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("likedArtworks", JSON.stringify(user.likedArtworks || []));
+        return {
+          user,
+          artist: data?.artist,
+          profile: data?.profile,
+          isNewUser: data?.isNewUser,
+        };
+      }
+    }
+
+    return { error: data?.message || "Échec de connexion Google" };
   } catch (error) {
     return { error: error?.message };
   }
@@ -96,6 +130,8 @@ export async function MetamaskLogin(payload) {
       const user = { ...data.user, token: data.token };
       if (user?.role || user?._id) {
         localStorage.setItem("token", data.token);
+        // P2-ARCH-008 — Stockage du refresh token
+        if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
         return {
           user,
           artist: data?.artist,
@@ -124,6 +160,8 @@ export async function verifyEmail(token) {
       const user = { ...data.user, token: data.token };
       if (user?.role || user?._id) {
         localStorage.setItem("token", data.token);
+        // P2-ARCH-008 — Stockage du refresh token
+        if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
         return {
           user,
           artist: data?.artist,
@@ -154,6 +192,8 @@ export async function MetamaskSignUp(payload) {
       const user = { ...data.user, token: data.token };
       if (user?.role || user?._id) {
         localStorage.setItem("token", data.token);
+        // P2-ARCH-008 — Stockage du refresh token
+        if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
         return {
           user,
           artist: data?.artist,
@@ -382,5 +422,29 @@ export async function resetPassword(payload) {
     return {
       error: error.message,
     };
+  }
+}
+
+// P2-ARCH-008 — Renouvelle le token d'accès via le refresh token (30j)
+export async function refreshTokenApi() {
+  try {
+    const { api, options } = utils;
+    const storedRefreshToken = localStorage.getItem("refreshToken");
+    if (!storedRefreshToken) return { error: "Refresh token absent." };
+
+    const response = await fetch(`${api}/auth/refresh-token`, {
+      ...options,
+      method: "POST",
+      body: JSON.stringify({ refreshToken: storedRefreshToken }),
+    });
+    const data = await response.json();
+    if (data?.token) {
+      localStorage.setItem("token", data.token);
+      if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
+      return { token: data.token };
+    }
+    return { error: data?.error || data?.message || "Échec du renouvellement." };
+  } catch (error) {
+    return { error: error.message };
   }
 }
