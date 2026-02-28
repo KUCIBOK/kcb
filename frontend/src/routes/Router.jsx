@@ -54,12 +54,17 @@ const TermsAndConditions = lazy(() => import("../pages/TermsAndConditions"));
 const SalesConditions = lazy(() => import("../pages/SalesConditions"));
 const EthicChart = lazy(() => import("../pages/EthicChart"));
 const TrackingPage = lazy(() => import("../pages/TrackingPage"));
+const Services = lazy(() => import("../pages/Services"));
+const HowItWorks = lazy(() => import("../pages/HowItWorks"));
+const AfricaLanding = lazy(() => import("../pages/AfricaLanding"));
 // Protected Routes
 import { GuestProtectedRoute } from "../utils/GuestProtectedRoute";
 import { ArtistProtectedRoute } from "../utils/ArtistProtectedRoute";
 import { CollectorProtectedRoute } from "../utils/CollectorProtectedRoute";
 import { ProfessionalProtectedRoute } from "../utils/ProfessionalProtectedRoute";
 import { AdminProtectedRoute } from "../utils/AdminProtectedRoute";
+import { AuthProtectedRoute } from "../utils/AuthProtectedRoute";
+const GoogleRoleSelection = lazy(() => import("../pages/auth/GoogleRoleSelection"));
 
 // Context Providers/Store Imports
 import { AuthContextProvider } from "../store/AuthContext";
@@ -180,6 +185,24 @@ export function Router() {
             <Route path="/contact" element={
                 <Suspense fallback={<PageLoader />}>
                   <Contact />
+                </Suspense>
+              }
+            />
+            <Route path="/services" element={
+                <Suspense fallback={<PageLoader />}>
+                  <Services />
+                </Suspense>
+              }
+            />
+            <Route path="/how-it-works" element={
+                <Suspense fallback={<PageLoader />}>
+                  <HowItWorks />
+                </Suspense>
+              }
+            />
+            <Route path="/africa" element={
+                <Suspense fallback={<PageLoader />}>
+                  <AfricaLanding />
                 </Suspense>
               }
             />
@@ -424,6 +447,15 @@ export function Router() {
                 </Suspense>
               }
             />
+          </Route>
+
+          {/* Route sélection de rôle après inscription Google */}
+          <Route element={<AuthProtectedRoute />}>
+            <Route path="/auth/role-selection" element={
+              <Suspense fallback={<PageLoader />}>
+                <GoogleRoleSelection />
+              </Suspense>
+            } />
           </Route>
 
           {/* Route 404 */}

@@ -12,6 +12,7 @@ export const Header = memo(() => {
   const links = [
     { name: "Accueil", path: "/" },
     { name: "Artistes", path: "/artists" },
+    { name: "Services", path: "/services" },
     { name: "Blog", path: "/blog" },
     { name: "À propos", path: "/about" },
   ];
@@ -20,6 +21,7 @@ export const Header = memo(() => {
   const exploreLinks = [
     { name: "Oeuvres", path: "/explore" },
     { name: "Enchères", path: "/auction" },
+    { name: "Comment ça marche", path: "/how-it-works" },
   ];
 
   const NavLinks = () => (
