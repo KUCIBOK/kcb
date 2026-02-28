@@ -1,72 +1,23 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Clock, Gavel, User } from "lucide-react";
+import { AlertCircle, Clock, Gavel, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DataLoader } from "../components/loaders/PageLoader";
-
-// Composant pour le compte à rebours
-const CountdownTimer = ({ endTime }) => {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-  function calculateTimeLeft() {
-    const now = new Date();
-    const end = new Date(endTime);
-    const difference = end - now;
-
-    if (difference <= 0) return { expired: true };
-
-    return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor(difference / (1000 * 60 * 60)) % 24,
-      minutes: Math.floor(difference / 1000 / 60) % 60,
-      seconds: Math.floor(difference / 1000) % 60,
-      expired: false,
-    };
-  }
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [endTime]);
-
-  if (timeLeft.expired) {
-    return <span className="text-red-400">Terminé</span>;
-  }
-
-  return (
-    <div className="flex items-center space-x-1">
-      {timeLeft.days > 0 && (
-        <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
-          {timeLeft.days}j
-        </span>
-      )}
-      <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
-        {String(timeLeft.hours).padStart(2, "0")}h
-      </span>
-      <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
-        {String(timeLeft.minutes).padStart(2, "0")}m
-      </span>
-      <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
-        {String(timeLeft.seconds).padStart(2, "0")}s
-      </span>
-    </div>
-  );
-};
+import { CountdownTimer } from "../components/auction/CountdownTimer";
 
 export default function Auctions() {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
         const res = await axios.get("/api/auction/ongoing");
         setAuctions(Array.isArray(res.data) ? res.data : []);
+        setError(null);
       } catch (err) {
-        console.error("Erreur lors du chargement des enchères :", err);
+        setError("Impossible de charger les enchères. Veuillez réessayer plus tard.");
       } finally {
         setLoading(false);
       }
@@ -112,7 +63,14 @@ export default function Auctions() {
         </p>
       </div>
 
-      {auctions.length === 0 ? (
+      {error && (
+        <div className="flex items-center gap-2 bg-red-900/20 border border-red-800 text-red-300 rounded-lg px-4 py-3 mb-8 max-w-lg mx-auto text-sm">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          {error}
+        </div>
+      )}
+
+      {!error && auctions.length === 0 ? (
         <div className="text-center py-12">
           <div className="bg-gray-800/50 rounded-xl p-8 max-w-md mx-auto">
             <h3 className="text-xl font-medium text-white mb-2">
@@ -129,7 +87,7 @@ export default function Auctions() {
             </Link>
           </div>
         </div>
-      ) : (
+      ) : !error && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {auctions.map((auction) => {
             const artworkTitle = auction.artwork?.title || "Titre inconnu";
@@ -180,7 +138,7 @@ export default function Auctions() {
 
                   <div className="flex justify-between items-center mb-3">
                     <div className="text-2xl font-bold text-white">
-                      {auction.currentPrice} FCFA
+                      {auction.currentPrice?.toLocaleString('fr-FR')} FCFA
                     </div>
                     <div className="text-sm text-gray-400 flex items-center">
                       <Clock className="w-4 h-4 mr-1" />
