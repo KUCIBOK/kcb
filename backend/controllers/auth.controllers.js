@@ -375,7 +375,12 @@ exports.updateUser = async (req, res, next) => {
     }
     let oldMail = user.email;
     // Seul un admin peut modifier le rôle (P1-SEC-008 — anti escalade de privilège)
-    if (role && req.user?.role !== 'admin') {
+    // Exception : initialisation du rôle pour les nouveaux utilisateurs Google (profileCompleted: false)
+    const isSelfInitialSetup = role
+      && String(req.user?._id) === String(id)
+      && !user.profileCompleted
+      && user.authProvider === 'google';
+    if (role && req.user?.role !== 'admin' && !isSelfInitialSetup) {
       return next(createError.forbidden("Modification du rôle réservée aux administrateurs."));
     }
     // Met à jour les informations de l'utilisateur
@@ -385,7 +390,10 @@ exports.updateUser = async (req, res, next) => {
     if (username) user.username = username;
     if (telephone) user.telephone = telephone;
     if (country) user.country = country;
-    if (role && req.user?.role === 'admin') user.role = role;
+    if (role && (req.user?.role === 'admin' || isSelfInitialSetup)) {
+      user.role = role;
+      if (isSelfInitialSetup) user.profileCompleted = true;
+    }
     await user.save();
 
     if (oldMail != user.email) {
