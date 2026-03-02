@@ -38,7 +38,6 @@ const visitorRoutes = require("./routes/visitor.routes");
 const subscriptionRoutes = require("./routes/subscription.routes");
 const deliveryRoutes = require("./routes/delivery.routes");
 const logidooRoutes = require("./routes/logidoo.routes");
-// const logidooAlertsRoutes = require("./routes/logidoo.alerts.routes");
 const numerisationRoutes = require("./routes/numerisation.routes");
 const clientRoutes = require("./routes/client.routes");
 const GalleryRoutes = require("./routes/gallery.routes");
@@ -49,9 +48,6 @@ const professionalAnalyticsRoutes = require("./routes/professionalAnalytics.rout
 const emailMarketingRoutes = require("./routes/emailMarketing.routes");
 const contactRoutes = require("./routes/contact.routes");
 const campaignRoutes = require("./routes/campaign.routes");
-// const crmRoutes = require("./routes/crm.routes");
-// const supportTicketRoutes = require("./routes/supportTicket.routes");
-// const analyticsRoutes = require("./routes/analytics.routes");
 
 
 class App {
@@ -196,9 +192,6 @@ class App {
       this.app.use("/api/email-marketing", emailMarketingRoutes);
       this.app.use("/api/contacts", contactRoutes);
       this.app.use("/api/campaigns", campaignRoutes);
-      // this.app.use("/api/crm", crmRoutes);
-      // this.app.use("/api/support-tickets", supportTicketRoutes);
-      // this.app.use("/api/analytics", analyticsRoutes);
 
       this.app.use("/uploads", express.static(path.join(__dirname, "public/uploads/")));
       this.app.use("/images", express.static(path.join(__dirname, "public/images/")));

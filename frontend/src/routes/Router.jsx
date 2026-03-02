@@ -57,6 +57,7 @@ const TrackingPage = lazy(() => import("../pages/TrackingPage"));
 const Services = lazy(() => import("../pages/Services"));
 const HowItWorks = lazy(() => import("../pages/HowItWorks"));
 const AfricaLanding = lazy(() => import("../pages/AfricaLanding"));
+const GlobalPage = lazy(() => import("../pages/GlobalPage"));
 // Protected Routes
 import { GuestProtectedRoute } from "../utils/GuestProtectedRoute";
 import { ArtistProtectedRoute } from "../utils/ArtistProtectedRoute";
@@ -203,6 +204,12 @@ export function Router() {
             <Route path="/africa" element={
                 <Suspense fallback={<PageLoader />}>
                   <AfricaLanding />
+                </Suspense>
+              }
+            />
+            <Route path="/global" element={
+                <Suspense fallback={<PageLoader />}>
+                  <GlobalPage />
                 </Suspense>
               }
             />
@@ -420,12 +427,6 @@ export function Router() {
             <Route path="/forgot-password" element={
                 <Suspense fallback={<PageLoader />}>
                   <ForgotPasswordForm />
-                </Suspense>
-              }
-            />
-            <Route path="/reset-password/:token" element={
-                <Suspense fallback={<PageLoader />}>
-                  <ResetPasswordForm />
                 </Suspense>
               }
             />
