@@ -201,18 +201,6 @@ export function Router() {
                 </Suspense>
               }
             />
-            <Route path="/africa" element={
-                <Suspense fallback={<PageLoader />}>
-                  <AfricaLanding />
-                </Suspense>
-              }
-            />
-            <Route path="/global" element={
-                <Suspense fallback={<PageLoader />}>
-                  <GlobalPage />
-                </Suspense>
-              }
-            />
             <Route path="/artists" element={
                 <Suspense fallback={<PageLoader />}>
                   <Artists />
@@ -351,6 +339,18 @@ export function Router() {
               }
             />
           </Route>
+
+          {/* Pages standalone — avec leur propre header/footer, hors Layout */}
+          <Route path="/africa" element={
+            <Suspense fallback={<PageLoader />}>
+              <AfricaLanding />
+            </Suspense>
+          } />
+          <Route path="/global" element={
+            <Suspense fallback={<PageLoader />}>
+              <GlobalPage />
+            </Suspense>
+          } />
 
           {/* Artist protected routes */}
           <Route path="/dashboard/artist" element={<ArtistProtectedRoute />}>
