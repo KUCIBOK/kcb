@@ -2,13 +2,14 @@ const mongoose = require('mongoose');
 const Contact = require('../models/Contact');
 const ContactList = require('../models/ContactList');
 const createError = require('http-errors');
+const logger = require('../utils/logger');
 
 // Try to import CRM model if it exists
 let CRMContact;
 try {
   CRMContact = require('../models/CRMContact');
 } catch (e) {
-  console.log('CRMContact model not found, CRM sync disabled');
+  logger.info('CRMContact model not found, CRM sync disabled');
 }
 
 // ========== CONTACTS ==========

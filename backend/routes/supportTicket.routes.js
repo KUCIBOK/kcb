@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { auth, admin } = require('../middleware/auth');
 const controllers = require('../controllers/supportTicket.controller');
+const logger = require('../utils/logger');
 
-console.log('Auth middleware:', typeof auth);
-console.log('Controllers:', Object.keys(controllers));
+logger.info('Auth middleware:', { type: typeof auth });
+logger.info('Controllers:', { keys: Object.keys(controllers) });
 
 const {
   createTicket,
@@ -18,7 +19,7 @@ const {
   getTicketStats,
 } = controllers;
 
-console.log('createTicket:', typeof createTicket);
+logger.info('createTicket:', { type: typeof createTicket });
 
 // Routes publiques (utilisateur authentifié)
 router.post('/create', auth, createTicket);

@@ -1,6 +1,7 @@
 const resend = require('../config/resendConfig');
 const { createInvoiceForArtwork } = require('./documents.service');
 const {config} = require('../config/environnement');
+const logger = require('../utils/logger');
 
 const FROM_EMAIL = 'onboarding@resend.dev';
 
@@ -16,7 +17,7 @@ const sendEmail = async (to, subject, html, attachments = []) => {
     });
     return result;
   } catch (error) {
-    console.error('Erreur Resend:', error);
+    logger.error('Erreur Resend:', { error: error.message, stack: error.stack });
     throw error;
   }
 };
@@ -44,9 +45,9 @@ exports.sendVerificationEmail = async (email, name, link) => {
 
   try {
     await sendEmail(email, "Vérification de votre adresse email", html);
-    console.log("Email de vérification envoyé avec succès à", email);
+    logger.info("Email de vérification envoyé avec succès à", { email });
   } catch (error) {
-    console.error("Erreur d'envoi email de vérification:", error);
+    logger.error("Erreur d'envoi email de vérification:", { error: error.message, stack: error.stack });
   }
 };
 
@@ -70,9 +71,9 @@ exports.sendWelcomeEmail = async (email, name) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email de bienvenue envoyé avec succès");
+    logger.info("Email de bienvenue envoyé avec succès");
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email de bienvenue:", error);
+    logger.error("Erreur lors de l'envoi de l'email de bienvenue:", { error: error.message, stack: error.stack });
   }
 };
 
@@ -97,9 +98,9 @@ exports.sendPasswordResetEmail = async (email, resetLink) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email de réinitialisation envoyé avec succès à", email);
+    logger.info("Email de réinitialisation envoyé avec succès à", { email });
   } catch (error) {
-    console.error("Erreur d'envoi email de réinitialisation:", error);
+    logger.error("Erreur d'envoi email de réinitialisation:", { error: error.message, stack: error.stack });
   }
 };
 
@@ -131,9 +132,9 @@ exports.sendUserRegistrationAlertToAdmin = async (user) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Alerte d'inscription envoyée à l'administrateur");
+    logger.info("Alerte d'inscription envoyée à l'administrateur");
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'alerte d'inscription:", error);
+    logger.error("Erreur lors de l'envoi de l'alerte d'inscription:", { error: error.message });
   }
 };
 
@@ -167,12 +168,9 @@ exports.sendArtworkSubmissionAlertToAdmin = async (artwork) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Alerte de soumission d'œuvre envoyée à l'administrateur");
+    logger.info("Alerte de soumission d'œuvre envoyée à l'administrateur");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de l'alerte de soumission d'œuvre:",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de l'alerte de soumission d'œuvre:", { error: error.message });
   }
 };
 
@@ -206,12 +204,9 @@ exports.sendArtworkValidationEmail = async (email, artwork) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email de validation d'œuvre envoyé");
+    logger.info("Email de validation d'œuvre envoyé");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de l'email de validation d'œuvre:",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de l'email de validation d'œuvre:", { error: error.message });
   }
 };
 
@@ -248,9 +243,9 @@ exports.sendArtworkRejectionEmail = async (email, artwork, reason) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email de rejet d'œuvre envoyé");
+    logger.info("Email de rejet d'œuvre envoyé");
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email de rejet d'œuvre:", error);
+    logger.error("Erreur lors de l'envoi de l'email de rejet d'œuvre:", { error: error.message });
   }
 };
 
@@ -306,9 +301,9 @@ exports.sendArtworkPurchaseEmailToUser = async (
     }
 
     await transporter.sendMail(mailOptions);
-    console.log("Email d'achat d'œuvre envoyé");
+    logger.info("Email d'achat d'œuvre envoyé");
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email d'achat d'œuvre:", error);
+    logger.error("Erreur lors de l'envoi de l'email d'achat d'œuvre:", { error: error.message });
   }
 };
 
@@ -350,12 +345,9 @@ exports.sendArtworkPurchaseEmailToAdmin = async (
   };
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email d'achat d'œuvre envoyé à l'administrateur");
+    logger.info("Email d'achat d'œuvre envoyé à l'administrateur");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de l'email d'achat d'œuvre à l'administrateur:",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de l'email d'achat d'œuvre à l'administrateur:", { error: error.message });
   }
 };
 
@@ -387,12 +379,9 @@ exports.sendSubscriptionPaymentEmailToUser = async (
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email de paiement d'abonnement envoyé");
+    logger.info("Email de paiement d'abonnement envoyé");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de l'email de paiement d'abonnement:",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de l'email de paiement d'abonnement:", { error: error.message });
   }
 };
 
@@ -427,12 +416,9 @@ exports.sendSubscriptionPaymentEmailToAdmin = async (
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email de paiement d'abonnement envoyé à l'administrateur");
+    logger.info("Email de paiement d'abonnement envoyé à l'administrateur");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de l'email de paiement d'abonnement à l'administrateur:",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de l'email de paiement d'abonnement à l'administrateur:", { error: error.message });
   }
 };
 
@@ -456,12 +442,9 @@ exports.sendEmailChangeNotification = async (email, newEmail) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Notification de changement d'e-mail envoyée");
+    logger.info("Notification de changement d'e-mail envoyée");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de la notification de changement d'e-mail:",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de la notification de changement d'e-mail:", { error: error.message });
   }
 };
 
@@ -484,12 +467,9 @@ exports.sendPasswordChangeNotification = async (email) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Notification de changement de mot de passe envoyée");
+    logger.info("Notification de changement de mot de passe envoyée");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de la notification de changement de mot de passe:",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de la notification de changement de mot de passe:", { error: error.message });
   }
 };
 
@@ -516,14 +496,9 @@ exports.sendDeliveryRequestNotificationToAdmin = async (delivery) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(
-      "Notification de nouvelle demande de livraison envoyée à l'administrateur"
-    );
+    logger.info("Notification de nouvelle demande de livraison envoyée à l'administrateur");
   } catch (error) {
-    console.error(
-      "Erreur lors de l'envoi de la notification de livraison à l'admin :",
-      error
-    );
+    logger.error("Erreur lors de l'envoi de la notification de livraison à l'admin :", { error: error.message });
   }
 };
 
@@ -574,9 +549,9 @@ exports.sendDeliveryRequestNoficationToCustomer = async (email, delivery) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("Notification de mise à jour client envoyée");
+    logger.info("Notification de mise à jour client envoyée");
   } catch (error) {
-    console.error("Erreur lors de l'envoi du mail à l'utilisateur");
+    logger.error("Erreur lors de l'envoi du mail à l'utilisateur");
   }
 };
 
@@ -607,9 +582,9 @@ exports.sendNumerisationRequestAlertToAdmin = async (user, numReq) => {
       `,
     };
     await transporter.sendMail(mailOptions);
-    console.log("Notification de soumission de requête envoyée");
+    logger.info("Notification de soumission de requête envoyée");
   } catch (error) {
-    console.error("Erreur lors de l'envoi du mail à l'utilisateur");
+    logger.error("Erreur lors de l'envoi du mail à l'utilisateur");
   }
 };
 
@@ -642,9 +617,9 @@ exports.sendNumerisationRequestStatusChange = async (email, numReq) => {
       `,
     };
     await transporter.sendMail(mailOptions);
-    console.log("Notification de mise à jour de requête envoyée");
+    logger.info("Notification de mise à jour de requête envoyée");
   } catch (error) {
-    console.error("Erreur lors de l'envoi du mail à l'utilisateur");
+    logger.error("Erreur lors de l'envoi du mail à l'utilisateur");
   }
 };
 
@@ -656,8 +631,8 @@ exports.sendAlertMail = async function (subject, message) {
       subject: "Alerte serveur: " + subject,
       text: message,
     });
-    console.log("Mail d’alerte envoyé !");
+    logger.info("Mail d’alerte envoyé !");
   } catch (err) {
-    console.error("Erreur envoi mail:", err);
+    logger.error("Erreur envoi mail:", { error: err.message });
   }
 }

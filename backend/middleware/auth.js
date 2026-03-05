@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+const { config } = require('../config/environnement')
+const { isBlacklisted } = require('../utils/jwtBlacklist')
 
 /**
  * Extrait le token JWT depuis le header Authorization Bearer.
@@ -27,7 +29,10 @@ function requireRole(...roles) {
             return res.status(401).json({ message: 'Non autorisé — token manquant ou invalide' });
         }
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            if (await isBlacklisted(token)) {
+                return res.status(401).json({ message: 'Non autorisé — token révoqué' });
+            }
+            const decoded = jwt.verify(token, config.jwt.secret);
             const user = await User.findById(decoded._id).select('-password');
             if (!user) {
                 return res.status(401).json({ message: 'Non autorisé — utilisateur introuvable' });
@@ -46,6 +51,7 @@ function requireRole(...roles) {
     };
 }
 
+exports.requireRole  = requireRole;
 exports.auth         = requireRole();
 exports.admin        = requireRole('admin');
 exports.artist       = requireRole('artist');

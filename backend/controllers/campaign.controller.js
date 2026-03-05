@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Campaign = require('../models/Campaign');
+const logger = require('../utils/logger');
 const Contact = require('../models/Contact');
 const ContactList = require('../models/ContactList');
 const EmailDraft = require('../models/EmailDraft');
@@ -259,7 +260,7 @@ exports.sendCampaign = async (req, res, next) => {
       await campaign.save();
 
       // Process sending asynchronously
-      processCampaignSend(campaign._id).catch(console.error);
+      processCampaignSend(campaign._id).catch(logger.error);
 
       res.status(200).json({ message: 'Campaign is being sent', campaign });
     }
@@ -371,9 +372,9 @@ async function processCampaignSend(campaignId) {
 
     await campaign.save();
 
-    console.log(`Campaign ${campaignId} sent to ${campaign.delivery.delivered} recipients`);
+    logger.info(`Campaign ${campaignId} sent to ${campaign.delivery.delivered} recipients`);
   } catch (error) {
-    console.error('Error sending campaign:', error);
+    logger.error('Error sending campaign:', error);
     
     await Campaign.findByIdAndUpdate(campaignId, {
       status: 'draft',

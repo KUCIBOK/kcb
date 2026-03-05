@@ -1,9 +1,9 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 export async function createVisitor(payload) {
     try {
         const response = await fetch(`${api}/visitor`, {
-            ...options,
+            ...utils.options,
             method: 'POST',
             body: JSON.stringify(payload),
         });
@@ -26,7 +26,7 @@ export async function createVisitor(payload) {
 export async function getAllVisitors() {
     try {
         const response = await fetch(`${api}/visitor`, {
-            ...options,
+            ...utils.options,
             method: 'GET',
         });
 
@@ -45,7 +45,7 @@ export async function getAllVisitors() {
 export async function setVisitTime(payload) {
     try {
         const response = await fetch(`${api}/visitor/visit-time`, {
-            ...options,
+            ...utils.options,
             method: 'PUT',
             body: JSON.stringify(payload),
         });

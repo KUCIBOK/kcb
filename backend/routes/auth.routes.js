@@ -4,6 +4,7 @@ const { admin, auth } = require("../middleware/auth");
 const {
   register,
   login,
+  logout,
   getUserById,
   updateUser,
   getAllUsers,
@@ -20,12 +21,17 @@ const {
   verifyEmail,
   resendVerificationEmail,
   exportDataOnExcelFormat,
+  refreshToken,
 } = require("../controllers/auth.controllers");
 const multer = require("../middleware/multer");
 
 router.post("/register", multer, register);
 
 router.post("/login", login);
+
+router.post("/logout", auth, logout);
+
+router.post("/refresh-token", refreshToken);
 
 router.post("/login-metamask", loginWithMetamask);
 

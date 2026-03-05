@@ -7,17 +7,31 @@
 
 ## PRÉSENTATION DU PROJET
 
-**Kucibok** est une plateforme de vente et d'enchères d'art africain.
+**Kucibok** est l'infrastructure digitale de standardisation et de circulation sécurisée de l'art africain.
 
 - **URL production :** https://kucibok.com
-- **Backend API :** https://backend.kucibok.com
-- **Stack :** Node.js + Express 5 / MongoDB (Mongoose) / React 18 + Vite / TailwindCSS 4
+- **Backend API :** https://backend.kucibok.com (VPS Hostinger — expire le 19 mars 2026)
+- **Stack actuelle :** Node.js + Express 5 / MongoDB Atlas / React 18 + Vite / TailwindCSS 4
+- **Stack cible (migration mars 2026) :** Vercel Functions + Supabase (Auth + Storage + PostgreSQL)
+- **Roadmap migration :** `kucibok/docs/MIGRATION_SUPABASE.md`
 
 ### Rôles utilisateurs
-- `collector` — achète des œuvres, participe aux enchères
+- `collector` — achète des œuvres
 - `artist` — publie et vend des œuvres
 - `professional` — galeriste, critique d'art
 - `admin` — gestion complète de la plateforme
+
+### Portails
+- `/africa` → `AfricaLanding.jsx` — artistes et galeries africaines (FR prioritaire)
+- `/global` → `GlobalPage.jsx` — curateurs et galeries internationales (EN prioritaire)
+- `/` → redirect vers `/africa`
+- Les enchères (`/auctions`) sont **masquées du nav** — code conservé mais non exposé
+
+### Design System actif
+Référence : `DESIGN-SYSTEM.md` à la racine.
+- CTA : `indigo-kcb` (#7072c5) / Accents : `purple-kcb` (#b132a7)
+- Typo : Poppins (corps) + Playfair Display (titres œuvres)
+- Composants UI : `kucibok/src/components/ui/`
 
 ---
 
@@ -25,31 +39,43 @@
 
 ```
 kucibok-main/
-├── backend/                     # API Node.js / Express
-│   ├── config/                  # database.js, environnement.js, mailerConfig.js
-│   ├── controllers/             # Logique métier (40+ controllers)
+├── backend/                     # API Node.js / Express (DEPRECATED post-migration Supabase)
+│   ├── config/                  # database.js, environnement.js
+│   ├── controllers/             # Logique métier (32 controllers)
 │   ├── middleware/              # auth.js, multer.js, errorHandler.js, api.js
-│   ├── models/                  # Schémas Mongoose (User, Artwork, Auction, Bid, Wallet…)
-│   ├── routes/                  # Routes Express
+│   ├── models/                  # Schémas Mongoose (35 modèles)
+│   ├── routes/                  # Routes Express (34 endpoints)
 │   ├── services/                # Services métier (paydunya, mailer, subscription…)
-│   ├── jobs/                    # Cron jobs (auctionCronJob, subscriptions.job…)
+│   ├── jobs/                    # Cron jobs (auctionCronJob, generateCertificates, subscriptions)
 │   └── index.js                 # Point d'entrée — classe App
-├── frontend/                    # Application React / Vite
+├── kucibok/                     # Application React / Vite  [dossier renommé depuis frontend/]
+│   ├── api/                     # Vercel Functions (post-migration — remplace backend/)
+│   ├── docs/                    # Documents stratégiques (PRD_V2, ROADMAP, TECHSPEC, MIGRATION_SUPABASE)
 │   ├── src/
 │   │   ├── api/                 # Fonctions d'appel API (useAuth.js, useAPI.js…)
-│   │   ├── components/          # Composants React
+│   │   ├── components/          # Composants React (ui/ = design system)
+│   │   ├── lib/                 # Clients tiers — supabase.js (à créer Phase 0)
+│   │   ├── pages/               # Pages (AfricaLanding, GlobalPage, dashboards…)
 │   │   ├── routes/              # Router React
-│   │   └── store/               # Contextes React (auth, toast…)
+│   │   └── store/               # Contextes React (15 providers)
 │   └── index.html
-├── roadmap.md                   # Audit complet + plan de remédiation (40 items)
+├── DESIGN-SYSTEM.md             # Design system actif (indigo/violet — référence)
+├── roadmap.md                   # Audit technique v1.8 + Migration Supabase
 └── CLAUDE.md                    # Ce fichier
 ```
 
-### Patterns clés
+### Patterns clés — Stack actuelle (pré-migration)
 - **Auth :** JWT Bearer dans `Authorization` header + API key `kcb-api-key` dans le header
 - **Erreurs :** `createError` de `middleware/errorHandler.js` → `next(createError.xxx(...))`
 - **Config :** toutes les variables d'env passent par `config/environnement.js` (ne jamais lire `process.env` directement dans les controllers)
-- **Emails :** deux services coexistent — `smtpMailer.service.js` (Hostinger) et `resendMailer.service.js` (Resend)
+- **Emails :** service actif — `mailer.service.js` (Resend SDK). Legacy SMTP supprimé.
+
+### Patterns clés — Stack cible (post-migration Supabase)
+- **Auth :** `supabase.auth` — plus de JWT/bcrypt/Redis custom
+- **Storage :** `supabase.storage` — plus de Cloudinary
+- **Base de données :** `@supabase/supabase-js` — plus de Mongoose
+- **API :** Vercel Functions dans `kucibok/api/` — plus de VPS Express
+- **Emails :** Resend (conservé, via Vercel Function)
 
 ---
 
@@ -152,112 +178,189 @@ test(phase-5): [P5-TEST-001] ajout tests intégration auth controller
 
 ## COMMANDES DE DÉVELOPPEMENT
 
+> **Gestionnaire de paquets : `yarn` exclusivement.** Ne jamais utiliser `npm install` pour ajouter des dépendances.
+
 ### Backend
 ```bash
 cd backend
 cp .env.exemple .env          # Configurer les variables d'env
-npm install
-npm run dev                   # Démarre avec nodemon (port 3000)
-npm start                     # Production
-npm test                      # Tests (à configurer - voir roadmap P5-TEST-001)
+yarn install
+yarn dev                      # Démarre avec nodemon (port 3000)
+yarn start                    # Production
+yarn test                     # Tests (voir roadmap P5-TEST-001)
 ```
 
-### Frontend
+### Frontend (React)
 ```bash
-cd frontend
+cd kucibok
 cp .env.exemple .env          # Configurer les variables d'env
-npm install
-npm run dev                   # Vite dev server (port 5173)
-npm run build                 # Build production
+yarn install
+yarn dev                      # Vite dev server (port 5173)
+yarn build                    # Build production
 ```
 
-### Variables d'environnement requises (backend)
+### Variables d'environnement requises (backend — pré-migration)
 Voir `backend/.env.exemple` pour la liste complète. Variables critiques :
 - `MONGODB_URI` — URI MongoDB Atlas
 - `JWT_SECRET` — Secret JWT (min. 64 caractères aléatoires)
 - `CORS_ORIGIN` — URL du frontend (`http://localhost:5173` en dev)
 - `PAYDUNYA_*` — Clés PayDunya (utiliser sandbox en dev)
-- `RESEND_API_KEY` ou `HOSTINGER_EMAIL_PASSWORD` — Pour les emails
+- `RESEND_API_KEY` — Pour les emails (Resend SDK)
+
+### Variables d'environnement (post-migration Supabase)
+Voir `kucibok/.env.exemple` — variables VITE_ exposées dans le bundle :
+- `VITE_SUPABASE_URL` — URL du projet Supabase
+- `VITE_SUPABASE_ANON_KEY` — Clé publique Supabase
+- `VITE_API_URL` — `/api` (Vercel Functions)
+- `VITE_API_KEY` — Clé API interne (`kcb-xxx`)
+- `VITE_GOOGLE_CLIENT_ID` — OAuth Google (configuré dans Supabase dashboard)
 
 ---
 
 ## ROADMAP & SUIVI
 
-Le fichier `roadmap.md` à la racine du projet contient l'audit complet (40 items) avec les priorités, descriptions et actions pour chaque correctif.
+Le fichier `roadmap.md` à la racine du projet contient l'audit complet + le plan de migration Supabase.
 
-### Phases de l'audit
-| Phase | Domaine | Semaine | Items |
-|---|---|:---:|:---:|
-| Phase 0 | Urgences absolues | 0 | 8 |
-| Phase 1 | Sécurité critique | 1-2 | 10 |
-| Phase 2 | Architecture & qualité | 3-4 | 8 |
-| Phase 3 | Performance & scalabilité | 5-6 | 7 |
-| Phase 4 | UX/UI & logique métier | 7 | 3 |
-| Phase 5 | Tests & qualité code | 8-9 | 4 |
+### Audit technique (TERMINÉ — score 7.9/10)
+| Phase | Domaine | Statut |
+|---|---|---|
+| Phase 0 | Urgences absolues | COMPLETE ✅ |
+| Phase 1 | Sécurité critique | COMPLETE ✅ |
+| Phase 2 | Architecture & qualité | COMPLETE ✅ |
+| Phase 3 | Performance & scalabilité | COMPLETE ✅ |
+| Phase 4 | UX/UI & logique métier | COMPLETE ✅ |
+| Phase 5 | Tests & qualité code | COMPLETE ✅ |
+| F1 | Standard Kucibok | COMPLETE ✅ |
+| F2 | Logistique transfrontalière | COMPLETE ✅ |
+| F3 | Catalogue certifié B2B | COMPLETE ✅ |
 
-Marquer chaque item comme `[x]` dans `roadmap.md` une fois implémenté et testé.
+### Migration Supabase (EN COURS — urgence 19 mars 2026)
+| Phase | Domaine | Statut |
+|---|---|---|
+| Phase M0 | Setup Supabase + VPS renouvelé | A FAIRE |
+| Phase M1 | Auth + Storage | A FAIRE |
+| Phase M2 | PostgreSQL + migration données | A FAIRE |
+| Phase M3 | Vercel Functions | A FAIRE |
+| Phase M4 | Bascule production | A FAIRE |
+
+Détail complet : `kucibok/docs/MIGRATION_SUPABASE.md`
 
 ---
 
-## RÈGLES DE CODE
+## STANDARDS DE CODE — NON NÉGOCIABLES
 
-### Backend (Node.js)
-- **Toujours utiliser `next(createError.xxx(...))` pour propager les erreurs** — ne jamais `res.status(500).json(...)` directement dans les controllers.
-- **Toujours utiliser `config` de `config/environnement.js`** — jamais `process.env.VARIABLE` directement dans les controllers ou routes.
-- **Toutes les fonctions async doivent être enveloppées dans `try/catch`** avec `next(error)` dans le catch.
+### Langage & style
+- **ES6+ JavaScript pur** — pas de TypeScript, pas de CoffeeScript, pas de transpileurs expérimentaux.
+- **Code propre, lisible, maintenable** — un développeur senior doit pouvoir comprendre n'importe quelle fonction en 30 secondes.
+- **DRY (Don't Repeat Yourself)** — zéro duplication de logique. Extraire en utilitaire dès la 2e occurrence.
+- **Pas de valeurs magiques** — toutes les constantes sont nommées et documentées (`const MAX_BID_ATTEMPTS = 3` et non `if (attempts > 3)`).
+- **Pas de logique spaghetti** — pas de `if/else` imbriqués > 2 niveaux. Early return, guard clauses, composition.
+- **Architecture senior** — séparation des responsabilités stricte : controllers ne connaissent pas la DB, services ne connaissent pas `req/res`.
+
+### JSDoc — obligatoire sur tout
+Chaque fonction exportée, chaque classe, chaque module doit avoir un bloc JSDoc complet :
+```js
+/**
+ * Crée et sauvegarde une enchère, vérifie les permissions et invalide le cache.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+exports.createAuction = async (req, res, next) => { ... }
+
+/**
+ * Retourne les options de requête HTTP avec le token JWT courant.
+ * Lecture dynamique à chaque appel — jamais mise en cache.
+ *
+ * @returns {{ method: string, headers: Record<string, string> }}
+ */
+get options() { ... }
+```
+
+### Gestionnaire de paquets
+- **`yarn` exclusivement** — ne jamais utiliser `npm install` pour ajouter/modifier des dépendances.
+
+### Backend (Node.js — pré-migration)
+- **`next(createError.xxx(...))` pour toutes les erreurs** — jamais `res.status(500).json(...)` directement.
+- **`config` de `config/environnement.js` partout** — jamais `process.env.VARIABLE` dans les controllers/routes.
+- **`try/catch` sur toutes les fonctions async** — `next(error)` dans le catch, jamais silencieux.
 - **Pagination obligatoire** sur tous les endpoints de liste (`page`, `limit` en query params).
 - **`.lean()`** sur toutes les requêtes MongoDB en lecture seule.
-- **Pas de `console.log`** en production — utiliser le logger structuré (Winston).
+- **`logger` (Winston) exclusivement** — zéro `console.log/error/warn` en dehors des scripts de migration.
 
-### Frontend (React)
-- **Ne jamais lire `localStorage.getItem("token")` à l'initialisation d'un module** — toujours dynamiquement dans les fonctions.
-- **Ne jamais logger de données sensibles** (email, password, token) dans `console.log`.
-- **Toutes les erreurs API doivent retourner `{ error: string }`** — pattern uniforme.
-- **Utiliser les hooks React** (`useCallback`, `useMemo`) pour les fonctions passées en props.
+### Vercel Functions (post-migration)
+- **`@supabase/supabase-js`** — client Supabase pour toutes les requêtes DB et auth.
+- **Stateless** — pas de connexion persistante, chaque Function est indépendante.
+- **Timeout 10s** (Vercel Free) — éviter les opérations longues (PDF → pdfkit, pas html-pdf-node).
+- **RLS Supabase** — Row Level Security sur chaque table remplace les vérifications `req.user.role`.
 
-### Tests (à mettre en place — P5-TEST-001)
+### Frontend (React — pré-migration)
+- **`utils.options` (getter) pour tous les appels fetch** — jamais `localStorage.getItem("token")` à l'init d'un module.
+- **Zéro données sensibles dans les logs** (email, password, token, clés).
+- **`{ error: string }` comme retour d'erreur uniforme** dans tous les fichiers `src/api/*.js`.
+- **`useCallback` / `useMemo`** pour les fonctions et valeurs dérivées passées en props.
+
+### Frontend (React — post-migration Supabase)
+- **`supabase.auth.getSession()`** pour récupérer le token — plus de `localStorage.getItem("token")`.
+- **`supabase.auth.onAuthStateChange()`** dans `AuthContext` — remplace le polling JWT.
+- **`src/lib/supabase.js`** — client singleton Supabase, importé partout.
+- **`useAuth.js`** utilise `supabase.auth.*` — plus de fetch vers `/api/auth/*`.
+
+### Sécurité
+- **Validation côté serveur systématique** — la validation côté client est UX, pas sécurité.
+- **Vérification des permissions avant chaque mutation** (`req.user.role` pré-migration / RLS Supabase post-migration).
+- **Aucune donnée sensible en base** : pas de cardNumber/CVC/expiry.
+- **Inputs sanitisés** avant tout usage dans une query DB ou une réponse HTTP.
+
+### Tests
 - **Minimum 60% de couverture** sur `auth`, `payment`, `bid` controllers.
-- **Chaque correctif de sécurité doit avoir un test** qui prouve que la vulnérabilité est corrigée.
-- **Tests d'intégration avec `supertest`** — pas de mocks pour les flows critiques (paiement, enchère).
+- **Chaque correctif de sécurité doit avoir un test** prouvant que la vulnérabilité est corrigée.
+- **Tests d'intégration `supertest`** — pas de mocks pour les flows critiques (paiement, enchère).
 
 ---
 
 ## DÉPENDANCES CLÉS
 
-### Backend
-| Package | Usage | Version |
+### Backend (pré-migration — à supprimer post-migration)
+| Package | Usage | Statut |
 |---|---|---|
-| `express` | Framework HTTP | ^5.1.0 |
-| `mongoose` | ODM MongoDB | ^7.8.7 |
-| `jsonwebtoken` | JWT auth | ^9.0.2 |
-| `bcryptjs` | Hash passwords | ^3.0.2 |
-| `multer` | Upload fichiers | ^1.4.5-lts.2 |
-| `paydunya` | Paiements West Africa | ^1.0.12 |
-| `node-cron` | Jobs planifiés | ^4.1.1 |
-| `express-rate-limit` | Protection DoS | ^8.0.1 |
-| `@sentry/node` | Monitoring erreurs | ^10.7.0 |
+| `express` | Framework HTTP | DEPRECATED post-migration |
+| `mongoose` | ODM MongoDB | DEPRECATED → Supabase JS |
+| `jsonwebtoken` | JWT auth | DEPRECATED → Supabase Auth |
+| `bcryptjs` | Hash passwords | DEPRECATED → Supabase Auth |
+| `ioredis` | Cache + blacklist JWT | DEPRECATED → supprimé |
+| `multer` | Upload fichiers | DEPRECATED → Supabase Storage |
+| `paydunya` | Paiements West Africa | CONSERVÉ (Vercel Function) |
+| `node-cron` | Jobs planifiés | REMPLACÉ par Supabase pg_cron |
+| `express-rate-limit` | Protection DoS | DEPRECATED |
+| `@sentry/node` | Monitoring erreurs | CONSERVÉ |
 
-### Frontend
-| Package | Usage | Version |
+### Frontend / Kucibok (actuel)
+| Package | Usage | Statut |
 |---|---|---|
-| `react` | UI | ^18.3.1 |
-| `react-router-dom` | Routing | ^7.4.0 |
-| `axios` | HTTP client | ^1.10.0 |
-| `tailwindcss` | CSS utility | ^4.0.17 |
-| `@metamask/sdk` | Auth blockchain | ^0.32.1 |
-| `framer-motion` | Animations | ^12.23.12 |
-| `@sentry/react` | Monitoring erreurs | ^10.7.0 |
+| `react` | UI | CONSERVÉ |
+| `react-router-dom` | Routing | CONSERVÉ |
+| `axios` | HTTP client | CONSERVÉ |
+| `tailwindcss` | CSS utility | CONSERVÉ |
+| `@metamask/sdk` | Auth blockchain | SUPPRIMÉ (MetaMask abandonné) |
+| `framer-motion` | Animations | CONSERVÉ |
+| `@sentry/react` | Monitoring erreurs | CONSERVÉ |
+| `@supabase/supabase-js` | Auth + Storage + DB | À AJOUTER (Phase M0) |
 
 ---
 
 ## CONTACTS ET RESSOURCES
 
 - **Repository GitHub :** https://github.com/Aurel667/kucibok
-- **Dashboard MongoDB Atlas :** https://cloud.mongodb.com
+- **Dashboard Supabase :** https://supabase.com/dashboard (à créer)
+- **Dashboard MongoDB Atlas :** https://cloud.mongodb.com (actif — backup avant migration)
 - **Dashboard PayDunya :** https://app.paydunya.com
 - **Dashboard Sentry :** https://sentry.io
 - **Dashboard Resend :** https://resend.com
+- **VPS Hostinger :** expire le 19 mars 2026 — renouveler impérativement
 
 ---
 
-*Dernière mise à jour : 19 février 2026*
+*Dernière mise à jour : 5 mars 2026 — Migration Supabase planifiée*

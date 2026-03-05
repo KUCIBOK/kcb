@@ -1,10 +1,10 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 
 export async function createCategory(payload){
     try {
         const response = await fetch(`${api}/category`, {
-            ...options,
+            ...utils.options,
             method : 'POST',
             body : JSON.stringify(payload)
         }) 
@@ -24,7 +24,7 @@ export async function createCategory(payload){
 
 export async function getAllCategories(){
     try {
-        const response = await fetch(`${api}/category`, {...options})
+        const response = await fetch(`${api}/category`, {...utils.options})
         const categories = await response.json()
         if(categories?.length > 0){
             return categories
@@ -43,7 +43,7 @@ export async function getAllCategories(){
 export async function deleteCategory(id){
     try {
         const response = await fetch(`${api}/category/${id}`, {
-            ...options,
+            ...utils.options,
             method : 'DELETE'
         })
         const category = await response.json()

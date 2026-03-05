@@ -61,37 +61,6 @@ function App() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const handleContextMenu = (e) => e.preventDefault();
-    const handleCut       = (e) => e.preventDefault();
-    const handleDrag      = (e) => e.preventDefault();
-    const handlePrint     = (e) => { e.preventDefault(); return false; };
-    const handleKeyDown   = (e) => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
-        (e.ctrlKey && e.key === "U") ||
-        e.key === "PrintScreen"
-      ) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-    };
-
-    document.addEventListener("contextmenu", handleContextMenu);
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("cut", handleCut);
-    document.addEventListener("dragstart", handleDrag);
-    window.addEventListener("beforeprint", handlePrint);
-
-    return () => {
-      document.removeEventListener("contextmenu", handleContextMenu);
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("cut", handleCut);
-      document.removeEventListener("dragstart", handleDrag);
-      window.removeEventListener("beforeprint", handlePrint);
-    };
   }, []);
 
   const handleAccept = () => {

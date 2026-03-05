@@ -28,7 +28,7 @@ export function DeliveryContextProvider({children}){
                 makeToast("Error fetching deliveries", "error");
             }
         };
-        if(user?.role && user?.role != "artist"){
+        if(user?.role){
             fetchDeliveries();
         }
     }, [user?.role]);

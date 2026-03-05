@@ -1,18 +1,20 @@
-import { ArrowLeft, Image, Share, ShoppingCart, Volume2 } from "lucide-react";
+import { ArrowLeft, Image, Share, ShoppingCart, Volume2, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getArtworkById } from "../api/useArtworks";
 import { useToast } from "../store/ToastContext";
+import { useAuth } from "../store/AuthContext";
 import { DataLoader } from "../components/loaders/PageLoader";
 import { getArtistById } from "../api/useArtists";
 import { Helmet } from "react-helmet";
+import { RequestShipmentModal } from "../components/artworks/RequestShipmentModal";
 
 export default function Artwork() {
     const [artwork, setArtwork] = useState({ loading: true, artist: null });
-    //Récupération de l'ID de l'œuvre depuis les paramètres de l'URL
-    //Utilisation de useParams pour obtenir l'ID de l'œuvre
+    const [shipmentOpen, setShipmentOpen] = useState(false);
     const { id } = useParams();
     const { makeToast } = useToast();
+    const { user } = useAuth();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -69,6 +71,7 @@ export default function Artwork() {
                     </div>
                 )}
                 {artwork?._id && !artwork.loading && (
+                    <>
                     <section className="w-full animate-fade-in">
                         <div className="flex flex-col md:flex-row gap-10">
                             {/* IMAGE + SHARE */}
@@ -143,12 +146,34 @@ export default function Artwork() {
                                     <div className="mt-4">
                                         <h2 className="text-lg font-semibold text-white mb-1">Description</h2>
                                         <p id="artwork-description" className="text-gray-300 text-sm text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: artwork?.description }}></p>
-                                        {/* <p className="text-gray-300 text-sm text-base leading-relaxed" > {artwork?.description} </p> */}
                                     </div>
+
+                                    {/* Bouton expédition transfrontalière */}
+                                    {user && (
+                                        <div className="mt-4">
+                                            <button
+                                                onClick={() => setShipmentOpen(true)}
+                                                className="flex items-center gap-2 text-sm px-4 py-2 rounded-md border border-indigo-700/50 text-indigo-300 hover:bg-indigo-900/20 transition w-full justify-center"
+                                            >
+                                                <Truck className="w-4 h-4" />
+                                                Demander l'expédition transfrontalière
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </section>
+
+                    {/* Modal expédition */}
+                    {user && (
+                        <RequestShipmentModal
+                            artwork={artwork}
+                            isOpen={shipmentOpen}
+                            onClose={() => setShipmentOpen(false)}
+                        />
+                    )}
+                    </>
                 )}
                 {artwork?.error && (
                     <div className="text-center py-12 px-6 border border-dashed border-gray-700 rounded-xl bg-gray-900/70 mt-10">

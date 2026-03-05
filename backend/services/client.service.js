@@ -4,6 +4,7 @@ const xlsx = require("xlsx");
 const csv = require("csv-parser");
 const mongoose = require("mongoose");
 const Client = require("../models/Client");
+const logger = require("../utils/logger");
 
 // Fonction pour valider et nettoyer les numéros de téléphone
 const validateAndCleanPhone = (phone) => {
@@ -15,7 +16,7 @@ const validateAndCleanPhone = (phone) => {
   // Vérifier si le numéro contient seulement des caractères valides
   const phoneRegex = /^[\d\s+\-()]+$/;
   if (!phoneRegex.test(cleaned)) {
-    console.warn(`Numéro de téléphone invalide ignoré: ${phone}`);
+    logger.warn(`Numéro de téléphone invalide ignoré: ${phone}`);
     return undefined; // Ignorer les numéros invalides
   }
 
@@ -47,10 +48,7 @@ const processClientFileUpload = async (file, userId) => {
       separator = ",";
     }
 
-    console.log(
-      "Séparateur détecté:",
-      separator === "\t" ? "tabulation" : separator
-    );
+    logger.info("Séparateur détecté", { separator: separator === "\t" ? "tabulation" : separator });
 
     const rows = await new Promise((resolve, reject) => {
       const results = [];
@@ -68,15 +66,15 @@ const processClientFileUpload = async (file, userId) => {
   // Nettoyer le fichier temporaire
   fs.unlinkSync(file.path);
 
-  console.log("Données brutes extraites:", data);
-  console.log("Premier échantillon:", data[0]);
+  logger.info("Données brutes extraites", { count: data.length });
+  logger.info("Premier échantillon", { sample: data[0] });
 
   const normalizeKey = (key) => key?.toLowerCase()?.trim();
   const sample = data[0];
   const headers = Object.keys(sample).map(normalizeKey);
 
-  console.log("Headers détectés:", headers);
-  console.log("Sample:", sample);
+  logger.info("Headers détectés", { headers });
+  logger.info("Sample", { sample });
 
   const hasGroupedField = headers.length === 1 && headers[0].includes(";");
   let clients = [];
@@ -97,14 +95,11 @@ const processClientFileUpload = async (file, userId) => {
     });
   } else {
     // Cas normal : colonnes bien séparées
-    console.log(
-      "Clés disponibles dans la première ligne:",
-      Object.keys(sample)
-    );
+    logger.info("Clés disponibles dans la première ligne", { keys: Object.keys(sample) });
 
     clients = data.map((row) => {
       const keys = Object.keys(row);
-      console.log("Clés exactes pour cette ligne:", keys);
+      logger.info("Clés exactes pour cette ligne", { keys });
 
       // Fonction pour trouver une clé qui correspond (insensible à la casse et aux guillemets)
       const normalize = (str) =>
@@ -149,7 +144,7 @@ const processClientFileUpload = async (file, userId) => {
         artistId: userId || new mongoose.Types.ObjectId(),
       };
 
-      console.log("Mapping pour une ligne:", {
+      logger.info("Mapping pour une ligne", {
         input: row,
         keysFound: { nomKey, prenomKey, emailKey, telephoneKey, villeKey },
         output: client,
@@ -159,10 +154,7 @@ const processClientFileUpload = async (file, userId) => {
     });
   }
 
-  console.log(
-    "Clients après mapping:",
-    JSON.stringify(clients.slice(0, 2), null, 2)
-  );
+  logger.info("Clients après mapping", { sample: clients.slice(0, 2) });
 
   return await processClientDuplicates(clients);
 };
@@ -175,9 +167,7 @@ const processClientDuplicates = async (clients) => {
     return client.nom && client.prenom && client.email;
   });
 
-  console.log(
-    `${clients.length} clients extraits, ${validClients.length} valides`
-  );
+  logger.info(`${clients.length} clients extraits, ${validClients.length} valides`);
 
   const uniqueClients = [];
   const seenEmails = new Set();
@@ -233,10 +223,7 @@ const processClientDuplicates = async (clients) => {
 
   await Client.insertMany(finalClients);
 
-  console.log(
-    "Clients finalement insérés:",
-    JSON.stringify(finalClients.slice(0, 2), null, 2)
-  );
+  logger.info("Clients finalement insérés", { sample: finalClients.slice(0, 2) });
 
   let message = `${finalClients.length} clients importés avec succès.`;
   if (duplicates.length > 0) {

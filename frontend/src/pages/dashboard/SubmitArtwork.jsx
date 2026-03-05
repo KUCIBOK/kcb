@@ -28,6 +28,10 @@ export default function SubmitArtwork() {
     height: "",
     width: "",
     weight: "",
+    medium: "",
+    condition: "",
+    provenance: "",
+    availabilityStatus: "available",
 
     tag: "",
     step: 0,

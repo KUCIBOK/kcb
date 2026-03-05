@@ -1,6 +1,7 @@
 const Auction = require("../models/Auction");
 const Artwork = require("../models/Artwork");
 const {createError} = require("../middleware/errorHandler");
+const logger = require("../utils/logger");
 
 exports.createAuction = async (req, res, next) => {
   try {
@@ -45,7 +46,7 @@ exports.createAuction = async (req, res, next) => {
       .status(201)
       .json({ message: "Enchère créée avec succès.", auction });
   } catch (error) {
-    console.error("Erreur lors de la création d'une enchère:", error);
+    logger.error("Erreur lors de la création d'une enchère:", { err: error.message });
     next(createError.internal("Erreur serveur lors de la création de l'enchère."));
   }
 };
@@ -53,7 +54,6 @@ exports.createAuction = async (req, res, next) => {
 exports.getOngoingAuctions = async (req, res, next) => {
   try {
     const now = new Date();
-    console.log(`Fetching ongoing auctions at ${now}`);
 
     const auctions = await Auction.find({
       status: "ongoing",
@@ -61,14 +61,11 @@ exports.getOngoingAuctions = async (req, res, next) => {
       endTime: { $gte: now },
     })
       .populate("artwork", "title image")
-      .populate("seller", "name");
-
-    console.log(`Found ${auctions.length} auctions`);
-    console.log(auctions);
+      .populate("seller", "name")
+      .lean();
 
     res.status(200).json(auctions);
   } catch (error) {
-    console.error(error);
     next(createError.internal("Erreur lors du chargement des enchères."));
   }
 };
@@ -80,7 +77,8 @@ exports.getAuctionById = async (req, res, next) => {
         path: "artwork",
         populate: { path: "artist", select: "name" },
       })
-      .populate("seller", "name");
+      .populate("seller", "name")
+      .lean();
 
     if (!auction) {
       return next(createError.notFound("Enchère introuvable."));
@@ -88,7 +86,6 @@ exports.getAuctionById = async (req, res, next) => {
 
     res.status(200).json(auction);
   } catch (error) {
-    console.error(error);
     next(createError.internal("Erreur serveur lors de la récupération de l'enchère."));
   }
 };
@@ -112,7 +109,8 @@ exports.getAuctionDetails = async (req, res, next) => {
           select: "name image",
         },
         options: { sort: { createdAt: -1 } }, // Tri par date décroissante
-      });
+      })
+      .lean();
 
     if (!auction) {
       return next(createError.notFound("Enchère introuvable."));
@@ -139,7 +137,6 @@ exports.getAuctionDetails = async (req, res, next) => {
 
     res.status(200).json(response);
   } catch (error) {
-    console.error(error);
     next(createError.internal("Erreur serveur lors de la récupération des détails de l'enchère."));
   }
 };

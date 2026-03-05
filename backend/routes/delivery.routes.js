@@ -1,7 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const {auth, admin} = require('../middleware/auth')
-const {createDeliveryRequest, deleteDeliveryRequest, failDeliveryPayment, payForDelivery, getAllDeliveryRequest, getDeliveryRequestById, getDeliveryRequestByUser, changeDeliveryStatus} = require('../controllers/delivery.controller')
+const {createDeliveryRequest, deleteDeliveryRequest, failDeliveryPayment, payForDelivery, getAllDeliveryRequest, getDeliveryRequestById, getDeliveryRequestByUser, changeDeliveryStatus, getDeliveryByTrackingId} = require('../controllers/delivery.controller')
+
+// Public — tracking sans auth
+router.get('/track/:trackingId', getDeliveryByTrackingId)
 
 router.post('/', auth, createDeliveryRequest)
 

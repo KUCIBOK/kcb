@@ -1,4 +1,5 @@
 const NumReq = require('../models/NumerisationRequest');
+const logger = require('../utils/logger');
 const { sendNumerisationRequestAlertToAdmin } = require('../services/mailer.service');
 const { createError } = require("../middleware/errorHandler");
 
@@ -12,7 +13,7 @@ exports.createNumerisationRequest = async (req, res, next) => {
         try {
             await sendNumerisationRequestAlertToAdmin(req.user, newRequest);
         } catch (emailError) {
-            console.error("Error sending email notification:", emailError);
+            logger.error("Error sending email notification:", emailError);
         }
         res.status(201).json(newRequest);
     } catch (error) {

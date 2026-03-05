@@ -1,13 +1,13 @@
 import axios from 'axios';
+import { utils } from './useAPI';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-const CAMPAIGN_API = `${API_URL}/api/campaigns`;
+const CAMPAIGN_API = `${utils.api}/campaigns`;
 
 export const getCampaigns = async (filters = {}) => {
   try {
     const params = new URLSearchParams(filters);
     const response = await axios.get(`${CAMPAIGN_API}/campaigns?${params}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -18,7 +18,7 @@ export const getCampaigns = async (filters = {}) => {
 export const getCampaign = async (id) => {
   try {
     const response = await axios.get(`${CAMPAIGN_API}/campaigns/${id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -29,7 +29,7 @@ export const getCampaign = async (id) => {
 export const createCampaign = async (data) => {
   try {
     const response = await axios.post(`${CAMPAIGN_API}/campaigns`, data, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -40,7 +40,7 @@ export const createCampaign = async (data) => {
 export const updateCampaign = async (id, data) => {
   try {
     const response = await axios.put(`${CAMPAIGN_API}/campaigns/${id}`, data, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -51,7 +51,7 @@ export const updateCampaign = async (id, data) => {
 export const deleteCampaign = async (id) => {
   try {
     const response = await axios.delete(`${CAMPAIGN_API}/campaigns/${id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -62,7 +62,7 @@ export const deleteCampaign = async (id) => {
 export const sendTestCampaign = async (id, testEmails) => {
   try {
     const response = await axios.post(`${CAMPAIGN_API}/campaigns/${id}/send-test`, { testEmails }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -73,7 +73,7 @@ export const sendTestCampaign = async (id, testEmails) => {
 export const sendCampaign = async (id, scheduledAt = null) => {
   try {
     const response = await axios.post(`${CAMPAIGN_API}/campaigns/${id}/send`, { scheduledAt }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -84,7 +84,7 @@ export const sendCampaign = async (id, scheduledAt = null) => {
 export const getCampaignAnalytics = async (id) => {
   try {
     const response = await axios.get(`${CAMPAIGN_API}/campaigns/${id}/analytics`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {

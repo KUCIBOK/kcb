@@ -1,5 +1,6 @@
 require('dotenv').config()
 const {config} = require('../config/environnement');
+const logger = require('../utils/logger');
 
 // Service PayDunya simple et robuste
 class PayDunyaService {
@@ -28,7 +29,7 @@ class PayDunyaService {
       this.isConfigured = true;
       
     } catch (error) {
-      console.error('Erreur configuration PayDunya:', error.message);
+      logger.error('Erreur configuration PayDunya:', { error: error.message });
       this.isConfigured = false;
     }
   }
@@ -78,7 +79,7 @@ class PayDunyaService {
       // Créer la facture
       const result = await new Promise((resolve, reject) => {
         invoice.create((response) => {
-          console.log('Réponse PayDunya:', response);
+          logger.info('Réponse PayDunya:', { response });
           
           if (response.response_code === '00' || response.response_code === 200) {
             resolve(response);
@@ -96,7 +97,7 @@ class PayDunyaService {
       };
 
     } catch (error) {
-      console.error('Erreur createArtworkInvoice:', error);
+      logger.error('Erreur createArtworkInvoice:', { error: error.message });
       return {
         success: false,
         error: error.message
@@ -145,7 +146,7 @@ class PayDunyaService {
 
       const result = await new Promise((resolve, reject) => {
         invoice.create((response) => {
-          console.log('Réponse PayDunya subscription:', response);
+          logger.info('Réponse PayDunya subscription:', { response });
           
           if (response.response_code === '00' || response.response_code === 200) {
             resolve(response);
@@ -163,7 +164,7 @@ class PayDunyaService {
       };
 
     } catch (error) {
-      console.error('Erreur createSubscriptionInvoice:', error);
+      logger.error('Erreur createSubscriptionInvoice:', { error: error.message });
       return {
         success: false,
         error: error.message
@@ -187,7 +188,7 @@ class PayDunyaService {
       
       const result = await new Promise((resolve, reject) => {
         invoice.confirm(token, (response) => {
-          console.log('Vérification PayDunya:', response);
+          logger.info('Vérification PayDunya:', { response });
           resolve(response);
         });
       });
@@ -201,7 +202,7 @@ class PayDunyaService {
       };
 
     } catch (error) {
-      console.error('Erreur checkPaymentStatus:', error);
+      logger.error('Erreur checkPaymentStatus:', { error: error.message });
       return {
         success: false,
         error: error.message
@@ -213,7 +214,7 @@ class PayDunyaService {
    * Traiter le callback PayDunya
    */
   async processCallback(data) {
-    console.log('Callback PayDunya reçu:', data);
+    logger.info('Callback PayDunya reçu:', { data });
     
     try {
       const { token, transaction_id, custom_data } = data;
@@ -238,7 +239,7 @@ class PayDunyaService {
       };
 
     } catch (error) {
-      console.error('Erreur processCallback:', error);
+      logger.error('Erreur processCallback:', { error: error.message });
       return {
         success: false,
         error: error.message
@@ -250,10 +251,10 @@ class PayDunyaService {
    * Test de configuration
    */
   testConfiguration() {
-    console.log('Test configuration PayDunya...');
-    console.log('Configuré:', this.isConfigured);
-    console.log('Master Key:', process.env.PAYDUNYA_MASTER_KEY ? '***configuré***' : 'manquant');
-    console.log('Mode:', process.env.PAYDUNYA_MODE || 'sandbox');
+    logger.info('Test configuration PayDunya...');
+    logger.info('Configuré:', { isConfigured: this.isConfigured });
+    logger.info('Master Key:', { masterKey: process.env.PAYDUNYA_MASTER_KEY ? '***configuré***' : 'manquant' });
+    logger.info('Mode:', { mode: process.env.PAYDUNYA_MODE || 'sandbox' });
     
     return this.isConfigured;
   }

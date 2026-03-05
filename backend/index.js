@@ -9,16 +9,15 @@ const { config } = require('./config/environnement');
 const rateLimit = require("express-rate-limit");
 const { errorHandler, notFoundHandler } = require("./middleware/errorHandler");
 const protect = require('./middleware/api');
-const transporter = require("./config/mailerConfig");
+const { sendAlertMail } = require("./services/mailer.service");
 const logger = require("./utils/logger"); // P1-SEC-010
+const requestId = require('./middleware/requestId'); // P5-QUAL-002
 
 
 // Cron jobs lancés
 require("./jobs/auctionCronJob");
 require("./jobs/generateCertificates");
 require("./jobs/subscriptions.job");
-// require("./jobs/analyticsCollectionJob");
-require("./jobs/logidooSyncJob");
 
 const artworksRoutes = require("./routes/artwork.routes");
 const authRoutes = require("./routes/auth.routes");
@@ -48,6 +47,10 @@ const professionalAnalyticsRoutes = require("./routes/professionalAnalytics.rout
 const emailMarketingRoutes = require("./routes/emailMarketing.routes");
 const contactRoutes = require("./routes/contact.routes");
 const campaignRoutes = require("./routes/campaign.routes");
+const sourcingRoutes = require("./routes/sourcing.routes");
+const crmRoutes = require("./routes/crm.routes");
+const analyticsRoutes = require("./routes/analytics.routes");
+const supportTicketRoutes = require("./routes/supportTicket.routes");
 
 
 class App {
@@ -62,6 +65,9 @@ class App {
     }
 
     initializeMiddlewares(){
+        // Identifiant unique par requête — doit être le premier middleware (P5-QUAL-002)
+        this.app.use(requestId);
+
         // Headers de sécurité HTTP (P1-SEC-007)
         this.app.use(helmet({
             crossOriginResourcePolicy: { policy: "cross-origin" }, // nécessaire pour /uploads/ publics
@@ -99,7 +105,7 @@ class App {
         this.app.use((req, res, next) => {
             const { method, url } = req;
             const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
-            logger.http(`${method} ${url}`, { ip });
+            logger.http(`${method} ${url}`, { ip, requestId: req.requestId });
             next()
         })
         this.app.use("/api/health", (req, res, next) => {
@@ -151,15 +157,13 @@ class App {
               ? JSON.stringify(errorInfo).slice(0, 4000)
               : "(aucune info)";
 
-            await transporter.sendMail({
-                from: `"Kucibok Frontend" <${config.adminEmail}>`,
-                to: config.adminEmail,
-                subject: "[ALERTE FRONTEND] Erreur JS côté client",
-                text: `Erreur: ${safeError}\n\nInfo: ${safeInfo}`,
-            });
+            await sendAlertMail(
+                "[ALERTE FRONTEND] Erreur JS côté client",
+                `Erreur: ${safeError}\n\nInfo: ${safeInfo}`
+            );
             res.status(200).json({ ok: true });
         } catch (err) {
-            console.error("Erreur lors de l'envoi du mail d'alerte frontend:", err);
+            logger.error("Erreur lors de l'envoi du mail d'alerte frontend", { error: err.message, requestId: req.requestId });
             res.status(500).json({ error: "Erreur serveur." });
         }
       });
@@ -192,7 +196,12 @@ class App {
       this.app.use("/api/email-marketing", emailMarketingRoutes);
       this.app.use("/api/contacts", contactRoutes);
       this.app.use("/api/campaigns", campaignRoutes);
+      this.app.use("/api/sourcing", sourcingRoutes);
+      this.app.use("/api/crm", crmRoutes);
+      this.app.use("/api/analytics", analyticsRoutes);
+      this.app.use("/api/support-tickets", supportTicketRoutes);
 
+      // Rétrocompatibilité : les images existantes en base pointent encore vers /uploads (pré-migration Cloudinary)
       this.app.use("/uploads", express.static(path.join(__dirname, "public/uploads/")));
       this.app.use("/images", express.static(path.join(__dirname, "public/images/")));
       this.app.use("/certificates", express.static(path.join(__dirname, "public/certificates/")));

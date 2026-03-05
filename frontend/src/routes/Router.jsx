@@ -58,6 +58,8 @@ const Services = lazy(() => import("../pages/Services"));
 const HowItWorks = lazy(() => import("../pages/HowItWorks"));
 const AfricaLanding = lazy(() => import("../pages/AfricaLanding"));
 const GlobalPage = lazy(() => import("../pages/GlobalPage"));
+const VerifyArtwork = lazy(() => import("../pages/VerifyArtwork"));
+const CataloguePro = lazy(() => import("../pages/CataloguePro"));
 // Protected Routes
 import { GuestProtectedRoute } from "../utils/GuestProtectedRoute";
 import { ArtistProtectedRoute } from "../utils/ArtistProtectedRoute";
@@ -208,18 +210,6 @@ export function Router() {
               }
             />
 
-            <Route path="/auction" element={
-                <Suspense fallback={<PageLoader />}>
-                  <Auctions />
-                </Suspense>
-              }
-            />
-            <Route path="/auction/:id" element={
-                <Suspense fallback={<PageLoader />}>
-                  <AuctionDetails />
-                </Suspense>
-              }
-            />
             <Route path="/artwork/:id" element={
                 <Suspense fallback={<PageLoader />}>
                   <Artwork />
@@ -352,6 +342,13 @@ export function Router() {
             </Suspense>
           } />
 
+          {/* Standard Kucibok — vérification publique (scannable via QR, sans auth) */}
+          <Route path="/verify/:kuciobkId" element={
+            <Suspense fallback={<PageLoader />}>
+              <VerifyArtwork />
+            </Suspense>
+          } />
+
           {/* Artist protected routes */}
           <Route path="/dashboard/artist" element={<ArtistProtectedRoute />}>
             <Route path="" element={
@@ -400,11 +397,33 @@ export function Router() {
             />
           </Route>
 
+          {/* F3 — Catalogue certifié (professional + admin) */}
+          <Route path="/catalogue" element={<ProfessionalProtectedRoute />}>
+            <Route path="" element={
+              <Suspense fallback={<PageLoader />}>
+                <CataloguePro />
+              </Suspense>
+            } />
+          </Route>
+
           {/* Admin protected routes */}
           <Route element={<AdminProtectedRoute />}>
             <Route path="/dashboard/admin" element={
                 <Suspense fallback={<PageLoader />}>
                   <Admin />
+                </Suspense>
+              }
+            />
+            {/* Enchères — masquées du nav public, accessibles admin uniquement (Phase 3+) */}
+            <Route path="/auction" element={
+                <Suspense fallback={<PageLoader />}>
+                  <Auctions />
+                </Suspense>
+              }
+            />
+            <Route path="/auction/:id" element={
+                <Suspense fallback={<PageLoader />}>
+                  <AuctionDetails />
                 </Suspense>
               }
             />

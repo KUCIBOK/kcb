@@ -1,10 +1,10 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 
 export async function createLog(payload){
     try {
         const response = await fetch(`${api}/log`, {
-            ...options,
+            ...utils.options,
             method : "POST",
             body : JSON.stringify(payload)
         })
@@ -24,7 +24,7 @@ export async function createLog(payload){
 
 export async function getAllLog(){
     try {
-        const response = await fetch(`${api}/log`, {...options})
+        const response = await fetch(`${api}/log`, {...utils.options})
         const logs = await response.json()
         if(logs.length > 0){
             return logs

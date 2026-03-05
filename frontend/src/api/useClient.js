@@ -1,10 +1,10 @@
 import { utils } from "./useAPI";
-const { api, options } = utils;
+const { api } = utils;
 
 export async function addClient(payload) {
   try {
     const response = await fetch(`${api}/clients/add`, {
-      ...options,
+      ...utils.options,
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -54,7 +54,7 @@ export async function uploadClientsFromFile(file) {
 export async function getAllClients() {
   try {
     const response = await fetch(`${api}/clients/`, {
-      ...options,
+      ...utils.options,
       method: "GET",
     });
 
@@ -75,7 +75,7 @@ export async function getAllClients() {
 export async function getClientsByArtist() {
   try {
     const response = await fetch(`${api}/clients/all`, {
-      ...options,
+      ...utils.options,
       method: "GET",
     });
 
@@ -96,7 +96,7 @@ export async function getClientsByArtist() {
 export async function updateClient(id, payload) {
   try {
     const response = await fetch(`${api}/clients/update/${id}`, {
-      ...options,
+      ...utils.options,
       method: "PUT",
       body: JSON.stringify(payload),
     });
@@ -119,7 +119,7 @@ export async function updateClient(id, payload) {
 export async function deleteClient(id) {
   try {
     const response = await fetch(`${api}/clients/delete/${id}`, {
-      ...options,
+      ...utils.options,
       method: "DELETE",
     });
 

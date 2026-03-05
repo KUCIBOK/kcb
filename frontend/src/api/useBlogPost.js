@@ -1,5 +1,5 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 
 export async function createBlogPost(payload) {
     try {
@@ -30,7 +30,7 @@ export async function createBlogPost(payload) {
 
 export async function getBlogPosts() {
     try {
-        const response = await fetch(`${api}/blog`, { ...options });
+        const response = await fetch(`${api}/blog`, { ...utils.options });
         const posts = await response.json();
         if (posts?.length >= 1) {
             return posts;
@@ -47,7 +47,7 @@ export async function getBlogPosts() {
 
 export async function getPublishedPosts() {
     try {
-        const response = await fetch(`${api}/blog/published`, { ...options });
+        const response = await fetch(`${api}/blog/published`, { ...utils.options });
         const posts = await response.json();
         if (posts?.length >= 1) {
             return posts;
@@ -64,7 +64,7 @@ export async function getPublishedPosts() {
 
 export async function getArchivedPosts() {
     try {
-        const response = await fetch(`${api}/blog/archived`, { ...options });
+        const response = await fetch(`${api}/blog/archived`, { ...utils.options });
         const posts = await response.json();
         if (posts?.length >= 1) {
             return posts;
@@ -81,7 +81,7 @@ export async function getArchivedPosts() {
 
 export async function getPublishedPostsByUserId(id) {
     try {
-        const response = await fetch(`${api}/blog/published/user${id}`, { ...options });
+        const response = await fetch(`${api}/blog/published/user${id}`, { ...utils.options });
         const posts = await response.json();
         if (posts?.length >= 1) {
             return posts;
@@ -98,7 +98,7 @@ export async function getPublishedPostsByUserId(id) {
 
 export async function getDraftPostsByUserId(id) {
     try {
-        const response = await fetch(`${api}/blog/draft/user${id}`, { ...options });
+        const response = await fetch(`${api}/blog/draft/user${id}`, { ...utils.options });
         const posts = await response.json();
         if (posts?.length >= 1) {
             return posts;
@@ -115,7 +115,7 @@ export async function getDraftPostsByUserId(id) {
 
 export async function getArchivedPostsByUserId(id) {
     try {
-        const response = await fetch(`${api}/blog/archived/user${id}`, { ...options });
+        const response = await fetch(`${api}/blog/archived/user${id}`, { ...utils.options });
         const posts = await response.json();
         if (posts?.length >= 1) {
             return posts;
@@ -132,7 +132,7 @@ export async function getArchivedPostsByUserId(id) {
 
 export async function archivePost(id) {
     try {
-        const response = await fetch(`${api}/blog/archive/${id}`, { ...options });
+        const response = await fetch(`${api}/blog/archive/${id}`, { ...utils.options });
         const posts = await response.json();
         if (posts?._id) {
             return posts;
@@ -149,7 +149,7 @@ export async function archivePost(id) {
 
 export async function publishPost(id) {
     try {
-        const response = await fetch(`${api}/blog/publish/${id}`, { ...options });
+        const response = await fetch(`${api}/blog/publish/${id}`, { ...utils.options });
         const posts = await response.json();
         if (posts?._id) {
             return posts;
@@ -166,7 +166,7 @@ export async function publishPost(id) {
 
 export async function getBlogPost(id) {
     try {
-        const response = await fetch(`${api}/blog/${id}`, { ...options });
+        const response = await fetch(`${api}/blog/${id}`, { ...utils.options });
         const post = await response.json();
         if (post?.id || post?._id) {
             return post;
@@ -186,7 +186,7 @@ export async function getBlogPost(id) {
 export async function updateBlogPost(id, payload) {
     try {
         const response = await fetch(`${api}/blog/${id}`, {
-            ...options,
+            ...utils.options,
             method : 'PUT',
             headers : {
                 "kcb-api-key": import.meta.env.VITE_API_KEY,
@@ -214,7 +214,7 @@ export async function updateBlogPost(id, payload) {
 export async function deleteBlogPost(id) {
     try {
         const response = await fetch(`${api}/blog/${id}`, {
-            ...options,
+            ...utils.options,
             method: "DELETE",
         });
         const post = await response.json();
@@ -234,7 +234,7 @@ export async function deleteBlogPost(id) {
 export async function addComment(id, payload) {
     try {
         const response = await fetch(`${api}/blog/comment/${id}`, {
-            ...options,
+            ...utils.options,
             method: "POST",
             body: JSON.stringify({
                 ...payload,
@@ -257,7 +257,7 @@ export async function addComment(id, payload) {
 export async function deleteComment(id, commentId) {
     try {
         const response = await fetch(`${api}/blog/comment/${id}/${commentId}`, {
-            ...options,
+            ...utils.options,
             method: "DELETE",
         });
         const post = await response.json();

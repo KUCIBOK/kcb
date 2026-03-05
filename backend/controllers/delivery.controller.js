@@ -3,6 +3,7 @@ const Artwork = require('../models/Artwork')
 const User = require('../models/User')
 const {sendDeliveryRequestNotificationToAdmin, sendDeliveryRequestNoficationToCustomer} = require('../services/mailer.service')
 const { createError } = require("../middleware/errorHandler");
+const logger = require('../utils/logger');
 
 
 exports.createDeliveryRequest = async (req, res, next) => { //✅
@@ -12,7 +13,7 @@ exports.createDeliveryRequest = async (req, res, next) => { //✅
             userId : user?._id,
             ...req.body
         })
-        request?.artworksIds?.forEach(async (id) => {
+        request?.artworkIds?.forEach(async (id) => {
             try {
                 const artwork = await Artwork.findOne({_id : id})
                 if(!artwork) return
@@ -25,7 +26,7 @@ exports.createDeliveryRequest = async (req, res, next) => { //✅
         try {
             await sendDeliveryRequestNotificationToAdmin(request)
         } catch (error) {
-            console.log('Erreur', error.message)
+            logger.error('Erreur', { message: error.message })
         }
         return res.status(201).json(request)
     } catch (error) {
@@ -67,15 +68,20 @@ exports.changeDeliveryStatus = async (req, res, next) => { //✅
         const request = await Delivery.findOne({_id : req.params.id})
         if(!request) return next(createError.notFound('La demande n\'a pas été trouvée.'));
         request.status = req.body.status
-        if(req.body.status != "rejected"){
-            request.price = req.body.price
-            request.trackingId = req.body.trackingId
-        }
-        else{
+        if(req.body.status !== "rejected"){
+            if (req.body.price !== undefined) request.price = req.body.price
+            if (req.body.trackingId) request.trackingId = req.body.trackingId
+        } else {
             request.reason = req.body.reason
         }
+        // Historique des événements
+        request.events.push({
+            status: req.body.status,
+            note:   req.body.note || '',
+            date:   new Date(),
+        })
         await request.save()
-        request?.artworksIds?.forEach(async (id) => {
+        request?.artworkIds?.forEach(async (id) => {
             try {
                 const artwork = await Artwork.findOne({_id : id})
                 if(!artwork) return
@@ -89,7 +95,7 @@ exports.changeDeliveryStatus = async (req, res, next) => { //✅
         try {
             await sendDeliveryRequestNoficationToCustomer(user?.email, request)
         } catch (error) {
-            console.log("Erreur lors de l'envoi de mail", error.message)
+            logger.error("Erreur lors de l'envoi de mail", { message: error.message })
         }
         return res.status(200).json(request)
     } catch (error) {
@@ -125,6 +131,19 @@ exports.deleteDeliveryRequest = async (req, res, next) => {
     try {
         const request = await Delivery.findByIdAndDelete(req.params.id)
         if(!request) return next(createError.notFound('La demande n\'a pas été trouvée.'));
+        return res.status(200).json(request)
+    } catch (error) {
+        return next(createError.internal(error.message));
+    }
+}
+
+// Public — accessible sans auth via le numéro de suivi
+exports.getDeliveryByTrackingId = async (req, res, next) => {
+    try {
+        const request = await Delivery.findOne({ trackingId: req.params.trackingId })
+            .select('-userId -paymentStatus -price -reason')
+            .lean()
+        if (!request) return next(createError.notFound('Numéro de suivi introuvable.'));
         return res.status(200).json(request)
     } catch (error) {
         return next(createError.internal(error.message));

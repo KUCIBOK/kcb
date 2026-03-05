@@ -1,8 +1,8 @@
 // P1-SEC-012 — Validation MIME par magic bytes (non spoofable)
+// P2-ARCH-006 — Upload vers Cloudinary CDN (plus de stockage disque)
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const { randomUUID } = require('crypto');
+const cloudinary = require('../config/cloudinaryConfig');
+const logger = require('../utils/logger');
 
 // Signatures magic bytes des types autorisés
 const MAGIC_SIGNATURES = [
@@ -25,7 +25,6 @@ function detectMagicType(buffer) {
   for (const sig of MAGIC_SIGNATURES) {
     const slice = buffer.slice(sig.offset, sig.offset + sig.bytes.length);
     if (sig.bytes.every((b, i) => slice[i] === b)) {
-      // Cas WebP : vaut la peine de vérifier les octets 8-11 = "WEBP"
       if (sig.mime === 'image/webp') {
         const webpMarker = buffer.slice(8, 12);
         if (Buffer.from('WEBP').equals(webpMarker)) return sig;
@@ -37,14 +36,36 @@ function detectMagicType(buffer) {
   return null;
 }
 
-// Stockage en mémoire pour pouvoir inspecter le buffer AVANT d'écrire sur disque
+/**
+ * Upload un buffer vers Cloudinary et retourne l'URL sécurisée.
+ * @param {Buffer} buffer - Buffer de l'image en mémoire
+ * @param {string} mimeType - Type MIME détecté par magic bytes
+ * @returns {Promise<{ url: string, publicId: string }>}
+ */
+function uploadToCloudinary(buffer, mimeType) {
+  return new Promise((resolve, reject) => {
+    const folder = 'kucibok/uploads';
+    const resourceType = 'image';
+
+    const stream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: resourceType, format: mimeType.split('/')[1] },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve({ url: result.secure_url, publicId: result.public_id });
+      }
+    );
+
+    stream.end(buffer);
+  });
+}
+
+// Stockage en mémoire pour inspecter le buffer AVANT upload
 const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
   limits: { fileSize: 20 * 1024 * 1024 }, // 20 Mo
   fileFilter: (_req, file, cb) => {
-    // Pré-filtre léger sur le mimetype déclaré (la vraie vérif se fait en post via magic bytes)
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowed.includes(file.mimetype)) {
       return cb(new Error('Type de fichier non autorisé.'), false);
@@ -54,11 +75,16 @@ const upload = multer({
 });
 
 /**
- * Middleware express : multer (mémoire) → vérification magic bytes → écriture disque sécurisée.
- * Le nom du fichier est un UUID v4 (aucun caractère du originalname n'est utilisé).
+ * Middleware Express : multer (mémoire) → validation magic bytes → upload Cloudinary.
+ * Expose req.file.cloudinaryUrl et req.file.cloudinaryPublicId pour les controllers.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {void}
  */
 const multerMiddleware = (req, res, next) => {
-  upload.single('image')(req, res, (err) => {
+  upload.single('image')(req, res, async (err) => {
     if (err instanceof multer.MulterError) {
       return res.status(400).json({ message: `Erreur upload : ${err.message}` });
     }
@@ -75,29 +101,17 @@ const multerMiddleware = (req, res, next) => {
       return res.status(400).json({ message: 'Fichier rejeté : type réel non autorisé (magic bytes invalides).' });
     }
 
-    // Écriture sur disque avec nom UUID (anti path-traversal, anti collision)
-    const year = new Date().getFullYear();
-    const month = new Date().getMonth() + 1;
-    const uploadDir = path.resolve(`public/uploads/${year}/${month}`);
-    fs.mkdirSync(uploadDir, { recursive: true });
-
-    const filename = `${randomUUID()}.${detected.ext}`;
-    const filepath = path.join(uploadDir, filename);
-
+    // Upload vers Cloudinary depuis le buffer mémoire
     try {
-      fs.writeFileSync(filepath, req.file.buffer);
-    } catch (writeErr) {
-      console.error('Erreur écriture fichier upload:', writeErr);
+      const { url, publicId } = await uploadToCloudinary(req.file.buffer, detected.mime);
+      req.file.cloudinaryUrl      = url;
+      req.file.cloudinaryPublicId = publicId;
+      req.file.mimetype           = detected.mime;
+      next();
+    } catch (uploadErr) {
+      logger.error('Erreur upload Cloudinary:', { error: uploadErr.message });
       return res.status(500).json({ message: 'Erreur serveur lors du traitement du fichier.' });
     }
-
-    // Mise à jour des métadonnées pour les controllers en aval
-    req.file.filename    = filename;
-    req.file.path        = filepath;
-    req.file.destination = uploadDir;
-    req.file.mimetype    = detected.mime;
-
-    next();
   });
 };
 

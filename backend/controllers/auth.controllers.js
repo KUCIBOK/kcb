@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const logger = require("../utils/logger");
 const User = require("../models/User");
 const Artist = require("../models/Artist");
 const Profile = require("../models/Profile");
@@ -20,11 +21,35 @@ const {
   sendEmailChangeNotification,
   sendPasswordChangeNotification,
   sendVerificationEmail,
-} = require("../services/smtpMailer.service");
+} = require("../services/mailer.service");
 const ExcelJS = require("exceljs");
 const Artwork = require("../models/Artwork");
 const { createError } = require("../middleware/errorHandler");
 const {config} = require("../config/environnement");
+const { blacklistToken } = require("../utils/jwtBlacklist");
+
+/**
+ * Génère une paire de tokens JWT (access + refresh).
+ *
+ * - Access token  : durée courte (1h), signé avec JWT_SECRET
+ * - Refresh token : durée longue (30j), signé avec REFRESH_TOKEN_SECRET
+ *
+ * @param {{ _id: string, role: string, email: string }} user
+ * @returns {{ token: string, refreshToken: string }}
+ */
+function generateTokens(user) {
+  const token = jwt.sign(
+    { _id: user._id, role: user.role, email: user.email, type: 'access' },
+    config.jwt.secret,
+    { expiresIn: config.jwt.expiresIn }
+  );
+  const refreshToken = jwt.sign(
+    { _id: user._id, type: 'refresh' },
+    config.jwt.refreshSecret,
+    { expiresIn: config.jwt.refreshExpiresIn }
+  );
+  return { token, refreshToken };
+}
 
 
 exports.register = async (req, res, next) => {
@@ -94,13 +119,7 @@ exports.register = async (req, res, next) => {
       artist = new Artist({
         userId: user._id,
         name: name,
-        image: req.file
-          ? `${req.protocol}://${req.get(
-              "host"
-            )}/uploads/${new Date().getFullYear()}/${
-              new Date().getMonth() + 1
-            }/${req.file.filename}`
-          : "",
+        image: req.file?.cloudinaryUrl || "",
         username: username,
         country: country,
         biography: biography,
@@ -129,20 +148,20 @@ exports.register = async (req, res, next) => {
       // Envoi du lien de vérification
       const verificationToken = jwt.sign(
         { userId: user._id },
-        process.env.JWT_SECRET,
+        config.jwt.secret,
         { expiresIn: "15m" }
       );
       const verifyLink = `${config.cors.origin}/verify-email/${verificationToken}`;
       await sendVerificationEmail(user.email, user.name, verifyLink);
     } catch (error) {
-      console.warn("Erreur lors de l'envoi de l'email:", error.message);
+      logger.warn("Erreur lors de l'envoi de l'email", { message: error.message });
     }
     return res.status(201).json({
       user: { ...user.toObject(), password: undefined },
       message: "Compte créé. Vérifiez votre adresse email pour continuer.",
     });
   } catch (err) {
-    console.error("Erreur Register:", err);
+    logger.error("Erreur Register:", err);
     return next(createError.internal("Erreur serveur lors de l'inscription."));
   }
 };
@@ -154,7 +173,7 @@ exports.verifyEmail = async (req, res, next) => {
 
     let payload;
     try {
-      payload = jwt.verify(token, process.env.JWT_SECRET);
+      payload = jwt.verify(token, config.jwt.secret);
     } catch (error) {
       return next(createError.unauthorized("Token invalide ou expiré."));
     }
@@ -174,7 +193,7 @@ exports.verifyEmail = async (req, res, next) => {
       await sendWelcomeEmail(user?.email, user?.name);
       await sendUserRegistrationAlertToAdmin(user);
     } catch (error) {
-      console.warn("Erreur lors de l'envoi de l'alerte:", error.message);
+      logger.warn("Erreur lors de l'envoi de l'alerte", { message: error.message });
     }
     let artist = null;
     let profile = null;
@@ -198,19 +217,15 @@ exports.verifyEmail = async (req, res, next) => {
     // Supprime le mot de passe de la réponse
     const { password: _, ...userData } = user.toObject();
 
-    // P2-ARCH-008 — Payload JWT minimal
-    const newToken = jwt.sign(
-      { _id: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // P2-ARCH-008 — access 1h + refresh 30j
+    const { token, refreshToken } = generateTokens(user);
 
     return res.status(200).json({
       message: "Connexion réussie",
-      token: newToken,
-      artist: artist,
-      profile: profile,
-      // P2-ARCH-008 — Champ user explicite (le frontend n'a plus à décoder le JWT)
+      token,
+      refreshToken,
+      artist,
+      profile,
       user: { ...userData, wallet, subscription, plan, likedArtworks: user.likedArtworks || [] },
     });
   } catch (error) {
@@ -234,7 +249,7 @@ exports.resendVerificationEmail = async (req, res, next) => {
 
     const verificationToken = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET,
+      config.jwt.secret,
       { expiresIn: "15m" }
     );
 
@@ -246,7 +261,7 @@ exports.resendVerificationEmail = async (req, res, next) => {
       message: "Un nouvel email de vérification a été envoyé.",
     });
   } catch (err) {
-    console.error("Erreur resend email:", err);
+    logger.error("Erreur resend email:", err);
     return next(createError.internal("Erreur serveur lors du renvoi de l'email."));
   }
 };
@@ -310,23 +325,20 @@ exports.login = async (req, res, next) => {
     // Supprime le mot de passe de la réponse
     const { password: _, ...userData } = user.toObject();
 
-    // P2-ARCH-008 — Payload JWT minimal (ne plus embarquer wallet/subscription/plan)
-    const token = jwt.sign(
-      { _id: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // P2-ARCH-008 — access 1h + refresh 30j
+    const { token, refreshToken } = generateTokens(user);
 
     return res.status(200).json({
       message: "Connexion réussie",
-      token: token,
-      artist: artist,
-      profile: profile,
+      token,
+      refreshToken,
+      artist,
+      profile,
       user: {
         ...userData,
-        wallet: wallet,
-        subscription: subscription,
-        plan: plan,
+        wallet,
+        subscription,
+        plan,
         likedArtworks: user.likedArtworks || [],
       },
     });
@@ -401,7 +413,7 @@ exports.updateUser = async (req, res, next) => {
         await sendEmailChangeNotification(oldMail, user.email);
         await sendEmailChangeNotification(user.email, user.email);
       } catch (error) {
-        console.error(
+        logger.error(
           "Erreur lors de l'envoi de la notification de changement d'email:",
           error
         );
@@ -424,13 +436,13 @@ exports.updateUser = async (req, res, next) => {
     // P2-ARCH-008 — Payload JWT minimal
     const token = jwt.sign(
       { _id: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET,
+      config.jwt.secret,
       { expiresIn: "7d" }
     );
     const { password: _, ...userData } = user.toObject();
     return res.status(200).json({ ...userData, token: token });
   } catch (err) {
-    console.error("Erreur Update User:", err.message);
+    logger.error("Erreur Update User:", err.message);
     return next(createError.internal("Erreur serveur lors de la mise à jour."));
   }
 };
@@ -447,7 +459,7 @@ exports.getUserById = async (req, res, next) => {
     const { password: _, ...userData } = user.toObject();
     return res.status(200).json(userData);
   } catch (err) {
-    console.error("Erreur Get User:", err.message);
+    logger.error("Erreur Get User:", err.message);
     return next(createError.internal("Erreur serveur lors de la récupération de l'utilisateur."));
   }
 };
@@ -464,7 +476,7 @@ exports.getUserByEmail = async (req, res, next) => {
     const { password: _, ...userData } = user.toObject();
     return res.status(200).json(userData);
   } catch (err) {
-    console.error("Erreur Get User:", err.message);
+    logger.error("Erreur Get User:", err.message);
     return next(createError.internal("Erreur serveur lors de la récupération de l'utilisateur par email."));
   }
 };
@@ -474,7 +486,7 @@ exports.getAllUsers = async (req, res, next) => {
     const users = await User.find().select("-password");
     return res.status(200).json(users);
   } catch (err) {
-    console.error("Erreur Get All Users:", err.message);
+    logger.error("Erreur Get All Users:", err.message);
     return next(createError.internal("Erreur serveur lors de la récupération des utilisateurs."));
   }
 };
@@ -490,28 +502,28 @@ exports.deleteUser = async (req, res, next) => {
     }
     // Supprime l'utilisateur
     await User.findOneAndDelete({ _id: id })
-      .then(() => console.log("Utilisateur supprimé"))
-      .catch(() => console.log("Erreur lors de la suppression"));
+      .then(() => logger.info("Utilisateur supprimé"))
+      .catch(() => logger.error("Erreur lors de la suppression de l'utilisateur"));
 
     await Artist.deleteMany({ userId: id })
-      .then(() => console.log("Artist supprimé"))
-      .catch(() => console.log("Erreur lors de la suppression"));
+      .then(() => logger.info("Artist supprimé"))
+      .catch(() => logger.error("Erreur lors de la suppression de l'artiste"));
 
     await Artwork.deleteMany({ userId: id })
-      .then(() => console.log("Oeuvre supprimé"))
-      .catch(() => console.log("Erreur lors de la suppression"));
+      .then(() => logger.info("Oeuvre supprimée"))
+      .catch(() => logger.error("Erreur lors de la suppression des oeuvres"));
 
     await Profile.findOneAndDelete({ userId: id })
-      .then(() => console.log("Profil supprimé"))
-      .catch(() => console.log("Erreur lors de la suppression"));
+      .then(() => logger.info("Profil supprimé"))
+      .catch(() => logger.error("Erreur lors de la suppression du profil"));
 
     await WalletModel.findOneAndDelete({ userId: id })
-      .then(() => console.log("Wallet supprimé"))
-      .catch(() => console.log("Erreur lors de la suppression"));
+      .then(() => logger.info("Wallet supprimé"))
+      .catch(() => logger.error("Erreur lors de la suppression du wallet"));
 
     return res.status(200).json(user);
   } catch (err) {
-    console.error("Erreur Delete User:", err.message);
+    logger.error("Erreur Delete User:", err.message);
     return next(createError.internal("Erreur serveur lors de la suppression de l'utilisateur."));
   }
 };
@@ -556,7 +568,7 @@ exports.deleteAllUsers = async (req, res, next) => {
       .json({ message: "Tous les utilisateurs ont été supprimés avec succès." });
   } catch (err) {
     await session.abortTransaction();
-    console.error("Erreur Delete All Users:", err.message);
+    logger.error("Erreur Delete All Users:", err.message);
     return next(createError.internal("Erreur serveur lors de la suppression de tous les utilisateurs."));
   } finally {
     session.endSession();
@@ -609,18 +621,15 @@ exports.loginWithMetamask = async (req, res, next) => {
     // Supprime le mot de passe de la réponse
     const { password: _, ...userData } = user.toObject();
 
-    // P2-ARCH-008 — Payload JWT minimal
-    const token = jwt.sign(
-      { _id: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // P2-ARCH-008 — access 1h + refresh 30j
+    const { token, refreshToken } = generateTokens(user);
 
     return res.status(200).json({
       message: "Connexion réussie",
-      token: token,
-      artist: artist,
-      profile: profile,
+      token,
+      refreshToken,
+      artist,
+      profile,
       user: { ...userData, wallet, subscription, plan, likedArtworks: user.likedArtworks || [] },
     });
   } catch (err) {
@@ -683,19 +692,15 @@ exports.signUpWithMetamask = async (req, res, next) => {
       // Supprime le mot de passe de la réponse
       const { password: _, ...userData } = user.toObject();
 
-      // P2-ARCH-008 — Payload JWT minimal
-      const token = jwt.sign(
-        { _id: user._id, role: user.role, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-      );
+      // P2-ARCH-008 — access 1h + refresh 30j
+      const { token, refreshToken } = generateTokens(user);
 
       return res.status(201).json({
         message: "Inscription réussie",
-        token: token,
-        artist: artist,
-        profile: profile,
-        // P2-ARCH-008 — Champ user explicite (le frontend n'a plus à décoder le JWT)
+        token,
+        refreshToken,
+        artist,
+        profile,
         user: { ...userData, wallet },
       });
     } catch (error) {
@@ -723,14 +728,14 @@ exports.changePassword = async (req, res, next) => {
     try {
       await sendPasswordChangeNotification(user?.email);
     } catch (error) {
-      console.error(
+      logger.error(
         "Erreur lors de l'envoi de la notification de changement de mot de passe:",
         error
       );
     }
     return res.json({ ...userData });
   } catch (error) {
-    console.log(error.message);
+    logger.error("Erreur changePassword", { message: error.message });
     return next(createError.internal("Erreur serveur lors du changement de mot de passe."));
   }
 };
@@ -744,7 +749,7 @@ exports.forgotPassword = async (req, res, next) => {
     if (!user)
       return next(createError.notFound("Aucun utilisateur trouvé avec cet email."));
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id }, config.jwt.secret, {
       expiresIn: "15m",
     });
 
@@ -753,7 +758,7 @@ exports.forgotPassword = async (req, res, next) => {
     try{
       await sendPasswordResetEmail(user.email, resetLink);
     }catch (error){
-      console.error("Erreur lors de l'envoi de l'email de réinitialisation:", error);
+      logger.error("Erreur lors de l'envoi de l'email de réinitialisation:", error);
       return next(createError.internal("Erreur lors de l'envoi de l'email de réinitialisation."));
     }
 
@@ -761,7 +766,7 @@ exports.forgotPassword = async (req, res, next) => {
       .status(200)
       .json({ message: "Email de réinitialisation envoyé." });
   } catch (error) {
-    console.error("Erreur forgotPassword:", error);
+    logger.error("Erreur forgotPassword:", error);
     return next(createError.internal("Erreur serveur lors de la réinitialisation du mot de passe."));
   }
 };
@@ -776,7 +781,7 @@ exports.resetPassword = async (req, res, next) => {
 
     let payload;
     try {
-      payload = jwt.verify(token, process.env.JWT_SECRET);
+      payload = jwt.verify(token, config.jwt.secret);
     } catch (error) {
       return next(createError.unauthorized("Token invalide ou expiré."));
     }
@@ -791,7 +796,7 @@ exports.resetPassword = async (req, res, next) => {
     try {
       await sendPasswordChangeNotification(user?.email);
     } catch (error) {
-      console.error(
+      logger.error(
         "Erreur lors de l'envoi de la notification de changement de mot de passe:",
         error
       );
@@ -800,7 +805,7 @@ exports.resetPassword = async (req, res, next) => {
       .status(200)
       .json({ message: "Mot de passe réinitialisé avec succès." });
   } catch (error) {
-    console.error("Erreur resetPassword:", error);
+    logger.error("Erreur resetPassword:", error);
     return next(createError.internal("Erreur serveur lors de la réinitialisation du mot de passe."));
   }
 };
@@ -898,7 +903,57 @@ exports.exportDataOnExcelFormat = async (req, res, next) => {
     res.end();
     return;
   } catch (error) {
-    console.error("Erreur export data:", error);
+    logger.error("Erreur export data:", error);
     return next(createError.internal("Erreur serveur lors de l'export des données."));
   }
+};
+
+/**
+ * POST /api/auth/refresh-token
+ * Renouvelle la paire de tokens JWT à partir d'un refresh token valide.
+ * Implémente la rotation : un nouveau refresh token est émis à chaque appel.
+ */
+exports.refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) return next(createError.badRequest("Refresh token requis."));
+
+    let payload;
+    try {
+      payload = jwt.verify(refreshToken, config.jwt.refreshSecret);
+    } catch {
+      return next(createError.unauthorized("Refresh token invalide ou expiré."));
+    }
+
+    if (payload.type !== 'refresh') {
+      return next(createError.unauthorized("Token invalide."));
+    }
+
+    const user = await User.findById(payload._id).select('-password').lean();
+    if (!user) return next(createError.notFound("Utilisateur introuvable."));
+    if (!user.isActive) return next(createError.forbidden("Compte suspendu."));
+
+    const { token, refreshToken: newRefreshToken } = generateTokens(user);
+
+    return res.status(200).json({ token, refreshToken: newRefreshToken });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.logout = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    if (token && token !== 'null' && token !== 'undefined') {
+      try {
+        const decoded = jwt.decode(token);
+        if (decoded?.exp) {
+          const remainingTTL = decoded.exp - Math.floor(Date.now() / 1000);
+          await blacklistToken(token, remainingTTL);
+        }
+      } catch (_) { /* token invalide — on déconnecte quand même */ }
+    }
+  }
+  res.status(200).json({ message: 'Déconnecté avec succès.' });
 };

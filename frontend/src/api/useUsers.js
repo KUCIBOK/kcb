@@ -1,9 +1,9 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 
 export async function getAllUsers(){
     try {
-        const response = await fetch(`${api}/auth`, {...options})
+        const response = await fetch(`${api}/auth`, {...utils.options})
         const users = await response.json()
         if(users?.length >0){
             return users
@@ -21,7 +21,7 @@ export async function getAllUsers(){
 export async function createUser(payload) {
     try {
         const response = await fetch(`${api}/auth`, {
-            ...options,
+            ...utils.options,
             method : "POST",
             body : JSON.stringify(payload)
         })
@@ -43,7 +43,7 @@ export async function updateUser(id, payload){ //✅
     try {
         const { api, options } = utils
         const response = await fetch(`${api}/auth/${id}`, {
-            ...options,
+            ...utils.options,
             method : 'PUT',
             body : JSON.stringify({
                 ...payload
@@ -67,7 +67,7 @@ export async function deleteUser(id){ //✅
     try {
         const { api, options } = utils
         const response = await fetch(`${api}/auth/${id}`, {
-            ...options,
+            ...utils.options,
             method : 'DELETE',
         })
         const user = await response.json()
@@ -86,7 +86,7 @@ export async function deleteUser(id){ //✅
 
 export async function setUserStatus(id) {
     try {
-        const response = await fetch(`${api}/auth/status/${id}`, {...options})
+        const response = await fetch(`${api}/auth/status/${id}`, {...utils.options})
         const user = await response.json()
         if(user?._id){
             return user
@@ -105,7 +105,7 @@ export async function setUserStatus(id) {
 export async function exportExcelData(){
     try {
         const response = await fetch(`${api}/auth/export/excel`, {
-            ...options,
+            ...utils.options,
             method: 'GET',
         })
         if (!response.ok) throw new Error('Erreur lors du téléchargement');

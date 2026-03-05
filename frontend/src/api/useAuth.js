@@ -1,12 +1,12 @@
 import { MetaMaskSDK } from "@metamask/sdk";
 import { utils } from "./useAPI";
-const { api, options } = utils;
+const { api } = utils;
 
 //Login ✅
 export async function loginUser(email, password) {
   try {
     const response = await fetch(`${api}/auth/login`, {
-      ...options,
+      ...utils.options,
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
@@ -120,7 +120,7 @@ export async function MetamaskLogin(payload) {
   //✅
   try {
     const response = await fetch(`${api}/auth/login-metamask`, {
-      ...options,
+      ...utils.options,
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -152,7 +152,7 @@ export async function MetamaskLogin(payload) {
 export async function verifyEmail(token) {
   try {
     const response = await fetch(`${api}/auth/verify-email/${token}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     // P2-ARCH-008 — Utiliser data.user (le JWT ne contient plus les données complètes)
@@ -182,7 +182,7 @@ export async function verifyEmail(token) {
 export async function MetamaskSignUp(payload) {
   try {
     const response = await fetch(`${api}/auth/signup-metamask`, {
-      ...options,
+      ...utils.options,
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -233,7 +233,7 @@ export async function SignUpUser(charge) {
       });
     } else {
       response = await fetch(`${api}/auth/register`, {
-        ...options,
+        ...utils.options,
         method: "POST",
         body: JSON.stringify(charge),
       });
@@ -268,7 +268,7 @@ export async function getUserProfile(id) {
   //✅
   try {
     const response = await fetch(`${api}/profile/${id}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?._id) {
@@ -287,7 +287,7 @@ export async function getUserProfile(id) {
 export async function getUserById(id) {
   try {
     const response = await fetch(`${api}/auth/${id}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?._id) {
@@ -307,7 +307,7 @@ export async function updateUser(id, payload) {
   //✅
   try {
     const response = await fetch(`${api}/auth/${id}`, {
-      ...options,
+      ...utils.options,
       method: "PUT",
       body: JSON.stringify({
         ...payload,
@@ -357,9 +357,9 @@ export async function updateProfile(id, payload) {
 
 export async function changePassword(payload) {
   try {
-    const { api, options } = utils;
+    const { api } = utils;
     const response = await fetch(`${api}/auth/change-password`, {
-      ...options,
+      ...utils.options,
       method: "PATCH",
       body: JSON.stringify(payload),
     });
@@ -377,9 +377,9 @@ export async function changePassword(payload) {
 
 export async function forgotPassword(payload) {
   try {
-    const { api, options } = utils;
+    const { api } = utils;
     const response = await fetch(`${api}/auth/forgot-password`, {
-      ...options,
+      ...utils.options,
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -402,9 +402,9 @@ export async function forgotPassword(payload) {
 
 export async function resetPassword(payload) {
   try {
-    const { api, options } = utils;
+    const { api } = utils;
     const response = await fetch(`${api}/auth/reset-password`, {
-      ...options,
+      ...utils.options,
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -428,12 +428,12 @@ export async function resetPassword(payload) {
 // P2-ARCH-008 — Renouvelle le token d'accès via le refresh token (30j)
 export async function refreshTokenApi() {
   try {
-    const { api, options } = utils;
+    const { api } = utils;
     const storedRefreshToken = localStorage.getItem("refreshToken");
     if (!storedRefreshToken) return { error: "Refresh token absent." };
 
     const response = await fetch(`${api}/auth/refresh-token`, {
-      ...options,
+      ...utils.options,
       method: "POST",
       body: JSON.stringify({ refreshToken: storedRefreshToken }),
     });
@@ -447,4 +447,16 @@ export async function refreshTokenApi() {
   } catch (error) {
     return { error: error.message };
   }
+}
+
+export async function logoutUser() {
+  try {
+    await fetch(`${utils.api}/auth/logout`, {
+      ...utils.options,
+      method: "POST",
+    });
+  } catch (_) { /* ignore — déconnexion locale même si le serveur est injoignable */ }
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("likedArtworks");
 }

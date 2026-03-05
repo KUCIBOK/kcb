@@ -145,29 +145,41 @@ export default function DashboardSidebar({
 
               {(searchQuery || expandedMenu === menu.category) && (
                 <div className="mt-1 ml-4 space-y-1">
-                  {menu.items.map((item, itemIndex) => (
-                    <button
-                      key={itemIndex}
-                      onClick={() => {
-                        setTab(item.index);
-                        setToggle(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition ${
-                        tab === item.index
-                          ? "bg-indigo-600 text-white"
-                          : "text-gray-400 hover:bg-gray-800 hover:text-white"
-                      }`}
-                    >
-                      <span
-                        className={
-                          tab === item.index ? "text-white" : "text-gray-500"
-                        }
+                  {menu.items.map((item, itemIndex) =>
+                    item.to ? (
+                      <Link
+                        key={itemIndex}
+                        to={item.to}
+                        onClick={() => setToggle(false)}
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition text-gray-400 hover:bg-gray-800 hover:text-white"
                       >
-                        {item.icon}
-                      </span>
-                      <span className="text-sm">{item.name}</span>
-                    </button>
-                  ))}
+                        <span className="text-gray-500">{item.icon}</span>
+                        <span className="text-sm">{item.name}</span>
+                      </Link>
+                    ) : (
+                      <button
+                        key={itemIndex}
+                        onClick={() => {
+                          setTab(item.index);
+                          setToggle(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                          tab === item.index
+                            ? "bg-indigo-600 text-white"
+                            : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                        }`}
+                      >
+                        <span
+                          className={
+                            tab === item.index ? "text-white" : "text-gray-500"
+                          }
+                        >
+                          {item.icon}
+                        </span>
+                        <span className="text-sm">{item.name}</span>
+                      </button>
+                    )
+                  )}
                 </div>
               )}
             </div>

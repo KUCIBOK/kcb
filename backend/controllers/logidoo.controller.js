@@ -1,4 +1,5 @@
 const logidooService = require('../services/logidoo.service');
+const logger = require('../utils/logger');
 const Delivery = require('../models/DeliveryRequest');
 const { createError } = require("../middleware/errorHandler");
 const { logidooAuth } = require("../middleware/logidooAuth");
@@ -76,7 +77,7 @@ exports.syncWithLogidoo = async (req, res, next) => {
         });
 
       } catch (error) {
-        console.error(`Error syncing delivery ${delivery._id}:`, error.message);
+        logger.error(`Error syncing delivery ${delivery._id}:`, error.message);
         // Continue with other deliveries
       }
     }

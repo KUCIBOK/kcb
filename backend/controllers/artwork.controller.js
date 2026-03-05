@@ -1,6 +1,7 @@
 const Artwork = require("../models/Artwork");
 const Artist = require("../models/Artist");
 const User = require("../models/User");
+const logger = require("../utils/logger");
 const artworksData = require("../data/artworks");
 const Transaction = require("../models/Transaction");
 const {
@@ -11,6 +12,7 @@ const {
   sendArtworkPurchaseEmailToAdmin,
 } = require("../services/mailer.service");
 const {createError} = require("../middleware/errorHandler");
+const { invalidateCache } = require("../middleware/cache");
 
 exports.createArtwork = async (req, res, next) => {
   try {
@@ -22,9 +24,7 @@ exports.createArtwork = async (req, res, next) => {
     }
     const artwork = new Artwork({
       ...req.body,
-      image: `${req.protocol}://${req.get("host")}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${
-        req.file.filename
-      }`,
+      image: req.file.cloudinaryUrl,
       status: "pending",
       tags: req.body.tags.split(","),
       createdAt: new Date(),
@@ -33,12 +33,13 @@ exports.createArtwork = async (req, res, next) => {
     try {
       await sendArtworkSubmissionAlertToAdmin(artwork);
     } catch (error) {
-      console.error(
+      logger.error(
         "Erreur lors de l'envoi de l'email de soumission d'œuvre:",
         error
       );
     }
     await artwork.save();
+    await invalidateCache('artworks');
     return res.status(201).json(artwork);
   } catch (error) {
     next(error);
@@ -214,7 +215,7 @@ exports.updateArtworkStatus = async (req, res, next) => {
       try {
         await sendArtworkValidationEmail(user?.email, artwork);
       } catch (error) {
-        console.error(
+        logger.error(
           "Erreur lors de l'envoi de l'email de validation d'œuvre:",
           error
         );
@@ -229,7 +230,7 @@ exports.updateArtworkStatus = async (req, res, next) => {
           "Votre œuvre a été rejetée."
         );
       } catch (error) {
-        console.error(
+        logger.error(
           "Erreur lors de l'envoi de l'email de rejet d'œuvre:",
           error
         );
@@ -260,18 +261,14 @@ exports.updateArtwork = async (req, res, next) => {
     if (req.body.width) artwork.width = req.body.width;
     if (req.body.weight) artwork.weight = req.body.weight;
     if (req.body.price) artwork.price = req.body.price;
-    if (req.file)
-      artwork.image = `${req.protocol}://${req.get(
-        "host"
-      )}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${
-        req.file.filename
-      }`;
+    if (req.file) artwork.image = req.file.cloudinaryUrl;
     if (req.body.forSale) artwork.forSale = req.body.forSale;
     if (req.body.category) artwork.category = req.body.category;
     if (req.body.categoryId) artwork.categoryId = req.body.categoryId;
     if (req.body.artist) artwork.artist = req.body.artist;
 
     await artwork.save();
+    await invalidateCache('artworks');
     return res.status(200).json(artwork);
   } catch (error) {
     next(error);
@@ -316,6 +313,7 @@ exports.deleteArtwork = async (req, res, next) => {
         artist.artworkCount = artist.artworkCount - 1;
         await artist.save();
       }
+      await invalidateCache('artworks');
       return res.status(200).json({
         message: "Oeuvre supprimée avec succès",
       });
@@ -365,7 +363,7 @@ exports.purchaseArtwork = async function (req, res, next) {
       );
       await sendArtworkPurchaseEmailToAdmin(artwork, transaction, user);
     } catch (error) {
-      console.error(
+      logger.error(
         "Erreur lors de l'envoi de l'email d'achat d'œuvre:",
         error
       );
@@ -500,5 +498,96 @@ exports.getRandomArtworksByCategory = async (req, res, next) => {
     next(createError.notFound("Aucune oeuvre trouvée"));
   } catch (error) {
     next(error);
+  }
+};
+
+/**
+ * GET /api/artworks/verify/:kuciobkId
+ * Endpoint public (sans authentification) — vérification du Standard Kucibok.
+ * Scannable via QR code sur le certificat physique ou PDF.
+ */
+exports.verifyArtwork = async (req, res, next) => {
+  try {
+    const { kuciobkId } = req.params;
+    const artwork = await Artwork.findOne({ kuciobkId })
+      .select("kuciobkId title artist category medium height width description status certificatePath created")
+      .lean();
+
+    if (!artwork) return next(createError.notFound("Œuvre introuvable ou identifiant invalide."));
+    if (artwork.status !== "approved") {
+      return res.status(200).json({
+        verified: false,
+        kuciobkId,
+        message: "Cette œuvre n'est pas encore certifiée par Kucibok.",
+      });
+    }
+
+    return res.status(200).json({
+      verified: true,
+      kuciobkId: artwork.kuciobkId,
+      title: artwork.title,
+      artist: artwork.artist,
+      category: artwork.category,
+      medium: artwork.medium || null,
+      dimensions: artwork.height && artwork.width ? `${artwork.height} × ${artwork.width} cm` : null,
+      certifiedAt: artwork.created,
+      certificateUrl: artwork.certificatePath || null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * GET /api/artworks/catalogue — Catalogue certifié (professionnel + admin)
+ * Retourne les œuvres approuvées avec filtres et pagination.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+exports.getCataloguePro = async (req, res, next) => {
+  try {
+    const {
+      page = 1,
+      limit = 20,
+      category,
+      availabilityStatus,
+      priceMin,
+      priceMax,
+      search,
+    } = req.query;
+
+    const filter = { status: 'approved' };
+
+    if (category) filter.category = category;
+    if (availabilityStatus) filter.availabilityStatus = availabilityStatus;
+    if (priceMin || priceMax) {
+      filter.price = {};
+      if (priceMin) filter.price.$gte = Number(priceMin);
+      if (priceMax) filter.price.$lte = Number(priceMax);
+    }
+    if (search) {
+      filter.$text = { $search: search };
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const total = await Artwork.countDocuments(filter);
+    const artworks = await Artwork.find(filter)
+      .select('kuciobkId title artist image category medium condition provenance price currency availabilityStatus certificatePath height width weight created')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit))
+      .lean();
+
+    return res.status(200).json({
+      data: artworks,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / Number(limit)),
+    });
+  } catch (error) {
+    next(createError.internal(error.message));
   }
 };

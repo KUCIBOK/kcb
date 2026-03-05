@@ -1,5 +1,6 @@
 const resend = require('../config/resendConfig');
 const {config} = require('../config/environnement');
+const logger = require('../utils/logger');
 
 const FROM_EMAIL = 'onboarding@resend.dev';
 
@@ -14,7 +15,7 @@ const transporter = {
         html: mailOptions.html
       });
     } catch (error) {
-      console.error('Erreur Resend:', error);
+      logger.error('Erreur Resend', { error });
       throw error;
     }
   }
@@ -48,8 +49,8 @@ const mailOptions = {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Campaign email sent successfully");
+    logger.info("Campaign email sent successfully");
   } catch (error) {
-    console.error("Error sending campaign email:", error);
+    logger.error("Error sending campaign email", { error });
   }
 };

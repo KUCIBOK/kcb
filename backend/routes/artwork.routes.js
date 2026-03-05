@@ -1,16 +1,15 @@
 const express = require("express");
 const artworkController = require("../controllers/artwork.controller");
 const router = express.Router();
-const { admin } = require("../middleware/auth");
-const { artist } = require("../middleware/auth");
-const { auth } = require("../middleware/auth");
+const { admin, auth, artist, requireRole } = require("../middleware/auth");
 const multer = require("../middleware/multer");
+const { cache } = require("../middleware/cache");
 
 //récupérer toutes les oeuvres ✅
-router.get("/", artworkController.getAllArtworks);
+router.get("/", cache(300, 'artworks'), artworkController.getAllArtworks);
 
 //Oeuvres en vente ✅
-router.get("/forsale", artworkController.getForSaleArtworks);
+router.get("/forsale", cache(300, 'artworks'), artworkController.getForSaleArtworks);
 
 router.get("/managed", auth, artworkController.getManagedArtworks);
 
@@ -31,10 +30,11 @@ router.get("/rejected", admin, artworkController.getRejectedArtworks);
 
 router.post("/", auth, multer, artworkController.createArtwork); //✅
 
-router.get("/artist/:id", artworkController.getArtworksByArtistId); //✅
+router.get("/artist/:id", cache(300, 'artworks'), artworkController.getArtworksByArtistId); //✅
 
 router.get(
   "/forsale/artist/:id",
+  cache(300, 'artworks'),
   artworkController.getArtworksForSaleByArtistId
 ); //✅
 
@@ -46,7 +46,7 @@ router.put("/status/:id", artworkController.updateArtworkStatus); //✅
 
 router.put("/etherscan/:id", admin, artworkController.updateEtherscan);
 
-router.get("/random", artworkController.getRandomArtworks);
+router.get("/random", cache(120, 'artworks'), artworkController.getRandomArtworks);
 
 router.get("/random/:category", artworkController.getRandomArtworksByCategory);
 
@@ -60,6 +60,12 @@ router.put("/update/:id", multer, artworkController.updateArtwork); //✅
 router.get("/liked", auth, artworkController.getLikedArtworks);
 router.post("/like/:id", auth, artworkController.likeArtwork);
 router.delete("/dislike/:id", auth, artworkController.dislikeArtwork);
+
+// Standard Kucibok — vérification publique (sans auth, scannable via QR)
+router.get("/verify/:kuciobkId", artworkController.verifyArtwork);
+
+// F3 — Catalogue certifié (professionnel + admin uniquement)
+router.get("/catalogue", requireRole('professional', 'admin'), artworkController.getCataloguePro);
 
 router.delete("/:id", auth, artworkController.deleteArtwork);
 

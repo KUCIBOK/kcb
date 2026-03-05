@@ -20,7 +20,6 @@ export const Header = memo(() => {
 
   const exploreLinks = [
     { name: "Oeuvres", path: "/explore" },
-    { name: "Enchères", path: "/auction" },
     { name: "Comment ça marche", path: "/how-it-works" },
   ];
 
@@ -41,7 +40,7 @@ export const Header = memo(() => {
       <div className="relative group">
         <button
           className={`font-medium transition-colors flex items-center gap-1 ${
-            isActive("/explore") || isActive("/auction")
+            isActive("/explore")
               ? "text-gradient"
               : "text-gray-300"
           } hover:text-indigo-kcb`}

@@ -14,6 +14,7 @@ import {
   Palette,
   Plus,
   Shield,
+  ShieldCheck,
   TrendingUp,
   Truck,
   Users,
@@ -63,7 +64,8 @@ export default function Professional() {
       items: [
         { name: "Nos œuvres", icon: <Image className="w-4 h-4" />, index: 1 },
         { name: "Nos artistes", icon: <Palette className="w-4 h-4" />, index: 2 },
-        { name: "Nos enchères", icon: <Gavel className="w-4 h-4" />, index: 3 }
+        { name: "Nos enchères", icon: <Gavel className="w-4 h-4" />, index: 3 },
+        { name: "Catalogue B2B", icon: <ShieldCheck className="w-4 h-4" />, to: "/catalogue" }
       ]
     },
     {

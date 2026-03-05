@@ -2,8 +2,9 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import {
   Menu, X, ArrowRight, Globe, ShieldCheck, TrendingUp, Wallet,
-  Award, Users, Upload, ShoppingCart, Check, Gavel, BookOpen
+  Award, Users, Upload, ShoppingCart, Check, Gavel, BookOpen, Loader2
 } from "lucide-react"
+import { getApprovedArtworks } from "../api/useArtworks"
 
 // ─── Global Header ────────────────────────────────────────────────
 function GlobalHeader() {
@@ -181,6 +182,110 @@ const stats = [
   { value: "€2M+", label: "Transactions réalisées" },
 ]
 
+// ─── Catalogue Live ──────────────────────────────────────────────
+function CatalogueSection() {
+  const [artworks, setArtworks] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [activeCategory, setActiveCategory] = useState("Tous")
+
+  useEffect(() => {
+    getApprovedArtworks().then((data) => {
+      if (Array.isArray(data)) setArtworks(data)
+      setLoading(false)
+    })
+  }, [])
+
+  const categories = ["Tous", ...new Set(artworks.map(a => a.category).filter(Boolean))]
+  const filtered = activeCategory === "Tous"
+    ? artworks.slice(0, 12)
+    : artworks.filter(a => a.category === activeCategory).slice(0, 12)
+
+  if (loading) return (
+    <div className="flex justify-center py-16">
+      <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+    </div>
+  )
+
+  if (!artworks.length) return null
+
+  return (
+    <div className="mt-12">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-white font-semibold text-lg font-playfair">
+          Œuvres certifiées{" "}
+          <span className="text-indigo-400 text-sm font-sans font-normal ml-1">({artworks.length})</span>
+        </h3>
+        <Link to="/explore" className="text-indigo-400 hover:text-indigo-300 text-xs font-medium transition flex items-center gap-1">
+          Toutes <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+
+      {categories.length > 1 && (
+        <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto pb-1">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all whitespace-nowrap ${
+                activeCategory === cat
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {filtered.map(artwork => (
+          <Link
+            key={artwork._id}
+            to={`/artwork/${artwork._id}`}
+            className="group bg-card border border-gray-800 hover:border-indigo-700/40 rounded-xl overflow-hidden transition-all hover:-translate-y-0.5"
+          >
+            <div className="relative aspect-square bg-gray-800 overflow-hidden">
+              {artwork.image ? (
+                <img
+                  src={artwork.image}
+                  alt={artwork.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-3xl">🖼️</span>
+                </div>
+              )}
+              {artwork.kuciobkId && (
+                <div className="absolute top-2 right-2 bg-green-500/90 backdrop-blur-sm rounded-full p-1" title="Standard Kucibok certifié">
+                  <ShieldCheck className="w-3 h-3 text-white" />
+                </div>
+              )}
+              {artwork.auctionStatus === "auction_ongoing" && (
+                <div className="absolute top-2 left-2 bg-purple-600/90 backdrop-blur-sm rounded-full px-2 py-0.5 text-[10px] text-white font-semibold">
+                  Enchère
+                </div>
+              )}
+            </div>
+            <div className="p-3">
+              <p className="text-white text-sm font-semibold truncate">{artwork.title}</p>
+              <p className="text-gray-400 text-xs mt-0.5 truncate">{artwork.artist}</p>
+              {artwork.forSale && artwork.price ? (
+                <p className="text-indigo-400 text-xs font-medium mt-1.5">
+                  {Number(artwork.price).toLocaleString("fr-FR")} {artwork.currency || "XOF"}
+                </p>
+              ) : (
+                <p className="text-gray-600 text-xs mt-1.5">Non disponible</p>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Page ────────────────────────────────────────────────────
 export default function GlobalPage() {
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -254,7 +359,7 @@ export default function GlobalPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
           {artCategories.map((cat, idx) => (
             <Link
               key={idx}
@@ -271,7 +376,9 @@ export default function GlobalPage() {
           ))}
         </div>
 
-        <div className="text-center">
+        <CatalogueSection />
+
+        <div className="text-center mt-10">
           <Link
             to="/auction"
             className="inline-flex items-center gap-2 px-6 py-2.5 border border-indigo-700/50 rounded-md text-indigo-300 text-sm font-medium hover:bg-indigo-900/20 transition"

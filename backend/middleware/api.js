@@ -1,18 +1,25 @@
-require('dotenv').config()
+const { config } = require('../config/environnement');
 
+/**
+ * Middleware de protection par clé API.
+ * Toutes les requêtes /api/ doivent inclure le header : kcb-api-key: <API_KEY>
+ * La clé est lue depuis config.apiKey (variable d'env API_KEY).
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {void}
+ */
 const protect = (req, res, next) => {
-    let key;
-    if (req.headers['kcb-api-key']) {
-        key = req.headers['kcb-api-key'];
-    }
+  const key = req.headers['kcb-api-key'];
 
-    if (key == process.env.API_KEY) {
-        next()
-        return
-    }
-    return res.status(401).json({
-        error: 'Not authorized, no API key',
-    })
-}
+  if (key && key === config.apiKey) {
+    return next();
+  }
 
-module.exports = protect
+  return res.status(401).json({
+    error: 'Not authorized, no API key',
+  });
+};
+
+module.exports = protect;

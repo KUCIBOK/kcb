@@ -1,11 +1,29 @@
 import { utils } from "./useAPI";
-const { api, options } = utils;
+const { api } = utils;
+
+// Vérification publique Standard Kucibok — aucune auth requise
+export async function verifyArtwork(kuciobkId) {
+  try {
+    const response = await fetch(`${api}/artworks/verify/${kuciobkId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "kcb-api-key": import.meta.env.VITE_API_KEY,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) return { error: data?.message || data?.error || "Erreur serveur" };
+    return data;
+  } catch (error) {
+    return { error: error.message };
+  }
+}
 
 //Récupérer les oeuvres d'art en vente par un artiste ✅
 export async function getArtistForSaleArtworks(id) {
   try {
     const response = await fetch(`${api}/artworks/forsale/artist/${id}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -25,7 +43,7 @@ export async function getArtworkById(id) {
   //✅
   try {
     const response = await fetch(`${api}/artworks/one/${id}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.id) {
@@ -72,7 +90,7 @@ export async function submitArtwork(data) {
 export async function getOwnerForSaleArtworks(id) {
   try {
     const response = await fetch(`${api}/artworks/sale/${id}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -92,7 +110,7 @@ export async function getOwnerForSaleArtworks(id) {
 export async function getForSaleArtworks() {
   try {
     const response = await fetch(`${api}/artworks/forsale`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -110,7 +128,7 @@ export async function getForSaleArtworks() {
 
 export async function getAllArtworks() {
   try {
-    const response = await fetch(`${api}/artworks`, { ...options });
+    const response = await fetch(`${api}/artworks`, { ...utils.options });
     const artworks = await response.json();
     if (artworks?.length > 0) {
       return artworks;
@@ -129,7 +147,7 @@ export async function getAllArtworks() {
 export async function getMyArtworks(id) {
   try {
     const response = await fetch(`${api}/artworks/artist/${id}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -149,7 +167,7 @@ export async function getMyArtworks(id) {
 export async function getOwnerArtworks(id) {
   try {
     const response = await fetch(`${api}/artworks/owner/${id}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -169,7 +187,7 @@ export async function getOwnerArtworks(id) {
 export async function getPendingArtworks() {
   try {
     const response = await fetch(`${api}/artworks/pending`, {
-      ...options,
+      ...utils.options,
     });
     // const response = await fetch('/data/data.json')
     const data = await response.json();
@@ -190,7 +208,7 @@ export async function getPendingArtworks() {
 export async function getApprovedArtworks() {
   try {
     const response = await fetch(`${api}/artworks/approved`, {
-      ...options,
+      ...utils.options,
     });
     // const response = await fetch('/data/data.json')
     const data = await response.json();
@@ -211,7 +229,7 @@ export async function getApprovedArtworks() {
 export async function getRejectedArtworks() {
   try {
     const response = await fetch(`${api}/artworks/rejected`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -231,7 +249,7 @@ export async function getRejectedArtworks() {
 export async function setArtworkStatus(id, status) {
   try {
     const response = await fetch(`${api}/artworks/status/${id}`, {
-      ...options,
+      ...utils.options,
       method: "PUT",
       body: JSON.stringify({
         status: status,
@@ -255,7 +273,7 @@ export async function setArtworkStatus(id, status) {
 export async function purchaseArtwork(transactionId) {
   try {
     const response = await fetch(`${api}/artworks/purchase/${transactionId}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.artwork && data?.transaction) {
@@ -274,7 +292,7 @@ export async function purchaseArtwork(transactionId) {
 export async function getRandomArtworks() {
   try {
     const response = await fetch(`${api}/artworks/random`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -293,7 +311,7 @@ export async function getRandomArtworks() {
 export async function getRandomArtworksByCategories(category) {
   try {
     const response = await fetch(`${api}/artworks/random/${category}`, {
-      ...options,
+      ...utils.options,
     });
     const data = await response.json();
     if (data?.length >= 1) {
@@ -312,7 +330,7 @@ export async function getRandomArtworksByCategories(category) {
 export async function updateEtherscan(id, etherscan) {
   try {
     const response = await fetch(`${api}/artworks/etherscan/${id}`, {
-      ...options,
+      ...utils.options,
       method: "PUT",
       body: JSON.stringify({
         etherscan: etherscan,
@@ -360,7 +378,7 @@ export async function updateArtwork(id, payload) {
 
 export async function getManagedArtworks() {
   try {
-    const response = await fetch(`${api}/artworks/managed`, { ...options });
+    const response = await fetch(`${api}/artworks/managed`, { ...utils.options });
     const artworks = await response.json();
     if (artworks?.length > 0) {
       return artworks;
@@ -378,7 +396,7 @@ export async function getManagedArtworks() {
 // 🔹 Récupérer les œuvres likées par l’utilisateur
 export async function getLikedArtworks() {
   try {
-    const response = await fetch(`${api}/artworks/liked`, { ...options });
+    const response = await fetch(`${api}/artworks/liked`, { ...utils.options });
     const data = await response.json();
 
     if (Array.isArray(data) && data.length > 0) {
@@ -395,7 +413,7 @@ export async function getLikedArtworks() {
 export async function likeArtwork(id) {
   try {
     const response = await fetch(`${api}/artworks/like/${id}`, {
-      ...options,
+      ...utils.options,
       method: "POST",
     });
     const data = await response.json();
@@ -416,7 +434,7 @@ export async function likeArtwork(id) {
 export async function dislikeArtwork(id) {
   try {
     const response = await fetch(`${api}/artworks/dislike/${id}`, {
-      ...options,
+      ...utils.options,
       method: "DELETE",
     });
     const data = await response.json();

@@ -1,10 +1,10 @@
 import { utils } from "./useAPI";
-const { api, options } = utils;
+const { api } = utils;
 
 export async function getAllGalleries() {
   try {
     const response = await fetch(`${api}/galleries`, {
-      ...options,
+      ...utils.options,
       method: "GET",
     });
     const data = await response.json();

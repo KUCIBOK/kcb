@@ -1,11 +1,11 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 
 
 export async function createCollection(payload){
     try {
         const response = await fetch(`${api}/collection`, {
-            ...options,
+            ...utils.options,
             method : "POST",
             body : JSON.stringify(payload)
         })
@@ -25,7 +25,7 @@ export async function createCollection(payload){
 
 export async function getCollections(){
     try {
-        const response = await fetch(`${api}/collection`, {...options})
+        const response = await fetch(`${api}/collection`, {...utils.options})
         const collections = await response.json()
         if(collections?.length > 0){
             return collections

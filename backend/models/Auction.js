@@ -53,4 +53,8 @@ const auctionSchema = new mongoose.Schema({
   },
 });
 
+// P3-PERF-002 — Indexes pour le cron job (updateMany filtre sur status + startTime/endTime)
+auctionSchema.index({ status: 1, startTime: 1 });
+auctionSchema.index({ status: 1, endTime: 1 });
+
 module.exports = mongoose.model("Auction", auctionSchema);

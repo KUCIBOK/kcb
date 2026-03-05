@@ -1,10 +1,10 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 
 export async function createSubscription(payload){
     try {
         const response = await fetch(`${api}/subscription`, {
-            ...options, 
+            ...utils.options, 
             method : "POST",
             body : JSON.stringify(payload)
         })
@@ -24,7 +24,7 @@ export async function createSubscription(payload){
 
 export async function failSubscription(subId){
     try {
-        const response = await fetch(`${api}/subscription/fail/${subId}`, {...options})
+        const response = await fetch(`${api}/subscription/fail/${subId}`, {...utils.options})
         const {sub, plan, error, message} = await response.json()
         if(sub?._id && plan?._id){
             return {sub, plan}
@@ -41,7 +41,7 @@ export async function failSubscription(subId){
 
 export async function activateSubscription(subId){
     try {
-        const response = await fetch(`${api}/subscription/activate/${subId}`, {...options})
+        const response = await fetch(`${api}/subscription/activate/${subId}`, {...utils.options})
         const {sub, plan, error, message} = await response.json()
         if(sub?._id && plan?._id){
             return {sub, plan}
@@ -58,7 +58,7 @@ export async function activateSubscription(subId){
 
 export async function getSubById(id){
     try {
-        const response = await fetch(`${api}/subscription/${id}`, {...options})
+        const response = await fetch(`${api}/subscription/${id}`, {...utils.options})
         const sub = await response.json()
         if(sub?._id){
             return sub
@@ -79,7 +79,7 @@ export const getSubscriptionById = getSubById;
 
 export async function getAllSubscriptions(){
     try {
-        const response = await fetch(`${api}/subscription`, {...options})
+        const response = await fetch(`${api}/subscription`, {...utils.options})
         const subscriptions = await response.json()
         if(subscriptions?.length > 0){
             return subscriptions

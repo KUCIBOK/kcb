@@ -1,18 +1,19 @@
 const BlogPost = require('../models/BlogPost');
 const {createError} = require("../middleware/errorHandler");
+const logger = require('../utils/logger');
 
 // Créer un nouvel article
 exports.createPost = async (req, res, next) => {
   try {
     const post = new BlogPost({
       ...req.body,
-      image :`${req.protocol}://${req.get('host')}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${req.file.filename}`,
+      image: req.file.cloudinaryUrl,
       tags : req.body.tags.split(',')
     });
     await post.save();
     return res.status(201).json(post);
   } catch (err) {
-    console.log(err.message)
+    logger.error(err.message)
     return next(createError.badRequest(err.message));
   }
 };
@@ -119,7 +120,7 @@ exports.publishPost = async (req, res, next) => {
     await post.save()
     return res.status(203).json(post)
   } catch (error) {
-    console.log(error.message)
+    logger.error(error.message)
     return next(createError.badRequest(error.message));
   }
 }
@@ -133,7 +134,7 @@ exports.getAllPosts = async (req, res, next) => {
     }
     return next(createError.notFound("Aucun article trouvé."));
   } catch (err) {
-    console.log(err.message)
+    logger.error(err.message)
     next(createError.internal(err.message));
   }
 };
@@ -159,7 +160,7 @@ exports.updatePost = async (req, res, next) => {
     if(req.body.title) post.title = req.body.title
     if(req.body.excerpt) post.excerpt = req.body.excerpt
     if(req.body.content) post.content = req.body.content
-    if(req.body.file) post.image = `${req.protocol}://${req.get('host')}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${req.file.filename}`
+    if (req.file) post.image = req.file.cloudinaryUrl;
     await post.save()
     return res.status(200).json(post);
   } catch (err) {

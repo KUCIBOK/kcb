@@ -1,10 +1,14 @@
 # Design System — Kucibok
 
+> **STATUT : Design system actif et validé — Mars 2026**
+> Ce document est la référence de design en production. Les tokens, composants et règles ci-dessous s'appliquent à toute l'interface.
+> `docs/DESIGN.md` décrit une évolution institutionnelle future (Phase 3+) — pas encore adoptée.
+
 Référence centralisée des tokens, composants et règles de style de la plateforme.
 
 ---
 
-## 1. Tokens de couleur (définis dans `frontend/src/index.css` @theme)
+## 1. Tokens de couleur (définis dans `kucibok/src/index.css` @theme)
 
 ### Palette de marque
 
@@ -75,7 +79,7 @@ Très serré             : gap-1
 
 ## 4. Composants UI disponibles
 
-Tous dans `frontend/src/components/ui/` — importables via `from '../../components/ui'`.
+Tous dans `kucibok/src/components/ui/` — importables via `from '../../components/ui'`.
 
 | Composant        | Import                              | Description                           |
 |------------------|-------------------------------------|---------------------------------------|
@@ -127,7 +131,7 @@ Tous dans `frontend/src/components/ui/` — importables via `from '../../compone
 
 ## 7. Constantes métier
 
-Extraire dans un fichier `frontend/src/constants/business.js` (à créer si besoin) :
+Extraire dans un fichier `kucibok/src/constants/business.js` (à créer si besoin) :
 
 ```js
 export const TVA_RATE = 0.20;           // Taux TVA France — sync backend

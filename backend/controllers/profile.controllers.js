@@ -2,6 +2,7 @@ const Artist = require('../models/Artist');
 const Profile = require('../models/Profile');
 const User = require('../models/User');
 const { createError } = require("../middleware/errorHandler");
+const logger = require('../utils/logger');
 
 
 exports.createProfile = async (req, res, next) => {
@@ -58,7 +59,7 @@ exports.updateProfile = async (req, res, next) => {
       { userId : userId },
       {
         ...req.body,
-        image: req?.file ? `${req.protocol}://${req.get('host')}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${req.file?.filename}` : req.body.image,
+        image: req.file?.cloudinaryUrl || req.body.image,
         updatedAt: new Date()
       },
       { new: true, runValidators: true }
@@ -67,7 +68,7 @@ exports.updateProfile = async (req, res, next) => {
     res.status(200).json(updatedProfile);
   }
   catch (error) {
-    console.log(error.message)
+    logger.error(error.message)
     next(createError.internal("Erreur lors de la mise à jour du profil"));
   }
 }

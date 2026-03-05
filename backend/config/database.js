@@ -1,5 +1,6 @@
-require('dotenv').config()
 const mongoose = require('mongoose')
+const logger = require('../utils/logger')
+const { config } = require('./environnement')
 
 const connectDatabase = async () => {
     try {
@@ -8,26 +9,26 @@ const connectDatabase = async () => {
             serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
             socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
         };
-        await mongoose.connect(process.env.MONGODB_URI, options)
+        await mongoose.connect(config.database.uri, options)
         mongoose.connection.on('error', (error) => {
-            console.error('❌ Database connection error:', error);
+            logger.error('Database connection error', { error });
         });
 
         mongoose.connection.on('disconnected', () => {
-            console.warn('⚠️ Database disconnected');
+            logger.warn('Database disconnected');
         });
 
         mongoose.connection.on('reconnected', () => {
-            console.info('🔄 Database reconnected');
+            logger.info('Database reconnected');
         });
 
         // Graceful shutdown
         process.on('SIGINT', async () => {
             await mongoose.connection.close();
-            console.info('💾 Database connection closed through app termination');
+            logger.info('Database connection closed through app termination');
         });
     } catch (error) {
-        console.error('❌ Database connection failed:', error);
+        logger.error('Database connection failed:', { error: error.message });
         process.exit(1);
     }
 }

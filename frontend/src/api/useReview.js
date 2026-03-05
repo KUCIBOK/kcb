@@ -1,9 +1,9 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
 export async function createReview(payload) {
     try {
         const response = await fetch(`${api}/review`, {
-            ...options,
+            ...utils.options,
             method: "POST",
             body: JSON.stringify({
                 ...payload,
@@ -26,7 +26,7 @@ export async function createReview(payload) {
 export async function getReviewsByArtworkId(id) {
     try {
         const response = await fetch(`${api}/review/artwork/${id}`, {
-            ...options,
+            ...utils.options,
         });
         const reviews = await response.json();
         if (reviews?.length >= 1) {

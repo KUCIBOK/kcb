@@ -1,15 +1,12 @@
 import axios from "axios";
+import { utils } from "./useAPI";
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-const ENTITY_API = `${API_URL}/api/entities`;
+const ENTITY_API = `${utils.api}/entities`;
 
-// ✅ Create entity
 export const createEntity = async (entityData) => {
   try {
     const response = await axios.post(ENTITY_API, entityData, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -17,13 +14,10 @@ export const createEntity = async (entityData) => {
   }
 };
 
-// ✅ Get all entities
 export const getEntities = async () => {
   try {
     const response = await axios.get(ENTITY_API, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -31,13 +25,10 @@ export const getEntities = async () => {
   }
 };
 
-// ✅ Get entity by ID
 export const getEntityById = async (id) => {
   try {
     const response = await axios.get(`${ENTITY_API}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -45,13 +36,10 @@ export const getEntityById = async (id) => {
   }
 };
 
-// ✅ Update entity
 export const updateEntity = async (id, updates) => {
   try {
     const response = await axios.put(`${ENTITY_API}/${id}`, updates, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -59,13 +47,10 @@ export const updateEntity = async (id, updates) => {
   }
 };
 
-// ✅ Delete entity
 export const deleteEntity = async (id) => {
   try {
     const response = await axios.delete(`${ENTITY_API}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -73,13 +58,10 @@ export const deleteEntity = async (id) => {
   }
 };
 
-// ✅ Switch to entity
 export const switchEntity = async (id) => {
   try {
     const response = await axios.post(`${ENTITY_API}/${id}/switch`, {}, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -87,17 +69,12 @@ export const switchEntity = async (id) => {
   }
 };
 
-// ✅ Add member
 export const addMember = async (entityId, userId, role = "artist") => {
   try {
     const response = await axios.post(
       `${ENTITY_API}/${entityId}/members`,
       { userId, role },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
+      { headers: utils.options.headers }
     );
     return response.data;
   } catch (error) {
@@ -105,17 +82,12 @@ export const addMember = async (entityId, userId, role = "artist") => {
   }
 };
 
-// ✅ Update member role
 export const updateMemberRole = async (entityId, memberId, role) => {
   try {
     const response = await axios.put(
       `${ENTITY_API}/${entityId}/members/${memberId}`,
       { role },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
+      { headers: utils.options.headers }
     );
     return response.data;
   } catch (error) {
@@ -123,16 +95,11 @@ export const updateMemberRole = async (entityId, memberId, role) => {
   }
 };
 
-// ✅ Remove member
 export const removeMember = async (entityId, memberId) => {
   try {
     const response = await axios.delete(
       `${ENTITY_API}/${entityId}/members/${memberId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
+      { headers: utils.options.headers }
     );
     return response.data;
   } catch (error) {

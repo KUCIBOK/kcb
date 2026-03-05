@@ -1,14 +1,17 @@
 const htmlPdf = require('html-pdf-node') //Do not remove this
+const QRCode = require('qrcode');
 const Document = require('../models/Document');
 const fs = require('fs');
 const path = require('path');
+const logger = require('../utils/logger');
+const { config } = require('../config/environnement');
 
 const generatePDF = async (htmlContent, filePath) => {
     try {
-        console.log(`🚀 Génération PDF VPS Ubuntu: ${filePath}`);
+        logger.info(`Génération PDF VPS Ubuntu: ${filePath}`);
         
-        // FORCER html-pdf-node à utiliser le Chromium système
-        process.env.PUPPETEER_EXECUTABLE_PATH = process.env.CHROME_BIN || '/snap/bin/chromium';
+        // FORCER html-pdf-node à utiliser le Chromium système (config.chrome.bin → CHROME_BIN)
+        process.env.PUPPETEER_EXECUTABLE_PATH = config.chrome.bin;
         process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true';
         
         // Créer le dossier si il n'existe pas
@@ -71,9 +74,9 @@ const generatePDF = async (htmlContent, filePath) => {
             executablePath: process.env.CHROME_BIN || '/snap/bin/chromium'
         };
 
-        console.log(`⚙️ Configuration VPS Ubuntu appliquée`);
-        console.log(`📊 Timeout: ${options.timeout}ms`);
-        console.log(`🌐 Executable: ${options.executablePath}`);
+        logger.info(`Configuration VPS Ubuntu appliquée`);
+        logger.info(`Timeout: ${options.timeout}ms`);
+        logger.info(`Executable: ${options.executablePath}`);
 
         // Préparer le fichier HTML avec encoding UTF-8
         const file = { 
@@ -81,7 +84,7 @@ const generatePDF = async (htmlContent, filePath) => {
             encoding: 'utf8'
         };
 
-        console.log(`📄 Génération PDF en cours sur VPS...`);
+        logger.info(`Génération PDF en cours sur VPS...`);
         
         // Génération avec retry et gestion d'erreurs robuste
         let pdfBuffer;
@@ -90,7 +93,7 @@ const generatePDF = async (htmlContent, filePath) => {
 
         while (attempts < maxAttempts) {
             try {
-                console.log(`🔄 Tentative ${attempts + 1}/${maxAttempts}`);
+                logger.info(`Tentative ${attempts + 1}/${maxAttempts}`);
                 
                 // Nettoyage de la mémoire avant chaque tentative
                 if (global.gc) {
@@ -98,16 +101,16 @@ const generatePDF = async (htmlContent, filePath) => {
                 }
 
                 pdfBuffer = await htmlPdf.generatePdf(file, options);
-                console.log(`✅ Génération réussie à la tentative ${attempts + 1}`);
+                logger.info(`Génération réussie à la tentative ${attempts + 1}`);
                 break;
                 
             } catch (retryError) {
                 attempts++;
-                console.error(`❌ Tentative ${attempts}/${maxAttempts} échouée:`, retryError.message);
+                logger.error(`Tentative ${attempts}/${maxAttempts} échouée:`, { error: retryError.message });
                 
                 if (attempts >= maxAttempts) {
                     // Dernière tentative avec configuration minimale
-                    console.log(`🚨 Tentative finale avec configuration minimale...`);
+                    logger.warn(`Tentative finale avec configuration minimale...`);
                     const minimalOptions = {
                         format: 'A4',
                         landscape: filePath.includes('certificate'),
@@ -123,7 +126,7 @@ const generatePDF = async (htmlContent, filePath) => {
                     
                     try {
                         pdfBuffer = await htmlPdf.generatePdf(file, minimalOptions);
-                        console.log(`✅ Génération réussie avec configuration minimale`);
+                        logger.info(`Génération réussie avec configuration minimale`);
                         break;
                     } catch (finalError) {
                         throw new Error(`Toutes les tentatives ont échoué. Dernière erreur: ${finalError.message}`);
@@ -132,7 +135,7 @@ const generatePDF = async (htmlContent, filePath) => {
                 
                 // Attendre avant retry (progression: 2s, 4s, 6s, 8s)
                 const waitTime = attempts * 2000;
-                console.log(`⏳ Attente ${waitTime}ms avant nouvelle tentative...`);
+                logger.info(`Attente ${waitTime}ms avant nouvelle tentative...`);
                 await new Promise(resolve => setTimeout(resolve, waitTime));
             }
         }
@@ -151,10 +154,10 @@ const generatePDF = async (htmlContent, filePath) => {
         }
         
         const stats = fs.statSync(fullPath);
-        console.log(`✅ PDF VPS créé: ${fullPath} (${stats.size} bytes)`);
+        logger.info(`PDF VPS créé: ${fullPath} (${stats.size} bytes)`);
         
         if (stats.size < 1000) {
-            console.warn('⚠️  ATTENTION: PDF très petit, vérifiez le contenu');
+            logger.warn('ATTENTION: PDF très petit, vérifiez le contenu');
         }
 
         // Nettoyage mémoire final
@@ -163,19 +166,13 @@ const generatePDF = async (htmlContent, filePath) => {
         }
 
     } catch (error) {
-        console.error('❌ Erreur détaillée génération PDF VPS:', {
-            message: error.message,
+        logger.error('Erreur détaillée génération PDF VPS:', {
+            error: error.message,
             stack: error.stack,
             filePath,
             nodeVersion: process.version,
             platform: process.platform,
             arch: process.arch,
-            memory: process.memoryUsage(),
-            env: {
-                CHROME_BIN: process.env.CHROME_BIN,
-                DISPLAY: process.env.DISPLAY,
-                USER: process.env.USER
-            }
         });
         throw new Error(`Erreur génération PDF VPS: ${error.message}`);
     }
@@ -597,7 +594,7 @@ const createInvoiceForArtwork = async (artwork, buyer, seller) => {
         };
     } 
     catch (error) {
-        console.error('Error creating invoice:', error);
+        logger.error('Error creating invoice:', { error: error.message });
         return {
             success: false,
             message: 'Erreur lors de la création de la facture',
@@ -609,6 +606,13 @@ const createInvoiceForArtwork = async (artwork, buyer, seller) => {
 const createCertificateForArtwork = async (artwork) => {
     try {
         const filePath = `certificates/certificate-${artwork?._id}.pdf`;
+        const kuciobkId = artwork?.kuciobkId || `KCB-${String(artwork?._id).slice(-8).toUpperCase()}`;
+        const verifyUrl = `${config.cors.origin}/verify/${kuciobkId}`;
+        const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
+            width: 120,
+            margin: 1,
+            color: { dark: '#8b4513', light: '#ffffff' },
+        });
         
         // HTML redesigné - moderne, minimaliste et africain
         const htmlContent = `
@@ -955,14 +959,12 @@ const createCertificateForArtwork = async (artwork) => {
                             </div>
 
                             <div class="verification-section">
-                                <div class="verification-title">Code de vérification</div>
-                                <div class="verification-code">
-                                    KCB-${new String(artwork?._id)?.slice(-8)?.toUpperCase() || 'XXXXXXXX'}
-                                </div>
-                                
+                                <div class="verification-title">Vérifier l'authenticité</div>
+                                <img src="${qrDataUrl}" alt="QR vérification" style="width:100px;height:100px;border-radius:6px;border:1px solid rgba(205,133,63,0.3);margin-bottom:8px;" />
+                                <div class="verification-code">${kuciobkId}</div>
                                 <div class="footer-text">
-                                    Ce certificat atteste de l'authenticité<br>
-                                    de cette œuvre d'art africaine.
+                                    Scannez le QR ou visitez<br>
+                                    kucibok.com/verify
                                 </div>
                             </div>
                         </div>
@@ -973,7 +975,7 @@ const createCertificateForArtwork = async (artwork) => {
         `;
         // Générer le PDF avec html-pdf
         await generatePDF(htmlContent, filePath);
-        console.log(`Certificate generated for artwork: ${artwork?._id}`);
+        logger.info(`Certificate generated for artwork: ${artwork?._id}`);
         if (!fs.existsSync(path.join(process.cwd(), 'public', filePath))) {
             throw new Error(`Le fichier PDF n'a pas été généré correctement à l'emplacement : ${filePath}`);
         }
@@ -998,7 +1000,7 @@ const createCertificateForArtwork = async (artwork) => {
         };
     }
     catch (error) {
-        console.error('Error creating certificate:', error);
+        logger.error('Error creating certificate:', { error: error.message });
         return {
             success: false,
             message: 'Erreur lors de la création du certificat',

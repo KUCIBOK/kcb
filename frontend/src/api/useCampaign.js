@@ -1,10 +1,10 @@
 import {utils} from './useAPI'
-const {api, options} = utils
+const {api} = utils
 
 export const sendCampaign = async (payload) => {
     try {
         const response = await fetch(`${api}/campaign/dispatch`, {
-            ...options,
+            ...utils.options,
             method: 'POST',
             body: JSON.stringify(payload)
         });

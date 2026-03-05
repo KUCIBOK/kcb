@@ -13,7 +13,7 @@ const createArtist = async (req, res, next) => {
                 instagram: req.body.instagram
             },
             userId: req.user._id,
-            image : `${req.protocol}://${req.get('host')}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${req.file.filename}`,
+            image: req.file.cloudinaryUrl,
             createdAt: new Date(),
         });
 
@@ -89,11 +89,10 @@ const updateArtist = async (req, res, next) => {
         if (!updatedArtist) {
             next(createError.notFound("Artiste non trouvé"));
         }
-        if(req.file){
-            updatedArtist.image = `${req.protocol}://${req.get('host')}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${req.file?.filename}`
-        }
-        else{
-            updatedArtist.image = req.body.image
+        if (req.file) {
+            updatedArtist.image = req.file.cloudinaryUrl;
+        } else {
+            updatedArtist.image = req.body.image;
         }
         await updatedArtist.save()
         await Artwork.updateMany({artistId : req.params.id}, {
@@ -109,7 +108,7 @@ const updateManagedArtist = async (req, res, next) => {
         const updatedArtist = await Artist.findOneAndUpdate({_id : req.params.id},
             {
                 ...req.body,
-                image: req.file?.filename ? `${req.protocol}://${req.get('host')}/uploads/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${req.file?.filename}` : `${req.body?.image}` || '',
+                image: req.file?.cloudinaryUrl || req.body?.image || '',
                 updatedAt: new Date()
             }
         );

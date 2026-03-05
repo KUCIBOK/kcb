@@ -1,12 +1,13 @@
 const axios = require('axios');
+const logger = require('../utils/logger');
+const { config } = require('../config/environnement');
 
 class LogidooService {
   constructor() {
     // Production API URL
     // For staging/testing, use: https://staging-expedition.logidoo.co
     this.baseURL = 'https://expedition.logidoo.co';
-    // Use the provided API key
-    this.apiKey = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGY1NmM3OGYyNDkyN2U3ODg1NDJhYWUiLCJpYXQiOjE3NzEzNzQ3MzEsImV4cCI6MTkyOTE2MjczMX0.bzpWJrD8rEaR-HSuq13PnWFA9xbdfEEsf-bOZj03Aw1S_rwFCUiygXFDWdD7NAUwM9vBn_r68AKW0ICZCikpMwRiJRQAOproCHS2Re2YUF8_MYCgt7gkjz9fmBHxjHzryFqsTch3qj1sW9WUlNIKr3471mtyd8eB-_4BnVgovdo-99GKZaTmYVUMfvLR9BQbCxR-PVYOTJOt-fGP1JsiLphuvWJAZtzLa-z6rRt_lxu2m_jZVnzj78c2n_-lWTcdxP1ktGEPKwXcNpzNUCxLPQ1av1gdPy1b_TMg9PI4kaI2uC2IFil9zztI_TqZyEMDoYsCbQ8--TNX-fU_GunHpvcOuUAxx4pqlk-UEJvNCCQHtU6qw8dfCyHZNxwwQhVJJurPRLJ4iFpG1-LtxWq63xWTjWOh2uVVEgadk6Dj0SO8mqtgD_0eMx_rduVR9y5c96zB-qhFtAKUuYKZdwh2JbB9OCkLUKrBPgn0shnLPB8LYXwkzVlU0WnDIxcACtqPrElvWPwo6Ln-BhrJR3WHB5N6S7Tz1pYz_r6zazBT7srwvtv5kl54vhP6utSKLd7sZyiuhkZ29GRofrWML2a3taQyblAe8TS5SWYwStLxxhC_LUI4drxDUhRR-GS5vWrPuJWpvYX8nGOdnsoLwGKV1YbdSA08c90oLd8YXVVZrcQ';
+    this.apiKey = config.logidoo.apiKey;
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
       timeout: 30000,
@@ -23,7 +24,7 @@ class LogidooService {
       const response = await this.axiosInstance.get('/expeditions');
       return response.data;
     } catch (error) {
-      console.error('Error fetching expeditions:', error.response?.data || error.message);
+      logger.error('Error fetching expeditions:', { error: error.response?.data || error.message });
       // Return mock data
       return { expeditions: [], mock: true };
     }
@@ -35,7 +36,7 @@ class LogidooService {
       const response = await this.axiosInstance.get(`/expeditions/${expeditionId}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching expedition:', error.response?.data || error.message);
+      logger.error('Error fetching expedition:', { error: error.response?.data || error.message });
       throw error;
     }
   }
@@ -54,7 +55,7 @@ class LogidooService {
         const response = await this.axiosInstance.get(endpoint);
         return response.data;
       } catch (error) {
-        console.log(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
+        logger.info(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
       }
     }
     
@@ -77,7 +78,7 @@ class LogidooService {
       const response = await this.axiosInstance.post('/expeditions', expeditionData);
       return response.data;
     } catch (error) {
-      console.error('Error creating expedition:', error.response?.data || error.message);
+      logger.error('Error creating expedition:', { error: error.response?.data || error.message });
       // Return mock response for testing
       return {
         id: `EXP-${Date.now()}`,
@@ -95,7 +96,7 @@ class LogidooService {
       const response = await this.axiosInstance.put(`/expeditions/${expeditionId}`, expeditionData);
       return response.data;
     } catch (error) {
-      console.error('Error updating expedition:', error.response?.data || error.message);
+      logger.error('Error updating expedition:', { error: error.response?.data || error.message });
       throw error;
     }
   }
@@ -111,7 +112,7 @@ class LogidooService {
       const response = await this.axiosInstance.get(`/expeditions/${expeditionId}/history`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching expedition history:', error.response?.data || error.message);
+      logger.error('Error fetching expedition history:', { error: error.response?.data || error.message });
       // Return mock data
       return { events: [], mock: true };
     }
@@ -123,7 +124,7 @@ class LogidooService {
       const response = await this.axiosInstance.delete(`/expeditions/${expeditionId}`);
       return response.data;
     } catch (error) {
-      console.error('Error canceling expedition:', error.response?.data || error.message);
+      logger.error('Error canceling expedition:', { error: error.response?.data || error.message });
       throw error;
     }
   }
@@ -146,7 +147,7 @@ class LogidooService {
         });
         return response.data;
       } catch (error) {
-        console.log(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
+        logger.info(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
       }
     }
     
@@ -170,7 +171,7 @@ class LogidooService {
         const response = await this.axiosInstance.get(endpoint);
         return response.data;
       } catch (error) {
-        console.log(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
+        logger.info(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
       }
     }
     
@@ -231,7 +232,7 @@ class LogidooService {
         const response = await this.axiosInstance.get(endpoint);
         return response.data;
       } catch (error) {
-        console.log(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
+        logger.info(`Tried endpoint ${endpoint}: ${error.response?.status || error.message}`);
       }
     }
     

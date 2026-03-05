@@ -207,6 +207,80 @@ export const Step1 = memo(({ formState, setFormState }) => {
         </div>
       </div>
 
+      {/* Standard Kucibok */}
+      <div className="border border-indigo-900/40 rounded-lg p-4 space-y-4 bg-indigo-950/20">
+        <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+          Standard Kucibok — Certification
+        </p>
+
+        {/* Médium / Technique */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="medium" className="text-xs text-gray-400 font-medium">
+            Médium / Technique
+          </label>
+          <input
+            onChange={(e) => setFormState({ ...formState, medium: e.target.value })}
+            value={formState.medium}
+            type="text"
+            id="medium"
+            className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition-all"
+            placeholder="ex: Huile sur toile, Bronze, Bois sculpté…"
+          />
+        </div>
+
+        {/* État */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="condition" className="text-xs text-gray-400 font-medium">
+            État de conservation
+          </label>
+          <select
+            onChange={(e) => setFormState({ ...formState, condition: e.target.value })}
+            value={formState.condition}
+            id="condition"
+            className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition-all"
+          >
+            <option value="">Sélectionner…</option>
+            <option value="excellent">Excellent</option>
+            <option value="very_good">Très bon</option>
+            <option value="good">Bon</option>
+            <option value="fair">Correct</option>
+          </select>
+        </div>
+
+        {/* Provenance */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="provenance" className="text-xs text-gray-400 font-medium">
+            Provenance
+          </label>
+          <input
+            onChange={(e) => setFormState({ ...formState, provenance: e.target.value })}
+            value={formState.provenance}
+            type="text"
+            id="provenance"
+            className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition-all"
+            placeholder="ex: Collection privée, Galerie XYZ, Atelier de l'artiste…"
+          />
+        </div>
+
+        {/* Disponibilité catalogue */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="availabilityStatus" className="text-xs text-gray-400 font-medium">
+            Disponibilité catalogue
+          </label>
+          <select
+            onChange={(e) => setFormState({ ...formState, availabilityStatus: e.target.value })}
+            value={formState.availabilityStatus}
+            id="availabilityStatus"
+            className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition-all"
+          >
+            <option value="available">Disponible</option>
+            <option value="on_exhibition">En exposition</option>
+            <option value="on_request">Sur demande</option>
+            <option value="unavailable">Indisponible</option>
+          </select>
+        </div>
+      </div>
+
       {/* Tags dynamiques */}
       <div className="flex flex-col gap-1">
         <label

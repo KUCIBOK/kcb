@@ -1,10 +1,23 @@
 import { utils } from "./useAPI";
-const {api, options} = utils
+const {api} = utils
+
+export async function getDeliveryByTracking(trackingId) {
+    try {
+        const response = await fetch(`${api}/delivery/track/${trackingId}`, {
+            headers: { "kcb-api-key": import.meta.env.VITE_API_KEY },
+        });
+        const data = await response.json();
+        if (data?._id) return data;
+        return { error: data?.message || data?.error || "Numéro de suivi introuvable" };
+    } catch (error) {
+        return { error: error.message };
+    }
+}
 
 export async function createDelivery(payload) {
     try {
         const response = await fetch(`${api}/delivery`, {
-            ...options,
+            ...utils.options,
             method: "POST",
             body: JSON.stringify(payload)
         });
@@ -24,7 +37,7 @@ export async function createDelivery(payload) {
 
 export async function getDeliveries() {
     try {
-        const response = await fetch(`${api}/delivery`, {...options});
+        const response = await fetch(`${api}/delivery`, {...utils.options});
         const deliveries = await response.json();
         if (Array.isArray(deliveries)) {
             return deliveries;
@@ -42,7 +55,7 @@ export async function getDeliveries() {
 export async function changeDeliveryStatus(id, payload){
     try {
         const response = await fetch(`${api}/delivery/${id}`, {
-            ...options,
+            ...utils.options,
             method : "PATCH",
             body : JSON.stringify(payload)
         })
@@ -62,7 +75,7 @@ export async function changeDeliveryStatus(id, payload){
 
 export async function getMyDeliveries() {
     try {
-        const response = await fetch(`${api}/delivery/my`, {...options});
+        const response = await fetch(`${api}/delivery/my`, {...utils.options});
         const deliveries = await response.json();
         if (Array.isArray(deliveries)) {
             return deliveries;
@@ -79,7 +92,7 @@ export async function getMyDeliveries() {
 
 export async function getDelivery(id) {
     try {
-        const response = await fetch(`${api}/delivery/${id}`, {...options});
+        const response = await fetch(`${api}/delivery/${id}`, {...utils.options});
         const delivery = await response.json();
         if (delivery?._id) {
             return delivery;
@@ -97,7 +110,7 @@ export async function getDelivery(id) {
 export async function updateDelivery(id, payload) {
     try {
         const response = await fetch(`${api}/delivery/${id}`, {
-            ...options,
+            ...utils.options,
             method: "PUT",
             body: JSON.stringify(payload)
         });
@@ -118,7 +131,7 @@ export async function updateDelivery(id, payload) {
 export async function deleteDelivery(id) {
     try {
         const response = await fetch(`${api}/delivery/${id}`, {
-            ...options,
+            ...utils.options,
             method: "DELETE"
         });
         const del = await response.json();

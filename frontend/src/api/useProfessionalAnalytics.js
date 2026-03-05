@@ -1,15 +1,12 @@
 import axios from "axios";
+import { utils } from "./useAPI";
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-const ANALYTICS_API = `${API_URL}/api/professional-analytics`;
+const ANALYTICS_API = `${utils.api}/professional-analytics`;
 
-// ✅ Get analytics data
 export const getProfessionalAnalytics = async (period = "month") => {
   try {
     const response = await axios.get(`${ANALYTICS_API}?period=${period}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {
@@ -17,13 +14,10 @@ export const getProfessionalAnalytics = async (period = "month") => {
   }
 };
 
-// ✅ Get real-time stats
 export const getRealTimeStats = async () => {
   try {
     const response = await axios.get(`${ANALYTICS_API}/realtime`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+      headers: utils.options.headers,
     });
     return response.data;
   } catch (error) {

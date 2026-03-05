@@ -1,10 +1,10 @@
 import { utils } from "./useAPI";
-const { api, options } = utils;
+const { api } = utils;
 
 export async function getAllArtists(){
     try {
         const response = await fetch(`${api}/artist`, {
-            ...options
+            ...utils.options
         })
         const data = await response.json()
         if(data?.length >= 1){
@@ -23,7 +23,7 @@ export async function getAllArtists(){
 export async function getArtistAndUpdateVisited(id){
     try {
         const response = await fetch(`${api}/artist/visited/${id}`, {
-            ...options
+            ...utils.options
         })
         const data = await response.json()
         if(data?.id){
@@ -42,7 +42,7 @@ export async function getArtistAndUpdateVisited(id){
 export async function getArtistById(id){
     try {
         const response = await fetch(`${api}/artist/${id}`, {
-            ...options
+            ...utils.options
         })
         const data = await response.json()
         if(data?.id){
@@ -60,7 +60,7 @@ export async function getArtistById(id){
 
 export async function getManagedArtists(id){
     try {
-        const response = await fetch(`${api}/artist/managed/${id}`, {...options})
+        const response = await fetch(`${api}/artist/managed/${id}`, {...utils.options})
         const artists = await response.json()
         if(artists?.length > 0){
             return artists
@@ -162,7 +162,7 @@ export async function updateManagedArtist(id, payload){
 export async function getFeaturedArtists(){
     const {api, options} = utils
     try {
-        const response = await fetch(`${api}/artist/random`, {...options})
+        const response = await fetch(`${api}/artist/random`, {...utils.options})
         const featured = await response.json()
         if(featured?.length >= 1){
             return featured

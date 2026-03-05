@@ -1,10 +1,10 @@
 import { utils } from './useAPI';
-const { api, options } = utils;
+const { api } = utils;
 
 export async function createNumerisation(payload) {
     try {
         const response = await fetch(`${api}/numerisation`, {
-            ...options,
+            ...utils.options,
             method: 'POST',
             body: JSON.stringify(payload),
         });
@@ -24,7 +24,7 @@ export async function createNumerisation(payload) {
 
 export async function getNumerisationRequests() {
     try {
-        const response = await fetch(`${api}/numerisation`, {...options});
+        const response = await fetch(`${api}/numerisation`, {...utils.options});
         const data = await response.json();
         if (Array.isArray(data)) {
             return data;
@@ -41,7 +41,7 @@ export async function getNumerisationRequests() {
 
 export async function getMyNumerisationRequests() {
     try {
-        const response = await fetch(`${api}/numerisation/my`, {...options});
+        const response = await fetch(`${api}/numerisation/my`, {...utils.options});
         const data = await response.json();
         if (Array.isArray(data)) {
             return data;
@@ -59,7 +59,7 @@ export async function getMyNumerisationRequests() {
 export async function updateNumerisationRequestStatus(id, payload) {
     try {
         const response = await fetch(`${api}/numerisation/${id}/status`, {
-            ...options,
+            ...utils.options,
             method: 'PUT',
             body: JSON.stringify(payload),
         });
@@ -80,7 +80,7 @@ export async function updateNumerisationRequestStatus(id, payload) {
 export async function updateNumerisationRequest(id, payload) {
     try {
         const response = await fetch(`${api}/numerisation/${id}`, {
-            ...options,
+            ...utils.options,
             method: 'PUT',
             body: JSON.stringify(payload),
         });
@@ -101,7 +101,7 @@ export async function updateNumerisationRequest(id, payload) {
 export async function deleteNumerisationRequest(id) {
     try {
         const response = await fetch(`${api}/numerisation/${id}`, {
-            ...options,
+            ...utils.options,
             method: 'DELETE',
         });
         const data = await response.json();

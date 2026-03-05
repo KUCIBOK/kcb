@@ -1,7 +1,21 @@
 const mongoose = require("mongoose");
+const { randomBytes } = require("crypto");
+
+/**
+ * Génère un identifiant Kucibok unique : KCB-XXXXXXXX (8 chars hex majuscules)
+ */
+function generateKuciobkId() {
+  return "KCB-" + randomBytes(4).toString("hex").toUpperCase();
+}
 
 const artworkSchema = mongoose.Schema(
   {
+    kuciobkId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true,
+    },
     artistId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Artist",
@@ -41,6 +55,18 @@ const artworkSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a description"],
       index: true,
+    },
+    medium: {
+      type: String,
+      trim: true,
+    },
+    condition: {
+      type: String,
+      enum: ["excellent", "very_good", "good", "fair"],
+    },
+    provenance: {
+      type: String,
+      trim: true,
     },
     height: {
       type: Number,
@@ -160,7 +186,14 @@ const artworkSchema = mongoose.Schema(
     likesCount : {
       type : Number,
       default : 0
-    }
+    },
+    // F3 — Catalogue certifié
+    availabilityStatus: {
+      type: String,
+      enum: ['available', 'on_exhibition', 'unavailable', 'on_request'],
+      default: 'available',
+      index: true,
+    },
   },
   {
     timestamps: true,
@@ -182,6 +215,20 @@ artworkSchema.virtual("transactions", {
   localField: "_id",
   foreignField: "artworkId",
   justOne: false,
+});
+
+// Auto-générer le kuciobkId si absent (nouveaux documents + migration)
+artworkSchema.pre("save", async function (next) {
+  if (!this.kuciobkId) {
+    let id;
+    let exists = true;
+    while (exists) {
+      id = generateKuciobkId();
+      exists = await mongoose.model("Artwork").exists({ kuciobkId: id });
+    }
+    this.kuciobkId = id;
+  }
+  next();
 });
 
 // Text index for search functionality
