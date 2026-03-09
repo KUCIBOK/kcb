@@ -1,69 +1,37 @@
-# ============================================================
-# DÉPENDANCES
-# ============================================================
+# Dependencies
 node_modules/
-.pnp
-.pnp.js
 
-# ============================================================
-# VARIABLES D'ENVIRONNEMENT — NE JAMAIS COMMITER
-# ============================================================
+# Environment variables
 .env
-.env.*
-!.env.exemple
-!.env.example
-backend/.env
-backend/.env.*
-!backend/.env.exemple
-!backend/.env.example
-frontend/.env
-frontend/.env.*
-!frontend/.env.exemple
-!frontend/.env.example
+.env.local
+.env.production
+.env.staging
 
-# ============================================================
-# BUILDS ET DIST
-# ============================================================
+# Build output
 dist/
 build/
-.vite/
-frontend/dist/
-backend/dist/
 
-# ============================================================
-# UPLOADS ET FICHIERS GÉNÉRÉS
-# ============================================================
-backend/public/uploads/
-backend/public/certificates/
+# Vite
+*.local
 
-# ============================================================
-# LOGS
-# ============================================================
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-logs/
 
-# ============================================================
-# SYSTÈME
-# ============================================================
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/
-*.swp
-*.swo
+# Vercel
+.vercel/
 
-# ============================================================
-# TESTS ET COUVERTURE
-# ============================================================
-coverage/
-.nyc_output/
-
-# ============================================================
-# DIVERS
-# ============================================================
-*.pem
-*.key
-*.cert
+# Claude
+.claude/
