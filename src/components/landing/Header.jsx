@@ -1,291 +1,147 @@
-import { memo, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../store/AuthContext";
-import { UserLinks } from "./UserLinks";
-import { Menu, ChevronDown } from "lucide-react";
+import { memo, useState } from "react"
+import { Link, useLocation } from "react-router-dom"
+import { useAuth } from "../../store/AuthContext"
+import { UserLinks } from "./UserLinks"
+import { Menu, X } from "lucide-react"
 
+const LINKS = [
+  { name: "Explorer", path: "/explore" },
+  { name: "Artistes", path: "/artists" },
+  { name: "Blog", path: "/blog" },
+  { name: "FAQ", path: "/faq" },
+  { name: "Contact", path: "/contact" },
+]
+
+/**
+ * Main site header — used by Layout for non-portal pages.
+ * Aligned with the KCB noir/or design system.
+ */
 export const Header = memo(() => {
-  const { user } = useAuth();
-  const [show, setShow] = useState(false);
-  const [showExploreMenu, setShowExploreMenu] = useState(false);
-  const location = useLocation();
-  const links = [
-    { name: "Accueil", path: "/" },
-    { name: "Artistes", path: "/artists" },
-    { name: "Services", path: "/services" },
-    { name: "Blog", path: "/blog" },
-    { name: "À propos", path: "/about" },
-  ];
-  const isActive = (path) => location.pathname === path;
+  const { user } = useAuth()
+  const [open, setOpen] = useState(false)
+  const location = useLocation()
+  const isActive = (path) => location.pathname === path
 
-  const exploreLinks = [
-    { name: "Oeuvres", path: "/explore" },
-    { name: "Comment ça marche", path: "/how-it-works" },
-  ];
+  return (
+    <header className="sticky top-0 left-0 right-0 z-[100] py-4 bg-kcb-noir-deep/[0.92] backdrop-blur-xl border-b border-white/[0.03] font-dm-sans">
+      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)] flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 no-underline">
+          <img src="/images/kucibok-white-logo.svg" alt="Kucibok" className="h-8" />
+          <span className="font-playfair font-bold text-lg text-white tracking-[0.06em] uppercase">
+            Kuci<span className="text-kcb-or">bok</span>
+          </span>
+        </Link>
 
-  const NavLinks = () => (
-    <>
-      {/* First link - Accueil */}
-      <Link
-        to="/"
-        onClick={() => setShow(false)}
-        className={`font-medium transition-colors hover:text-indigo-kcb ${
-          isActive("/") ? "text-gradient" : "text-gray-300"
-        }`}
-      >
-        Accueil
-      </Link>
-
-      {/* Second position - Explorer dropdown */}
-      <div className="relative group">
-        <button
-          className={`font-medium transition-colors flex items-center gap-1 ${
-            isActive("/explore")
-              ? "text-gradient"
-              : "text-gray-300"
-          } hover:text-indigo-kcb`}
-          onClick={() => setShowExploreMenu(!showExploreMenu)}
-        >
-          Explorer
-        </button>
-        <div
-          className={`absolute left-0 mt-2 w-40 bg-gray-900 border border-gray-800 rounded-md shadow-lg z-10 ${
-            showExploreMenu ? "block" : "hidden"
-          } group-hover:block`}
-          onMouseLeave={() => setShowExploreMenu(false)}
-        >
-          {exploreLinks.map((link) => (
+        {/* Desktop nav */}
+        <nav className="hidden lg:flex items-center gap-9">
+          {LINKS.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              onClick={() => {
-                setShow(false);
-                setShowExploreMenu(false);
-              }}
-              className={`block px-4 py-2 text-sm ${
-                isActive(link.path)
-                  ? "text-indigo-kcb bg-gray-800"
-                  : "text-gray-300 hover:bg-gray-800"
+              className={`text-xs font-medium tracking-[0.06em] uppercase no-underline transition-colors ${
+                isActive(link.path) ? "text-white" : "text-kcb-pierre hover:text-white"
               }`}
             >
               {link.name}
             </Link>
           ))}
-        </div>
-      </div>
 
-      {/* Rest of the links */}
-      {links.slice(1).map((link) => (
-        <Link
-          key={link.path}
-          to={link.path}
-          onClick={() => setShow(false)}
-          className={`font-medium transition-colors hover:text-indigo-kcb ${
-            isActive(link.path) ? "text-gradient" : "text-gray-300"
-          }`}
-        >
-          {link.name}
-        </Link>
-      ))}
-
-      {user ? (
-        <Link
-          onClick={() => setShow(false)}
-          to={
-            user?.role == "collector"
-              ? "/collector/pricing"
-              : "/professional/pricing"
-          }
-          className={`font-medium transition-colors hover:text-indigo-kcb`}
-        >
-          Pricing
-        </Link>
-      ) : (
-        <>
+          {/* Portal switches */}
           <Link
-            onClick={() => setShow(false)}
-            to={"/collector/pricing"}
-            className={`font-medium transition-colors hover:text-indigo-kcb`}
+            to="/africa"
+            className="text-xs tracking-[0.06em] uppercase text-kcb-pierre no-underline border border-white/[0.08] px-4 py-1.5 transition-colors hover:border-kcb-or hover:text-kcb-or"
           >
-            Pricing Collectionneur
+            Afrique
           </Link>
           <Link
-            onClick={() => setShow(false)}
-            to={"/professional/pricing"}
-            className={`font-medium transition-colors hover:text-indigo-kcb`}
+            to="/global"
+            className="text-xs tracking-[0.06em] uppercase text-kcb-pierre no-underline border border-white/[0.08] px-4 py-1.5 transition-colors hover:border-kcb-silver hover:text-kcb-silver"
           >
-            Pricing Professionnel
+            Global
           </Link>
-        </>
-      )}
-    </>
-  );
 
-  // Mobile NavLinks with separate explore items
-  const MobileNavLinks = () => (
-    <>
-      <Link
-        to="/"
-        onClick={() => setShow(false)}
-        className={`font-medium transition-colors hover:text-indigo-kcb ${
-          isActive("/") ? "text-gradient" : "text-gray-300"
-        }`}
-      >
-        Accueil
-      </Link>
-
-      {/* Mobile explore links - shown directly without dropdown */}
-      <div className="flex flex-col pl-4">
-        <span className="font-medium text-gray-400 mb-1">Explorer</span>
-        {exploreLinks.map((link) => (
-          <Link
-            key={link.path}
-            to={link.path}
-            onClick={() => setShow(false)}
-            className={`font-medium transition-colors hover:text-indigo-kcb ${
-              isActive(link.path) ? "text-gradient" : "text-gray-300"
-            } py-1`}
-          >
-            {link.name}
-          </Link>
-        ))}
-      </div>
-
-      {links.slice(1).map((link) => (
-        <Link
-          key={link.path}
-          to={link.path}
-          onClick={() => setShow(false)}
-          className={`font-medium transition-colors hover:text-indigo-kcb ${
-            isActive(link.path) ? "text-gradient" : "text-gray-300"
-          }`}
-        >
-          {link.name}
-        </Link>
-      ))}
-
-      {user ? (
-        <Link
-          onClick={() => setShow(false)}
-          to={
-            user?.role == "collector"
-              ? "/collector/pricing"
-              : "/professional/pricing"
-          }
-          className={`font-medium transition-colors hover:text-indigo-kcb`}
-        >
-          Pricing
-        </Link>
-      ) : (
-        <>
-          <Link
-            onClick={() => setShow(false)}
-            to={"/collector/pricing"}
-            className={`font-medium transition-colors hover:text-indigo-kcb`}
-          >
-            Pricing Collectionneur
-          </Link>
-          <Link
-            onClick={() => setShow(false)}
-            to={"/professional/pricing"}
-            className={`font-medium transition-colors hover:text-indigo-kcb`}
-          >
-            Pricing Professionnel
-          </Link>
-        </>
-      )}
-    </>
-  );
-
-  return (
-    <header className="sticky top-0 left-0 right-0 z-50 animate-fade-in-up backdrop-blur-md pt-2 pb-3.5 px-4 border-b border-gray-800 bg-gray-900/80">
-      <div className="flex items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <img
-            src="/images/kucibok-white-logo.svg"
-            alt="logo"
-            className="w-8"
-          />
-        </Link>
-        <nav className="hidden md:flex items-center space-x-6 text-sm">
-          <NavLinks />
-        </nav>
-        <div className="flex items-center gap-2">
-          {!user?.role && (
-            <>
+          {/* Auth */}
+          {!user?.role ? (
+            <div className="flex items-center gap-3">
               <Link
                 to="/sign-in"
-                className="text-sm hidden md:block font-medium transition-colors bg-gray-800 border border-gray-700 hover:bg-gray-600/60 px-4 py-2 rounded-md"
+                className="text-xs font-medium tracking-[0.06em] uppercase text-kcb-pierre no-underline transition-colors hover:text-white"
               >
                 Connexion
               </Link>
               <Link
                 to="/sign-up"
-                className="text-sm hidden md:block font-medium transition-colors hover:bg-gray-600/60 px-3 py-2 rounded-md bg-gradient"
+                className="text-xs font-semibold tracking-[0.06em] uppercase bg-kcb-or text-kcb-noir no-underline px-5 py-2 transition-colors hover:bg-kcb-bronze"
               >
                 Inscription
               </Link>
-            </>
+            </div>
+          ) : (
+            <UserLinks />
           )}
-          <button
-            onClick={() => setShow(!show)}
-            className="md:hidden hover:bg-indigo-950 px-3 py-2 rounded-md cursor-pointer"
-          >
-            <Menu className="text-lg text-white" />
-            <span className="sr-only">Toggle menu</span>
-          </button>
+        </nav>
+
+        {/* Mobile toggle */}
+        <div className="flex items-center gap-3 lg:hidden">
           {user?.role && <UserLinks />}
+          <button onClick={() => setOpen(!open)} className="text-white p-2">
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </div>
-      {/* Mobile navbar */}
-      {show && (
-        <div className="animate-fade-in bg-gray-900/80 z-90 fixed lg:hidden w-screen h-screen top-0 left-0 flex justify-end">
-          <div className="animate-slide-left z-99 duration-500 ease-in-out w-4/5 max-w-xs h-full bg-gray-900 border-l border-gray-800 px-5 py-6 flex flex-col">
-            <div className="flex justify-between items-center border-b border-gray-800 pb-5">
-              <Link
-                to="/"
-                className="flex items-center"
-                onClick={() => setShow(false)}
-              >
-                <img
-                  src="/images/kucibok-white-logo.svg"
-                  alt="logo"
-                  className="w-8"
-                />
-                <span className="font-playfair text-xl font-bold text-gradient ml-2">
-                  Kucibok
-                </span>
-              </Link>
-              <button
-                onClick={() => setShow(false)}
-                className="hover:bg-indigo-950 px-3 py-2 rounded-md"
-              >
-                <span className="text-white text-2xl">×</span>
-                <span className="sr-only">Fermer le menu</span>
-              </button>
-            </div>
-            <div className="mt-8 flex flex-col gap-5">
-              <MobileNavLinks />
-              {!user?.role && (
-                <>
-                  <Link
-                    to="/sign-in"
-                    className="text-sm font-medium transition-colors bg-gray-800 border border-gray-700 hover:bg-gray-600/60 px-4 py-2 rounded-md w-full text-center"
-                  >
-                    Connexion
-                  </Link>
-                  <Link
-                    to="/sign-up"
-                    className="text-sm font-medium transition-colors bg-gradient hover:bg-gray-600/60 px-3 py-2 rounded-md w-full text-center"
-                  >
-                    Inscription
-                  </Link>
-                </>
-              )}
-            </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <div className="lg:hidden border-t border-white/[0.03] mt-4 pt-4 pb-6 px-[clamp(24px,5vw,80px)] flex flex-col gap-4 bg-kcb-noir-deep/[0.98]">
+          {LINKS.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => setOpen(false)}
+              className={`text-sm no-underline transition-colors ${
+                isActive(link.path) ? "text-white" : "text-kcb-pierre hover:text-white"
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
+          <div className="flex flex-col gap-2 pt-3 border-t border-white/[0.03]">
+            <Link
+              to="/africa"
+              onClick={() => setOpen(false)}
+              className="text-sm text-center text-kcb-or border border-kcb-or/20 py-2 no-underline hover:bg-kcb-or/5 transition-colors"
+            >
+              Portail Afrique
+            </Link>
+            <Link
+              to="/global"
+              onClick={() => setOpen(false)}
+              className="text-sm text-center text-kcb-silver border border-kcb-silver/20 py-2 no-underline hover:bg-kcb-silver/5 transition-colors"
+            >
+              Global Portal
+            </Link>
+            {!user?.role && (
+              <>
+                <Link
+                  to="/sign-in"
+                  onClick={() => setOpen(false)}
+                  className="text-sm text-center text-kcb-pierre border border-white/[0.08] py-2 no-underline"
+                >
+                  Connexion
+                </Link>
+                <Link
+                  to="/sign-up"
+                  onClick={() => setOpen(false)}
+                  className="text-sm text-center font-semibold bg-kcb-or text-kcb-noir py-2 no-underline"
+                >
+                  Inscription
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
     </header>
-  );
-});
+  )
+})

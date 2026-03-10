@@ -35,7 +35,7 @@ export default function Community() {
               passionnée d'art africain.
             </p>
             <Link
-              to="/artist"
+              to="/africa"
               className="text-sm text-[#ffbb00] hover:underline"
             >
               En savoir plus →
@@ -55,7 +55,7 @@ export default function Community() {
               par des artistes talentueux.
             </p>
             <Link
-              to="/collector"
+              to="/global"
               className="text-sm text-[#b033a8] hover:underline"
             >
               En savoir plus →
@@ -78,7 +78,7 @@ export default function Community() {
               l'intégrité du marché.
             </p>
             <Link
-              to="/professional"
+              to="/global"
               className="text-sm text-[#5de8b5] hover:underline"
             >
               En savoir plus →

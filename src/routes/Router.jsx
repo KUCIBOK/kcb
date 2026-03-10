@@ -8,23 +8,17 @@ const VerifyEmail = lazy(() => import("../pages/auth/VerifyEmail"));
 const CheckEmail = lazy(() => import("../pages/auth/CheckEmail"));
 const ResetPasswordForm = lazy(() => import("../pages/ForgotPassword"));
 const ForgotPasswordForm = lazy(() => import("../pages/ForgotPasswordForm"));
-const Index = lazy(() => import("../pages/Index"));
 const About = lazy(() => import("../pages/About"));
 const Explore = lazy(() => import("../pages/Explore"));
 const Blog = lazy(() => import("../pages/Blog"));
 const Artists = lazy(() => import("../pages/Artists"));
 const Auctions = lazy(() => import("../pages/Auctions"));
 const AuctionDetails = lazy(() => import("../pages/AuctionDetails"));
-const ArtistLanding = lazy(() => import("../pages/ArtistLanding"));
-const CollectorLanding = lazy(() => import("../pages/CollectorLanding"));
-const ProfessionalLanding = lazy(() => import("../pages/ProfessionalLanding"));
 const Faq = lazy(() => import("../pages/Faq"));
 const Contact = lazy(() => import("../pages/Contact"));
 const Artwork = lazy(() => import("../pages/Artwork"));
 const BlogPostDetails = lazy(() => import("../pages/BlogPostDetails"));
 const ArtistDetails = lazy(() => import("../pages/Artist"));
-const CollectorPricing = lazy(() => import("../pages/CollectorPricing"));
-const ProfessionalPricing = lazy(() => import("../pages/ProfessionalPricing"));
 const Error404 = lazy(() => import("../components/fallback/Error404"));
 const Artist = lazy(() => import("../pages/dashboard/Artist"));
 const SubmitArtwork = lazy(() => import("../pages/dashboard/SubmitArtwork"));
@@ -54,18 +48,10 @@ const TermsAndConditions = lazy(() => import("../pages/TermsAndConditions"));
 const SalesConditions = lazy(() => import("../pages/SalesConditions"));
 const EthicChart = lazy(() => import("../pages/EthicChart"));
 const TrackingPage = lazy(() => import("../pages/TrackingPage"));
-const Services = lazy(() => import("../pages/Services"));
-const HowItWorks = lazy(() => import("../pages/HowItWorks"));
 const AfricaLanding = lazy(() => import("../pages/AfricaLanding"));
+const GatewayPage = lazy(() => import("../pages/GatewayPage"));
 const Marketplace = lazy(() => import("../pages/Marketplace"));
-const AfricaFeatures = lazy(() => import("../pages/africa/AfricaFeatures"));
-const AfricaPricing = lazy(() => import("../pages/africa/AfricaPricing"));
-const AfricaArtists = lazy(() => import("../pages/africa/AfricaArtists"));
-const AfricaGalleries = lazy(() => import("../pages/africa/AfricaGalleries"));
 const GlobalPage = lazy(() => import("../pages/GlobalPage"))
-const GlobalServices = lazy(() => import("../pages/global/GlobalServices"))
-const GlobalLogistics = lazy(() => import("../pages/global/GlobalLogistics"))
-const GlobalEnterprise = lazy(() => import("../pages/global/GlobalEnterprise"));
 const VerifyArtwork = lazy(() => import("../pages/VerifyArtwork"));
 const CataloguePro = lazy(() => import("../pages/CataloguePro"));
 // Protected Routes
@@ -128,35 +114,14 @@ export function Router() {
             </AuthContextProvider>
           }
         >
+          {/* Gateway — standalone split-screen entry */}
+          <Route path="/" element={
+            <Suspense fallback={<PageLoader />}>
+              <GatewayPage />
+            </Suspense>
+          } />
+
           <Route element={<Layout />}>
-            <Route path="/" element={
-                <Suspense fallback={<PageLoader />}>
-                  <Index />
-                </Suspense>
-              }
-            />
-            {/* Fait */}
-            <Route path="/artist" element={
-                <Suspense fallback={<PageLoader />}>
-                  <ArtistLanding />
-                </Suspense>
-              }
-            />
-            {/* Fait */}
-            <Route path="/collector" element={
-                <Suspense fallback={<PageLoader />}>
-                  <CollectorLanding />
-                </Suspense>
-              }
-            />
-            {/* Fait */}
-            <Route path="/professional" element={
-                <Suspense fallback={<PageLoader />}>
-                  <ProfessionalLanding />
-                </Suspense>
-              }
-            />
-            {/* Fait */}
             <Route path="/about" element={
                 <Suspense fallback={<PageLoader />}>
                   <About />
@@ -206,18 +171,6 @@ export function Router() {
                 </Suspense>
               }
             />
-            <Route path="/services" element={
-                <Suspense fallback={<PageLoader />}>
-                  <Services />
-                </Suspense>
-              }
-            />
-            <Route path="/how-it-works" element={
-                <Suspense fallback={<PageLoader />}>
-                  <HowItWorks />
-                </Suspense>
-              }
-            />
             <Route path="/artists" element={
                 <Suspense fallback={<PageLoader />}>
                   <Artists />
@@ -235,18 +188,6 @@ export function Router() {
             <Route path="/artist/:id" element={
                 <Suspense fallback={<PageLoader />}>
                   <ArtistDetails />
-                </Suspense>
-              }
-            />
-            <Route path="/collector/pricing" element={
-                <Suspense fallback={<PageLoader />}>
-                  <CollectorPricing />
-                </Suspense>
-              }
-            />
-            <Route path="/professional/pricing" element={
-                <Suspense fallback={<PageLoader />}>
-                  <ProfessionalPricing />
                 </Suspense>
               }
             />
@@ -351,44 +292,9 @@ export function Router() {
               <AfricaLanding />
             </Suspense>
           } />
-          <Route path="/africa/features" element={
-            <Suspense fallback={<PageLoader />}>
-              <AfricaFeatures />
-            </Suspense>
-          } />
-          <Route path="/africa/pricing" element={
-            <Suspense fallback={<PageLoader />}>
-              <AfricaPricing />
-            </Suspense>
-          } />
-          <Route path="/africa/artists" element={
-            <Suspense fallback={<PageLoader />}>
-              <AfricaArtists />
-            </Suspense>
-          } />
-          <Route path="/africa/galleries" element={
-            <Suspense fallback={<PageLoader />}>
-              <AfricaGalleries />
-            </Suspense>
-          } />
           <Route path="/global" element={
             <Suspense fallback={<PageLoader />}>
               <GlobalPage />
-            </Suspense>
-          } />
-          <Route path="/global/services" element={
-            <Suspense fallback={<PageLoader />}>
-              <GlobalServices />
-            </Suspense>
-          } />
-          <Route path="/global/logistics" element={
-            <Suspense fallback={<PageLoader />}>
-              <GlobalLogistics />
-            </Suspense>
-          } />
-          <Route path="/global/enterprise" element={
-            <Suspense fallback={<PageLoader />}>
-              <GlobalEnterprise />
             </Suspense>
           } />
 

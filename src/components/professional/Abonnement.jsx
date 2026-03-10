@@ -148,7 +148,7 @@ export function Abonnement() {
         </div>
         {!subscription && (
           <Link
-            to="/professional/pricing"
+            to="/global#pricing"
             className="flex items-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-6 py-3 rounded-lg transition font-medium"
           >
             <Crown className="w-5 h-5" />
@@ -206,7 +206,7 @@ export function Abonnement() {
             </p>
             {recommendedPlanData && (
               <Link
-                to="/professional/pricing"
+                to="/global#pricing"
                 className="inline-flex items-center gap-2 mt-2 text-sm text-red-300 hover:text-red-200 underline"
               >
                 <ArrowUp className="w-4 h-4" />
@@ -333,7 +333,7 @@ export function Abonnement() {
                 ))}
               </ul>
               <Link
-                to="/professional/pricing"
+                to="/global#pricing"
                 className="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-6 py-2 rounded-lg transition font-medium"
               >
                 <ArrowUp className="w-4 h-4" />
@@ -406,7 +406,7 @@ export function Abonnement() {
             vendre plus d'oeuvres et accéder à des outils avancés.
           </p>
           <Link
-            to="/professional/pricing"
+            to="/global#pricing"
             className="inline-flex items-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-8 py-3 rounded-lg transition font-medium"
           >
             Voir les plans premium

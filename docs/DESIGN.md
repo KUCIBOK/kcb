@@ -1,13 +1,9 @@
 # KUCIBOK — DESIGN.md
 **Version** 1.0 — Mars 2026
-**Statut** PHASE 3+ — Proposition future, non adoptée en l'état
-**Design actif** `DESIGN-SYSTEM.md` à la racine (indigo/violet — validé Mars 2026)
-**Aligné sur** PRD V2 · Branding institutionnel premium
+**Statut** ACTIF — Validé Mars 2026
+**Design actif** — Palette noir/ivoire/or (Africa) + noir/argent (Global)
+**Aligne sur** PRD.md · Branding institutionnel premium
 **Langue** FR/EN — Confidentiel
-
-> ⚠️ Ce document décrit la direction visuelle cible pour la Phase 3 (reconnaissance institutionnelle).
-> La palette noir/ivoire/or sera adoptée lors de la refonte des landing pages institutionnelles.
-> En attendant : utiliser `DESIGN-SYSTEM.md` comme référence exclusive.
 
 ---
 
@@ -65,6 +61,18 @@ Le logo Kucibok existant (icône + wordmark) est conservé.
 | **Sable** | `#D4C5A9` | Texte secondaire sur fond clair |
 | **Blanc Pur** | `#FFFFFF` | Texte principal sur fond sombre |
 
+### Couleurs Portail Global
+
+| Nom | Hex | Usage |
+|-----|-----|-------|
+| **Silver** | `#A8B0BC` | Accent principal portail Global |
+| **Silver Light** | `#C4CAD4` | Highlights, titres accent Global |
+| **Silver Dark** | `#6B7280` | Hover states, texte secondaire Global |
+| **Steel** | `#1A1D24` | Cards, sidebars portail Global |
+| **Platinum** | `#D6DAE0` | Surfaces claires portail Global |
+| **Noir Deep** | `#050505` | Background hero, sections sombres |
+| **Ardoise Cool** | `#16181E` | Background piliers, sections alternatives |
+
 ### Couleurs Fonctionnelles
 
 | Nom | Hex | Usage |
@@ -88,9 +96,9 @@ Le logo Kucibok existant (icône + wordmark) est conservé.
 |--------|--------|-------|-------|
 | **Display** | `Playfair Display` | 700 | Titres hero, noms d'oeuvres |
 | **Heading** | `Playfair Display` | 600 | H1, H2, titres sections |
-| **Subheading** | `Inter` | 600 | H3, H4, labels importants |
-| **Body** | `Inter` | 400 | Texte courant |
-| **Caption** | `Inter` | 400 | Metadonnees, dates |
+| **Subheading** | `DM Sans` | 600 | H3, H4, labels importants |
+| **Body** | `DM Sans` | 400 | Texte courant |
+| **Caption** | `DM Sans` | 400 | Metadonnees, dates |
 | **Mono** | `JetBrains Mono` | 400 | IDs certificats, numeros reference |
 
 ### Tailles
@@ -109,7 +117,7 @@ PRIMARY
   Background: Or Kucibok (#C9A84C)
   Text: Noir Profond (#0A0A0A)
   Border-radius: 2px
-  Font: Inter 600 14px uppercase letter-spacing: 0.05em
+  Font: DM Sans 600 14px uppercase letter-spacing: 0.05em
   Hover: Bronze (#8B6914)
 
 SECONDARY
@@ -147,7 +155,7 @@ CARD OEUVRE
 ```
 CERTIFIE KUCIBOK
   Background: Or Kucibok (#C9A84C)
-  Text: Noir, Inter 600 10px uppercase
+  Text: Noir, DM Sans 600 10px uppercase
   Padding: 4px 8px / Border-radius: 2px
 ```
 
@@ -211,16 +219,23 @@ CERTIFIE KUCIBOK
 ```css
 :root {
   --kcb-noir: #0A0A0A;
+  --kcb-noir-deep: #050505;
   --kcb-ardoise: #1C1C1E;
+  --kcb-ardoise-cool: #16181E;
   --kcb-pierre: #3A3A3C;
   --kcb-sable: #D4C5A9;
   --kcb-ivoire: #F5F0E8;
   --kcb-blanc: #FFFFFF;
   --kcb-or: #C9A84C;
   --kcb-bronze: #8B6914;
+  --kcb-silver: #A8B0BC;
+  --kcb-silver-light: #C4CAD4;
+  --kcb-silver-dark: #6B7280;
+  --kcb-steel: #1A1D24;
+  --kcb-platinum: #D6DAE0;
 
   --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   --radius-sm: 2px;
@@ -231,7 +246,46 @@ CERTIFIE KUCIBOK
 
 ---
 
-## 10. ORDRE DE MIGRATION UI
+## 11. STRUCTURE LANDING PAGES
+
+### Gateway (route `/`)
+Split-screen plein ecran. Cote gauche: Kuzi + "Portail Afrique" + CTA or. Cote droite: carte corridor + "Global Portal" + CTA silver. Centre: logo Kucibok dans cercle, change couleur au hover. Click navigue vers /africa ou /global.
+
+### Portail Afrique (`/africa`)
+Sections dans l'ordre:
+1. **Hero** — Kuzi.gif + particules fumee CSS + titre "Votre art merite un standard mondial"
+2. **Pillars** — 3 colonnes: Certification gratuite / Logistique vers le monde / Visibilite internationale
+3. **Services** — Grille 6 cartes (Certification, Portfolio, Logistique, Tracking, Visibilite, Paiements)
+4. **Timeline** — 4 etapes onboarding (Soumission -> Numerisation -> Certification -> Circulation)
+5. **Temoignages** — 3 cartes fond ivoire
+6. **CTA final** — Titre + 2 boutons
+
+### Portail Global (`/global`)
+Sections dans l'ordre:
+1. **Hero** — Cadre artwork geometric + stats flottantes + titre "The Standard for African Art Circulation"
+2. **Pillars** — 3 colonnes: Certified Catalogue / Door-to-Door Logistics / B2B Network
+3. **Catalogue** — Grille 4 oeuvres avec badges certification
+4. **Logistique** — Carte SVG corridor animee + 4 etapes (Request -> Packaging -> Transit -> Delivery)
+5. **Sourcing B2B** — 4 features
+6. **Pricing** — 3 plans (Explorer / Collector / Institution)
+7. **CTA final**
+
+### Animations
+- Scroll reveal: Framer Motion `useInView`, translateY(24px)->0, opacity 0->1, 0.6s cubic-bezier
+- Particules fumee: CSS keyframes smoke-drift, radial gradients
+- Carte corridor: SVG `animateMotion` pour points mobiles, stroke-dasharray pour routes
+- Stats flottantes: CSS keyframes float, translateY bounce
+
+### Breakpoints
+| Breakpoint | Cible | Changements |
+|------------|-------|-------------|
+| > 1024px | Desktop | Grilles multi-colonnes, hero side-by-side |
+| 640-1024px | Tablet | Grilles single-column, hero stacked |
+| < 640px | Mobile | Navigation masquee, Gateway vertical |
+
+---
+
+## 12. ORDRE DE MIGRATION UI
 
 | Priorite | Page | Impact |
 |----------|------|--------|

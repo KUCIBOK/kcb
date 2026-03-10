@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @import "tailwindcss";
 
@@ -259,6 +260,27 @@ td {
   } */
 
   :root {
+    /* KCB Landing tokens — additif, ne casse pas les dashboards */
+    --kcb-noir: #0A0A0A;
+    --kcb-noir-deep: #050505;
+    --kcb-ardoise: #1C1C1E;
+    --kcb-ardoise-cool: #16181E;
+    --kcb-pierre: #3A3A3C;
+    --kcb-sable: #D4C5A9;
+    --kcb-ivoire: #F5F0E8;
+    --kcb-blanc: #FFFFFF;
+    --kcb-or: #C9A84C;
+    --kcb-bronze: #8B6914;
+    --kcb-silver: #A8B0BC;
+    --kcb-silver-light: #C4CAD4;
+    --kcb-silver-dark: #6B7280;
+    --kcb-steel: #1A1D24;
+    --kcb-platinum: #D6DAE0;
+
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body-kcb: 'DM Sans', system-ui, sans-serif;
+    --font-mono-kcb: 'JetBrains Mono', monospace;
+
     --background: 220 40% 10%;
     --foreground: 30 33% 98%;
 
@@ -403,6 +425,23 @@ td {
   --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* KCB Landing palette */
+  --color-kcb-noir: #0A0A0A;
+  --color-kcb-noir-deep: #050505;
+  --color-kcb-ardoise: #1C1C1E;
+  --color-kcb-ardoise-cool: #16181E;
+  --color-kcb-pierre: #3A3A3C;
+  --color-kcb-sable: #D4C5A9;
+  --color-kcb-ivoire: #F5F0E8;
+  --color-kcb-blanc: #FFFFFF;
+  --color-kcb-or: #C9A84C;
+  --color-kcb-bronze: #8B6914;
+  --color-kcb-silver: #A8B0BC;
+  --color-kcb-silver-light: #C4CAD4;
+  --color-kcb-silver-dark: #6B7280;
+  --color-kcb-steel: #1A1D24;
+  --color-kcb-platinum: #D6DAE0;
 }
 
 @keyframes slide-out-right {
@@ -440,3 +479,80 @@ td {
 .purple-kcb{
   color : rgb(177, 50, 167);
 } */
+
+/* ═══════════════════════════════════════════
+   KCB Landing — Utilities & Animations
+═══════════════════════════════════════════ */
+.font-dm-sans {
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+.font-jetbrains {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Grain overlay for landing pages */
+.grain-overlay {
+  position: relative;
+}
+.grain-overlay::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+
+/* Smoke particles — Africa hero */
+@keyframes smoke-drift-1 {
+  0%, 100% { transform: translateX(0) translateY(0); opacity: 0.5; }
+  50% { transform: translateX(-20px) translateY(-15px); opacity: 0.8; }
+}
+@keyframes smoke-drift-2 {
+  0%, 100% { transform: translateX(0) translateY(0); opacity: 0.4; }
+  50% { transform: translateX(15px) translateY(-20px); opacity: 0.7; }
+}
+@keyframes smoke-drift-3 {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+  50% { transform: translateY(-25px) scale(1.1); opacity: 0.6; }
+}
+@keyframes smoke-1 {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+  50% { transform: translateX(-50%) scale(1.15); opacity: 0.6; }
+}
+@keyframes smoke-2 {
+  0%, 100% { transform: translateX(-50%) scale(1) translateY(0); opacity: 1; }
+  50% { transform: translateX(-50%) scale(1.2) translateY(-10px); opacity: 0.5; }
+}
+
+/* Float animations — Global hero stats */
+@keyframes kcb-float-1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes kcb-float-2 {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-6px) translateX(4px); }
+}
+
+/* Geo line separator */
+.kcb-geo-line {
+  width: 100%;
+  height: 1px;
+  position: relative;
+}
+.kcb-geo-line::before,
+.kcb-geo-line::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--accent, var(--kcb-or));
+  transform: rotate(45deg);
+  opacity: 0.4;
+}
+.kcb-geo-line::before { left: 0; }
+.kcb-geo-line::after { right: 0; }
