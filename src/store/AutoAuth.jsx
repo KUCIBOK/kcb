@@ -1,16 +1,15 @@
 /**
- * AutoAuth — Composant de restauration de session au montage de l'app.
+ * AutoAuth — Composant de redirection post-OAuth.
  *
  * Avec Supabase, la session est gérée automatiquement par onAuthStateChange()
- * dans AuthContext. Ce composant est conservé pour les redirections post-OAuth
- * (callback Google) et la restauration de session initiale.
+ * dans AuthContext. Ce composant gère uniquement les redirections post-OAuth
+ * (callback Google) — il ne fait PAS de getSession() pour éviter le double appel.
  *
  * Il ne fait rien de visible — retourne un fragment vide.
  */
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 
 /** @type {Record<string, string>} Mapping rôle → route dashboard */
@@ -22,7 +21,7 @@ const DASHBOARD_BY_ROLE = {
 };
 
 /**
- * Restaure la session Supabase au démarrage et gère les redirections OAuth.
+ * Gère les redirections OAuth. La session est déjà restaurée par AuthContext.
  * À monter une seule fois, au plus haut niveau de l'arbre de composants.
  *
  * @returns {React.ReactElement}
@@ -32,19 +31,12 @@ export function AutoAuth() {
   const { user } = useAuth();
 
   useEffect(() => {
-    // Récupère la session active (inclut le callback OAuth via l'URL hash)
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error || !session) return;
-
-      const role = session.user?.user_metadata?.role;
-      const isOAuthCallback = window.location.hash.includes('access_token');
-
-      // Redirige vers le dashboard uniquement après un callback OAuth
-      if (isOAuthCallback && role && DASHBOARD_BY_ROLE[role]) {
-        navigate(DASHBOARD_BY_ROLE[role]);
-      }
-    });
-  }, [navigate]);
+    // Redirige vers le dashboard uniquement après un callback OAuth
+    const isOAuthCallback = window.location.hash.includes('access_token');
+    if (isOAuthCallback && user?.role && DASHBOARD_BY_ROLE[user.role]) {
+      navigate(DASHBOARD_BY_ROLE[user.role]);
+    }
+  }, [navigate, user]);
 
   return <></>;
 }

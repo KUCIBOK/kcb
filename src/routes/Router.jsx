@@ -173,12 +173,22 @@ export function Router() {
                 </Suspense>
               }
             />
-            <Route path="/artwork-checkout/:id" element={
-                <Suspense fallback={<PageLoader />}>
-                  <ArtworkCheckout />
-                </Suspense>
-              }
-            />
+            {/* Routes de paiement — protégées par authentification */}
+            <Route element={<AuthProtectedRoute />}>
+              <Route path="/artwork-checkout/:id" element={
+                  <Suspense fallback={<PageLoader />}>
+                    <ArtworkCheckout />
+                  </Suspense>
+                }
+              />
+              <Route path="/subscription-checkout/:id" element={
+                  <Suspense fallback={<PageLoader />}>
+                    <SubscriptionPlanCheckout />
+                  </Suspense>
+                }
+              />
+            </Route>
+            {/* Résultats de paiement — accessibles pour afficher confirmation/erreur */}
             <Route path="/artwork-purchase-success/:transactionId" element={
                 <Suspense fallback={<PageLoader />}>
                   <ArtworkPurchaseSuccess />
@@ -188,27 +198,6 @@ export function Router() {
             <Route path="/artwork-purchase-failed/:transactionId" element={
                 <Suspense fallback={<PageLoader />}>
                   <ArtworkPurchaseFailed />
-                </Suspense>
-              }
-            />
-            <Route path="/subscription-checkout/:id" element={
-                <Suspense fallback={<PageLoader />}>
-                  {" "}
-                  <SubscriptionPlanCheckout />{" "}
-                </Suspense>
-              }
-            />
-            <Route path="/subscription-purchase-success/:subId" element={
-                <Suspense fallback={<PageLoader />}>
-                  {" "}
-                  <SubscriptionPlanSuccess />{" "}
-                </Suspense>
-              }
-            />
-            <Route path="/subscription-purchase-failed/:subId" element={
-                <Suspense fallback={<PageLoader />}>
-                  {" "}
-                  <SubscriptionPlanFailed />{" "}
                 </Suspense>
               }
             />
@@ -435,8 +424,16 @@ export function Router() {
           </Route>
 
           {/* Route 404 */}
-          <Route path="*" element={<Error404 />} />
-          <Route path="/404" element={<Error404 />} />
+          <Route path="*" element={
+            <Suspense fallback={<PageLoader />}>
+              <Error404 />
+            </Suspense>
+          } />
+          <Route path="/404" element={
+            <Suspense fallback={<PageLoader />}>
+              <Error404 />
+            </Suspense>
+          } />
         </Route>
       </Routes>
     </>
