@@ -45,3 +45,7 @@ docs/map-paths-simplified.txt
 docs/gateway-map-final.txt
 docs/logistics-map-final.txt
 preview.html
+.vercel
+
+# Local screenshots
+/dashboard/

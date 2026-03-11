@@ -34,12 +34,22 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_DEV_BACKEND_URL || "http://localhost:3000",
           changeOrigin: true,
           secure: false,
-          ws: true, // WebSockets (P3-PERF-003 — enchères temps réel)
+          ws: false,
         },
       },
     },
     build: {
       outDir: "dist",
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-supabase': ['@supabase/supabase-js'],
+            'vendor-ui': ['framer-motion', 'lucide-react', 'sonner'],
+            'vendor-charts': ['chart.js', 'react-chartjs-2'],
+          },
+        },
+      },
     },
   };
 });
