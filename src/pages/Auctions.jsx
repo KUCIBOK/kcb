@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { AlertCircle, Clock, Gavel, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DataLoader } from "../components/loaders/PageLoader";
@@ -13,8 +12,12 @@ export default function Auctions() {
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
-        const res = await axios.get("/api/auction/ongoing");
-        setAuctions(Array.isArray(res.data) ? res.data : []);
+        const res = await fetch("/api/auction/ongoing");
+        if (!res.ok) {
+          throw new Error(`Erreur ${res.status}`);
+        }
+        const data = await res.json();
+        setAuctions(Array.isArray(data) ? data : []);
         setError(null);
       } catch (err) {
         setError("Impossible de charger les enchères. Veuillez réessayer plus tard.");

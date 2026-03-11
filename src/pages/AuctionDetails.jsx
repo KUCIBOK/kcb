@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios";
 import { DataLoader } from "../components/loaders/PageLoader";
 import AuctionArtworkInfo from "../components/auction/auctionDetails/AuctionArtworkInfo";
 import AuctionBidInfo from "../components/auction/auctionDetails/AuctionBidInfo";
@@ -15,15 +14,18 @@ export default function AuctionDetails() {
 
   const fetchAuctionDetails = async () => {
     try {
-      const res = await axios.get(`/api/auction/${id}/details`);
+      const res = await fetch(`/api/auction/${id}/details`);
+      if (!res.ok) {
+        throw new Error(`Erreur ${res.status}`);
+      }
+      const data = await res.json();
       setAuction({
-        ...res.data,
-        bids: Array.isArray(res.data.bids) ? res.data.bids : [],
-        bidCount: res.data.bidCount || res.data.bids?.length || 0,
+        ...data,
+        bids: Array.isArray(data.bids) ? data.bids : [],
+        bidCount: data.bidCount || data.bids?.length || 0,
       });
     } catch (err) {
       setError("Erreur lors du chargement de l'enchère");
-      console.error(err);
     } finally {
       setLoading(false);
     }

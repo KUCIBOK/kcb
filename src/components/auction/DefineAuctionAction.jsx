@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { PenBox } from "lucide-react";
-import axios from "axios";
 import { Modal, Input, Button, toast } from "../ui";
 import { utils } from "../../api/useAPI";
 
@@ -52,21 +51,26 @@ function DefineAuctionModal({ artwork, closeModal }) {
     try {
       setState(prev => ({...prev, loading: true}));
 
-      await axios.post(
-        `${utils.api}/auction`,
-        {
+      const res = await fetch(`${utils.api}/auction`, {
+        method: 'POST',
+        headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           artworkId: artwork._id,
           startingPrice: Number(state.startingPrice),
           startTime: state.startTime,
           endTime: state.endTime,
-        },
-        { headers: utils.options.headers },
-      );
+        }),
+      });
 
-      toast.success('✓ Enchère créée avec succès');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || `Erreur ${res.status}`);
+      }
+
+      toast.success('Enchere creee avec succes');
       closeModal();
     } catch (err) {
-      toast.error('× ' + (err.response?.data?.message || err.message || 'Erreur'));
+      toast.error(err.message || 'Erreur');
     } finally {
       setState(prev => ({...prev, loading: false}));
     }
