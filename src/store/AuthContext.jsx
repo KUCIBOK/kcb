@@ -147,11 +147,13 @@ export function AuthContextProvider({ children }) {
   /** Met à jour les données utilisateur dans Supabase (public.users + user_metadata). */
   const updateUserCtx = useCallback(async (payload) => {
     if (!user?._id) return { error: 'Utilisateur non connecté.' };
-    const updated = await updateUser(user._id, payload);
+    // Ne jamais autoriser le changement de rôle depuis le frontend
+    const { role: _discardedRole, ...safePayload } = payload;
+    const updated = await updateUser(user._id, safePayload);
     if (updated?._id) {
-      // Sync le user_metadata Supabase si le rôle/nom change
-      if (payload.role || payload.name) {
-        await supabase.auth.updateUser({ data: payload });
+      // Sync le user_metadata Supabase si le nom change (jamais le rôle)
+      if (safePayload.name) {
+        await supabase.auth.updateUser({ data: { name: safePayload.name } });
       }
       setUser((prev) => ({ ...prev, ...updated }));
       await createLog({

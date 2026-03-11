@@ -34,7 +34,11 @@ export const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
  * @returns {import('@supabase/supabase-js').SupabaseClient}
  */
 export function supabaseForUser(accessToken) {
-  return createClient(SUPABASE_URL, process.env.SUPABASE_ANON_KEY ?? SUPABASE_SERVICE_KEY, {
+  const anonKey = process.env.SUPABASE_ANON_KEY;
+  if (!anonKey) {
+    throw new Error('[api/_lib/supabase] SUPABASE_ANON_KEY requis pour supabaseForUser — ne jamais utiliser service_role comme fallback');
+  }
+  return createClient(SUPABASE_URL, anonKey, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });

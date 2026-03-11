@@ -141,7 +141,7 @@ const notFound = (res, entity = 'Ressource') => fail(res, `${entity} introuvable
  */
 const serverError = (res, err) => {
   console.error('[API ERROR]', err?.message ?? err);
-  return fail(res, err?.message ?? 'Erreur serveur interne', 500);
+  return fail(res, 'Erreur serveur interne', 500);
 };
 
 /**
@@ -178,17 +178,24 @@ async function requireAuth(req) {
 
 /**
  * Vérifie que l'utilisateur possède l'un des rôles requis.
+ * Lit le rôle depuis public.users (source de vérité DB) et non user_metadata (spoofable).
  *
  * @param {object}   user  - Utilisateur Supabase
  * @param {string[]} roles - Rôles autorisés
- * @returns {{ ok: true } | { error: string, status: number }}
+ * @returns {Promise<{ ok: true, role: string } | { error: string, status: number }>}
  */
-function requireRole(user, roles) {
-  const userRole = user.user_metadata?.role ?? 'collector';
-  if (!roles.includes(userRole)) {
+async function requireRole(user, roles) {
+  const { data: dbUser, error } = await supabaseAdmin
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  const userRole = dbUser?.role ?? user.user_metadata?.role ?? 'collector';
+  if (error || !roles.includes(userRole)) {
     return { error: `Accès refusé. Rôle requis : ${roles.join(' ou ')}`, status: 403 };
   }
-  return { ok: true };
+  return { ok: true, role: userRole };
 }
 
 /**
@@ -197,7 +204,7 @@ function requireRole(user, roles) {
  * @param {object} user
  * @returns {{ ok: true } | { error: string, status: number }}
  */
-const requireAdmin = (user) => requireRole(user, ['admin']);
+const requireAdmin = async (user) => requireRole(user, ['admin']);
 
 /**
  * Vérifie que l'utilisateur est professional ou admin.
@@ -205,7 +212,22 @@ const requireAdmin = (user) => requireRole(user, ['admin']);
  * @param {object} user
  * @returns {{ ok: true } | { error: string, status: number }}
  */
-const requirePro = (user) => requireRole(user, ['professional', 'admin']);
+const requirePro = async (user) => requireRole(user, ['professional', 'admin']);
+
+/**
+ * Récupère le rôle d'un utilisateur depuis la DB (source de vérité).
+ *
+ * @param {string} userId
+ * @returns {Promise<string>}
+ */
+async function getDbRole(userId) {
+  const { data } = await supabaseAdmin
+    .from('users')
+    .select('role')
+    .eq('id', userId)
+    .single();
+  return data?.role ?? 'collector';
+}
 
 /**
  * Vérifie la clé API interne (header kcb-api-key).
@@ -358,6 +380,9 @@ async function routeReportError(req, res) {
   const { message, stack, url, userAgent } = req.body ?? {};
   if (!message) return fail(res, 'message requis');
 
+  // Sanitize les inputs pour éviter les injections HTML
+  const esc = (s) => String(s ?? 'N/A').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
   const { Resend } = await import('resend');
   const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -367,10 +392,10 @@ async function routeReportError(req, res) {
     subject: '[Kucibok] Erreur critique signalée',
     html: `
       <h2>Erreur critique — Kucibok</h2>
-      <p><strong>Message :</strong> ${message}</p>
-      <p><strong>URL :</strong> ${url ?? 'N/A'}</p>
-      <p><strong>User Agent :</strong> ${userAgent ?? 'N/A'}</p>
-      <pre>${stack ?? ''}</pre>
+      <p><strong>Message :</strong> ${esc(message)}</p>
+      <p><strong>URL :</strong> ${esc(url)}</p>
+      <p><strong>User Agent :</strong> ${esc(userAgent)}</p>
+      <pre>${esc(stack)}</pre>
       <p><em>${new Date().toISOString()}</em></p>
     `,
   });
@@ -421,7 +446,7 @@ async function routeAuth(req, res, action) {
 async function authGetById(req, res, id) {
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
-  const adminCheck = requireAdmin(authResult.user);
+  const adminCheck = await requireAdmin(authResult.user);
   if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
   const { data, error } = await supabaseAdmin.auth.admin.getUserById(id);
@@ -460,7 +485,7 @@ async function authSignup(req, res) {
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    email_confirm:  true,
+    email_confirm:  false,
     user_metadata:  { role, name: name ?? null, country: country ?? null, username: username ?? null },
   });
 
@@ -715,6 +740,15 @@ async function routeArtworks(req, res) {
       .order('created_at', { ascending: false })
       .range(from, to);
 
+    // Vérifier si l'appelant est admin (nécessaire pour voir les non-approuvées)
+    let callerIsAdmin = false;
+    const authHeader = req.headers.authorization ?? '';
+    const authToken = authHeader.replace(/^Bearer\s+/i, '').trim();
+    if (authToken) {
+      const { data: { user: authUser } } = await supabaseAdmin.auth.getUser(authToken);
+      if (authUser) callerIsAdmin = (await getDbRole(authUser.id)) === 'admin';
+    }
+
     if (status)    query = query.eq('status', status);
     if (category)  query = query.eq('category', category);
     if (for_sale)  query = query.eq('for_sale', for_sale === 'true');
@@ -722,8 +756,8 @@ async function routeArtworks(req, res) {
     if (artist_id) query = query.eq('artist_id', artist_id);
     if (user_id)   query = query.eq('user_id', user_id);
 
-    // Par défaut : uniquement les œuvres approuvées (requêtes publiques)
-    if (!status && !user_id && !artist_id) query = query.eq('status', 'approved');
+    // Forcer status=approved pour les requêtes non-admin (sécurité)
+    if (!callerIsAdmin && !status) query = query.eq('status', 'approved');
 
     const { data, error, count } = await query;
     if (error) return fail(res, error.message);
@@ -820,14 +854,17 @@ async function routeArtworkById(req, res, id) {
       .from('artworks').select('user_id').eq('id', id).single();
     if (!existing) return notFound(res, 'Œuvre');
 
-    const isAdmin = user.user_metadata?.role === 'admin';
+    const isAdmin = (await getDbRole(user.id)) === 'admin';
     if (!isAdmin && existing.user_id !== user.id) return fail(res, 'Accès refusé', 403);
 
+    // Champs admin-only : status et featured (empêcher le self-approve)
+    const ADMIN_ONLY = ['status', 'featured'];
     const ALLOWED = [
       'title', 'description', 'image', 'medium', 'condition', 'provenance',
       'height', 'width', 'weight', 'price', 'currency', 'category', 'tags',
-      'for_sale', 'featured', 'status', 'availability_status',
+      'for_sale', 'availability_status',
       'edition_number', 'edition_total', 'etherscan',
+      ...(isAdmin ? ADMIN_ONLY : []),
     ];
     const updates = {};
     for (const key of ALLOWED) {
@@ -844,7 +881,7 @@ async function routeArtworkById(req, res, id) {
   if (req.method === 'PATCH') {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
-    const adminCheck = requireAdmin(authResult.user);
+    const adminCheck = await requireAdmin(authResult.user);
     if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
     const { status } = req.body ?? {};
@@ -859,7 +896,7 @@ async function routeArtworkById(req, res, id) {
   if (req.method === 'DELETE') {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
-    const adminCheck = requireAdmin(authResult.user);
+    const adminCheck = await requireAdmin(authResult.user);
     if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
     const { error } = await supabaseAdmin.from('artworks').delete().eq('id', id);
@@ -1010,7 +1047,7 @@ async function routeArtistById(req, res, id) {
       .from('artists').select('user_id').eq('id', id).single();
     if (!existing) return notFound(res, 'Artiste');
 
-    const isAdmin = user.user_metadata?.role === 'admin';
+    const isAdmin = (await getDbRole(user.id)) === 'admin';
     if (!isAdmin && existing.user_id !== user.id) return fail(res, 'Accès refusé', 403);
 
     const ALLOWED = ['name', 'username', 'image', 'country', 'biography', 'portfolio',
@@ -1059,7 +1096,7 @@ async function routeBlog(req, res) {
   if (req.method === 'POST') {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
-    const proCheck = requirePro(authResult.user);
+    const proCheck = await requirePro(authResult.user);
     if (!proCheck.ok) return fail(res, proCheck.error, proCheck.status);
 
     const { title, content, image, category, tags, published } = req.body ?? {};
@@ -1106,7 +1143,7 @@ async function routeCategories(req, res) {
   if (req.method === 'POST') {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
-    const adminCheck = requireAdmin(authResult.user);
+    const adminCheck = await requireAdmin(authResult.user);
     if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
     const { name, image } = req.body ?? {};
@@ -1143,7 +1180,7 @@ async function routePlans(req, res) {
   if (req.method === 'POST') {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
-    const adminCheck = requireAdmin(authResult.user);
+    const adminCheck = await requireAdmin(authResult.user);
     if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
     const { name, price, currency, duration_days, features } = req.body ?? {};
@@ -1187,7 +1224,7 @@ async function routeDelivery(req, res) {
     const { user } = authResult;
 
     const { from, to, page, limit } = parsePagination(req);
-    const isAdmin = user.user_metadata?.role === 'admin';
+    const isAdmin = (await getDbRole(user.id)) === 'admin';
 
     let query = supabaseAdmin
       .from('delivery_requests')
@@ -1283,8 +1320,8 @@ async function routeTrackDelivery(req, res, tracking_id) {
     .from('delivery_requests')
     .select(`
       id, tracking_id, status, corridor,
-      origin_country, delivery_address,
-      recipient_name, delivery_priority,
+      origin_country, destination_country, destination_city,
+      delivery_priority,
       insurance_required, created_at,
       delivery_events ( status, note, date )
     `)
@@ -1293,10 +1330,13 @@ async function routeTrackDelivery(req, res, tracking_id) {
 
   if (error || !data) return notFound(res, 'Livraison');
 
+  // RGPD : ne pas exposer l'adresse complète ni le nom du destinataire
   return ok(res, {
     tracking_id: data.tracking_id,
     status:      data.status,
     corridor:    data.corridor,
+    origin:      data.origin_country,
+    destination: data.destination_city ? `${data.destination_city}, ${data.destination_country}` : data.destination_country,
     priority:    data.delivery_priority,
     created_at:  data.created_at,
     events:      (data.delivery_events ?? []).sort((a, b) => new Date(b.date) - new Date(a.date)),
@@ -1316,7 +1356,7 @@ async function routeDeliveryById(req, res, id) {
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
   const { user } = authResult;
-  const isAdmin = user.user_metadata?.role === 'admin';
+  const isAdmin = (await getDbRole(user.id)) === 'admin';
 
   if (req.method === 'GET') {
     const { data, error } = await supabaseAdmin
@@ -1390,8 +1430,8 @@ async function routeLog(req, res) {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
 
-    const { description, action, entity, entity_id, userId } = req.body ?? {};
-    const user_id = userId ?? authResult.user?.id;
+    const { description, action, entity, entity_id } = req.body ?? {};
+    const user_id = authResult.user.id;
 
     const { data, error } = await supabaseAdmin
       .from('logs')
@@ -1406,7 +1446,7 @@ async function routeLog(req, res) {
   if (req.method === 'GET') {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
-    const adminCheck = requireAdmin(authResult.user);
+    const adminCheck = await requireAdmin(authResult.user);
     if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
     const { from, to, page, limit } = parsePagination(req);
@@ -1549,6 +1589,13 @@ async function routePaydunyaInit(req, res) {
 async function routePaydunyaCallback(req, res) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
 
+  // Vérifier le hash PayDunya pour authentifier le webhook
+  const receivedHash = req.headers['paydunya-hash'];
+  if (!receivedHash || receivedHash !== PAYDUNYA_MASTER_KEY) {
+    console.error('[PAYDUNYA] Hash de webhook invalide');
+    return fail(res, 'Signature webhook invalide', 403);
+  }
+
   const { data: paymentData } = req.body ?? {};
   if (!paymentData) return fail(res, 'Données PayDunya manquantes');
 
@@ -1656,6 +1703,17 @@ async function routeSubscription(req, res) {
   if (req.method === 'POST') {
     const { plan_id, payment_ref } = req.body ?? {};
     if (!plan_id) return fail(res, 'plan_id requis');
+    if (!payment_ref) return fail(res, 'payment_ref requis');
+
+    // Vérifier que le paiement a bien été complété
+    const { data: txRecord } = await supabaseAdmin
+      .from('transactions')
+      .select('id, status')
+      .eq('payment_ref', payment_ref)
+      .eq('status', 'completed')
+      .maybeSingle();
+
+    if (!txRecord) return fail(res, 'Paiement non vérifié. Effectuez le paiement avant d\'activer l\'abonnement.', 402);
 
     const { data: plan } = await supabaseAdmin
       .from('plans')
@@ -1679,7 +1737,7 @@ async function routeSubscription(req, res) {
         next_payment_date: end_date.toISOString(),
         amount:            plan.price,
         currency:          plan.currency,
-        payment_ref:       payment_ref ?? null,
+        payment_ref,
       })
       .select('*, plans(*)')
       .single();
@@ -1709,7 +1767,7 @@ async function routeSourcing(req, res) {
     const { user } = authResult;
 
     const { from, to, page, limit } = parsePagination(req);
-    const isAdmin = user.user_metadata?.role === 'admin';
+    const isAdmin = (await getDbRole(user.id)) === 'admin';
 
     let query = supabaseAdmin
       .from('sourcing_inquiries')
@@ -1771,7 +1829,7 @@ async function routeCampaignSend(req, res) {
 
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
-  const proCheck = requirePro(authResult.user);
+  const proCheck = await requirePro(authResult.user);
   if (!proCheck.ok) return fail(res, proCheck.error, proCheck.status);
 
   const { campaign_id } = req.body ?? {};
@@ -1952,7 +2010,7 @@ async function routeProfile(req, res, id) {
   if (authResult.error) return fail(res, authResult.error, authResult.status);
   const { user } = authResult;
 
-  const isAdmin = user.user_metadata?.role === 'admin';
+  const isAdmin = (await getDbRole(user.id)) === 'admin';
   if (!isAdmin && user.id !== id) return fail(res, 'Accès refusé', 403);
 
   if (req.method === 'GET') {
