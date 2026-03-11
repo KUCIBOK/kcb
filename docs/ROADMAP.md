@@ -134,7 +134,7 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 - [ ] Onboarding international : validation + abonnement payant
 - [ ] Catalogue certifie : endpoint filtrable (acces restreint)
 - [ ] Systeme demande sourcing privee (anonymisee)
-- [ ] Integration Stripe pour abonnements Global
+- [ ] Paiements Global via PayDunya (abonnements internationaux)
 
 **Frontend**
 - [x] Refonte `GlobalPage.jsx` : landing institutionnelle EN
