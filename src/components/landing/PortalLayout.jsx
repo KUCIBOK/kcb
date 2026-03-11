@@ -1,0 +1,33 @@
+import { useEffect } from "react"
+import PortalNav from "./PortalNav"
+import PortalFooter from "./PortalFooter"
+
+/** CSS variable maps per portal. */
+const PORTAL_VARS = {
+  africa: { "--accent": "#C9A84C", "--accent-dark": "#8B6914" },
+  global: { "--accent": "#A8B0BC", "--accent-dark": "#6B7280" },
+}
+
+/**
+ * Wrapper layout for portal landing pages.
+ * Sets CSS accent vars, renders Nav + children + Footer + grain overlay.
+ * @param {object} props
+ * @param {"africa"|"global"} props.portal - Active portal
+ * @param {React.ReactNode} props.children - Page sections
+ */
+export default function PortalLayout({ portal, children }) {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  return (
+    <div
+      className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans grain-overlay"
+      style={PORTAL_VARS[portal]}
+    >
+      <PortalNav portal={portal} />
+      <main>{children}</main>
+      <PortalFooter portal={portal} />
+    </div>
+  )
+}

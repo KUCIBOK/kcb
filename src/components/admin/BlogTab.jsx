@@ -1,0 +1,220 @@
+import { Plus } from "lucide-react";
+import { useBlog } from "../../store/BlogContext";
+import { useState } from "react";
+import { BlogTable } from "./BlogTable";
+import { useAuth } from "../../store/AuthContext";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { Modal, Input, Button, toast } from "../ui";
+
+
+export function BlogTab() {
+  const { blogPosts, archive } = useBlog();
+  const [showModal, setShowModal] = useState(false);
+  return (
+    <>
+      <div className="rounded-xl p-4 md:p-6 mb-6 shadow-md">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-white">Gestion des articles</h2>
+          <button
+            onClick={() => setShowModal(true)}
+            className="rounded bg-indigo-kcb/90 hover:bg-indigo-kcb px-3 py-2 text-white text-xs md:text-sm font-medium flex items-center gap-2 transition"
+          >
+            <Plus className="w-4 h-4" /> Ajouter
+          </button>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-base font-semibold text-zinc-300 mb-2">Articles publiés</h3>
+          <BlogTable posts={blogPosts} />
+        </div>
+        <div>
+          <h3 className="text-base font-semibold text-zinc-300 mb-2">Articles archivés</h3>
+          <BlogTable posts={archive} />
+        </div>
+      </div>
+      {showModal && <AddPostModal closeModal={() => setShowModal(false)} />}
+    </>
+  );
+}
+
+
+function AddPostModal({ closeModal }) {
+  const { addPost } = useBlog();
+  const { user } = useAuth();
+  const [state, setState] = useState({
+    title: "",
+    excerpt: "",
+    image: "",
+    content: "",
+    authorId: user?.id,
+    tags: [],
+    tag: "",
+    loading: false,
+    show: ""
+  });
+
+  const handleAddPost = async (e) => {
+    e.preventDefault();
+    try {
+      if (state?.tags?.length > 0) {
+        setState({ ...state, loading: true });
+        const charge = { ...state };
+        delete charge.loading;
+        delete charge.tag;
+        delete charge.show;
+        const formData = new FormData();
+        Object.keys(charge).forEach((key) => {
+          if (key === 'image') {
+            formData.append('image', charge?.image, charge?.image?.filename);
+            return;
+          }
+          formData.append(key, charge[key]);
+        });
+        const added = await addPost(formData);
+        if (added?._id) {
+          toast.success('✓ Article créé avec succès');
+          closeModal();
+        } else {
+          toast.error('× Erreur lors de la création');
+        }
+        setState({ ...state, loading: false });
+      } else {
+        toast.error('× Ajoutez au moins un mot-clé');
+      }
+    } catch (error) {
+      toast.error('× Erreur serveur');
+      setState({ ...state, loading: false });
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setState({ ...state, image: file, show: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={true}
+      onClose={closeModal}
+      title="Ajouter un article"
+      size="md"
+    >
+      <form onSubmit={handleAddPost} className="space-y-4 max-h-[70vh] overflow-y-auto">
+        <Input
+          label="Titre"
+          value={state.title}
+          onChange={(e) => setState({ ...state, title: e.target.value })}
+          placeholder="Titre de l'article"
+          minLength={5}
+          required
+        />
+
+        <Input
+          label="Extrait"
+          value={state.excerpt}
+          onChange={(e) => setState({ ...state, excerpt: e.target.value })}
+          placeholder="Extrait de l'article"
+          minLength={5}
+          required
+        />
+
+        {/* Image Upload */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 text-sm"
+            required
+          />
+          {state?.show && (
+            <div className="mt-2 flex justify-center">
+              <img src={state.show} alt="aperçu" className="rounded-lg h-20 object-contain" />
+            </div>
+          )}
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Mots-clés</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={state.tag}
+              onChange={(e) => setState({ ...state, tag: e.target.value })}
+              placeholder="Mot-clé (max 12 caractères)"
+              minLength={3}
+              maxLength={12}
+              className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (state.tag.length > 0 && state.tags.length < 5) {
+                  setState({ ...state, tags: [...state.tags, state.tag], tag: "" });
+                }
+              }}
+              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="flex flex-wrap mt-2 gap-2">
+            {state.tags.map((tag, index) => (
+              <span
+                key={index}
+                className="bg-purple-600/50 text-white rounded-full px-3 py-1 text-xs font-semibold flex items-center gap-2"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => setState({ ...state, tags: state.tags.filter(item => item !== tag) })}
+                  className="ml-1 text-xs text-white/70 hover:text-red-400"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Content Editor */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Contenu</label>
+          <ReactQuill
+            theme="snow"
+            value={state.content}
+            onChange={(value) => setState({ ...state, content: value })}
+            className="border border-gray-800 rounded-lg bg-white text-black"
+            placeholder="Contenu de votre article"
+          />
+        </div>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={closeModal}
+          >
+            Annuler
+          </Button>
+          <Button
+            type="submit"
+            disabled={state.loading}
+            loading={state.loading}
+          >
+            Enregistrer
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}

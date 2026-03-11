@@ -1,0 +1,32 @@
+# robots.txt for Kucibok.io
+
+User-agent: *
+# Bloquer les espaces privés
+Disallow: /dashboard/
+Disallow: /login/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /profile/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /settings/
+Disallow: /uploads/
+Disallow: /backend/
+Disallow: /src/
+Disallow: /public/
+Disallow: /node_modules/
+Disallow: /*?*   # Bloque les URLs avec paramètres (optionnel, à adapter selon ton routing)
+
+# Autoriser les pages publiques
+Allow: /
+
+# Bloquer les fichiers sensibles
+Disallow: /*.env
+Disallow: /*.json$
+Disallow: /*.md$
+Disallow: /*.log$
+Disallow: /*.git
+
+# Sitemap (à adapter si tu en as un)
+Sitemap: https://kucibok.com/sitemap.xml

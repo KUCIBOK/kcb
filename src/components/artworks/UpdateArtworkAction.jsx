@@ -1,0 +1,238 @@
+import { useState } from "react";
+import { useArtworks } from "../../store/ArtworkContext";
+import { Camera, PenBox } from "lucide-react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useCategoryStore } from "../../store/CategoryStore";
+import { Modal, Input, Select, Button, toast } from "../ui";
+
+export function UpdateArtworkAction({ artwork }) {
+  const [state, setState] = useState({
+    modal: false,
+  });
+
+  return (
+    <>
+      <button
+        title="Mettre à jour"
+        className="rounded-md p-2 text-white flex items-center bg-forest/90"
+        onClick={() => setState({ ...state, modal: true })}
+      >
+        <PenBox className="w-4 h-4 text-white" />
+      </button>
+
+      {state?.modal && (
+        <UpdateArtworkModal
+          artwork={artwork}
+          closeModal={() => setState({ ...state, modal: false })}
+        />
+      )}
+    </>
+  );
+}
+
+function UpdateArtworkModal({ artwork, closeModal }) {
+  const { updateArtwork } = useArtworks();
+  const { categories } = useCategoryStore();
+  const [state, setState] = useState({
+    ...artwork,
+    loading: false,
+    error: "",
+    show: artwork?.image,
+  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setState({ ...state, loading: true });
+      let charge = { ...state };
+      delete charge.loading;
+      delete charge.error;
+      delete charge.show;
+      delete charge.modal;
+      const formData = new FormData();
+      Object.keys(charge).forEach((key) => {
+        formData.append(key, charge[key]);
+      });
+      const updated = await updateArtwork(artwork?._id, formData);
+      if (updated?._id) {
+        toast.success('✓ Œuvre mise à jour');
+        closeModal();
+      } else {
+        toast.error('× Erreur lors de la mise à jour');
+        setState({ ...state, loading: false, error: updated?.error });
+      }
+    } catch (error) {
+      toast.error('× Erreur serveur');
+      setState({ ...state, loading: false });
+    }
+  };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setState({ ...state, image: file, show: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const categoryOptions = categories.map(cat => ({ value: cat.title, label: cat.title }));
+  
+  return (
+    <Modal
+      isOpen={true}
+      onClose={closeModal}
+      title="Modifier l'œuvre"
+      size="lg"
+    >
+      <form onSubmit={handleSubmit} method="post" className="space-y-4 max-h-[70vh] overflow-y-auto">
+        {/* Image Upload */}
+        <div className="flex flex-col items-center">
+          {state?.image ? (
+            <img
+              src={state?.show}
+              alt="Artwork"
+              className="w-20 h-20 object-cover rounded-full mb-3 border border-gray-700"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-indigo-600/20 mb-3 flex justify-center items-center border border-gray-700">
+              <Camera className="w-8 h-8 text-indigo-400" />
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => document.getElementById('image').click()}
+            className="text-xs font-medium px-3 py-2 border border-gray-700 bg-gray-800 hover:bg-gray-700 rounded transition"
+          >
+            Modifier la photo
+          </button>
+          <input
+            id="image"
+            className="hidden"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+        </div>
+  
+        {/* Form Fields */}
+        <Input
+          label="Titre"
+          value={state.title}
+          onChange={(e) => setState({ ...state, title: e.target.value })}
+          placeholder="Titre de l'œuvre"
+          minLength={3}
+          required
+        />
+  
+        <Input
+          label="Artiste"
+          value={state.artist}
+          onChange={(e) => setState({ ...state, artist: e.target.value })}
+          placeholder="Nom de l'artiste"
+          required
+        />
+  
+        <Select
+          label="Catégorie"
+          options={categoryOptions}
+          value={state.category}
+          onChange={(value) => {
+            const cat = categories.find(c => c.title === value);
+            setState({
+              ...state,
+              category: value,
+              categoryId: cat?._id
+            });
+          }}
+          required
+        />
+  
+        <Input
+          label="Prix"
+          type="number"
+          value={state.price}
+          onChange={(e) => setState({ ...state, price: e.target.value })}
+          placeholder="Prix"
+          min={1}
+          required
+        />
+  
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+          <ReactQuill
+            theme="snow"
+            value={state.description}
+            onChange={(value) => setState({ ...state, description: value })}
+            className="border border-gray-800 rounded-lg bg-white text-black"
+            placeholder="Parlez-nous de votre œuvre"
+          />
+        </div>
+  
+        {/* Mensurations */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Mensurations</label>
+          <div className="grid grid-cols-3 gap-2">
+            <Input
+              type="number"
+              value={state?.height}
+              onChange={(e) => setState({ ...state, height: e.target.value })}
+              placeholder="Hauteur (cm)"
+              min={10}
+              max={500}
+            />
+            <Input
+              type="number"
+              value={state?.width}
+              onChange={(e) => setState({ ...state, width: e.target.value })}
+              placeholder="Largeur (cm)"
+              min={10}
+              max={500}
+            />
+            <Input
+              type="number"
+              value={state?.weight}
+              onChange={(e) => setState({ ...state, weight: e.target.value })}
+              placeholder="Poids (kg)"
+              min={1}
+              max={1000}
+            />
+          </div>
+        </div>
+  
+        {/* For Sale Checkbox */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="forSale"
+            checked={state.forSale}
+            onChange={(e) => setState({ ...state, forSale: e.target.checked })}
+            className="w-4 h-4 accent-indigo-500"
+          />
+          <label htmlFor="forSale" className="text-sm text-gray-300">
+            Mettre en vente
+          </label>
+        </div>
+  
+        {/* Actions */}
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={closeModal}
+          >
+            Annuler
+          </Button>
+          <Button
+            type="submit"
+            disabled={state.loading}
+            loading={state.loading}
+          >
+            Enregistrer
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}

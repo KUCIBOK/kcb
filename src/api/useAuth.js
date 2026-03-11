@@ -1,0 +1,315 @@
+import { supabase } from '../lib/supabase';
+import { uploadProfileImage } from '../lib/storage';
+import { utils } from './useAPI';
+
+const { api } = utils;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPER
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Normalise un utilisateur Supabase vers la forme KCB attendue par les composants.
+ * Expose `_id` (alias de `id`) pour la compatibilité avec le code existant.
+ *
+ * @param {import('@supabase/supabase-js').User | null} supabaseUser
+ * @returns {object | null}
+ */
+const toKcbUser = (supabaseUser) => {
+  if (!supabaseUser) return null;
+  return {
+    _id: supabaseUser.id,
+    id: supabaseUser.id,
+    email: supabaseUser.email,
+    role: supabaseUser.user_metadata?.role ?? 'collector',
+    name: supabaseUser.user_metadata?.name ?? '',
+    isEmailVerified: !!supabaseUser.email_confirmed_at,
+    ...supabaseUser.user_metadata,
+  };
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTH — SUPABASE
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Connecte un utilisateur avec email + mot de passe.
+ *
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<{ user: object } | { error: string }>}
+ */
+export async function loginUser(email, password) {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error.message };
+    return { user: toKcbUser(data.user) };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Inscrit un nouvel utilisateur. Stocke le rôle et le nom dans user_metadata.
+ * Si l'utilisateur est artiste et fournit une photo (File), elle est uploadée
+ * dans Supabase Storage (`profiles`) avant la création du compte.
+ *
+ * @param {{ email: string, password: string, role: string, name: string, image?: File, [key: string]: any }} charge
+ * @returns {Promise<{ user: object, message: string } | { error: string }>}
+ */
+export async function SignUpUser(charge) {
+  try {
+    const { email, password, role, name, image, ...rest } = charge;
+
+    // Upload de la photo de profil artiste vers Supabase Storage (M1)
+    let imageUrl = null;
+    if (role === 'artist' && image instanceof File) {
+      // ID temporaire basé sur l'email pour le path de stockage pré-inscription
+      const tempId = btoa(email).replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
+      const uploadResult = await uploadProfileImage(tempId, image);
+      if (uploadResult.error) return { error: uploadResult.error };
+      imageUrl = uploadResult.url;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          role: role ?? 'collector',
+          name: name ?? '',
+          ...(imageUrl ? { imageUrl } : {}),
+          ...rest,
+        },
+      },
+    });
+
+    if (error) {
+      if (error.message.toLowerCase().includes('already registered')) {
+        return { error: "L'utilisateur existe déjà. Essayez de vous connecter." };
+      }
+      return { error: error.message };
+    }
+
+    return {
+      user: toKcbUser(data.user),
+      message: 'Inscription réussie. Vérifiez votre adresse email pour continuer.',
+    };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Déclenche le flux OAuth Google.
+ * Supabase redirige vers /auth/callback après authentification.
+ *
+ * @returns {Promise<{ error: string } | void>}
+ */
+export async function loginWithGoogle() {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) return { error: error.message };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Vérifie l'email après inscription (géré automatiquement par Supabase via lien email).
+ * Cette fonction récupère la session active après redirection de confirmation.
+ *
+ * @returns {Promise<{ user: object } | { error: string }>}
+ */
+export async function verifyEmail() {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) return { error: error.message };
+    if (!data.session) return { error: "Aucune session active après vérification." };
+    return { user: toKcbUser(data.session.user) };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Envoie un email de réinitialisation du mot de passe.
+ *
+ * @param {{ email: string }} payload
+ * @returns {Promise<{ ok: true } | { error: string }>}
+ */
+export async function forgotPassword({ email }) {
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    });
+    if (error) return { error: error.message };
+    return { ok: true };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Réinitialise le mot de passe après clic sur le lien email.
+ * À appeler depuis la page /auth/reset-password (session active requise).
+ *
+ * @param {{ password: string }} payload
+ * @returns {Promise<{ ok: true, user: object } | { error: string }>}
+ */
+export async function resetPassword({ password }) {
+  try {
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) return { error: error.message };
+    return { ok: true, user: toKcbUser(data.user) };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Déconnecte l'utilisateur et invalide la session Supabase.
+ *
+ * @returns {Promise<void>}
+ */
+export async function logoutUser() {
+  await supabase.auth.signOut();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROFIL & UTILISATEUR — BACKEND (migration M2 → Supabase PostgreSQL)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Récupère le profil étendu d'un utilisateur (artiste ou collector/pro) depuis Supabase.
+ *
+ * @param {string} id - UUID Supabase de l'utilisateur
+ * @returns {Promise<object | { error: string }>}
+ */
+export async function getUserProfile(id) {
+  try {
+    const response = await fetch(`${api}/profile/${id}`, { ...utils.options });
+    const body = await response.json();
+    // Les Vercel Functions retournent { data: {...} }
+    const data = body?.data ?? body;
+    if (data?._id || data?.userId) return data;
+    return { error: body?.error ?? 'Profil introuvable' };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Récupère les données publiques d'un utilisateur par son UUID Supabase.
+ *
+ * @param {string} id
+ * @returns {Promise<object | { error: string }>}
+ */
+export async function getUserById(id) {
+  try {
+    const response = await fetch(`${api}/auth/${id}`, { ...utils.options });
+    const body = await response.json();
+    const data = body?.data ?? body;
+    if (data?._id) return data;
+    return { error: body?.error ?? 'Utilisateur introuvable' };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Met à jour les données utilisateur dans Supabase (public.users + user_metadata).
+ *
+ * @param {string} id
+ * @param {object} payload
+ * @returns {Promise<object | { error: string }>}
+ */
+export async function updateUser(id, payload) {
+  try {
+    const response = await fetch(`${api}/auth/${id}`, {
+      ...utils.options,
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    });
+    const body = await response.json();
+    const user = body?.data ?? body;
+    if (user?.role || user?._id) return user;
+    return { error: body?.error ?? body?.message };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Met à jour le profil utilisateur dans Supabase (artists ou profiles).
+ * Si le payload contient un fichier image (FormData avec clé `image`),
+ * l'image est d'abord uploadée vers Supabase Storage et remplacée par son URL publique.
+ * Le backend reçoit du JSON (plus de multipart).
+ *
+ * @param {string} id - UUID Supabase de l'utilisateur
+ * @param {FormData} payload
+ * @returns {Promise<object | { error: string }>}
+ */
+export async function updateProfile(id, payload) {
+  try {
+    // Extraire les champs du FormData
+    const fields = {};
+    for (const [key, value] of payload.entries()) {
+      fields[key] = value;
+    }
+
+    // Si une image File est présente, l'uploader vers Supabase Storage
+    if (fields.image instanceof File) {
+      const uploadResult = await uploadProfileImage(id, fields.image);
+      if (uploadResult.error) return { error: uploadResult.error };
+      fields.image = uploadResult.url;
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token ?? '';
+
+    const response = await fetch(`${api}/profile/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'kcb-api-key': import.meta.env.VITE_API_KEY,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(fields),
+    });
+    const body = await response.json();
+    const profile = body?.data ?? body;
+    if (profile?.userId) return profile;
+    return { error: body?.error || body?.message };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * Change le mot de passe de l'utilisateur connecté.
+ * Vérifie l'ancien mot de passe côté serveur avant la mise à jour.
+ *
+ * @param {{ oldPassword: string, newPassword: string }} payload
+ * @returns {Promise<object | { error: string }>}
+ */
+export async function changePassword(payload) {
+  try {
+    const response = await fetch(`${api}/auth/change-password`, {
+      ...utils.options,
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    const body = await response.json();
+    const user = body?.data ?? body;
+    if (user?._id) return user;
+    return { error: body?.error || body?.message };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
