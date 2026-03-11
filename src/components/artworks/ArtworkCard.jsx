@@ -3,26 +3,36 @@ import { Link } from "react-router-dom";
 import { getArtistById } from "../../api/useArtists";
 import { LikeHeart } from "./LikeHeart";
 
-export const ArtworkCard = memo(({ artwork }) => {
-  const [artist, setArtist] = useState({});
+/** @type {Map<string, object>} Cache artistes pour éviter N+1 fetches */
+const artistCache = new Map();
+
+export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
+  const [artist, setArtist] = useState(artistProp ?? {});
 
   useEffect(() => {
-    if (artwork?.artistId) {
-      const getArtist = async () => {
-        const artistData = await getArtistById(artwork.artistId);
-        if (artistData?._id) {
-          setArtist({ ...artistData });
-        }
-      };
-      getArtist();
+    const artistId = artwork?.artistId || artwork?.artist_id;
+    if (!artistId || artistProp?._id || artistProp?.id) return;
+
+    if (artistCache.has(artistId)) {
+      setArtist(artistCache.get(artistId));
+      return;
     }
-  }, [artwork?.artistId]);
+
+    const getArtist = async () => {
+      const artistData = await getArtistById(artistId);
+      if (artistData?._id || artistData?.id) {
+        artistCache.set(artistId, artistData);
+        setArtist(artistData);
+      }
+    };
+    getArtist();
+  }, [artwork?.artistId, artwork?.artist_id, artistProp]);
 
 
   return (
     <div className="group relative rounded-xl bg-gray-900 border border-gray-800 shadow-sm hover:shadow-lg transition overflow-hidden">
       <Link
-        to={`/artwork/${artwork?._id}`}
+        to={`/artwork/${artwork?._id || artwork?.id}`}
         className="block focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
       >
         {/* Artwork Image */}
@@ -50,7 +60,7 @@ export const ArtworkCard = memo(({ artwork }) => {
             </span>
           </div>
 
-          {artist?._id && (
+          {(artist?._id || artist?.id) && (
             <div className="flex items-center gap-2 mt-1">
               <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-700">
                 <img

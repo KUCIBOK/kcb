@@ -4,14 +4,32 @@ import { useState } from "react"
 import { dislikeArtwork, likeArtwork } from "../../api/useArtworks"
 import { RegisterOrConnect } from "../decoratives/RegisterOrConnect"
 
+/**
+ * Lit les IDs likes depuis localStorage.
+ *
+ * @returns {string[]}
+ */
+function readLikedIds() {
+    try { return JSON.parse(localStorage.getItem('likedArtworks')) || []; }
+    catch { return []; }
+}
+
+/**
+ * Persiste les IDs likes dans localStorage.
+ *
+ * @param {string[]} ids
+ */
+function writeLikedIds(ids) {
+    localStorage.setItem('likedArtworks', JSON.stringify(ids));
+}
+
 export function LikeHeart({artwork}){
     const {user} = useAuth()
-    let likedArtworks = localStorage.getItem('likedArtworks')
-    likedArtworks = JSON.parse(likedArtworks) || []
+    const artworkId = artwork?._id || artwork?.id;
+    const likedArtworks = readLikedIds();
     const [state, setState] = useState({
         likesCount : artwork?.likesCount || 0,
-        isLiked : likedArtworks?.includes(artwork._id),
-        likedArtworks : likedArtworks || [],
+        isLiked : likedArtworks.includes(artworkId),
         showModal: false
     })
     const handleLike = async () => {
@@ -20,35 +38,39 @@ export function LikeHeart({artwork}){
             return;
         }
         if (state?.isLiked) {
+            const updated = readLikedIds().filter((id) => id !== artworkId);
+            writeLikedIds(updated);
             setState((prevState) => ({
                 ...prevState,
                 isLiked: false,
                 likesCount: Math.max(0, prevState.likesCount - 1),
-                likedArtworks: prevState.likedArtworks.filter((id) => id !== artwork._id),
             }));
-            const res = await dislikeArtwork(artwork._id);
+            const res = await dislikeArtwork(artworkId);
             if (res.error) {
+                const reverted = [...readLikedIds(), artworkId];
+                writeLikedIds(reverted);
                 setState((prevState) => ({
                     ...prevState,
                     isLiked: true,
                     likesCount: res.likesCount ?? prevState.likesCount + 1,
-                    likedArtworks: [...prevState.likedArtworks, artwork._id],
                 }));
             }
         } else {
+            const updated = [...readLikedIds(), artworkId];
+            writeLikedIds(updated);
             setState((prevState) => ({
                 ...prevState,
                 isLiked: true,
                 likesCount: prevState.likesCount + 1,
-                likedArtworks: [...prevState.likedArtworks, artwork._id],
             }));
-            const res = await likeArtwork(artwork._id);
+            const res = await likeArtwork(artworkId);
             if (res.error) {
+                const reverted = readLikedIds().filter((id) => id !== artworkId);
+                writeLikedIds(reverted);
                 setState((prevState) => ({
                     ...prevState,
                     isLiked: false,
                     likesCount: res.likesCount ?? Math.max(0, prevState.likesCount - 1),
-                    likedArtworks: prevState.likedArtworks.filter((id) => id !== artwork._id),
                 }));
             }
         }
