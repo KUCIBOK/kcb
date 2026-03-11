@@ -35,3 +35,13 @@ yarn-error.log*
 
 # Claude
 .claude/
+
+# Design work artifacts (maps, SVG sources, previews)
+docs/*.svg
+docs/*-paths.txt
+docs/*-world.txt
+docs/continent-paths.txt
+docs/map-paths-simplified.txt
+docs/gateway-map-final.txt
+docs/logistics-map-final.txt
+preview.html

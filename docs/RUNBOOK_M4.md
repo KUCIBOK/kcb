@@ -74,7 +74,7 @@ ecritures en base pendant la bascule.
 ## ETAPE 2 — MIGRATION DES UTILISATEURS
 
 ```bash
-cd kucibok-main/
+# Depuis la racine du projet
 
 # 2.1 Tester d'abord en dry-run
 node scripts/migrate_users_auth.js --dry-run
@@ -167,7 +167,7 @@ node scripts/migrate_cloudinary.js --table=artworks --offset=150
 ## ETAPE 5 — DEPLOIEMENT VERCEL FUNCTIONS
 
 ```bash
-cd kucibok/
+# Depuis la racine du projet
 
 # 5.1 Verifier les variables d'env dans Vercel dashboard → Settings → Environment Variables :
 # SUPABASE_URL              ✓
@@ -275,9 +275,10 @@ Pendant la semaine suivant la bascule, surveiller :
 # (Garder le backup local au minimum 30 jours)
 
 # 9.4 Nettoyer le code (optionnel — sprint separe)
-# - Supprimer backend/ entier du repo
-# - Supprimer packages deprecies du kucibok/package.json
-# - Supprimer mongoose, jsonwebtoken, bcryptjs, ioredis, cloudinary
+# - [FAIT] backend/ et frontend/ supprimes du repo (Mars 2026)
+# - Supprimer packages inutiles du package.json : dotenv, socket.io-client
+# - Les anciens packages serveur (mongoose, jsonwebtoken, bcryptjs, ioredis, cloudinary)
+#   ne sont plus dans le repo
 ```
 
 ---
