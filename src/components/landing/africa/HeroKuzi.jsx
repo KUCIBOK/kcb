@@ -24,7 +24,7 @@ export default function HeroKuzi() {
       />
 
       <img
-        src="/images/Kuzi.gif"
+        src="/images/Kuzi.webp"
         alt="Kuzi — mascotte Kucibok"
         className="w-[340px] lg:w-[340px] md:w-[280px] sm:w-[220px] h-auto relative z-[2]"
         style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.4))" }}

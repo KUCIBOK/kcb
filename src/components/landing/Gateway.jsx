@@ -32,7 +32,7 @@ export default function Gateway() {
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
           <img
-            src="/images/Kuzi.gif"
+            src="/images/Kuzi.webp"
             alt="Kuzi"
             className="w-[280px] md:w-[280px] sm:w-[120px] h-auto mb-8 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{
