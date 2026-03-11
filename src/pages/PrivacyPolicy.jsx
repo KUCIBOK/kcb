@@ -1,384 +1,386 @@
-import { useEffect } from "react";
+import PortalLayout from "../components/landing/PortalLayout"
+import RevealOnScroll from "../components/landing/RevealOnScroll"
+import SectionLabel from "../components/landing/SectionLabel"
+import GeoLine from "../components/landing/GeoLine"
 
+/**
+ * Privacy Policy page — RGPD compliant.
+ * Standalone route using PortalLayout with Africa (gold) theme.
+ *
+ * @returns {JSX.Element}
+ */
 export default function PrivacyPolicy() {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-    return (
-        <div className="min-h-screen bg-gray-900 text-white/90">
-            <div className="max-w-4xl mx-auto px-6 py-12">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-3xl font-bold text-white mb-4">
-                        Politique de Confidentialité
-                    </h1>
-                    <p className="text-white/60 text-sm">
-                        Kucibok – Protection de vos données personnelles
-                    </p>
-                    <p className="text-white/50 text-xs mt-2">
-                        Dernière mise à jour : 28 juillet 2025
-                    </p>
-                </div>
-
-                {/* Articles */}
-                <div className="space-y-10">
-                    {/* Section 1 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            1. Introduction : Votre Confiance, Notre Priorité
-                        </h2>
-                        <p className="text-white/70 text-sm leading-relaxed">
-                            Chez Kucibok, nous accordons une importance primordiale à la protection de votre vie privée et à la sécurité de vos données personnelles. Cette Politique de Confidentialité vous informe de manière transparente sur la collecte, l'utilisation, le partage et la protection de vos informations. Notre engagement est de traiter vos données avec le plus grand soin, en respectant les normes les plus strictes en matière de confidentialité et de sécurité.
-                        </p>
-                    </section>
-
-                    {/* Section 2 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            2. Portée de la Politique
-                        </h2>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Cette politique s'applique à tous les utilisateurs de Kucibok :</p>
-                            <div className="grid md:grid-cols-3 gap-3">
-                                <div className="bg-indigo-900/20 rounded p-3">
-                                    <strong className="text-indigo-300">Artistes</strong>
-                                    <p className="text-xs mt-1">Créateurs et promoteurs d'œuvres</p>
-                                </div>
-                                <div className="bg-purple-900/20 rounded p-3">
-                                    <strong className="text-purple-300">Collectionneurs</strong>
-                                    <p className="text-xs mt-1">Passionnés et acquéreurs d'art</p>
-                                </div>
-                                <div className="bg-green-900/20 rounded p-3">
-                                    <strong className="text-green-300">Professionnels</strong>
-                                    <p className="text-xs mt-1">Galeries, experts, curateurs</p>
-                                </div>
-                            </div>
-                            <p>Elle couvre l'ensemble de nos services : applications web, solutions SaaS, certification numérique, gamification, ventes en ligne et abonnements.</p>
-                        </div>
-                    </section>
-
-                    {/* Section 3 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            3. Informations que Nous Recueillons
-                        </h2>
-                        <div className="space-y-4">
-                            <div className="bg-blue-900/20 rounded p-4">
-                                <h3 className="text-blue-300 font-medium mb-3">3.1 Données fournies directement</h3>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Informations de compte : nom, prénom, email, téléphone</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Profil utilisateur : biographie, portfolio, informations professionnelles</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Œuvres : images, titres, dimensions, techniques, prix</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Communications : messages, support client, feedbacks</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-purple-900/20 rounded p-4">
-                                <h3 className="text-purple-300 font-medium mb-3">3.2 Données collectées automatiquement</h3>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Informations techniques : IP, navigateur, appareil, OS</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Comportement web : pages visitées, durée de session, clics</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Cookies et technologies de suivi</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-green-900/20 rounded p-4">
-                                <h3 className="text-green-300 font-medium mb-3">3.3 Informations de tiers</h3>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Données de partenaires (logistique, assurance, certification)</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Synchronisation réseaux sociaux (OAuth)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 4 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            4. Objectifs du Traitement
-                        </h2>
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <div className="bg-indigo-900/20 rounded p-4">
-                                <h3 className="text-indigo-300 font-medium mb-2">Services essentiels</h3>
-                                <p className="text-white/70 text-xs">Gestion de compte, publication d'œuvres, certification numérique, génération NFT</p>
-                            </div>
-                            <div className="bg-purple-900/20 rounded p-4">
-                                <h3 className="text-purple-300 font-medium mb-2">Communication</h3>
-                                <p className="text-white/70 text-xs">Notifications, newsletters, support client réactif</p>
-                            </div>
-                            <div className="bg-green-900/20 rounded p-4">
-                                <h3 className="text-green-300 font-medium mb-2">Personnalisation</h3>
-                                <p className="text-white/70 text-xs">Suggestions personnalisées, analyse comportementale</p>
-                            </div>
-                            <div className="bg-amber-900/20 rounded p-4">
-                                <h3 className="text-amber-300 font-medium mb-2">Marketing</h3>
-                                <p className="text-white/70 text-xs">Offres ciblées, programme de gamification (avec consentement)</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 5 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            5. Partage des Données
-                        </h2>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <div className="bg-red-900/20 border border-red-700/30 rounded p-4 mb-4">
-                                <p className="text-red-200"><strong>Engagement ferme :</strong> Nous ne vendons ni ne louons vos données personnelles à des tiers à des fins commerciales.</p>
-                            </div>
-                            <p>Nous pouvons partager vos données uniquement dans ces cas :</p>
-                            <div className="space-y-2">
-                                <div className="flex items-start gap-2">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Prestataires techniques (paiement, hébergement, logistique)</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Partenaires contractuels (avec votre consentement explicite)</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Autorités légales (demandes légales valides)</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Autres utilisateurs (fonctionnalités collaboratives)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 6 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            6. Conservation des Données
-                        </h2>
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <div className="bg-blue-900/20 rounded p-4">
-                                <h3 className="text-blue-300 font-medium mb-2">Données de compte</h3>
-                                <p className="text-white/70 text-xs">Conservées tant que votre compte est actif et selon les obligations légales</p>
-                            </div>
-                            <div className="bg-purple-900/20 rounded p-4">
-                                <h3 className="text-purple-300 font-medium mb-2">Données comportementales</h3>
-                                <p className="text-white/70 text-xs">Maximum 24 mois, puis anonymisation pour analyses statistiques</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 7 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            7. Vos Droits (RGPD & Loi Sénégalaise)
-                        </h2>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                            <div className="bg-indigo-900/20 rounded p-3">
-                                <strong className="text-indigo-300 text-sm">Droit d'accès</strong>
-                                <p className="text-white/70 text-xs mt-1">Obtenir une copie de vos données</p>
-                            </div>
-                            <div className="bg-purple-900/20 rounded p-3">
-                                <strong className="text-purple-300 text-sm">Droit de rectification</strong>
-                                <p className="text-white/70 text-xs mt-1">Corriger les données inexactes</p>
-                            </div>
-                            <div className="bg-green-900/20 rounded p-3">
-                                <strong className="text-green-300 text-sm">Droit à l'effacement</strong>
-                                <p className="text-white/70 text-xs mt-1">Supprimer vos données</p>
-                            </div>
-                            <div className="bg-amber-900/20 rounded p-3">
-                                <strong className="text-amber-300 text-sm">Droit de limitation</strong>
-                                <p className="text-white/70 text-xs mt-1">Limiter le traitement</p>
-                            </div>
-                            <div className="bg-red-900/20 rounded p-3">
-                                <strong className="text-red-300 text-sm">Droit d'opposition</strong>
-                                <p className="text-white/70 text-xs mt-1">S'opposer au traitement</p>
-                            </div>
-                            <div className="bg-blue-900/20 rounded p-3">
-                                <strong className="text-blue-300 text-sm">Droit de portabilité</strong>
-                                <p className="text-white/70 text-xs mt-1">Récupérer vos données</p>
-                            </div>
-                        </div>
-                        <div className="bg-indigo-900/20 rounded p-4 mt-4">
-                            <p className="text-indigo-200 text-sm">
-                                Pour exercer vos droits : <a href="mailto:privacy@kucibok.com" className="text-indigo-400 hover:text-indigo-300 underline">privacy@kucibok.com</a>
-                            </p>
-                        </div>
-                    </section>
-
-                    {/* Section 8 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            8. Cookies et Technologies Similaires
-                        </h2>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="bg-green-900/20 rounded p-3">
-                                    <strong className="text-green-300">Cookies de session</strong>
-                                    <p className="text-xs mt-1">Temporaires, disparaissent à la fermeture du navigateur</p>
-                                </div>
-                                <div className="bg-blue-900/20 rounded p-3">
-                                    <strong className="text-blue-300">Cookies persistants</strong>
-                                    <p className="text-xs mt-1">Mémorisent vos préférences et maintiennent la connexion</p>
-                                </div>
-                                <div className="bg-purple-900/20 rounded p-3">
-                                    <strong className="text-purple-300">Outils d'analyse</strong>
-                                    <p className="text-xs mt-1">Google Analytics, Matomo pour comprendre l'usage</p>
-                                </div>
-                                <div className="bg-amber-900/20 rounded p-3">
-                                    <strong className="text-amber-300">Pixels de suivi</strong>
-                                    <p className="text-xs mt-1">Mesure de l'efficacité des campagnes</p>
-                                </div>
-                            </div>
-                            <p className="text-xs">Vous pouvez gérer vos préférences via les paramètres de votre navigateur.</p>
-                        </div>
-                    </section>
-
-                    {/* Section 9 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            9. Sécurité des Données
-                        </h2>
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <div className="bg-green-900/20 rounded p-4">
-                                <h3 className="text-green-300 font-medium mb-2">Chiffrement</h3>
-                                <p className="text-white/70 text-xs">Protocoles SSL/TLS pour toutes les transmissions sensibles</p>
-                            </div>
-                            <div className="bg-blue-900/20 rounded p-4">
-                                <h3 className="text-blue-300 font-medium mb-2">Accès restreint</h3>
-                                <p className="text-white/70 text-xs">Limité aux employés autorisés selon leurs fonctions</p>
-                            </div>
-                            <div className="bg-purple-900/20 rounded p-4">
-                                <h3 className="text-purple-300 font-medium mb-2">Privacy by Design</h3>
-                                <p className="text-white/70 text-xs">Protection intégrée dès la conception de nos services</p>
-                            </div>
-                            <div className="bg-indigo-900/20 rounded p-4">
-                                <h3 className="text-indigo-300 font-medium mb-2">Hébergement sécurisé</h3>
-                                <p className="text-white/70 text-xs">Serveurs conformes aux normes ISO-27001, SOC-2</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 10 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            10. Transfert International de Données
-                        </h2>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Vos données peuvent être traitées hors du Sénégal via nos prestataires techniques. Nous garantissons :</p>
-                            <div className="space-y-2">
-                                <div className="flex items-start gap-2">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Clauses contractuelles types approuvées</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Certificats de conformité reconnus</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Niveau de protection équivalent aux standards RGPD</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 11 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            11. Enfants et Mineurs
-                        </h2>
-                        <div className="bg-amber-900/20 border border-amber-700/30 rounded p-4">
-                            <p className="text-amber-200 text-sm">
-                                Kucibok n'est pas destiné aux personnes de moins de 18 ans. Nous ne collectons pas sciemment d'informations personnelles auprès des mineurs. Si vous pensez qu'un mineur nous a fourni des données, contactez-nous immédiatement à <a href="mailto:privacy@kucibok.com" className="text-amber-400 hover:text-amber-300 underline">privacy@kucibok.com</a>.
-                            </p>
-                        </div>
-                    </section>
-
-                    {/* Section 12 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            12. Liens Externes
-                        </h2>
-                        <p className="text-white/70 text-sm leading-relaxed">
-                            Nos services peuvent contenir des liens vers des sites tiers. Nous n'exerçons aucun contrôle sur leurs pratiques de confidentialité. Nous vous encourageons à consulter leur politique de confidentialité avant de fournir toute information personnelle.
-                        </p>
-                    </section>
-
-                    {/* Section 13 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            13. Modifications de la Politique
-                        </h2>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Nous pouvons modifier cette politique à tout moment pour refléter les changements dans nos pratiques ou la législation.</p>
-                            <div className="bg-blue-900/20 rounded p-4">
-                                <p className="text-blue-200 text-sm">En cas de modifications majeures, nous vous informerons par notification sur la plateforme ou par email. La version publiée sur notre site sera toujours la version valide.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Section 14 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            14. Contacts et Responsabilité
-                        </h2>
-                        <div className="bg-gray-800/50 rounded p-4">
-                            <div className="text-white/70 text-sm space-y-2">
-                                <div><strong className="text-white">Kucibok SARL</strong></div>
-                                <div>Adresse : Liberté 6 Ext, Rue Ambassade de France, Villa 24, Dakar, Sénégal</div>
-                                <div>Email confidentialité : <a href="mailto:msidibe@kucibok.com" className="text-indigo-400 hover:text-indigo-300">msidibe@kucibok.com</a></div>
-                                <div>DPO : <a href="mailto:msidibe@kucibok.com" className="text-indigo-400 hover:text-indigo-300">msidibe@kucibok.com</a></div>
-                                <div>Téléphone : <a href="tel:+2212750918" className="text-indigo-400 hover:text-indigo-300">+221 275 09 18</a></div>
-                            </div>
-                        </div>
-                        <p className="text-white/60 text-xs mt-4">
-                            En cas de litige non résolu, vous pouvez déposer une plainte auprès de la Commission de Protection des Données Personnelles (CDPD) du Sénégal.
-                        </p>
-                    </section>
-
-                    {/* Section 15 */}
-                    <section className="bg-gray-900/50 rounded-lg p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">
-                            15. Résolution des Litiges
-                        </h2>
-                        <div className="text-white/70 text-sm leading-relaxed">
-                            <p>Toute contestation relative à cette politique sera soumise aux termes de nos Conditions Générales d'Utilisation. La loi applicable sera celle du Sénégal ou celle du pays de localisation de l'utilisateur. Nous privilégions une résolution amiable des différends avant tout recours à la médiation ou l'arbitrage.</p>
-                        </div>
-                    </section>
-                </div>
-
-                {/* Footer */}
-                <div className="mt-12 pt-8 border-t border-gray-800 text-center">
-                    <p className="text-white/50 text-xs">
-                        Cette Politique de Confidentialité est établie à Dakar, Sénégal, le 28 juillet 2025.
-                    </p>
-                </div>
-            </div>
+  return (
+    <PortalLayout portal="africa">
+      {/* ── HEADER ── */}
+      <section className="pt-40 pb-20 text-center">
+        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+          <RevealOnScroll>
+            <SectionLabel text="Legal" />
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.1}>
+            <h1 className="font-playfair font-bold text-[clamp(32px,4vw,52px)] text-white mt-6 mb-4 leading-tight">
+              Politique de Confidentialite
+            </h1>
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.2}>
+            <p className="text-[13px] text-kcb-pierre">
+              Kucibok — Protection de vos donnees personnelles
+            </p>
+            <p className="text-[11px] text-kcb-pierre/60 mt-2">
+              Derniere mise a jour : 28 juillet 2025
+            </p>
+          </RevealOnScroll>
         </div>
-    )
+      </section>
+
+      <GeoLine />
+
+      {/* ── ARTICLES ── */}
+      <section className="py-20 bg-kcb-noir-deep">
+        <div className="max-w-4xl mx-auto px-[clamp(24px,5vw,80px)] space-y-10">
+          {/* Section 1 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                1. Introduction : Votre Confiance, Notre Priorite
+              </h2>
+              <p className="text-kcb-sable text-[13px] leading-relaxed">
+                Chez Kucibok, nous accordons une importance primordiale a la protection de votre vie privee et a la securite de vos donnees personnelles. Cette Politique de Confidentialite vous informe de maniere transparente sur la collecte, l'utilisation, le partage et la protection de vos informations. Notre engagement est de traiter vos donnees avec le plus grand soin, en respectant les normes les plus strictes en matiere de confidentialite et de securite.
+              </p>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 2 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                2. Portee de la Politique
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Cette politique s'applique a tous les utilisateurs de Kucibok :</p>
+                <div className="grid md:grid-cols-3 gap-3">
+                  <div className="border border-white/[0.06] p-3">
+                    <strong className="text-[var(--accent)]">Artistes</strong>
+                    <p className="text-[11px] mt-1">Createurs et promoteurs d'oeuvres</p>
+                  </div>
+                  <div className="border border-white/[0.06] p-3">
+                    <strong className="text-[var(--accent)]">Collectionneurs</strong>
+                    <p className="text-[11px] mt-1">Passionnes et acquereurs d'art</p>
+                  </div>
+                  <div className="border border-white/[0.06] p-3">
+                    <strong className="text-[var(--accent)]">Professionnels</strong>
+                    <p className="text-[11px] mt-1">Galeries, experts, curateurs</p>
+                  </div>
+                </div>
+                <p>Elle couvre l'ensemble de nos services : applications web, solutions SaaS, certification numerique, gamification, ventes en ligne et abonnements.</p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 3 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                3. Informations que Nous Recueillons
+              </h2>
+              <div className="space-y-4">
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-3">3.1 Donnees fournies directement</h3>
+                  <div className="text-kcb-sable text-[13px] space-y-2">
+                    {[
+                      "Informations de compte : nom, prenom, email, telephone",
+                      "Profil utilisateur : biographie, portfolio, informations professionnelles",
+                      "Oeuvres : images, titres, dimensions, techniques, prix",
+                      "Communications : messages, support client, feedbacks",
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-3">3.2 Donnees collectees automatiquement</h3>
+                  <div className="text-kcb-sable text-[13px] space-y-2">
+                    {[
+                      "Informations techniques : IP, navigateur, appareil, OS",
+                      "Comportement web : pages visitees, duree de session, clics",
+                      "Cookies et technologies de suivi",
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-3">3.3 Informations de tiers</h3>
+                  <div className="text-kcb-sable text-[13px] space-y-2">
+                    {[
+                      "Donnees de partenaires (logistique, assurance, certification)",
+                      "Synchronisation reseaux sociaux (OAuth)",
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 4 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                4. Objectifs du Traitement
+              </h2>
+              <div className="grid md:grid-cols-2 gap-3">
+                {[
+                  { title: "Services essentiels", text: "Gestion de compte, publication d'oeuvres, certification numerique, generation NFT" },
+                  { title: "Communication", text: "Notifications, newsletters, support client reactif" },
+                  { title: "Personnalisation", text: "Suggestions personnalisees, analyse comportementale" },
+                  { title: "Marketing", text: "Offres ciblees, programme de gamification (avec consentement)" },
+                ].map((item, i) => (
+                  <div key={i} className="border border-white/[0.06] p-4">
+                    <h3 className="text-[var(--accent)] font-medium text-sm mb-2">{item.title}</h3>
+                    <p className="text-kcb-sable text-[11px]">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 5 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                5. Partage des Donnees
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <div className="border border-[var(--accent)]/20 p-4">
+                  <p><strong>Engagement ferme :</strong> Nous ne vendons ni ne louons vos donnees personnelles a des tiers a des fins commerciales.</p>
+                </div>
+                <p>Nous pouvons partager vos donnees uniquement dans ces cas :</p>
+                {[
+                  "Prestataires techniques (paiement, hebergement, logistique)",
+                  "Partenaires contractuels (avec votre consentement explicite)",
+                  "Autorites legales (demandes legales valides)",
+                  "Autres utilisateurs (fonctionnalites collaboratives)",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 6 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                6. Conservation des Donnees
+              </h2>
+              <div className="grid md:grid-cols-2 gap-3">
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-2">Donnees de compte</h3>
+                  <p className="text-kcb-sable text-[11px]">Conservees tant que votre compte est actif et selon les obligations legales</p>
+                </div>
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-2">Donnees comportementales</h3>
+                  <p className="text-kcb-sable text-[11px]">Maximum 24 mois, puis anonymisation pour analyses statistiques</p>
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 7 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                7. Vos Droits (RGPD & Loi Senegalaise)
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {[
+                  { title: "Droit d'acces", text: "Obtenir une copie de vos donnees" },
+                  { title: "Droit de rectification", text: "Corriger les donnees inexactes" },
+                  { title: "Droit a l'effacement", text: "Supprimer vos donnees" },
+                  { title: "Droit de limitation", text: "Limiter le traitement" },
+                  { title: "Droit d'opposition", text: "S'opposer au traitement" },
+                  { title: "Droit de portabilite", text: "Recuperer vos donnees" },
+                ].map((item, i) => (
+                  <div key={i} className="border border-white/[0.06] p-3">
+                    <strong className="text-[var(--accent)] text-sm">{item.title}</strong>
+                    <p className="text-kcb-sable text-[11px] mt-1">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="border border-white/[0.06] p-4 mt-4">
+                <p className="text-kcb-sable text-[13px]">
+                  Pour exercer vos droits : <a href="mailto:privacy@kucibok.com" className="text-[var(--accent)] hover:opacity-80 underline">privacy@kucibok.com</a>
+                </p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 8 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                8. Cookies et Technologies Similaires
+              </h2>
+              <div className="grid md:grid-cols-2 gap-3 mb-3">
+                {[
+                  { title: "Cookies de session", text: "Temporaires, disparaissent a la fermeture du navigateur" },
+                  { title: "Cookies persistants", text: "Memorisent vos preferences et maintiennent la connexion" },
+                  { title: "Outils d'analyse", text: "Google Analytics, Matomo pour comprendre l'usage" },
+                  { title: "Pixels de suivi", text: "Mesure de l'efficacite des campagnes" },
+                ].map((item, i) => (
+                  <div key={i} className="border border-white/[0.06] p-3">
+                    <strong className="text-[var(--accent)] text-sm">{item.title}</strong>
+                    <p className="text-kcb-sable text-[11px] mt-1">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-kcb-pierre text-[11px]">Vous pouvez gerer vos preferences via les parametres de votre navigateur.</p>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 9 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                9. Securite des Donnees
+              </h2>
+              <div className="grid md:grid-cols-2 gap-3">
+                {[
+                  { title: "Chiffrement", text: "Protocoles SSL/TLS pour toutes les transmissions sensibles" },
+                  { title: "Acces restreint", text: "Limite aux employes autorises selon leurs fonctions" },
+                  { title: "Privacy by Design", text: "Protection integree des la conception de nos services" },
+                  { title: "Hebergement securise", text: "Serveurs conformes aux normes ISO-27001, SOC-2" },
+                ].map((item, i) => (
+                  <div key={i} className="border border-white/[0.06] p-4">
+                    <h3 className="text-[var(--accent)] font-medium text-sm mb-2">{item.title}</h3>
+                    <p className="text-kcb-sable text-[11px]">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 10 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                10. Transfert International de Donnees
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Vos donnees peuvent etre traitees hors du Senegal via nos prestataires techniques. Nous garantissons :</p>
+                {[
+                  "Clauses contractuelles types approuvees",
+                  "Certificats de conformite reconnus",
+                  "Niveau de protection equivalent aux standards RGPD",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 11 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                11. Enfants et Mineurs
+              </h2>
+              <div className="border border-[var(--accent)]/20 p-4">
+                <p className="text-kcb-sable text-[13px]">
+                  Kucibok n'est pas destine aux personnes de moins de 18 ans. Nous ne collectons pas sciemment d'informations personnelles aupres des mineurs. Si vous pensez qu'un mineur nous a fourni des donnees, contactez-nous immediatement a <a href="mailto:privacy@kucibok.com" className="text-[var(--accent)] hover:opacity-80 underline">privacy@kucibok.com</a>.
+                </p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 12 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                12. Liens Externes
+              </h2>
+              <p className="text-kcb-sable text-[13px] leading-relaxed">
+                Nos services peuvent contenir des liens vers des sites tiers. Nous n'exercons aucun controle sur leurs pratiques de confidentialite. Nous vous encourageons a consulter leur politique de confidentialite avant de fournir toute information personnelle.
+              </p>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 13 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                13. Modifications de la Politique
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Nous pouvons modifier cette politique a tout moment pour refleter les changements dans nos pratiques ou la legislation.</p>
+                <div className="border border-white/[0.06] p-4">
+                  <p>En cas de modifications majeures, nous vous informerons par notification sur la plateforme ou par email. La version publiee sur notre site sera toujours la version valide.</p>
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 14 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                14. Contacts et Responsabilite
+              </h2>
+              <div className="border border-white/[0.06] p-4">
+                <div className="text-kcb-sable text-[13px] space-y-2">
+                  <div><strong className="text-white">Kucibok SARL</strong></div>
+                  <div>Adresse : Liberte 6 Ext, Rue Ambassade de France, Villa 24, Dakar, Senegal</div>
+                  <div>Email confidentialite : <a href="mailto:msidibe@kucibok.com" className="text-[var(--accent)] hover:opacity-80">msidibe@kucibok.com</a></div>
+                  <div>DPO : <a href="mailto:msidibe@kucibok.com" className="text-[var(--accent)] hover:opacity-80">msidibe@kucibok.com</a></div>
+                  <div>Telephone : <a href="tel:+2212750918" className="text-[var(--accent)] hover:opacity-80">+221 275 09 18</a></div>
+                </div>
+              </div>
+              <p className="text-kcb-pierre text-[11px] mt-4">
+                En cas de litige non resolu, vous pouvez deposer une plainte aupres de la Commission de Protection des Donnees Personnelles (CDPD) du Senegal.
+              </p>
+            </article>
+          </RevealOnScroll>
+
+          {/* Section 15 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                15. Resolution des Litiges
+              </h2>
+              <p className="text-kcb-sable text-[13px] leading-relaxed">
+                Toute contestation relative a cette politique sera soumise aux termes de nos Conditions Generales d'Utilisation. La loi applicable sera celle du Senegal ou celle du pays de localisation de l'utilisateur. Nous privilegions une resolution amiable des differends avant tout recours a la mediation ou l'arbitrage.
+              </p>
+            </article>
+          </RevealOnScroll>
+
+          {/* Footer */}
+          <div className="pt-8 border-t border-white/[0.06] text-center">
+            <p className="text-kcb-pierre text-[11px]">
+              Cette Politique de Confidentialite est etablie a Dakar, Senegal, le 28 juillet 2025.
+            </p>
+          </div>
+        </div>
+      </section>
+    </PortalLayout>
+  )
 }

@@ -1,73 +1,41 @@
-import { useEffect } from "react"
 import { Link } from "react-router-dom"
 import { ShieldCheck, Globe, Lightbulb, Heart, ArrowRight, Check } from "lucide-react"
+import PortalLayout from "../components/landing/PortalLayout"
+import RevealOnScroll from "../components/landing/RevealOnScroll"
+import SectionLabel from "../components/landing/SectionLabel"
+import GeoLine from "../components/landing/GeoLine"
 
-/** Mission badge shown in the hero. */
-function MissionBadge() {
-  return (
-    <div className="inline-flex items-center gap-2 bg-indigo-900/40 border border-indigo-700/40 text-indigo-300 text-sm px-4 py-1.5 rounded-full font-medium mb-6">
-      <div className="w-2 h-2 rounded-full bg-indigo-400" />
-      Notre mission
-    </div>
-  )
-}
-
-/**
- * Stat card displayed in the stats row.
- *
- * @param {{ value: string, label: string }} props
- */
-function StatCard({ value, label }) {
-  return (
-    <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-5 text-center">
-      <p className="text-3xl font-bold text-indigo-400 mb-1">{value}</p>
-      <p className="text-gray-400 text-xs">{label}</p>
-    </div>
-  )
-}
-
-/** Static data — values, stats, team. */
+/** Static data — values, team, vision points. */
 const VALUES = [
   {
     icon: ShieldCheck,
-    color: "bg-indigo-500/10 text-indigo-400",
-    title: "Authenticité",
+    title: "Authenticite",
     description:
-      "Chaque œuvre est vérifiée par nos experts et certifiée sur la blockchain. L'authenticité n'est pas une option, c'est notre fondation.",
+      "Chaque oeuvre est verifiee par nos experts et certifiee sur la blockchain. L'authenticite n'est pas une option, c'est notre fondation.",
   },
   {
     icon: Heart,
-    color: "bg-amber-500/10 text-amber-400",
-    title: "Équité",
+    title: "Equite",
     description:
-      "Nous construisons un marché transparent où les artistes africains sont rémunérés justement et les collectionneurs investissent en toute confiance.",
+      "Nous construisons un marche transparent ou les artistes africains sont remuneres justement et les collectionneurs investissent en toute confiance.",
   },
   {
     icon: Lightbulb,
-    color: "bg-purple-500/10 text-purple-400",
     title: "Innovation",
     description:
-      "La blockchain, le NFC et la numérisation haute résolution sont au service du patrimoine culturel — pas l'inverse.",
+      "La blockchain, le NFC et la numerisation haute resolution sont au service du patrimoine culturel — pas l'inverse.",
   },
   {
     icon: Globe,
-    color: "bg-green-500/10 text-green-400",
     title: "Patrimoine",
     description:
-      "L'art africain primitif et contemporain mérite d'être connu, préservé et valorisé à l'échelle mondiale pour les générations futures.",
+      "L'art africain primitif et contemporain merite d'etre connu, preserve et valorise a l'echelle mondiale pour les generations futures.",
   },
-]
-
-const STATS = [
-  { value: "500+", label: "Artistes africains" },
-  { value: "2 000+", label: "Œuvres certifiées" },
-  { value: "12", label: "Pays d'Afrique" },
-  { value: "50+", label: "Collectionneurs actifs" },
 ]
 
 const TEAM = [
   {
-    name: "Moctar Sidibé",
+    name: "Moctar Sidibe",
     role: "Co-Founder & CEO",
     image: "/images/team/MoctarSidibe.jpeg",
   },
@@ -79,185 +47,217 @@ const TEAM = [
 ]
 
 const VISION_POINTS = [
-  "Certification blockchain de provenance pour chaque œuvre",
-  "Artistes africains au cœur de la plateforme",
-  "Préservation du patrimoine culturel africain",
-  "Marché équitable, transparent et mondial",
+  "Certification blockchain de provenance pour chaque oeuvre",
+  "Artistes africains au coeur de la plateforme",
+  "Preservation du patrimoine culturel africain",
+  "Marche equitable, transparent et mondial",
 ]
 
 /**
  * About page — mission, vision, values, team, CTA.
- * Wrapped in Layout (main nav + footer provided by parent).
+ * Standalone route using PortalLayout with Africa (gold) theme.
  *
  * @returns {JSX.Element}
  */
 export default function About() {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* ── HERO ── */}
-      <section className="relative overflow-hidden py-20 px-4 md:px-6 lg:px-8">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/40 via-gray-900 to-purple-950/20 pointer-events-none" />
-        <div className="relative max-w-4xl mx-auto text-center">
-          <MissionBadge />
-          <h1 className="font-playfair text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Renforcer la créativité<br />
-            <span className="text-indigo-400">africaine</span>
-          </h1>
-          <p className="text-gray-300 text-xl max-w-2xl mx-auto leading-relaxed">
-            Nous comblons le fossé entre les artistes africains et le marché mondial — grâce à la blockchain, la certification et une infrastructure digitale de confiance.
-          </p>
+    <PortalLayout portal="africa">
+      {/* ── HERO — Mission ── */}
+      <section className="pt-40 pb-24 text-center relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
+
+        <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+          <RevealOnScroll>
+            <SectionLabel text="Notre mission" />
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.1}>
+            <h1 className="font-playfair font-bold text-[clamp(32px,4vw,52px)] text-white mt-6 mb-5 leading-tight">
+              Renforcer la creativite{" "}
+              <em className="italic text-[var(--accent)]">africaine</em>
+            </h1>
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.2}>
+            <p className="text-[15px] text-kcb-pierre max-w-[540px] mx-auto leading-relaxed">
+              Nous comblons le fosse entre les artistes africains et le marche mondial
+              — grace a la blockchain, la certification et une infrastructure digitale
+              de confiance.
+            </p>
+          </RevealOnScroll>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-900 to-transparent pointer-events-none" />
       </section>
 
-      {/* ── VISION ── */}
-      <section className="py-16 px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Text */}
-          <div>
-            <span className="text-indigo-400 text-sm font-medium uppercase tracking-wider">
-              Notre vision
-            </span>
-            <h2 className="font-playfair text-4xl text-white mt-3 mb-5">
-              Préserver l'âme de l'Afrique,<br />
-              <span className="text-indigo-400">une œuvre à la fois</span>
-            </h2>
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">
-              KUCIBOK a été fondée avec une vision claire : créer une plateforme dédiée où les artistes africains peuvent présenter leur travail à un public mondial tout en conservant la propriété et le contrôle de leurs actifs créatifs.
-            </p>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              L'art africain primitif est l'un des patrimoines les plus riches et les plus fragiles de l'humanité. Des masques Dogon du Mali aux bronzes royaux du Bénin, ces œuvres portent des siècles de culture, de spiritualité et d'histoire. Nous construisons le gardien numérique de ce patrimoine.
-            </p>
-            <div className="space-y-2.5">
-              {VISION_POINTS.map((point, i) => (
-                <div key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
-                  <Check className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-                  {point}
+      <GeoLine />
+
+      {/* ── VISION — 2 colonnes ── */}
+      <section className="py-36 bg-kcb-noir-deep">
+        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            {/* Text */}
+            <RevealOnScroll>
+              <div>
+                <SectionLabel text="Notre vision" />
+                <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-5">
+                  Preserver l'ame de l'Afrique,{" "}
+                  <em className="italic text-[var(--accent)]">une oeuvre a la fois</em>
+                </h2>
+                <p className="text-[13px] text-kcb-pierre leading-[1.8] mb-4">
+                  KUCIBOK a ete fondee avec une vision claire : creer une plateforme
+                  dediee ou les artistes africains peuvent presenter leur travail a un
+                  public mondial tout en conservant la propriete et le controle de leurs
+                  actifs creatifs.
+                </p>
+                <p className="text-[13px] text-kcb-pierre leading-[1.8] mb-8">
+                  L'art africain primitif est l'un des patrimoines les plus riches et
+                  les plus fragiles de l'humanite. Des masques Dogon du Mali aux
+                  bronzes royaux du Benin, ces oeuvres portent des siecles de culture,
+                  de spiritualite et d'histoire. Nous construisons le gardien numerique
+                  de ce patrimoine.
+                </p>
+                <div className="space-y-3">
+                  {VISION_POINTS.map((point, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 text-[13px] text-kcb-sable"
+                    >
+                      <Check className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
+                      {point}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Image */}
-          <div className="rounded-2xl overflow-hidden border border-gray-800 rotate-1 hover:rotate-0 transition-transform duration-300">
-            <img
-              loading="lazy"
-              src="/images/homepage/collector-hero.jpeg"
-              alt="Collection d'art africain"
-              className="w-full h-80 object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ── STATS ── */}
-      <section className="py-10 px-4 md:px-6 lg:px-8 bg-gray-800/20 border-y border-gray-800">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          {STATS.map((s, i) => (
-            <StatCard key={i} value={s.value} label={s.label} />
-          ))}
-        </div>
-      </section>
-
-      {/* ── VALUES ── */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="text-center max-w-xl mx-auto mb-14">
-          <span className="text-indigo-400 text-sm font-medium uppercase tracking-wider">
-            Nos valeurs
-          </span>
-          <h2 className="font-playfair text-4xl text-white mt-3 mb-3">
-            Ce qui nous guide
-          </h2>
-          <p className="text-gray-400 text-sm">
-            Ces principes fondamentaux guident chaque décision que nous prenons chez Kucibok.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {VALUES.map((v, i) => (
-            <div
-              key={i}
-              className="bg-gray-800/50 border border-gray-700 hover:border-indigo-700/40 rounded-xl p-6 text-center transition-colors"
-            >
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${v.color}`}>
-                <v.icon className="w-6 h-6" />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">{v.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{v.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+            </RevealOnScroll>
 
-      {/* ── TEAM ── */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-gray-800/20 border-t border-gray-800">
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="text-indigo-400 text-sm font-medium uppercase tracking-wider">
-            L'équipe
-          </span>
-          <h2 className="font-playfair text-4xl text-white mt-3 mb-3">
-            Les fondateurs
-          </h2>
-          <p className="text-gray-400 text-sm mb-12">
-            Rencontrez les personnes passionnées derrière Kucibok.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-10">
-            {TEAM.map((member, i) => (
-              <div
-                key={i}
-                className="bg-gray-800/60 border border-gray-700 rounded-2xl p-8 flex flex-col items-center gap-4"
-              >
+            {/* Image */}
+            <RevealOnScroll delay={0.15}>
+              <div className="overflow-hidden border border-white/[0.06] rotate-1 hover:rotate-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
                 <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-28 h-28 object-cover rounded-full border-2 border-indigo-700/50"
+                  loading="lazy"
+                  src="/images/homepage/collector-hero.jpeg"
+                  alt="Collection d'art africain — masques et sculptures traditionnelles"
+                  className="w-full h-[420px] object-cover"
                 />
-                <div>
-                  <h3 className="text-white font-semibold text-lg">{member.name}</h3>
-                  <p className="text-indigo-400 text-sm mt-0.5">{member.role}</p>
-                </div>
               </div>
+            </RevealOnScroll>
+          </div>
+        </div>
+      </section>
+
+      {/* ── VALUES — Grille 2x2 ── */}
+      <section className="py-36 bg-kcb-noir-deep">
+        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+          <RevealOnScroll>
+            <div className="mb-20">
+              <SectionLabel text="Nos valeurs" />
+              <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6">
+                Ce qui nous guide
+              </h2>
+            </div>
+          </RevealOnScroll>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0.5">
+            {VALUES.map((v, i) => (
+              <RevealOnScroll key={i} delay={Math.min(i, 3) * 0.1}>
+                <div className="bg-kcb-noir p-9 lg:p-12 relative overflow-hidden group transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1">
+                  {/* Top accent line on hover */}
+                  <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
+                  <div className="w-10 h-10 border border-kcb-or/15 flex items-center justify-center mb-7 text-[var(--accent)]">
+                    <v.icon className="w-[18px] h-[18px]" />
+                  </div>
+                  <h3 className="font-playfair font-semibold text-lg text-white mb-3">
+                    {v.title}
+                  </h3>
+                  <p className="text-[13px] leading-[1.7] text-kcb-pierre">
+                    {v.description}
+                  </p>
+                </div>
+              </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="py-20 px-4 md:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto bg-gradient-to-br from-indigo-950/60 to-purple-950/40 border border-indigo-800/40 rounded-2xl p-10 md:p-14 text-center">
-          <h2 className="font-playfair text-4xl text-white mb-4">
-            Rejoindre la communauté
-          </h2>
-          <p className="text-gray-300 text-sm mb-8 max-w-md mx-auto leading-relaxed">
-            Que vous soyez artiste, collectionneur ou passionné d'art africain, nous vous invitons à faire partie de notre communauté grandissante.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              to="/sign-up"
-              className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-md transition"
-            >
-              Créer un compte <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/artists"
-              className="px-6 py-3 bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white rounded-md transition"
-            >
-              Voir les artistes
-            </Link>
-            <Link
-              to="/contact"
-              className="px-6 py-3 bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white rounded-md transition"
-            >
-              Contactez-nous
-            </Link>
+      <GeoLine />
+
+      {/* ── TEAM — Fondateurs ── */}
+      <section className="py-36 bg-kcb-noir-deep">
+        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+          <RevealOnScroll>
+            <div className="mb-20">
+              <SectionLabel text="L'equipe" />
+              <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-3">
+                Les fondateurs
+              </h2>
+              <p className="text-[13px] text-kcb-pierre max-w-[400px]">
+                Rencontrez les personnes passionnees derriere Kucibok.
+              </p>
+            </div>
+          </RevealOnScroll>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0.5">
+            {TEAM.map((member, i) => (
+              <RevealOnScroll key={i} delay={i * 0.1}>
+                <div className="bg-kcb-noir p-9 lg:p-12 relative overflow-hidden group transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1">
+                  {/* Top accent line on hover */}
+                  <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
+                  <div className="flex items-center gap-6">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-24 h-24 object-cover rounded-full border-2 border-kcb-or/20"
+                    />
+                    <div>
+                      <h3 className="font-playfair font-semibold text-lg text-white mb-1">
+                        {member.name}
+                      </h3>
+                      <p className="font-jetbrains text-[10px] tracking-[0.15em] uppercase text-[var(--accent)]">
+                        {member.role}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </RevealOnScroll>
+            ))}
           </div>
         </div>
       </section>
-    </div>
+
+      <GeoLine />
+
+      {/* ── CTA — Rejoindre ── */}
+      <section className="py-40 text-center relative">
+        {/* Decorative border */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-kcb-or/[0.03] pointer-events-none" />
+
+        <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+          <RevealOnScroll>
+            <h2 className="font-playfair font-bold text-[clamp(32px,4vw,52px)] mb-5">
+              Rejoindre la communaute
+            </h2>
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.1}>
+            <p className="text-[15px] text-kcb-pierre mb-12 max-w-[460px] mx-auto">
+              Que vous soyez artiste, collectionneur ou passionne d'art africain, nous
+              vous invitons a faire partie de notre communaute grandissante.
+            </p>
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.2}>
+            <div className="flex justify-center gap-4 flex-wrap">
+              <Link
+                to="/sign-up"
+                className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline"
+              >
+                Creer un compte <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                to="/artists"
+                className="inline-flex items-center gap-2 bg-transparent text-[var(--accent)] font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 border border-[var(--accent)] transition-all hover:bg-[var(--accent)] hover:text-kcb-noir no-underline"
+              >
+                Voir les artistes
+              </Link>
+            </div>
+          </RevealOnScroll>
+        </div>
+      </section>
+    </PortalLayout>
   )
 }

@@ -5,16 +5,16 @@ import { Button } from "../ui";
 export const Step1 = ({ formState, setFormState, onGoogleSignup }) => {
     return (
         <>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-background px-4">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-kcb-noir-deep px-4">
           <div className="w-full max-w-sm mx-auto">
             {formState.error && (
               <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
                 {formState.error}
               </div>
             )}
-            <div className="bg-card rounded-xl border border-gray-800 shadow-sm p-6">
+            <div className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] shadow-sm p-6">
               <p className="text-center text-xl font-bold text-white mb-2">Inscription</p>
-              <p className="text-xs text-center text-gray-400 mb-6">Choisissez votre mode de connexion</p>
+              <p className="text-xs text-center text-kcb-pierre mb-6">Choisissez votre mode de connexion</p>
 
               {/* Bouton Google — style spécifique conservé */}
               {onGoogleSignup && (
@@ -44,7 +44,7 @@ export const Step1 = ({ formState, setFormState, onGoogleSignup }) => {
               </Button>
 
               <div className="mt-6 text-center">
-                <Link to={-1} className="text-xs text-gray-400 hover:underline">Retour</Link>
+                <Link to={-1} className="text-xs text-kcb-pierre hover:underline">Retour</Link>
               </div>
             </div>
           </div>

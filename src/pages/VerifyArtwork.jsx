@@ -31,12 +31,12 @@ export default function VerifyArtwork() {
   }, [kuciobkId])
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] flex flex-col">
+    <div className="min-h-screen bg-kcb-noir-deep flex flex-col">
       {/* Header minimal */}
-      <header className="bg-white border-b border-[#e8dcc6] px-6 py-4">
+      <header className="bg-kcb-noir border-b border-white/[0.06] px-6 py-4">
         <Link to="/" className="flex items-center gap-2 w-fit">
-          <img src="/images/kucibok-white-logo.svg" alt="Kucibok" className="w-7 invert" />
-          <span className="font-bold text-[#8b4513] text-lg tracking-wide">KUCIBOK</span>
+          <img src="/images/kucibok-white-logo.svg" alt="Kucibok" className="w-7" />
+          <span className="font-bold text-kcb-or text-lg tracking-wide">KUCIBOK</span>
         </Link>
       </header>
 
@@ -47,24 +47,24 @@ export default function VerifyArtwork() {
           {/* Loading */}
           {state === "loading" && (
             <div className="text-center">
-              <Loader2 className="w-10 h-10 text-[#cd853f] animate-spin mx-auto mb-4" />
-              <p className="text-[#a0522d] text-sm">Vérification en cours…</p>
+              <Loader2 className="w-10 h-10 text-kcb-or animate-spin mx-auto mb-4" />
+              <p className="text-kcb-pierre text-sm">Vérification en cours…</p>
             </div>
           )}
 
           {/* Certifiée */}
           {state === "verified" && artwork && (
-            <div className="bg-white rounded-2xl border-2 border-[#cd853f]/40 shadow-lg overflow-hidden">
-              {/* Bandeau vert */}
-              <div className="bg-gradient-to-r from-[#8b4513] to-[#cd853f] px-6 py-5 text-white text-center">
+            <div className="bg-kcb-ardoise rounded-[4px] border border-kcb-or/30 shadow-lg overflow-hidden">
+              {/* Bandeau or */}
+              <div className="bg-kcb-or px-6 py-5 text-kcb-noir text-center">
                 <ShieldCheck className="w-10 h-10 mx-auto mb-2" />
-                <p className="font-bold text-lg tracking-wide">ŒUVRE CERTIFIÉE</p>
+                <p className="font-bold text-lg tracking-wide uppercase">Œuvre Certifiée</p>
                 <p className="text-sm opacity-85 mt-1">Standard Kucibok</p>
               </div>
 
               {/* Identifiant */}
-              <div className="px-6 py-4 bg-[#fdf9f5] border-b border-[#e8dcc6] text-center">
-                <span className="font-mono text-[#8b4513] font-bold text-lg tracking-widest">
+              <div className="px-6 py-4 bg-kcb-noir border-b border-white/[0.06] text-center">
+                <span className="font-jetbrains text-kcb-or font-bold text-lg tracking-widest">
                   {artwork.kuciobkId}
                 </span>
               </div>
@@ -93,7 +93,7 @@ export default function VerifyArtwork() {
                     href={artwork.certificateUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-[#8b4513] text-white text-sm font-semibold hover:bg-[#a0522d] transition-colors"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-[4px] bg-kcb-or text-kcb-noir text-sm font-semibold hover:bg-kcb-bronze transition-colors uppercase tracking-[0.05em]"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Voir le certificat PDF
@@ -101,7 +101,7 @@ export default function VerifyArtwork() {
                 </div>
               )}
 
-              <div className="px-6 pb-5 text-center text-xs text-[#a0522d]/70">
+              <div className="px-6 pb-5 text-center text-xs text-kcb-pierre">
                 Ce document atteste de l'authenticité de l'œuvre selon le Standard Kucibok.
               </div>
             </div>
@@ -109,35 +109,35 @@ export default function VerifyArtwork() {
 
           {/* Non certifiée */}
           {state === "unverified" && (
-            <div className="bg-white rounded-2xl border-2 border-amber-200 shadow-lg overflow-hidden">
-              <div className="bg-amber-50 px-6 py-5 text-center border-b border-amber-200">
-                <ShieldX className="w-10 h-10 mx-auto mb-2 text-amber-500" />
-                <p className="font-bold text-amber-700 text-lg">Non encore certifiée</p>
+            <div className="bg-kcb-ardoise rounded-[4px] border border-amber-500/30 shadow-lg overflow-hidden">
+              <div className="bg-amber-900/30 px-6 py-5 text-center border-b border-amber-500/20">
+                <ShieldX className="w-10 h-10 mx-auto mb-2 text-amber-400" />
+                <p className="font-bold text-amber-400 text-lg">Non encore certifiée</p>
               </div>
               <div className="px-6 py-6 text-center">
-                <p className="text-sm text-gray-600">{artwork?.message || "Cette œuvre n'a pas encore été validée par Kucibok."}</p>
-                <p className="text-xs text-gray-400 mt-3 font-mono">{kuciobkId}</p>
+                <p className="text-sm text-kcb-sable">{artwork?.message || "Cette œuvre n'a pas encore été validée par Kucibok."}</p>
+                <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kuciobkId}</p>
               </div>
             </div>
           )}
 
           {/* Erreur / introuvable */}
           {state === "error" && (
-            <div className="bg-white rounded-2xl border-2 border-red-200 shadow-lg overflow-hidden">
-              <div className="bg-red-50 px-6 py-5 text-center border-b border-red-200">
+            <div className="bg-kcb-ardoise rounded-[4px] border border-red-500/30 shadow-lg overflow-hidden">
+              <div className="bg-red-900/30 px-6 py-5 text-center border-b border-red-500/20">
                 <ShieldX className="w-10 h-10 mx-auto mb-2 text-red-400" />
-                <p className="font-bold text-red-600 text-lg">Identifiant introuvable</p>
+                <p className="font-bold text-red-400 text-lg">Identifiant introuvable</p>
               </div>
               <div className="px-6 py-6 text-center">
-                <p className="text-sm text-gray-600">{errorMsg || "Cet identifiant ne correspond à aucune œuvre enregistrée."}</p>
-                <p className="text-xs text-gray-400 mt-3 font-mono">{kuciobkId}</p>
+                <p className="text-sm text-kcb-sable">{errorMsg || "Cet identifiant ne correspond à aucune œuvre enregistrée."}</p>
+                <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kuciobkId}</p>
               </div>
             </div>
           )}
 
           {/* Retour */}
           <div className="mt-8 text-center">
-            <Link to="/" className="text-sm text-[#a0522d] hover:underline">
+            <Link to="/" className="text-sm text-kcb-or hover:text-kcb-bronze transition">
               ← Retour à kucibok.com
             </Link>
           </div>
@@ -145,7 +145,7 @@ export default function VerifyArtwork() {
       </main>
 
       {/* Footer minimal */}
-      <footer className="text-center py-4 text-xs text-[#a0522d]/60 border-t border-[#e8dcc6]">
+      <footer className="text-center py-4 text-xs text-kcb-pierre/60 border-t border-white/[0.06]">
         Kucibok — Standard de certification de l'art africain
       </footer>
     </div>
@@ -155,8 +155,8 @@ export default function VerifyArtwork() {
 function Row({ label, value }) {
   return (
     <div className="flex justify-between items-start gap-3 text-sm">
-      <span className="text-[#a0522d] font-medium shrink-0">{label}</span>
-      <span className="text-[#2c1810] font-semibold text-right">{value}</span>
+      <span className="text-kcb-pierre font-medium shrink-0">{label}</span>
+      <span className="text-white font-semibold text-right">{value}</span>
     </div>
   )
 }

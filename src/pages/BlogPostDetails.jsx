@@ -7,6 +7,7 @@ import { getUserById } from "../api/useAuth"
 import { Fragment } from "react"
 import { Comments } from "../components/blog/Comments"
 import { Helmet } from "react-helmet"
+import RevealOnScroll from "../components/landing/RevealOnScroll"
 
 export default function BlogPostDetails(){
     const {id} = useParams()
@@ -61,7 +62,7 @@ export default function BlogPostDetails(){
         </Helmet>
         <div className="w-full lg:w-7/10 px-4 lg:px-6 my-6 mx-auto">
             <div className="flex justify-start items-center mx-auto">
-                <Link to={-1} className="rounded-md p-2 text-sm gap-1 text-white hover:bg-slate-700/90 flex items-center">
+                <Link to={-1} className="rounded-[4px] p-2 text-sm gap-1 text-white hover:bg-white/[0.03] flex items-center">
                     <ArrowLeft className="w-4 h-4" />
                     Retour
                 </Link>
@@ -78,10 +79,10 @@ export default function BlogPostDetails(){
                 </>
             )}
             {state?.post?._id && (
-                <>
+                <RevealOnScroll>
                 <div className="flex flex-col w-full mx-auto py-4">
-                    <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">{state?.post?.title}</h2>
-                    <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
+                    <h2 className="font-playfair text-[clamp(24px,3vw,36px)] font-bold text-white mb-2 tracking-tight">{state?.post?.title}</h2>
+                    <div className="flex items-center gap-4 text-xs text-kcb-pierre mb-6">
                         <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             {new Date(state?.post?.publishDate).toLocaleDateString()}
@@ -93,19 +94,19 @@ export default function BlogPostDetails(){
                         </div>
                     </div>
                     {state?.post?.image && (
-                        <img src={state?.post?.image} alt={state?.post?.title} className="w-full object-cover rounded-md h-56 sm:h-72 md:h-80 lg:h-96 mb-6 border border-gray-800" />
+                        <img src={state?.post?.image} alt={state?.post?.title} className="w-full object-cover rounded-[4px] h-56 sm:h-72 md:h-80 lg:h-96 mb-6 border border-white/[0.06]" />
                     )}
                     <div className="flex flex-col gap-6 mt-6">
-                        <div className="border-b border-gray-800 pb-6">
+                        <div className="border-b border-white/[0.06] pb-6">
                             <span
-                                className="text-base  text-white leading-relaxed"
+                                className="text-base text-white leading-relaxed"
                                 dangerouslySetInnerHTML={{ __html: `<p className="text-xs">${state?.post?.content}</p>` }}
                             />
                         </div>
                         {state?.post?.tags?.length > 0 && (
                             <div className="flex flex-wrap gap-2">
                                 {state?.post?.tags?.map((tag, index) => (
-                                    <span key={index} className="rounded-full bg-gradient-to-r from-purple-700 to-indigo-700 text-xs text-white px-3 py-1 flex items-center gap-1 font-medium">
+                                    <span key={index} className="rounded-[4px] bg-kcb-or/10 text-xs text-kcb-or px-3 py-1 flex items-center gap-1 font-medium border border-kcb-or/20">
                                         <Tag className="w-3 h-3" />
                                         {tag}
                                     </span>
@@ -115,10 +116,10 @@ export default function BlogPostDetails(){
                         <Comments post={state?.post} setPostState={setState} postState={state} />
                     </div>
                 </div>
-                </>
+                </RevealOnScroll>
             )}
         </div>
-        
+
         </>
     )
 }

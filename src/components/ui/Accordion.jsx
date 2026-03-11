@@ -54,7 +54,7 @@ export function Accordion({
         return (
           <div
             key={item.value}
-            className="bg-card border border-gray-800 rounded-lg overflow-hidden"
+            className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden"
           >
             {/* Accordion header */}
             <button
@@ -63,19 +63,19 @@ export function Accordion({
               className={`
                 w-full flex items-center justify-between p-4
                 text-left transition-colors
-                ${item.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800/50'}
+                ${item.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.03]'}
               `}
             >
               <div className="flex items-center gap-3 flex-1">
                 {item.icon && (
-                  <span className="text-gray-400">{item.icon}</span>
+                  <span className="text-kcb-pierre">{item.icon}</span>
                 )}
                 <div className="flex-1">
                   <h3 className="text-sm font-medium text-white">
                     {item.title}
                   </h3>
                   {item.subtitle && (
-                    <p className="text-xs text-gray-400 mt-1">{item.subtitle}</p>
+                    <p className="text-xs text-kcb-pierre mt-1">{item.subtitle}</p>
                   )}
                 </div>
                 {item.badge !== undefined && (
@@ -85,7 +85,7 @@ export function Accordion({
                 )}
               </div>
               <ChevronDown
-                className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+                className={`w-5 h-5 text-kcb-pierre transition-transform duration-200 ${
                   isOpen ? 'rotate-180' : ''
                 }`}
               />
@@ -98,7 +98,7 @@ export function Accordion({
                 ${isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}
               `}
             >
-              <div className="p-4 pt-0 border-t border-gray-800">
+              <div className="p-4 pt-0 border-t border-white/[0.06]">
                 {item.content}
               </div>
             </div>
@@ -172,7 +172,7 @@ export function AccordionItem({
   className = ''
 }) {
   return (
-    <div className={`bg-card border border-gray-800 rounded-lg overflow-hidden ${className}`}>
+    <div className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden ${className}`}>
       {/* Accordion header */}
       <button
         onClick={() => !disabled && onToggle?.()}
@@ -180,19 +180,19 @@ export function AccordionItem({
         className={`
           w-full flex items-center justify-between p-4
           text-left transition-colors
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800/50'}
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.03]'}
         `}
       >
         <div className="flex items-center gap-3 flex-1">
           {icon && (
-            <span className="text-gray-400">{icon}</span>
+            <span className="text-kcb-pierre">{icon}</span>
           )}
           <div className="flex-1">
             <h3 className="text-sm font-medium text-white">
               {title}
             </h3>
             {subtitle && (
-              <p className="text-xs text-gray-400 mt-1">{subtitle}</p>
+              <p className="text-xs text-kcb-pierre mt-1">{subtitle}</p>
             )}
           </div>
           {badge !== undefined && (
@@ -202,7 +202,7 @@ export function AccordionItem({
           )}
         </div>
         <ChevronDown
-          className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+          className={`w-5 h-5 text-kcb-pierre transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
@@ -215,7 +215,7 @@ export function AccordionItem({
           ${isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}
         `}
       >
-        <div className="p-4 pt-0 border-t border-gray-800">
+        <div className="p-4 pt-0 border-t border-white/[0.06]">
           {children}
         </div>
       </div>

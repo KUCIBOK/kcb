@@ -4,6 +4,7 @@ import { CheckCircle, ArrowLeft, Download, Calendar, CreditCard } from 'lucide-r
 import { activateSubscription, getSubscriptionById } from '../api/useSubscriptions'
 import { DataLoader } from '../components/loaders/PageLoader'
 import { toast } from 'sonner'
+import RevealOnScroll from '../components/landing/RevealOnScroll'
 
 export default function SubscriptionSuccess() {
   const { subscriptionId } = useParams()
@@ -69,10 +70,10 @@ export default function SubscriptionSuccess() {
 
   if (state.loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-kcb-noir-deep">
         <div className="text-center">
           <DataLoader />
-          <p className="text-gray-400 mt-4">Activation de votre abonnement...</p>
+          <p className="text-kcb-pierre mt-4">Activation de votre abonnement...</p>
         </div>
       </div>
     )
@@ -80,16 +81,16 @@ export default function SubscriptionSuccess() {
 
   if (state.error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-kcb-noir-deep px-4">
         <div className="max-w-md text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-red-600" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Erreur d'activation</h1>
-          <p className="text-gray-400 mb-6">{state.error}</p>
+          <p className="text-kcb-pierre mb-6">{state.error}</p>
           <Link
             to="/plans"
-            className="inline-flex items-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="inline-flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-6 py-3 rounded-[4px] font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Retour aux plans
@@ -100,7 +101,8 @@ export default function SubscriptionSuccess() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 py-12 px-4">
+    <div className="min-h-screen bg-kcb-noir-deep py-12 px-4">
+      <RevealOnScroll>
       <div className="max-w-2xl mx-auto">
         {/* Header de succès */}
         <div className="text-center mb-8">
@@ -108,44 +110,44 @@ export default function SubscriptionSuccess() {
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Abonnement activé !</h1>
-          <p className="text-gray-400">
+          <p className="text-kcb-pierre">
             Votre abonnement {state.plan?.name} a été activé avec succès
           </p>
         </div>
 
         {/* Détails de l'abonnement */}
-        <div className="bg-gray-800 rounded-xl p-6 mb-6">
+        <div className="bg-kcb-ardoise rounded-[4px] p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Détails de votre abonnement</h2>
           
           <div className="space-y-4">
-            <div className="flex justify-between items-center py-2 border-b border-gray-700">
-              <span className="text-gray-400">Plan</span>
+            <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
+              <span className="text-kcb-pierre">Plan</span>
               <span className="text-white font-medium">{state.plan?.name}</span>
             </div>
             
-            <div className="flex justify-between items-center py-2 border-b border-gray-700">
-              <span className="text-gray-400">Montant</span>
+            <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
+              <span className="text-kcb-pierre">Montant</span>
               <span className="text-white font-medium">
                 {state.subscription?.amount?.toLocaleString('fr-FR')} {state.subscription?.currency}
               </span>
             </div>
             
-            <div className="flex justify-between items-center py-2 border-b border-gray-700">
-              <span className="text-gray-400">Date de début</span>
+            <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
+              <span className="text-kcb-pierre">Date de début</span>
               <span className="text-white font-medium">
                 {new Date(state.subscription?.startDate).toLocaleDateString('fr-FR')}
               </span>
             </div>
             
-            <div className="flex justify-between items-center py-2 border-b border-gray-700">
-              <span className="text-gray-400">Date de fin</span>
+            <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
+              <span className="text-kcb-pierre">Date de fin</span>
               <span className="text-white font-medium">
                 {new Date(state.subscription?.endDate).toLocaleDateString('fr-FR')}
               </span>
             </div>
             
             <div className="flex justify-between items-center py-2">
-              <span className="text-gray-400">Prochain paiement</span>
+              <span className="text-kcb-pierre">Prochain paiement</span>
               <span className="text-white font-medium">
                 {new Date(state.subscription?.nextPaymentDate).toLocaleDateString('fr-FR')}
               </span>
@@ -155,11 +157,11 @@ export default function SubscriptionSuccess() {
 
         {/* Fonctionnalités du plan */}
         {state.plan?.features && (
-          <div className="bg-gray-800 rounded-xl p-6 mb-6">
+          <div className="bg-kcb-ardoise rounded-[4px] p-6 mb-6">
             <h3 className="text-lg font-semibold text-white mb-4">Fonctionnalités incluses</h3>
             <ul className="space-y-2">
               {state.plan.features.map((feature, index) => (
-                <li key={index} className="flex items-center gap-2 text-gray-300">
+                <li key={index} className="flex items-center gap-2 text-kcb-sable">
                   <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   {feature}
                 </li>
@@ -172,7 +174,7 @@ export default function SubscriptionSuccess() {
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
             to="/dashboard"
-            className="flex-1 flex items-center justify-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-6 py-3 rounded-[4px] font-medium transition-colors"
           >
             <Calendar className="w-4 h-4" />
             Accéder au tableau de bord
@@ -180,7 +182,7 @@ export default function SubscriptionSuccess() {
           
           <Link
             to="/plans"
-            className="flex-1 flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 bg-kcb-ardoise hover:bg-white/[0.03] text-white px-6 py-3 rounded-[4px] font-medium transition-colors"
           >
             <CreditCard className="w-4 h-4" />
             Voir tous les plans
@@ -188,13 +190,14 @@ export default function SubscriptionSuccess() {
         </div>
 
         {/* Note importante */}
-        <div className="mt-8 bg-blue-900/20 border border-blue-700/30 rounded-lg p-4">
-          <p className="text-blue-200 text-sm">
+        <div className="mt-8 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] p-4">
+          <p className="text-kcb-or text-sm">
             <strong>Note :</strong> Vous recevrez un email de confirmation avec les détails de votre abonnement. 
             Votre abonnement sera automatiquement renouvelé à la date indiquée ci-dessus.
           </p>
         </div>
       </div>
+      </RevealOnScroll>
     </div>
   )
 }

@@ -38,47 +38,47 @@ export function Step3({ formState, setFormState }) {
     };
     return (
         <>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-background px-4">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-kcb-noir-deep px-4">
           <div className="w-full max-w-sm mx-auto">
             {formState.error && (
               <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
                 {formState.error}
               </div>
             )}
-            <div className="bg-card rounded-xl border border-gray-800 shadow-sm p-6">
+            <div className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] shadow-sm p-6">
               <p className="text-center text-xl font-bold text-white mb-2">Choisissez votre rôle</p>
-              <p className="text-xs text-center text-gray-400 mb-6">Comment souhaitez-vous utiliser Kucibok ?</p>
+              <p className="text-xs text-center text-kcb-pierre mb-6">Comment souhaitez-vous utiliser Kucibok ?</p>
               <div className="space-y-3">
                 <div
                   ref={artistRef}
                   onClick={() => handleRoleClick('artist')}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-lg border cursor-pointer transition ${formState.role === 'artist' ? 'border-indigo-kcb bg-indigo-kcb/10' : 'border-gray-800 hover:border-indigo-kcb/60'}`}
+                  className={`flex items-center gap-4 px-4 py-3 rounded-lg border cursor-pointer transition ${formState.role === 'artist' ? 'border-kcb-or bg-kcb-or/10' : 'border-white/[0.06] hover:border-kcb-or/60'}`}
                   style={{ userSelect: 'none' }}
                 >
-                  <span className="rounded-full bg-indigo-kcb/10 p-2"><Brush className="text-indigo-kcb/80" /></span>
+                  <span className="rounded-full bg-kcb-or/10 p-2"><Brush className="text-kcb-or/80" /></span>
                   <span className="text-white text-base font-medium">Artiste</span>
                 </div>
                 <div
                   ref={collectorRef}
                   onClick={() => handleRoleClick('collector')}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-lg border cursor-pointer transition ${formState.role === 'collector' ? 'border-indigo-kcb bg-indigo-kcb/10' : 'border-gray-800 hover:border-indigo-kcb/60'}`}
+                  className={`flex items-center gap-4 px-4 py-3 rounded-lg border cursor-pointer transition ${formState.role === 'collector' ? 'border-kcb-or bg-kcb-or/10' : 'border-white/[0.06] hover:border-kcb-or/60'}`}
                   style={{ userSelect: 'none' }}
                 >
-                  <span className="rounded-full bg-indigo-kcb/10 p-2"><ShoppingBag className="text-indigo-kcb/80" /></span>
+                  <span className="rounded-full bg-kcb-or/10 p-2"><ShoppingBag className="text-kcb-or/80" /></span>
                   <span className="text-white text-base font-medium">Collectionneur</span>
                 </div>
                 <div
                   ref={proRef}
                   onClick={() => handleRoleClick('professional')}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-lg border cursor-pointer transition ${formState.role === 'professional' ? 'border-indigo-kcb bg-indigo-kcb/10' : 'border-gray-800 hover:border-indigo-kcb/60'}`}
+                  className={`flex items-center gap-4 px-4 py-3 rounded-lg border cursor-pointer transition ${formState.role === 'professional' ? 'border-kcb-or bg-kcb-or/10' : 'border-white/[0.06] hover:border-kcb-or/60'}`}
                   style={{ userSelect: 'none' }}
                 >
-                  <span className="rounded-full bg-indigo-kcb/10 p-2"><Award className="text-indigo-kcb/80" /></span>
+                  <span className="rounded-full bg-kcb-or/10 p-2"><Award className="text-kcb-or/80" /></span>
                   <span className="text-white text-base font-medium">Professionnel de l'art</span>
                 </div>
                 <button
                   onClick={handleNext}
-                  className="w-full py-2 rounded-md bg-indigo-kcb text-white font-semibold text-sm hover:bg-indigo-700 transition mt-2"
+                  className="w-full py-2 rounded-md bg-kcb-or text-white font-semibold text-sm hover:bg-kcb-bronze transition mt-2"
                 >
                   {formState.loading ? <DataLoader /> : 'Suivant'}
                 </button>
@@ -86,7 +86,7 @@ export function Step3({ formState, setFormState }) {
               <div className="mt-6 text-center">
                 <button
                   onClick={() => setFormState({ ...formState, error: '', step: 1, loading: false })}
-                  className="text-xs text-gray-400 hover:underline w-full"
+                  className="text-xs text-kcb-pierre hover:underline w-full"
                 >
                   Retour
                 </button>

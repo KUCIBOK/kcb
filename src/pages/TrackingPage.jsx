@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getDeliveryByTracking } from "../api/useDelivery";
+import RevealOnScroll from "../components/landing/RevealOnScroll";
 import {
   MapPin, Clock, Package, Truck, CheckCircle, AlertCircle,
   Loader2, ShieldCheck, ArrowLeft
@@ -16,10 +17,10 @@ const STATUS_LABELS = {
 };
 
 const STATUS_COLORS = {
-  pending:          "text-gray-400 border-gray-600",
+  pending:          "text-kcb-pierre border-white/[0.08]",
   in_preparation:   "text-yellow-400 border-yellow-600",
-  in_transit:       "text-blue-400 border-blue-600",
-  customs_cleared:  "text-indigo-400 border-indigo-600",
+  in_transit:       "text-kcb-or border-kcb-or",
+  customs_cleared:  "text-kcb-or border-indigo-600",
   delivered:        "text-green-400 border-green-600",
   rejected:         "text-red-400 border-red-600",
 };
@@ -27,11 +28,11 @@ const STATUS_COLORS = {
 function StatusIcon({ status, className = "w-6 h-6" }) {
   switch (status) {
     case "delivered":         return <CheckCircle className={`${className} text-green-400`} />;
-    case "in_transit":        return <Truck       className={`${className} text-blue-400`}  />;
-    case "customs_cleared":   return <ShieldCheck className={`${className} text-indigo-400`}/>;
+    case "in_transit":        return <Truck       className={`${className} text-kcb-or`}  />;
+    case "customs_cleared":   return <ShieldCheck className={`${className} text-kcb-or`}/>;
     case "in_preparation":    return <Package      className={`${className} text-yellow-400`}/>;
     case "rejected":          return <AlertCircle  className={`${className} text-red-400`}  />;
-    default:                  return <Clock        className={`${className} text-gray-400`} />;
+    default:                  return <Clock        className={`${className} text-kcb-pierre`} />;
   }
 }
 
@@ -56,36 +57,38 @@ export default function TrackingPage() {
   const currentStepIndex = STEPS.indexOf(delivery?.status);
 
   return (
-    <div className="min-h-screen bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-kcb-noir-deep py-8 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-1 text-gray-400 hover:text-white text-sm transition"
-          >
-            <ArrowLeft className="w-4 h-4" /> Retour
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold text-white">Suivi d'expédition</h1>
-            <p className="text-gray-400 text-sm font-mono">{trackingId}</p>
+        <RevealOnScroll>
+          <div className="flex items-center gap-4 mb-8">
+            <button
+              onClick={() => window.history.back()}
+              className="flex items-center gap-1 text-kcb-pierre hover:text-white text-sm transition"
+            >
+              <ArrowLeft className="w-4 h-4" /> Retour
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Suivi d'expédition</h1>
+              <p className="text-kcb-pierre text-sm font-mono">{trackingId}</p>
+            </div>
           </div>
-        </div>
+        </RevealOnScroll>
 
         {/* Loading */}
         {loading && (
           <div className="flex justify-center py-20">
-            <Loader2 className="w-10 h-10 text-indigo-400 animate-spin" />
+            <Loader2 className="w-10 h-10 text-kcb-or animate-spin" />
           </div>
         )}
 
         {/* Erreur */}
         {!loading && errorMsg && (
-          <div className="bg-gray-800 border border-red-700/40 rounded-xl p-8 text-center">
+          <div className="bg-kcb-ardoise border border-red-700/40 rounded-[4px] p-8 text-center">
             <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
             <h2 className="text-white font-semibold text-lg mb-2">Suivi introuvable</h2>
-            <p className="text-gray-400 text-sm">{errorMsg}</p>
-            <Link to="/" className="inline-block mt-6 text-sm text-indigo-400 hover:text-indigo-300 transition">
+            <p className="text-kcb-pierre text-sm">{errorMsg}</p>
+            <Link to="/" className="inline-block mt-6 text-sm text-kcb-or hover:text-kcb-or transition">
               ← Retour à kucibok.com
             </Link>
           </div>
@@ -95,7 +98,8 @@ export default function TrackingPage() {
         {!loading && delivery && (
           <div className="space-y-6">
             {/* Statut actuel */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+            <RevealOnScroll delay={0.1}>
+              <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <StatusIcon status={delivery.status} className="w-8 h-8" />
@@ -103,13 +107,13 @@ export default function TrackingPage() {
                     <p className="text-white font-semibold text-lg">
                       {STATUS_LABELS[delivery.status] || delivery.status}
                     </p>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-kcb-pierre text-sm">
                       {delivery.corridor === "AF_TO_FR" ? "Afrique → France" : "France → Afrique"}
                       {delivery.originCountry ? ` · depuis ${delivery.originCountry}` : ""}
                     </p>
                   </div>
                 </div>
-                <span className={`text-xs font-medium px-3 py-1.5 rounded-full border ${STATUS_COLORS[delivery.status] || "text-gray-400 border-gray-600"}`}>
+                <span className={`text-xs font-medium px-3 py-1.5 rounded-full border ${STATUS_COLORS[delivery.status] || "text-kcb-pierre border-white/[0.08]"}`}>
                   {delivery.status}
                 </span>
               </div>
@@ -118,21 +122,21 @@ export default function TrackingPage() {
               {delivery.status !== "rejected" && (
                 <div className="mt-6">
                   <div className="flex justify-between items-center relative">
-                    <div className="absolute left-0 right-0 top-3 h-0.5 bg-gray-700 z-0" />
+                    <div className="absolute left-0 right-0 top-3 h-0.5 bg-kcb-ardoise z-0" />
                     <div
-                      className="absolute left-0 top-3 h-0.5 bg-indigo-500 z-0 transition-all duration-500"
+                      className="absolute left-0 top-3 h-0.5 bg-kcb-or z-0 transition-all duration-500"
                       style={{ width: `${(currentStepIndex / (STEPS.length - 1)) * 100}%` }}
                     />
                     {STEPS.map((step, i) => (
                       <div key={step} className="flex flex-col items-center z-10 gap-1.5">
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                           i <= currentStepIndex
-                            ? "bg-indigo-600 border-indigo-500"
-                            : "bg-gray-800 border-gray-600"
+                            ? "bg-kcb-or border-kcb-or"
+                            : "bg-kcb-ardoise border-white/[0.08]"
                         }`}>
                           {i < currentStepIndex && <CheckCircle className="w-3.5 h-3.5 text-white" />}
                         </div>
-                        <span className="text-[10px] text-gray-400 text-center max-w-[60px] leading-tight hidden sm:block">
+                        <span className="text-[10px] text-kcb-pierre text-center max-w-[60px] leading-tight hidden sm:block">
                           {STATUS_LABELS[step]?.split(" ")[0]}
                         </span>
                       </div>
@@ -141,49 +145,53 @@ export default function TrackingPage() {
                 </div>
               )}
             </div>
+            </RevealOnScroll>
 
             {/* Destinataire */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <RevealOnScroll delay={0.15}>
+              <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
               <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-indigo-400" /> Destinataire
+                <MapPin className="w-4 h-4 text-kcb-or" /> Destinataire
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-gray-400">Nom</p>
+                  <p className="text-kcb-pierre">Nom</p>
                   <p className="text-white">{delivery.recipientName || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-gray-400">Téléphone</p>
+                  <p className="text-kcb-pierre">Téléphone</p>
                   <p className="text-white">{delivery.recipientPhone || "—"}</p>
                 </div>
                 <div className="sm:col-span-2">
-                  <p className="text-gray-400">Adresse de livraison</p>
+                  <p className="text-kcb-pierre">Adresse de livraison</p>
                   <p className="text-white">{delivery.deliveryAddress || "—"}</p>
                 </div>
               </div>
             </div>
+            </RevealOnScroll>
 
             {/* Colis */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <RevealOnScroll delay={0.2}>
+              <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
               <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                <Package className="w-4 h-4 text-indigo-400" /> Colis
+                <Package className="w-4 h-4 text-kcb-or" /> Colis
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
                 {delivery.packageSize && (
                   <div>
-                    <p className="text-gray-400">Taille</p>
+                    <p className="text-kcb-pierre">Taille</p>
                     <p className="text-white capitalize">{delivery.packageSize}</p>
                   </div>
                 )}
                 {delivery.packageWeight && (
                   <div>
-                    <p className="text-gray-400">Poids</p>
+                    <p className="text-kcb-pierre">Poids</p>
                     <p className="text-white">{delivery.packageWeight} kg</p>
                   </div>
                 )}
                 {delivery.deliveryPriority && (
                   <div>
-                    <p className="text-gray-400">Priorité</p>
+                    <p className="text-kcb-pierre">Priorité</p>
                     <p className="text-white capitalize">{delivery.deliveryPriority}</p>
                   </div>
                 )}
@@ -191,8 +199,8 @@ export default function TrackingPage() {
 
               {/* Checklist emballage */}
               {delivery.packagingChecklist && Object.values(delivery.packagingChecklist).some(Boolean) && (
-                <div className="mt-4 pt-4 border-t border-gray-700">
-                  <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Protocole emballage muséal</p>
+                <div className="mt-4 pt-4 border-t border-white/[0.06]">
+                  <p className="text-kcb-pierre text-xs uppercase tracking-wider mb-2">Protocole emballage muséal</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       { key: "museum_wrap",      label: "Emballage muséal" },
@@ -209,18 +217,20 @@ export default function TrackingPage() {
                 </div>
               )}
             </div>
+            </RevealOnScroll>
 
             {/* Historique des événements */}
             {delivery.events?.length > 0 && (
-              <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+              <RevealOnScroll delay={0.25}>
+                <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
                 <h3 className="text-white font-semibold mb-5">Historique</h3>
                 <div className="space-y-4">
                   {[...delivery.events].reverse().map((event, idx) => (
                     <div key={idx} className="flex gap-4">
                       <div className="flex flex-col items-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 mt-1 shrink-0" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-kcb-or mt-1 shrink-0" />
                         {idx < delivery.events.length - 1 && (
-                          <div className="w-px flex-1 bg-gray-700 mt-1" />
+                          <div className="w-px flex-1 bg-kcb-ardoise mt-1" />
                         )}
                       </div>
                       <div className="pb-4 flex-1">
@@ -228,7 +238,7 @@ export default function TrackingPage() {
                           <p className="text-white text-sm font-medium">
                             {STATUS_LABELS[event.status] || event.status}
                           </p>
-                          <span className="text-gray-500 text-xs shrink-0">
+                          <span className="text-kcb-pierre text-xs shrink-0">
                             {new Date(event.date).toLocaleDateString("fr-FR", {
                               day: "numeric", month: "short", year: "numeric",
                               hour: "2-digit", minute: "2-digit",
@@ -236,25 +246,27 @@ export default function TrackingPage() {
                           </span>
                         </div>
                         {event.note && (
-                          <p className="text-gray-400 text-xs mt-0.5">{event.note}</p>
+                          <p className="text-kcb-pierre text-xs mt-0.5">{event.note}</p>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
+              </RevealOnScroll>
             )}
 
             {/* Dates */}
             {(delivery.collectDate || delivery.deliveryDate) && (
-              <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+              <RevealOnScroll delay={0.3}>
+                <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
                 <h3 className="text-white font-semibold mb-4">Dates</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   {delivery.collectDate && (
                     <div className="flex items-center gap-3">
-                      <Clock className="w-4 h-4 text-blue-400 shrink-0" />
+                      <Clock className="w-4 h-4 text-kcb-or shrink-0" />
                       <div>
-                        <p className="text-gray-400">Collecte</p>
+                        <p className="text-kcb-pierre">Collecte</p>
                         <p className="text-white">{new Date(delivery.collectDate).toLocaleDateString("fr-FR")}</p>
                       </div>
                     </div>
@@ -263,13 +275,14 @@ export default function TrackingPage() {
                     <div className="flex items-center gap-3">
                       <Truck className="w-4 h-4 text-green-400 shrink-0" />
                       <div>
-                        <p className="text-gray-400">Livraison prévue</p>
+                        <p className="text-kcb-pierre">Livraison prévue</p>
                         <p className="text-white">{new Date(delivery.deliveryDate).toLocaleDateString("fr-FR")}</p>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
+              </RevealOnScroll>
             )}
           </div>
         )}

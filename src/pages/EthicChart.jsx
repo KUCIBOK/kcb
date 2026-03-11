@@ -1,298 +1,395 @@
-import { useEffect } from "react"
+import PortalLayout from "../components/landing/PortalLayout"
+import RevealOnScroll from "../components/landing/RevealOnScroll"
+import SectionLabel from "../components/landing/SectionLabel"
+import GeoLine from "../components/landing/GeoLine"
 
 export default function EthicChart() {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
     return (
-        <div className="min-h-screen bg-gray-900 text-white/90">
-            <div className="max-w-4xl mx-auto px-6 py-12">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-3xl font-bold text-white mb-4">
-                        Charte Éthique Kucibok
+        <PortalLayout portal="africa">
+            {/* Header */}
+            <section className="pt-40 pb-20 text-center px-6">
+                <RevealOnScroll delay={0}>
+                    <SectionLabel text="Legal" />
+                </RevealOnScroll>
+                <RevealOnScroll delay={100}>
+                    <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mt-4 mb-6">
+                        Charte <em className="text-[var(--accent)] not-italic">Éthique</em>
                     </h1>
-                    <p className="text-white/60 text-sm">
-                        Curateurs & Galeries – Engagement Professionnel
+                </RevealOnScroll>
+                <RevealOnScroll delay={200}>
+                    <p className="text-kcb-sable text-[13px]">
+                        Curateurs &amp; Galeries — Engagement Professionnel
                     </p>
-                    <p className="text-white/50 text-xs mt-2">
+                    <p className="text-kcb-pierre text-[11px] mt-2">
                         Dernière mise à jour : 28 juillet 2025
                     </p>
-                </div>
+                </RevealOnScroll>
+            </section>
 
-                {/* Préambule */}
-                <div className="mb-10">
-                    <h2 className="text-xl font-semibold text-white mb-4">
-                        Préambule : L'Engagement Éthique au Cœur de Kucibok
-                    </h2>
-                    <p className="text-white/70 text-sm leading-relaxed">
-                        La plateforme Kucibok s'est construite sur les principes de la transparence, du respect et de la promotion de l'art et du patrimoine culturel. Cette charte définit les engagements éthiques et professionnels que nous attendons de chaque curateur et galerie collaborant avec Kucibok. Elle sert de guide pour assurer une collaboration harmonieuse, respectueuse des artistes, de l'intégrité des œuvres, des droits des collectionneurs, et du patrimoine culturel mondial.
-                    </p>
-                </div>
+            <GeoLine />
 
-                {/* Articles */}
-                <div className="space-y-10">
+            {/* Articles */}
+            <section className="py-20 bg-kcb-noir-deep">
+                <div className="max-w-4xl mx-auto px-6 space-y-8">
+
+                    {/* Préambule */}
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Préambule : L'Engagement Éthique au Cœur de Kucibok
+                            </h2>
+                            <p className="text-kcb-sable text-[13px] leading-relaxed">
+                                La plateforme Kucibok s'est construite sur les principes de la transparence, du respect et de la promotion de l'art et du patrimoine culturel. Cette charte définit les engagements éthiques et professionnels que nous attendons de chaque curateur et galerie collaborant avec Kucibok. Elle sert de guide pour assurer une collaboration harmonieuse, respectueuse des artistes, de l'intégrité des œuvres, des droits des collectionneurs, et du patrimoine culturel mondial.
+                            </p>
+                        </article>
+                    </RevealOnScroll>
+
                     {/* Article 1 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 1 : Objectif de la Charte – Bâtir un Écosystème de Confiance
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Cette charte est la pierre angulaire de notre collaboration. Ses objectifs précis sont de :</p>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="bg-indigo-900/20 rounded p-4">
-                                    <h4 className="text-indigo-300 font-medium mb-2">Encadrement</h4>
-                                    <p className="text-xs">Cadrer les pratiques de curation, d'exposition et de vente en ligne</p>
-                                </div>
-                                <div className="bg-green-900/20 rounded p-4">
-                                    <h4 className="text-green-300 font-medium mb-2">Protection</h4>
-                                    <p className="text-xs">Protéger artistes et acheteurs contre abus et fraudes</p>
-                                </div>
-                                <div className="bg-purple-900/20 rounded p-4">
-                                    <h4 className="text-purple-300 font-medium mb-2">Responsabilité</h4>
-                                    <p className="text-xs">Promouvoir des pratiques équitables et culturellement respectueuses</p>
-                                </div>
-                                <div className="bg-amber-900/20 rounded p-4">
-                                    <h4 className="text-amber-300 font-medium mb-2">Traçabilité</h4>
-                                    <p className="text-xs">Renforcer la transparence dans le circuit des œuvres</p>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 1 : Objectif de la Charte – Bâtir un Écosystème de Confiance
+                            </h2>
+                            <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                                <p>Cette charte est la pierre angulaire de notre collaboration. Ses objectifs précis sont de :</p>
+                                <div className="grid md:grid-cols-2 gap-3">
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Encadrement</h3>
+                                        <p className="text-[11px] text-kcb-sable">Cadrer les pratiques de curation, d'exposition et de vente en ligne</p>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Protection</h3>
+                                        <p className="text-[11px] text-kcb-sable">Protéger artistes et acheteurs contre abus et fraudes</p>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Responsabilité</h3>
+                                        <p className="text-[11px] text-kcb-sable">Promouvoir des pratiques équitables et culturellement respectueuses</p>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Traçabilité</h3>
+                                        <p className="text-[11px] text-kcb-sable">Renforcer la transparence dans le circuit des œuvres</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </RevealOnScroll>
 
                     {/* Article 2 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 2 : Engagements Éthiques – Agir avec Intégrité
-                        </h3>
-                        <div className="space-y-4">
-                            <div className="bg-blue-900/20 rounded p-4">
-                                <h4 className="text-blue-300 font-medium mb-3">2.1. Respect de l'Artiste</h4>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Ne jamais proposer une œuvre sans l'accord exprès et documenté de l'artiste</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Ne pas exiger d'exclusivité abusive ou contraignante</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Assurer une représentation fidèle du message et de l'histoire de l'œuvre</span>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 2 : Engagements Éthiques – Agir avec Intégrité
+                            </h2>
+                            <div className="space-y-4">
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-3 text-[13px]">2.1. Respect de l'Artiste</h3>
+                                    <div className="text-kcb-sable text-[13px] space-y-2">
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                            <span>Ne jamais proposer une œuvre sans l'accord exprès et documenté de l'artiste</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                            <span>Ne pas exiger d'exclusivité abusive ou contraignante</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                            <span>Assurer une représentation fidèle du message et de l'histoire de l'œuvre</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="bg-purple-900/20 rounded p-4">
-                                <h4 className="text-purple-300 font-medium mb-3">2.2. Intégrité Intellectuelle</h4>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Éviter toute falsification, plagiat ou réinterprétation abusive</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Mentionner clairement sources, provenances et certificats d'authenticité</span>
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-3 text-[13px]">2.2. Intégrité Intellectuelle</h3>
+                                    <div className="text-kcb-sable text-[13px] space-y-2">
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                            <span>Éviter toute falsification, plagiat ou réinterprétation abusive</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                            <span>Mentionner clairement sources, provenances et certificats d'authenticité</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="bg-green-900/20 rounded p-4">
-                                <h4 className="text-green-300 font-medium mb-3">2.3. Confidentialité et Loyauté</h4>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Ne pas divulguer d'informations privées sans autorisation écrite</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <span className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></span>
-                                        <span>Ne pas détourner les contacts ou opportunités générés par Kucibok</span>
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-3 text-[13px]">2.3. Confidentialité et Loyauté</h3>
+                                    <div className="text-kcb-sable text-[13px] space-y-2">
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                            <span>Ne pas divulguer d'informations privées sans autorisation écrite</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                                            <span>Ne pas détourner les contacts ou opportunités générés par Kucibok</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </RevealOnScroll>
 
                     {/* Article 3 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 3 : Sélection et Valorisation des Œuvres
-                        </h3>
-                        <div className="space-y-4">
-                            <div className="bg-indigo-900/20 rounded p-4">
-                                <h4 className="text-indigo-300 font-medium mb-3">3.1. Critères de Sélection</h4>
-                                <p className="text-white/70 text-sm">Évaluation artistique, patrimoniale ou culturelle sincère et professionnelle basée sur des critères pertinents et non arbitraires.</p>
-                            </div>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 3 : Sélection et Valorisation des Œuvres
+                            </h2>
+                            <div className="space-y-4">
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-3 text-[13px]">3.1. Critères de Sélection</h3>
+                                    <p className="text-kcb-sable text-[13px]">Évaluation artistique, patrimoniale ou culturelle sincère et professionnelle basée sur des critères pertinents et non arbitraires.</p>
+                                </div>
 
-                            <div className="bg-amber-900/20 rounded p-4">
-                                <h4 className="text-amber-300 font-medium mb-3">3.2. Objectivité et Représentativité</h4>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <p>Valoriser la diversité sous toutes ses formes :</p>
-                                    <div className="grid md:grid-cols-2 gap-2 text-xs">
-                                        <div>• Disciplines artistiques variées</div>
-                                        <div>• Diversité géographique</div>
-                                        <div>• Représentation générationnelle</div>
-                                        <div>• Absence de biais discriminatoires</div>
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-3 text-[13px]">3.2. Objectivité et Représentativité</h3>
+                                    <div className="text-kcb-sable text-[13px] space-y-2">
+                                        <p>Valoriser la diversité sous toutes ses formes :</p>
+                                        <div className="grid md:grid-cols-2 gap-2 text-[11px] text-kcb-sable">
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Disciplines artistiques variées</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Diversité géographique</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Représentation générationnelle</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Absence de biais discriminatoires</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-3 text-[13px]">3.3. Absence de Pratiques Spéculatives</h3>
+                                    <div className="text-kcb-sable text-[13px] space-y-2">
+                                        <p>Strictement prohibé :</p>
+                                        <div className="space-y-1 text-[11px]">
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Manipulation des prix ou enchères fictives</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Ententes illicites avec collectionneurs</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Pratiques de "wash trading"</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Schémas frauduleux d'influence des prix</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="bg-red-900/20 rounded p-4">
-                                <h4 className="text-red-300 font-medium mb-3">3.3. Absence de Pratiques Spéculatives</h4>
-                                <div className="text-white/70 text-sm space-y-2">
-                                    <div className="text-red-200">Strictement prohibé :</div>
-                                    <div className="text-xs space-y-1">
-                                        <div>• Manipulation des prix ou enchères fictives</div>
-                                        <div>• Ententes illicites avec collectionneurs</div>
-                                        <div>• Pratiques de "wash trading"</div>
-                                        <div>• Schémas frauduleux d'influence des prix</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+                        </article>
+                    </RevealOnScroll>
 
                     {/* Article 4 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 4 : Respect des Législations
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <div className="bg-amber-900/20 border border-amber-700/30 rounded p-4">
-                                <p className="text-amber-200"><strong>Conformité inconditionnelle :</strong> Respect des lois du pays de résidence, du Sénégal et de l'UE selon applicabilité.</p>
-                            </div>
-                            <div className="space-y-3">
-                                <div className="bg-red-900/20 rounded p-4">
-                                    <h4 className="text-red-300 font-medium mb-2">Interdictions formelles</h4>
-                                    <div className="text-xs space-y-1">
-                                        <div>• Œuvres volées, contrefaites ou pillées</div>
-                                        <div>• Objets archéologiques non déclarés</div>
-                                        <div>• Biens culturels spoliés</div>
-                                        <div>• Provenance douteuse ou illicite</div>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 4 : Respect des Législations
+                            </h2>
+                            <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                                <div className="border border-[var(--accent)]/20 p-4">
+                                    <p className="text-kcb-sable text-[13px]"><strong>Conformité inconditionnelle :</strong> Respect des lois du pays de résidence, du Sénégal et de l'UE selon applicabilité.</p>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Interdictions formelles</h3>
+                                        <div className="space-y-1 text-[11px]">
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Œuvres volées, contrefaites ou pillées</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Objets archéologiques non déclarés</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Biens culturels spoliés</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Provenance douteuse ou illicite</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Transparence obligatoire</h3>
+                                        <p className="text-[11px] text-kcb-sable">Information immédiate à Kucibok de tout contentieux, soupçon ou information pertinente relative à l'authenticité ou la légalité d'une œuvre.</p>
                                     </div>
                                 </div>
-                                <div className="bg-green-900/20 rounded p-4">
-                                    <h4 className="text-green-300 font-medium mb-2">Transparence obligatoire</h4>
-                                    <p className="text-xs">Information immédiate à Kucibok de tout contentieux, soupçon ou information pertinente relative à l'authenticité ou la légalité d'une œuvre.</p>
-                                </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </RevealOnScroll>
 
                     {/* Article 5 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 5 : Responsabilités lors des Ventes
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-4">
-                            <div className="bg-blue-900/20 rounded p-4">
-                                <h4 className="text-blue-300 font-medium mb-2">Information des ventes</h4>
-                                <p className="text-xs">Communication obligatoire à Kucibok de toute vente réalisée avec détails nécessaires à la traçabilité.</p>
-                            </div>
-                            <div className="bg-purple-900/20 rounded p-4">
-                                <h4 className="text-purple-300 font-medium mb-3">Protocole événementiel</h4>
-                                <p className="text-xs mb-2">En cas de co-organisation d'événements, respect scrupuleux du protocole défini :</p>
-                                <div className="grid md:grid-cols-2 gap-2 text-xs">
-                                    <div>• Fiches d'inventaire détaillées</div>
-                                    <div>• Assurance durant transport/exposition</div>
-                                    <div>• Conditions d'emballage sécurisées</div>
-                                    <div>• Respect des délais convenus</div>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 5 : Responsabilités lors des Ventes
+                            </h2>
+                            <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Information des ventes</h3>
+                                    <p className="text-[11px] text-kcb-sable">Communication obligatoire à Kucibok de toute vente réalisée avec détails nécessaires à la traçabilité.</p>
+                                </div>
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-3 text-[13px]">Protocole événementiel</h3>
+                                    <p className="text-[11px] text-kcb-sable mb-3">En cas de co-organisation d'événements, respect scrupuleux du protocole défini :</p>
+                                    <div className="grid md:grid-cols-2 gap-2 text-[11px] text-kcb-sable">
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                            <span>Fiches d'inventaire détaillées</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                            <span>Assurance durant transport/exposition</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                            <span>Conditions d'emballage sécurisées</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                            <span>Respect des délais convenus</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </RevealOnScroll>
 
                     {/* Article 6 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 6 : Engagement Culturel et Pédagogique
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-4">
-                            <p>Kucibok encourage ses partenaires à s'engager activement dans la mission culturelle :</p>
-                            <div className="grid md:grid-cols-3 gap-4">
-                                <div className="bg-green-900/20 rounded p-4">
-                                    <h4 className="text-green-300 font-medium mb-2">Médiation culturelle</h4>
-                                    <p className="text-xs">Webinaires, interviews, discussions, ateliers, conférences</p>
-                                </div>
-                                <div className="bg-blue-900/20 rounded p-4">
-                                    <h4 className="text-blue-300 font-medium mb-2">Contenus valorisants</h4>
-                                    <p className="text-xs">Fiches explicatives, analyses d'œuvres, articles, lives thématiques</p>
-                                </div>
-                                <div className="bg-purple-900/20 rounded p-4">
-                                    <h4 className="text-purple-300 font-medium mb-2">Approche pédagogique</h4>
-                                    <p className="text-xs">Démythifier l'art, rendre l'histoire accessible à tous</p>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 6 : Engagement Culturel et Pédagogique
+                            </h2>
+                            <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                                <p>Kucibok encourage ses partenaires à s'engager activement dans la mission culturelle :</p>
+                                <div className="grid md:grid-cols-3 gap-3">
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Médiation culturelle</h3>
+                                        <p className="text-[11px] text-kcb-sable">Webinaires, interviews, discussions, ateliers, conférences</p>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Contenus valorisants</h3>
+                                        <p className="text-[11px] text-kcb-sable">Fiches explicatives, analyses d'œuvres, articles, lives thématiques</p>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Approche pédagogique</h3>
+                                        <p className="text-[11px] text-kcb-sable">Démythifier l'art, rendre l'histoire accessible à tous</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </RevealOnScroll>
 
                     {/* Article 7 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 7 : Sanctions en cas de Manquement
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-4">
-                            <div className="bg-red-900/20 border border-red-700/30 rounded p-4">
-                                <p className="text-red-200 text-sm"><strong>Sanctions possibles :</strong> Le non-respect de cette charte entraîne des conséquences graves.</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="bg-red-900/20 rounded p-4">
-                                    <h4 className="text-red-300 font-medium mb-2">Sanctions immédiates</h4>
-                                    <div className="text-xs space-y-1">
-                                        <div>• Suspension temporaire ou définitive</div>
-                                        <div>• Annulation des expositions/ventes</div>
-                                        <div>• Perte d'accès à la plateforme</div>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 7 : Sanctions en cas de Manquement
+                            </h2>
+                            <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                                <div className="border border-[var(--accent)]/20 p-4">
+                                    <p className="text-kcb-sable text-[13px]"><strong>Sanctions possibles :</strong> Le non-respect de cette charte entraîne des conséquences graves.</p>
+                                </div>
+                                <div className="grid md:grid-cols-2 gap-3">
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Sanctions immédiates</h3>
+                                        <div className="space-y-1 text-[11px] text-kcb-sable">
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Suspension temporaire ou définitive</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Annulation des expositions/ventes</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Perte d'accès à la plateforme</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Actions légales</h3>
+                                        <div className="space-y-1 text-[11px] text-kcb-sable">
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Poursuites civiles ou pénales</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Information des autorités</span>
+                                            </div>
+                                            <div className="flex items-start gap-2">
+                                                <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-1.5 flex-shrink-0" />
+                                                <span>Protection de la communauté</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="bg-amber-900/20 rounded p-4">
-                                    <h4 className="text-amber-300 font-medium mb-2">Actions légales</h4>
-                                    <div className="text-xs space-y-1">
-                                        <div>• Poursuites civiles ou pénales</div>
-                                        <div>• Information des autorités</div>
-                                        <div>• Protection de la communauté</div>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </RevealOnScroll>
 
                     {/* Article 8 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 8 : Entrée en Vigueur et Adhésion
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-4">
-                            <div className="bg-indigo-900/20 rounded p-4">
-                                <h4 className="text-indigo-300 font-medium mb-2">Condition préalable</h4>
-                                <p className="text-xs">L'engagement à respecter cette Charte Éthique est obligatoire pour toute collaboration avec Kucibok.</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="bg-green-900/20 rounded p-4">
-                                    <h4 className="text-green-300 font-medium mb-2">Validation</h4>
-                                    <p className="text-xs">Signature ou acceptation électronique via l'interface de la plateforme</p>
+                    <RevealOnScroll>
+                        <article className="bg-kcb-noir border border-white/[0.06] p-8">
+                            <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                                Article 8 : Entrée en Vigueur et Adhésion
+                            </h2>
+                            <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                                <div className="border border-white/[0.06] p-4">
+                                    <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Condition préalable</h3>
+                                    <p className="text-[11px] text-kcb-sable">L'engagement à respecter cette Charte Éthique est obligatoire pour toute collaboration avec Kucibok.</p>
                                 </div>
-                                <div className="bg-purple-900/20 rounded p-4">
-                                    <h4 className="text-purple-300 font-medium mb-2">Durée</h4>
-                                    <p className="text-xs">Effet immédiat et valide pour toute la durée de la collaboration</p>
+                                <div className="grid md:grid-cols-2 gap-3">
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Validation</h3>
+                                        <p className="text-[11px] text-kcb-sable">Signature ou acceptation électronique via l'interface de la plateforme</p>
+                                    </div>
+                                    <div className="border border-white/[0.06] p-4">
+                                        <h3 className="text-[var(--accent)] font-medium mb-2 text-[13px]">Durée</h3>
+                                        <p className="text-[11px] text-kcb-sable">Effet immédiat et valide pour toute la durée de la collaboration</p>
+                                    </div>
+                                </div>
+                                <div className="border border-[var(--accent)]/20 p-4">
+                                    <p className="text-kcb-sable text-[13px] text-center">
+                                        <strong>En acceptant cette charte, le partenaire s'engage à œuvrer pour un marché de l'art plus transparent, plus juste et plus respectueux de la création.</strong>
+                                    </p>
                                 </div>
                             </div>
-                            <div className="bg-blue-900/20 border border-blue-700/30 rounded p-4 mt-4">
-                                <p className="text-blue-200 text-sm text-center">
-                                    <strong>En acceptant cette charte, le partenaire s'engage à œuvrer pour un marché de l'art plus transparent, plus juste et plus respectueux de la création.</strong>
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-                </div>
+                        </article>
+                    </RevealOnScroll>
 
-                {/* Footer */}
-                <div className="mt-12 pt-8 border-t border-gray-800 text-center">
-                    <p className="text-white/50 text-xs">
-                        Cette Charte Éthique est établie à Dakar, Sénégal, le 28 juillet 2025.
-                    </p>
+                    {/* Footer */}
+                    <RevealOnScroll>
+                        <div className="pt-8 border-t border-white/[0.06] text-center">
+                            <p className="text-kcb-pierre text-[11px]">
+                                Cette Charte Éthique est établie à Dakar, Sénégal, le 28 juillet 2025.
+                            </p>
+                        </div>
+                    </RevealOnScroll>
+
                 </div>
-            </div>
-        </div>
+            </section>
+        </PortalLayout>
     )
 }

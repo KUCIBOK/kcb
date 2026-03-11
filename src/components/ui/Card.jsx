@@ -16,7 +16,9 @@ const variants = {
   default: 'bg-card border border-gray-800',
   elevated: 'bg-card border border-gray-800 shadow-lg hover:shadow-xl transition-shadow',
   outline: 'bg-transparent border-2 border-gray-700',
-  glass: 'bg-gray-900/40 backdrop-blur-sm border border-gray-700/50'
+  glass: 'bg-gray-900/40 backdrop-blur-sm border border-gray-700/50',
+  kcb: 'bg-kcb-ardoise border border-white/[0.06]',
+  kcb_elevated: 'bg-kcb-ardoise border border-white/[0.06] shadow-lg hover:shadow-xl transition-shadow',
 };
 
 export function Card({
@@ -27,7 +29,8 @@ export function Card({
   className = '',
   onClick
 }) {
-  const baseStyles = 'rounded-lg transition-all duration-200';
+  const isKcb = variant?.startsWith('kcb');
+  const baseStyles = `${isKcb ? 'rounded-[4px]' : 'rounded-lg'} transition-all duration-200`;
   const variantStyles = variants[variant] || variants.default;
   const paddingStyles = padding ? 'p-6' : '';
   const hoverStyles = hover ? 'hover:border-gray-700 cursor-pointer' : '';

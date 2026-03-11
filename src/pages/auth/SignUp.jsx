@@ -8,6 +8,7 @@ import { Step4Collector } from "../../components/auth/Step4Collector";
 import { Step4Professional } from "../../components/auth/Step4Professional";
 import { SignUpUser, loginWithGoogle } from "../../api/useAuth";
 import { Helmet } from "react-helmet";
+import RevealOnScroll from "../../components/landing/RevealOnScroll";
 
 export default function SignUp() {
   // Default countries list as fallback
@@ -250,7 +251,8 @@ export default function SignUp() {
         <meta property="og:image" content={"/images/kucibok-black.png"} />
         <meta property="og:url" content={`https://kucibok.com/sign-up`} />
       </Helmet>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-kcb-noir-deep px-4">
+        <RevealOnScroll>
         <div className="w-full max-w-md mx-auto py-8">
           <div className="text-center mb-8">
             <Link to="/">
@@ -260,10 +262,10 @@ export default function SignUp() {
                 className="w-12 h-12 object-cover mx-auto"
               />
             </Link>
-            <h2 className="text-lg font-semibold text-gray-200 mb-1">
+            <h2 className="font-playfair text-xl font-semibold text-white mb-1 mt-4">
               Créer un compte
             </h2>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-kcb-pierre">
               Rejoignez la marketplace d'art digital d'Afrique
             </p>
           </div>
@@ -274,7 +276,7 @@ export default function SignUp() {
                 <span
                   key={idx}
                   className={`w-2.5 h-2.5 rounded-full ${
-                    formState.step === idx ? "bg-indigo-kcb" : "bg-gray-700"
+                    formState.step === idx ? "bg-kcb-or" : "bg-kcb-pierre"
                   }`}
                 />
               ))}
@@ -283,11 +285,11 @@ export default function SignUp() {
           {renderStepContent()}
           {formState.step !== 0 && formState.step < steps.length - 1 && (
             <div className="text-center mt-6">
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-kcb-pierre">
                 Déjà inscrit ?{" "}
                 <Link
                   to="/sign-in"
-                  className="font-semibold text-indigo-kcb hover:underline"
+                  className="font-semibold text-kcb-or hover:underline"
                 >
                   Connexion
                 </Link>
@@ -295,6 +297,7 @@ export default function SignUp() {
             </div>
           )}
         </div>
+        </RevealOnScroll>
       </div>
     </>
   );

@@ -3,7 +3,7 @@ import { Router } from "./routes/Router";
 import { ToastContextProvider } from "./store/ToastContext";
 import { ToastProvider } from "./components/ui/Toast";
 import { useEffect, useState } from "react";
-import { createVisitor } from "./api/useVisitor";
+import { createVisitor, setVisitTime } from "./api/useVisitor";
 
 // P1-SEC-016 — Clé de stockage du consentement RGPD
 const CONSENT_KEY = "kcb_analytics_consent";

@@ -113,7 +113,7 @@ const FaqTabs = ({ onChange }) => {
       {tabs.map((tab, index) => (
         <button
           className={`relative py-3 text-sm font-semibold transition-colors ${
-            currentTab === index ? "text-white" : "text-gray-400"
+            currentTab === index ? "text-white" : "text-kcb-pierre"
           }`}
           key={index}
           style={{ width: tabWidth }}
@@ -123,7 +123,7 @@ const FaqTabs = ({ onChange }) => {
         </button>
       ))}
       <div
-        className="absolute inset-0 bg-[#1e293b] rounded-lg mix-blend-exclusion transition-all duration-300"
+        className="absolute inset-0 bg-kcb-ardoise rounded-lg mix-blend-exclusion transition-all duration-300"
         style={{
           width: tabWidth,
           transform: `translateX(${currentTab * tabWidth}px)`,

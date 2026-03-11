@@ -1,294 +1,394 @@
-import { useEffect } from "react";
+import PortalLayout from "../components/landing/PortalLayout"
+import RevealOnScroll from "../components/landing/RevealOnScroll"
+import SectionLabel from "../components/landing/SectionLabel"
+import GeoLine from "../components/landing/GeoLine"
 
-export default function TermsAndConditions(){
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-    return (
-        <div className="min-h-screen bg-gray-900 text-white/90">
-            <div className="max-w-4xl mx-auto px-6 py-12">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-3xl font-bold text-white mb-4">
-                        Conditions Générales d'Utilisation
-                    </h1>
-                    <p className="text-white/60 text-sm">
-                        Plateforme Kucibok (Utilisateur Standard)
-                    </p>
-                    <p className="text-white/50 text-xs mt-2">
-                        Dernière mise à jour : 28 juillet 2025
-                    </p>
-                </div>
-
-                {/* Introduction */}
-                <div className="mb-10">
-                    <h2 className="text-xl font-semibold text-white mb-4">
-                        Bienvenue sur Kucibok – Votre Espace Artistique Numérique
-                    </h2>
-                    <p className="text-white/70 text-sm leading-relaxed">
-                        Les présentes Conditions Générales d'Utilisation (ci-après dénommées « CGU ») ont pour objectif de définir le cadre légal et les règles d'accès, de navigation et d'utilisation de la plateforme numérique Kucibok, accessible en ligne à l'adresse www.kucibok.com (ci-après la « Plateforme »). En accédant à Kucibok, que ce soit pour une simple consultation ou pour une utilisation active de ses services, vous, en tant qu'utilisateur, reconnaissez avoir lu, compris et accepté sans réserve l'intégralité des dispositions énoncées dans les présentes CGU. Cette acceptation est obligatoire et s'impose à tout utilisateur, quelle que soit sa localisation géographique. Kucibok est conçue pour être une interface intuitive et sécurisée, et ces CGU sont là pour garantir une expérience juste et transparente pour tous.
-                    </p>
-                </div>
-
-                {/* Articles */}
-                <div className="space-y-10">
-                    {/* Article 1 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 1 : Identification de Kucibok – L'Éditeur de Votre Plateforme Artistique
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>La plateforme Kucibok est éditée et gérée par :</p>
-                            <div className="bg-gray-800/50 rounded p-4">
-                                <p><strong>KUCIBOK SARL</strong>, Une entreprise dûment immatriculée au registre du commerce et du crédit mobilier du Sénégal, sous le numéro [à insérer, si disponible]. Ayant son siège social situé à : Liberté 6 Ext, Rue Ambassade de France, Villa 24, Dakar, Sénégal.</p>
-                                <p className="mt-2">Email de contact : <a href="mailto:contact@kucibok.com" className="text-indigo-400 hover:text-indigo-300">contact@kucibok.com</a></p>
-                            </div>
-                            <p>Nous nous engageons à répondre à vos requêtes avec diligence et professionnalisme.</p>
-                        </div>
-                    </article>
-
-                    {/* Article 2 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 2 : Définitions – Comprendre les Termes Clés
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Pour une meilleure compréhension des présentes CGU, les termes suivants, employés avec une majuscule, auront la signification définie ci-dessous :</p>
-                            <div className="grid gap-3">
-                                <div className="bg-gray-800/30 rounded p-3">
-                                    <strong className="text-white">Utilisateur :</strong> Désigne toute personne physique ou morale qui accède à la Plateforme, qu'elle soit enregistrée ou non, et qui consulte ou utilise les services offerts par Kucibok.
-                                </div>
-                                <div className="bg-gray-800/30 rounded p-3">
-                                    <strong className="text-white">Artiste :</strong> Désigne un Utilisateur créateur d'œuvres d'art qui utilise la Plateforme pour proposer ses créations à la numérisation haute définition, à la certification (notamment via blockchain), à la promotion, et/ou à la mise en vente.
-                                </div>
-                                <div className="bg-gray-800/30 rounded p-3">
-                                    <strong className="text-white">Collectionneur :</strong> Désigne un Utilisateur, particulier ou institutionnel, qui utilise la Plateforme pour découvrir, acquérir, faire expertiser, numériser ou vendre des œuvres d'art ou des biens patrimoniaux.
-                                </div>
-                                <div className="bg-gray-800/30 rounded p-3">
-                                    <strong className="text-white">Galerie / Curateur :</strong> Désigne un Utilisateur professionnel du marché de l'art (galeriste, curateur indépendant, expert, institution culturelle) utilisant la Plateforme à des fins de sélection d'œuvres, d'organisation d'expositions virtuelles ou physiques, de gestion de collection ou de vente.
-                                </div>
-                                <div className="bg-gray-800/30 rounded p-3">
-                                    <strong className="text-white">Œuvre :</strong> Désigne toute création artistique, qu'elle soit de nature physique (peinture, sculpture, photographie, etc.) ou numérique (art numérique, NFT, etc.), qui est référencée, publiée, mise en vente, exposée ou proposée en prêt sur la Plateforme Kucibok.
-                                </div>
-                                <div className="bg-gray-800/30 rounded p-3">
-                                    <strong className="text-white">Services :</strong> Désigne l'ensemble des fonctionnalités et outils mis à disposition des Utilisateurs sur la Plateforme Kucibok.
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    {/* Article 3 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 3 : Objet de la Plateforme – Notre Mission dans le Monde de l'Art
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-4">
-                            <p>Kucibok est bien plus qu'une simple plateforme numérique ; c'est un écosystème dynamique dont l'objectif est de démocratiser l'accès au marché de l'art africain et international, en rendant les œuvres accessibles, traçables et sécurisées. Nous proposons une gamme de services technologiques innovants et à forte valeur ajoutée :</p>
-                            <div className="grid md:grid-cols-2 gap-3">
-                                <div className="bg-indigo-900/20 rounded p-3">
-                                    <strong className="text-indigo-300">Numérisation haute définition</strong> : Permettant une reproduction fidèle et détaillée des œuvres physiques.
-                                </div>
-                                <div className="bg-purple-900/20 rounded p-3">
-                                    <strong className="text-purple-300">Certification basée sur la blockchain</strong> : Offrant une preuve d'authenticité, de provenance et de propriété immuable et transparente.
-                                </div>
-                                <div className="bg-green-900/20 rounded p-3">
-                                    <strong className="text-green-300">Traçabilité</strong> : Garantissant le suivi des œuvres tout au long de leur cycle de vie.
-                                </div>
-                                <div className="bg-amber-900/20 rounded p-3">
-                                    <strong className="text-amber-300">Gestion des droits</strong> : Facilitant la protection et l'exploitation des droits d'auteur.
-                                </div>
-                                <div className="bg-red-900/20 rounded p-3 md:col-span-2">
-                                    <strong className="text-red-300">Mise en vente</strong> : Proposant un espace sécurisé et global pour l'acquisition et la cession d'œuvres.
-                                </div>
-                            </div>
-                            <p>La plateforme Kucibok s'adresse à un large éventail d'acteurs du monde de l'art, incluant les artistes émergents, les collectionneurs passionnés, les galeries et curateurs professionnels, ainsi que les institutions culturelles.</p>
-                        </div>
-                    </article>
-
-                    {/* Article 4 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 4 : Acceptation et Modification des CGU – Un Cadre Évolutif
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>L'utilisation de la Plateforme Kucibok implique l'acceptation pleine et entière, sans aucune réserve, des présentes CGU. Par votre seule navigation ou interaction avec les services, vous reconnaissez avoir lu, compris et adhéré à ces conditions.</p>
-                            <p>Kucibok se réserve le droit de modifier unilatéralement et à tout moment les présentes CGU pour tenir compte de l'évolution de nos services, s'adapter aux pratiques du secteur, et se conformer aux réglementations.</p>
-                            <div className="bg-amber-900/20 border border-amber-700/30 rounded p-4">
-                                <p className="text-amber-200">Les Utilisateurs seront informés de toute mise à jour significative des CGU par une notification visible sur la Plateforme ou par email. L'utilisation continue de la Plateforme après la publication des modifications vaut acceptation tacite.</p>
-                            </div>
-                        </div>
-                    </article>
-
-                    {/* Article 5 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 5 : Accès au Service – Disponibilité et Restrictions
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>La Plateforme Kucibok est conçue pour être accessible de manière continue : 24 heures sur 24 et 7 jours sur 7.</p>
-                            <p>Cependant, des interruptions peuvent survenir dans les cas suivants :</p>
-                            <div className="grid gap-3">
-                                <div className="bg-blue-900/20 rounded p-3">
-                                    <strong className="text-blue-300">Maintenance planifiée :</strong> Pour assurer l'optimisation, la sécurité ou la mise à jour de la Plateforme.
-                                </div>
-                                <div className="bg-red-900/20 rounded p-3">
-                                    <strong className="text-red-300">Cas de force majeure :</strong> Des événements imprévisibles, irrésistibles et extérieurs à notre volonté.
-                                </div>
-                            </div>
-                            <p>Certains services spécifiques peuvent être réservés à certaines catégories d'Utilisateurs, notamment les professionnels certifiés.</p>
-                        </div>
-                    </article>
-
-                    {/* Article 6 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 6 : Création de Compte et Obligations de l'Utilisateur
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Pour accéder à l'ensemble des services personnalisés offerts par Kucibok, l'inscription et la création d'un compte utilisateur sont obligatoires. L'Utilisateur s'engage à :</p>
-                            <div className="space-y-2">
-                                <div className="flex items-start gap-3">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Fournir des informations exactes et sincères</span>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Ne pas usurper l'identité d'un tiers</span>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Maintenir à jour son profil</span>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Utiliser la Plateforme dans le respect des lois et des droits des tiers</span>
-                                </div>
-                            </div>
-                            <div className="bg-red-900/20 border border-red-700/30 rounded p-4">
-                                <p className="text-red-200">Tout manquement à ces obligations pourra entraîner la suspension ou la résiliation du compte de l'Utilisateur.</p>
-                            </div>
-                        </div>
-                    </article>
-
-                    {/* Article 7 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 7 : Propriété Intellectuelle – Vos Œuvres, Nos Outils
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-4">
-                            <div className="bg-purple-900/20 rounded p-4">
-                                <h4 className="text-purple-300 font-medium mb-2">Protection des contenus de la Plateforme</h4>
-                                <p>L'intégralité des contenus présents sur la Plateforme sont la propriété exclusive de Kucibok ou de ses partenaires, et sont protégés par les lois relatives à la propriété intellectuelle.</p>
-                            </div>
-                            <div className="bg-green-900/20 rounded p-4">
-                                <h4 className="text-green-300 font-medium mb-2">Propriété des œuvres de l'Utilisateur</h4>
-                                <p>L'Utilisateur conserve l'entière et pleine propriété de ses œuvres qu'il télécharge ou référence sur la Plateforme. Kucibok ne revendique aucun droit de propriété sur les œuvres des Utilisateurs.</p>
-                            </div>
-                            <div className="bg-amber-900/20 rounded p-4">
-                                <h4 className="text-amber-300 font-medium mb-2">Licence d'exploitation concédée à Kucibok</h4>
-                                <p>En téléchargeant une œuvre sur Kucibok, l'Utilisateur concède à Kucibok une licence non exclusive, mondiale, cessible, sous-licenciable et temporaire d'exploitation de ces œuvres, strictement limitée aux besoins du service.</p>
-                            </div>
-                        </div>
-                    </article>
-
-                    {/* Article 8 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 8 : Données Personnelles et Confidentialité
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Kucibok s'engage fermement à respecter la confidentialité et la sécurité de toutes les données personnelles collectées, en conformité avec le RGPD et la loi sénégalaise sur la protection des données personnelles.</p>
-                            <div className="bg-indigo-900/20 rounded p-4">
-                                <h4 className="text-indigo-300 font-medium mb-2">Vos droits :</h4>
-                                <div className="grid md:grid-cols-2 gap-2 text-xs">
-                                    <div>• Droit d'accès</div>
-                                    <div>• Droit de rectification</div>
-                                    <div>• Droit d'opposition</div>
-                                    <div>• Droit à la portabilité</div>
-                                    <div>• Droit à la suppression</div>
-                                </div>
-                                <p className="mt-3">Contact : <a href="mailto:msidibe@kucibok.com" className="text-indigo-400 hover:text-indigo-300">msidibe@kucibok.com</a></p>
-                            </div>
-                        </div>
-                    </article>
-
-                    {/* Article 9 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 9 : Sécurité et Traçabilité – L'Intégrité au Cœur de Kucibok
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>La sécurité et la fiabilité sont des piliers fondamentaux de la plateforme Kucibok :</p>
-                            <div className="grid gap-3">
-                                <div className="bg-green-900/20 rounded p-3">
-                                    <strong className="text-green-300">Traçabilité des opérations :</strong> Toutes les opérations sensibles font l'objet d'une traçabilité automatique et rigoureuse.
-                                </div>
-                                <div className="bg-blue-900/20 rounded p-3">
-                                    <strong className="text-blue-300">Protocoles de sécurité :</strong> Utilisation de protocoles avancés et de technologies de chiffrement robustes (SSL/TLS).
-                                </div>
-                                <div className="bg-purple-900/20 rounded p-3">
-                                    <strong className="text-purple-300">Technologie Blockchain :</strong> Certification et traçabilité avec une couche de sécurité et d'immuabilité supplémentaire.
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    {/* Article 10 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 10 : Responsabilités – Délimitation des Rôles
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Kucibok opère en tant qu'intermédiaire technique et commercial, fournissant la Plateforme et les outils nécessaires pour que les Utilisateurs puissent interagir, présenter et transacter des œuvres.</p>
-                            <div className="bg-amber-900/20 border border-amber-700/30 rounded p-4">
-                                <p className="text-amber-200"><strong>Important :</strong> Kucibok n'est pas partie prenante directe aux contrats de vente conclus entre les vendeurs et les acheteurs. Par conséquent, Kucibok ne saurait être tenue responsable des litiges qui pourraient survenir directement entre Utilisateurs.</p>
-                            </div>
-                            <p>Kucibok se réserve le droit de suspendre ou de désactiver un compte d'Utilisateur en cas de suspicion ou de preuve avérée de fraude, de comportement illicite, de violation des présentes CGU, ou d'atteinte aux droits de tiers.</p>
-                        </div>
-                    </article>
-
-                    {/* Article 11 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 11 : Suspension ou Résiliation de Compte
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <div className="bg-green-900/20 rounded p-4">
-                                <h4 className="text-green-300 font-medium mb-2">Suppression par l'Utilisateur</h4>
-                                <p>Un Utilisateur peut à tout moment décider de supprimer son compte Kucibok directement via l'interface de son tableau de bord personnel. Cette action est irréversible.</p>
-                            </div>
-                            <div className="bg-red-900/20 rounded p-4">
-                                <h4 className="text-red-300 font-medium mb-2">Suspension par Kucibok</h4>
-                                <p>Kucibok se réserve le droit de suspendre temporairement ou de résilier définitivement le compte d'un Utilisateur, sans préavis ni indemnité, en cas de :</p>
-                                <div className="mt-2 text-xs space-y-1">
-                                    <div>• Manquement grave aux présentes CGU</div>
-                                    <div>• Atteinte aux droits d'un tiers</div>
-                                    <div>• Utilisation malveillante ou frauduleuse</div>
-                                    <div>• Comportement inapproprié</div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    {/* Article 12 */}
-                    <article className="bg-gray-900/50 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Article 12 : Loi Applicable et Juridiction Compétente
-                        </h3>
-                        <div className="text-white/70 text-sm leading-relaxed space-y-3">
-                            <p>Le présent contrat, ainsi que toutes les relations juridiques découlant de l'utilisation de la plateforme Kucibok, sont exclusivement régis par le droit sénégalais.</p>
-                            <p>En cas de litige qui n'aurait pu être résolu à l'amiable, les tribunaux de Dakar, Sénégal, seront les juridictions compétentes pour connaître de ces litiges.</p>
-                        </div>
-                    </article>
-                </div>
-
-                {/* Footer */}
-                <div className="mt-12 pt-8 border-t border-gray-800 text-center">
-                    <p className="text-white/50 text-xs">
-                        Les présentes Conditions Générales d'Utilisation sont établies à Dakar, Sénégal, le 28 juillet 2025.
-                    </p>
-                </div>
-            </div>
+/**
+ * Terms and Conditions page — CGU Kucibok.
+ * Standalone route using PortalLayout with Africa (gold) theme.
+ *
+ * @returns {JSX.Element}
+ */
+export default function TermsAndConditions() {
+  return (
+    <PortalLayout portal="africa">
+      {/* ── HEADER ── */}
+      <section className="pt-40 pb-20 text-center">
+        <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+          <RevealOnScroll>
+            <SectionLabel text="Legal" />
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.1}>
+            <h1 className="font-playfair font-bold text-[clamp(32px,4vw,52px)] text-white mt-6 mb-4 leading-tight">
+              Conditions Generales d&apos;<em className="text-[var(--accent)] not-italic">Utilisation</em>
+            </h1>
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.2}>
+            <p className="text-[13px] text-kcb-pierre">
+              Plateforme Kucibok (Utilisateur Standard)
+            </p>
+            <p className="text-[11px] text-kcb-pierre/60 mt-2">
+              Derniere mise a jour : 28 juillet 2025
+            </p>
+          </RevealOnScroll>
         </div>
-    )
+      </section>
+
+      <GeoLine />
+
+      {/* ── ARTICLES ── */}
+      <section className="py-20 bg-kcb-noir-deep">
+        <div className="max-w-4xl mx-auto px-[clamp(24px,5vw,80px)] space-y-10">
+
+          {/* Introduction */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Bienvenue sur Kucibok — Votre Espace Artistique Numerique
+              </h2>
+              <p className="text-kcb-sable text-[13px] leading-relaxed">
+                Les presentes Conditions Generales d&apos;Utilisation (ci-apres denominees « CGU ») ont pour objectif de definir le cadre legal et les regles d&apos;acces, de navigation et d&apos;utilisation de la plateforme numerique Kucibok, accessible en ligne a l&apos;adresse www.kucibok.com (ci-apres la « Plateforme »). En accedant a Kucibok, que ce soit pour une simple consultation ou pour une utilisation active de ses services, vous, en tant qu&apos;utilisateur, reconnaissez avoir lu, compris et accepte sans reserve l&apos;integralite des dispositions enoncees dans les presentes CGU. Cette acceptation est obligatoire et s&apos;impose a tout utilisateur, quelle que soit sa localisation geographique. Kucibok est concue pour etre une interface intuitive et securisee, et ces CGU sont la pour garantir une experience juste et transparente pour tous.
+              </p>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 1 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 1 : Identification de Kucibok — L&apos;Editeur de Votre Plateforme Artistique
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>La plateforme Kucibok est editee et geree par :</p>
+                <div className="border border-[var(--accent)]/20 p-4">
+                  <p>
+                    <strong className="text-white">KUCIBOK SARL</strong>, Une entreprise dument immatriculee au registre du commerce et du credit mobilier du Senegal, sous le numero [a inserer, si disponible]. Ayant son siege social situe a : Liberte 6 Ext, Rue Ambassade de France, Villa 24, Dakar, Senegal.
+                  </p>
+                  <p className="mt-2">
+                    Email de contact :{" "}
+                    <a href="mailto:contact@kucibok.com" className="text-[var(--accent)] hover:opacity-80">
+                      contact@kucibok.com
+                    </a>
+                  </p>
+                </div>
+                <p>Nous nous engageons a repondre a vos requetes avec diligence et professionnalisme.</p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 2 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 2 : Definitions — Comprendre les Termes Cles
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Pour une meilleure comprehension des presentes CGU, les termes suivants, employes avec une majuscule, auront la signification definie ci-dessous :</p>
+                <div className="grid gap-3">
+                  {[
+                    {
+                      term: "Utilisateur",
+                      def: "Designe toute personne physique ou morale qui accede a la Plateforme, qu'elle soit enregistree ou non, et qui consulte ou utilise les services offerts par Kucibok.",
+                    },
+                    {
+                      term: "Artiste",
+                      def: "Designe un Utilisateur createur d'oeuvres d'art qui utilise la Plateforme pour proposer ses creations a la numerisation haute definition, a la certification (notamment via blockchain), a la promotion, et/ou a la mise en vente.",
+                    },
+                    {
+                      term: "Collectionneur",
+                      def: "Designe un Utilisateur, particulier ou institutionnel, qui utilise la Plateforme pour decouvrir, acquerir, faire expertiser, numeriser ou vendre des oeuvres d'art ou des biens patrimoniaux.",
+                    },
+                    {
+                      term: "Galerie / Curateur",
+                      def: "Designe un Utilisateur professionnel du marche de l'art (galeriste, curateur independant, expert, institution culturelle) utilisant la Plateforme a des fins de selection d'oeuvres, d'organisation d'expositions virtuelles ou physiques, de gestion de collection ou de vente.",
+                    },
+                    {
+                      term: "Oeuvre",
+                      def: "Designe toute creation artistique, qu'elle soit de nature physique (peinture, sculpture, photographie, etc.) ou numerique (art numerique, NFT, etc.), qui est referencee, publiee, mise en vente, exposee ou proposee en pret sur la Plateforme Kucibok.",
+                    },
+                    {
+                      term: "Services",
+                      def: "Designe l'ensemble des fonctionnalites et outils mis a disposition des Utilisateurs sur la Plateforme Kucibok.",
+                    },
+                  ].map((item, i) => (
+                    <div key={i} className="border border-white/[0.06] p-3">
+                      <strong className="text-[var(--accent)]">{item.term} :</strong>
+                      <span className="text-kcb-sable text-[13px]"> {item.def}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 3 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 3 : Objet de la Plateforme — Notre Mission dans le Monde de l&apos;Art
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                <p>Kucibok est bien plus qu&apos;une simple plateforme numerique ; c&apos;est un ecosysteme dynamique dont l&apos;objectif est de democratiser l&apos;acces au marche de l&apos;art africain et international, en rendant les oeuvres accessibles, tracables et securisees. Nous proposons une gamme de services technologiques innovants et a forte valeur ajoutee :</p>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {[
+                    { title: "Numerisation haute definition", text: "Permettant une reproduction fidele et detaillee des oeuvres physiques." },
+                    { title: "Certification basee sur la blockchain", text: "Offrant une preuve d'authenticite, de provenance et de propriete immuable et transparente." },
+                    { title: "Tracabilite", text: "Garantissant le suivi des oeuvres tout au long de leur cycle de vie." },
+                    { title: "Gestion des droits", text: "Facilitant la protection et l'exploitation des droits d'auteur." },
+                  ].map((item, i) => (
+                    <div key={i} className="border border-white/[0.06] p-4">
+                      <h3 className="text-[var(--accent)] font-medium text-sm mb-1">{item.title}</h3>
+                      <p className="text-[11px]">{item.text}</p>
+                    </div>
+                  ))}
+                  <div className="border border-white/[0.06] p-4 md:col-span-2">
+                    <h3 className="text-[var(--accent)] font-medium text-sm mb-1">Mise en vente</h3>
+                    <p className="text-[11px]">Proposant un espace securise et global pour l&apos;acquisition et la cession d&apos;oeuvres.</p>
+                  </div>
+                </div>
+                <p>La plateforme Kucibok s&apos;adresse a un large eventail d&apos;acteurs du monde de l&apos;art, incluant les artistes emergents, les collectionneurs passionnes, les galeries et curateurs professionnels, ainsi que les institutions culturelles.</p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 4 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 4 : Acceptation et Modification des CGU — Un Cadre Evolutif
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>L&apos;utilisation de la Plateforme Kucibok implique l&apos;acceptation pleine et entiere, sans aucune reserve, des presentes CGU. Par votre seule navigation ou interaction avec les services, vous reconnaissez avoir lu, compris et adhere a ces conditions.</p>
+                <p>Kucibok se reserve le droit de modifier unilateralement et a tout moment les presentes CGU pour tenir compte de l&apos;evolution de nos services, s&apos;adapter aux pratiques du secteur, et se conformer aux reglementations.</p>
+                <div className="border border-[var(--accent)]/20 p-4">
+                  <p className="text-kcb-sable">Les Utilisateurs seront informes de toute mise a jour significative des CGU par une notification visible sur la Plateforme ou par email. L&apos;utilisation continue de la Plateforme apres la publication des modifications vaut acceptation tacite.</p>
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 5 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 5 : Acces au Service — Disponibilite et Restrictions
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>La Plateforme Kucibok est concue pour etre accessible de maniere continue : 24 heures sur 24 et 7 jours sur 7.</p>
+                <p>Cependant, des interruptions peuvent survenir dans les cas suivants :</p>
+                <div className="grid gap-3">
+                  <div className="border border-white/[0.06] p-4">
+                    <h3 className="text-[var(--accent)] font-medium text-sm mb-1">Maintenance planifiee</h3>
+                    <p className="text-[11px]">Pour assurer l&apos;optimisation, la securite ou la mise a jour de la Plateforme.</p>
+                  </div>
+                  <div className="border border-white/[0.06] p-4">
+                    <h3 className="text-[var(--accent)] font-medium text-sm mb-1">Cas de force majeure</h3>
+                    <p className="text-[11px]">Des evenements imprevisibles, irresistibles et exterieurs a notre volonte.</p>
+                  </div>
+                </div>
+                <p>Certains services specifiques peuvent etre reserves a certaines categories d&apos;Utilisateurs, notamment les professionnels certifies.</p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 6 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 6 : Creation de Compte et Obligations de l&apos;Utilisateur
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Pour acceder a l&apos;ensemble des services personnalises offerts par Kucibok, l&apos;inscription et la creation d&apos;un compte utilisateur sont obligatoires. L&apos;Utilisateur s&apos;engage a :</p>
+                <div className="space-y-2">
+                  {[
+                    "Fournir des informations exactes et sinceres",
+                    "Ne pas usurper l'identite d'un tiers",
+                    "Maintenir a jour son profil",
+                    "Utiliser la Plateforme dans le respect des lois et des droits des tiers",
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-2 flex-shrink-0" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border border-[var(--accent)]/20 p-4">
+                  <p className="text-kcb-sable">Tout manquement a ces obligations pourra entrainer la suspension ou la resiliation du compte de l&apos;Utilisateur.</p>
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 7 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 7 : Propriete Intellectuelle — Vos Oeuvres, Nos Outils
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                {[
+                  {
+                    title: "Protection des contenus de la Plateforme",
+                    text: "L'integralite des contenus presents sur la Plateforme sont la propriete exclusive de Kucibok ou de ses partenaires, et sont proteges par les lois relatives a la propriete intellectuelle.",
+                  },
+                  {
+                    title: "Propriete des oeuvres de l'Utilisateur",
+                    text: "L'Utilisateur conserve l'entiere et pleine propriete de ses oeuvres qu'il telecharge ou reference sur la Plateforme. Kucibok ne revendique aucun droit de propriete sur les oeuvres des Utilisateurs.",
+                  },
+                  {
+                    title: "Licence d'exploitation concedee a Kucibok",
+                    text: "En telechargeant une oeuvre sur Kucibok, l'Utilisateur concede a Kucibok une licence non exclusive, mondiale, cessible, sous-licenciable et temporaire d'exploitation de ces oeuvres, strictement limitee aux besoins du service.",
+                  },
+                ].map((item, i) => (
+                  <div key={i} className="border border-white/[0.06] p-4">
+                    <h3 className="text-[var(--accent)] font-medium text-sm mb-2">{item.title}</h3>
+                    <p>{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 8 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 8 : Donnees Personnelles et Confidentialite
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Kucibok s&apos;engage fermement a respecter la confidentialite et la securite de toutes les donnees personnelles collectees, en conformite avec le RGPD et la loi senegalaise sur la protection des donnees personnelles.</p>
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-3">Vos droits :</h3>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    {[
+                      "Droit d'acces",
+                      "Droit de rectification",
+                      "Droit d'opposition",
+                      "Droit a la portabilite",
+                      "Droit a la suppression",
+                    ].map((right, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-[5px] flex-shrink-0" />
+                        <span className="text-[11px]">{right}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-[13px]">
+                    Contact :{" "}
+                    <a href="mailto:msidibe@kucibok.com" className="text-[var(--accent)] hover:opacity-80">
+                      msidibe@kucibok.com
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 9 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 9 : Securite et Tracabilite — L&apos;Integrite au Coeur de Kucibok
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>La securite et la fiabilite sont des piliers fondamentaux de la plateforme Kucibok :</p>
+                <div className="grid gap-3">
+                  {[
+                    {
+                      title: "Tracabilite des operations",
+                      text: "Toutes les operations sensibles font l'objet d'une tracabilite automatique et rigoureuse.",
+                    },
+                    {
+                      title: "Protocoles de securite",
+                      text: "Utilisation de protocoles avances et de technologies de chiffrement robustes (SSL/TLS).",
+                    },
+                    {
+                      title: "Technologie Blockchain",
+                      text: "Certification et tracabilite avec une couche de securite et d'immuabilite supplementaire.",
+                    },
+                  ].map((item, i) => (
+                    <div key={i} className="border border-white/[0.06] p-4">
+                      <h3 className="text-[var(--accent)] font-medium text-sm mb-1">{item.title}</h3>
+                      <p className="text-[11px]">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 10 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 10 : Responsabilites — Delimitation des Roles
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Kucibok opere en tant qu&apos;intermediaire technique et commercial, fournissant la Plateforme et les outils necessaires pour que les Utilisateurs puissent interagir, presenter et transacter des oeuvres.</p>
+                <div className="border border-[var(--accent)]/20 p-4">
+                  <p className="text-kcb-sable">
+                    <strong className="text-white">Important :</strong> Kucibok n&apos;est pas partie prenante directe aux contrats de vente conclus entre les vendeurs et les acheteurs. Par consequent, Kucibok ne saurait etre tenue responsable des litiges qui pourraient survenir directement entre Utilisateurs.
+                  </p>
+                </div>
+                <p>Kucibok se reserve le droit de suspendre ou de desactiver un compte d&apos;Utilisateur en cas de suspicion ou de preuve averee de fraude, de comportement illicite, de violation des presentes CGU, ou d&apos;atteinte aux droits de tiers.</p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 11 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 11 : Suspension ou Resiliation de Compte
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-4">
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-2">Suppression par l&apos;Utilisateur</h3>
+                  <p>Un Utilisateur peut a tout moment decider de supprimer son compte Kucibok directement via l&apos;interface de son tableau de bord personnel. Cette action est irreversible.</p>
+                </div>
+                <div className="border border-white/[0.06] p-4">
+                  <h3 className="text-[var(--accent)] font-medium text-sm mb-2">Suspension par Kucibok</h3>
+                  <p>Kucibok se reserve le droit de suspendre temporairement ou de resilier definitivement le compte d&apos;un Utilisateur, sans preavis ni indemnite, en cas de :</p>
+                  <div className="mt-3 space-y-2">
+                    {[
+                      "Manquement grave aux presentes CGU",
+                      "Atteinte aux droits d'un tiers",
+                      "Utilisation malveillante ou frauduleuse",
+                      "Comportement inapproprie",
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full mt-[5px] flex-shrink-0" />
+                        <span className="text-[11px]">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Article 12 */}
+          <RevealOnScroll>
+            <article className="bg-kcb-noir border border-white/[0.06] p-8">
+              <h2 className="font-playfair font-semibold text-lg text-white mb-4">
+                Article 12 : Loi Applicable et Juridiction Competente
+              </h2>
+              <div className="text-kcb-sable text-[13px] leading-relaxed space-y-3">
+                <p>Le present contrat, ainsi que toutes les relations juridiques decoulant de l&apos;utilisation de la plateforme Kucibok, sont exclusivement regis par le droit senegalais.</p>
+                <p>En cas de litige qui n&apos;aurait pu etre resolu a l&apos;amiable, les tribunaux de Dakar, Senegal, seront les juridictions competentes pour connaitre de ces litiges.</p>
+              </div>
+            </article>
+          </RevealOnScroll>
+
+          {/* Footer */}
+          <div className="pt-8 border-t border-white/[0.06] text-center">
+            <p className="text-kcb-pierre text-[11px]">
+              Les presentes Conditions Generales d&apos;Utilisation sont etablies a Dakar, Senegal, le 28 juillet 2025.
+            </p>
+          </div>
+
+        </div>
+      </section>
+    </PortalLayout>
+  )
 }

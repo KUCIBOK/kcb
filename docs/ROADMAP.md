@@ -1,285 +1,300 @@
-# KUCIBOK — ROADMAP.md
-**Version** 1.0 — Mars 2026
-**Horizon** 24 mois (Mars 2026 → Mars 2028)
-**Aligné sur** PRD V2
-**Langue** FR/EN — Confidentiel
+# KUCIBOK — Roadmap
+
+**Version** 2.0 — Mars 2026
+**Horizon** 24 mois (Mars 2026 -> Mars 2028)
+**Aligne sur** PRD V2.1 · TECH-SPEC V2.0
 
 ---
 
-## PRINCIPES DE CETTE ROADMAP
+## PRINCIPES
 
-- **Focus > Volume** : Chaque phase a un objectif unique et mesurable
-- **Standard d'abord** : Aucune feature de liquidité avant que le standard soit validé
-- **Corridor unique** : AF Ouest ↔ France avant toute extension
-- **Pas de sprints fixes** : Milestones par phase, itérations libres à l'intérieur
+- **Focus > Volume** : chaque phase a un objectif unique et mesurable
+- **Standard d'abord** : pas de feature de liquidite avant validation du standard
+- **Corridor unique** : AF Ouest <-> France avant toute extension
+- **Pas de sprints fixes** : milestones par phase, iterations libres
 
 ---
 
-## VUE MACRO — 24 MOIS
+## VUE MACRO
 
 ```
-PHASE 0   PHASE 1      PHASE 2         PHASE 3          PHASE 4
-Mar 2026  Avr–Sep 26   Oct 26–Mar 27   Avr–Sep 27       Oct 27–Mar 28
-────────  ──────────   ─────────────   ──────────────   ─────────────
-Nettoyage Standard     Corridor        Reconnaissance   Scale
-& Socle   Minimal      Opérationnel    Institutionnelle & Extension
-          Viable
+PHASE 0       PHASE 1        PHASE 2           PHASE 3            PHASE 4
+Mar 2026      Avr-Sep 2026   Oct 2026-Mar 2027 Avr-Sep 2027       Oct 2027-Mar 2028
+──────────    ────────────   ─────────────────  ─────────────────  ─────────────────
+Migration &   Standard       Corridor           Reconnaissance     Scale &
+Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
+              Viable
 ```
 
 ---
 
-## ⚠️ PHASE 0 — NETTOYAGE & SOCLE (Mars 2026 — PRIORITÉ IMMÉDIATE)
+## PHASE 0 — MIGRATION & NETTOYAGE (Mars 2026)
 
-> Avant de construire, nettoyer. La codebase est riche mais contient de la dette technique à adresser immédiatement.
+> Bascule production depuis VPS Hostinger/MongoDB vers Supabase/Vercel. Deadline : **19 mars 2026** (expiration VPS).
 
-### Décisions architecturales validées (Mars 2026)
-| Décision | Choix retenu |
-|----------|-------------|
-| Design system | **Garder indigo/violet** (DESIGN-SYSTEM.md) — noir/ivoire/or reporté Phase 3+ |
-| Routing portails | **Routes /africa et /global** — pas de detection hostname pour l'instant |
-| Enchères | **Masquées côté front** — code backend conservé, réactivation possible Phase 3 |
-| Hébergement frontend | **Vercel** (vercel.json déjà présent) |
-| Hébergement backend | **VPS Hostinger** (cron jobs incompatibles serverless) |
+### Migration Supabase (M1-M4)
 
-### Priorités techniques immédiates
+| Etape | Description | Statut |
+|-------|-------------|--------|
+| M1 — Auth + Storage | Supabase Auth configure, buckets Storage crees | Done |
+| M2 — Schema PostgreSQL | 34 tables + RLS + triggers + index | Done |
+| M3 — Vercel Functions | API catch-all deployee et testee | Done |
+| M4 — Bascule production | Migration donnees + images + coupure VPS | En attente |
 
-| Tâche | Raison | Urgence |
-|-------|--------|---------|
-| Supprimer `mailerConfig.js` + import dans `index.js` | Remplacé par Resend, encore importé | 🔴 Haute |
-| Supprimer `smtpMailer.service.js` (legacy) | Remplacé par `resendMailer.service.js` | 🔴 Haute |
-| Supprimer `middleware/upload.js` (legacy) | Remplacé par `multer.js` | 🔴 Haute |
-| Corriger `auth.js:31` — lire `config.jwt.secret` au lieu de `process.env.JWT_SECRET` | Viole règle CLAUDE.md | 🔴 Haute |
-| Masquer `/auctions` et `/auction/:id` du nav public | Enchères non prioritaires PRD V2 | 🔴 Haute |
-| Désactiver `analyticsCollectionJob.js` proprement | Commenté dans index.js = dette tech | 🟡 Moyenne |
-| Consolider `Header.jsx` (2 versions coexistent) | Confusion composants | 🟡 Moyenne |
-| Adopter composants `ui/` sur les pages non migrées | Design system existant non utilisé partout | 🟡 Moyenne |
-| Auditer les 15 Context providers | Possible over-engineering | 🟡 Moyenne |
+### Procedure M4 (voir `docs/RUNBOOK_M4.md`)
 
-### Migration Hébergement
+- [ ] Backup MongoDB Atlas + Cloudinary
+- [ ] Migration utilisateurs (`scripts/migrate_users_auth.js`)
+- [ ] Migration donnees par collection (`scripts/migrate_mongodb.js`)
+- [ ] Migration images (`scripts/migrate_cloudinary.js`)
+- [ ] Deploiement Vercel Functions en production
+- [ ] Tests fonctionnels manuels (auth, oeuvres, paiements, tracking)
+- [ ] Emails reinitialisation mot de passe aux utilisateurs
+- [ ] Surveillance 1 semaine
+- [ ] Coupure VPS + Atlas + Cloudinary
 
-| Action | Détail |
-|--------|--------|
-| **Frontend → Vercel** | Déjà préparé (`vercel.json` présent), migration directe |
-| **Backend → Garder VPS Hostinger** | ⚠️ Vercel = serverless = incompatible avec cron jobs node-cron actifs |
-| **Alternative backend future** | Railway ou Render si besoin de scalabilité (pas urgent) |
+### Nettoyage technique
 
-> **Décision critique** : Ne pas migrer le backend sur Vercel. Les 5 cron jobs actifs (enchères, abonnements, certificats, logidoo sync) nécessitent un process Node.js persistant. Garder le VPS Hostinger pour le backend.
+- [x] ~~Supprimer `socket.io-client`~~ — garde (utilise par encheres Phase 3)
+- [x] Supprimer deps inutiles du package.json (dotenv, classnames, react-countdown, qrcode, react-intersection-observer, resend)
+- [x] Corriger import `setVisitTime` manquant dans App.jsx
+- [x] Configurer ESLint + Prettier
+- [x] Supprimer `pdfkit` et `resend` du frontend (deps serveur uniquement)
+- [x] Vitest + Testing Library : setup initial (smoke test)
+- [ ] Repo nettoye : backend/, frontend/ supprimes, structure plate
 
-### Livrables Phase 0
-- [ ] Legacy backend supprimé (mailerConfig, smtpMailer, upload.js)
-- [ ] `auth.js` corrigé — `config.jwt.secret`
-- [ ] Enchères masquées du nav
-- [ ] Frontend déployé sur Vercel
-- [ ] Backend stable sur VPS Hostinger
-- [ ] Variables d'environnement auditées et sécurisées
-- [ ] CI/CD GitHub Actions validé end-to-end
+### Refonte frontend (design system landing)
+
+- [x] Refonte pages portail : Gateway, Africa, Global (PortalLayout, RevealOnScroll, SectionLabel, GeoLine)
+- [x] Refonte About, Contact, Faq avec PortalLayout theme or
+- [x] Refonte 4 pages legales (PrivacyPolicy, TermsAndConditions, SalesConditions, EthicChart) avec PortalLayout
+- [x] Polish pages browsing : Marketplace, Blog, Artists, BlogPostDetails, Artist, Artwork (RevealOnScroll + SectionLabel)
+- [x] Polish pages transactionnelles : checkout, success/failed, tracking (RevealOnScroll)
+- [x] Polish pages auth : SignIn, SignUp, ForgotPassword, VerifyEmail, CheckEmail, GoogleRoleSelection (RevealOnScroll + font-playfair)
+- [x] Explore : RevealOnScroll + SectionLabel header
+- [x] Routes standalone hors Layout : About, Contact, Faq, 4 legales (PortalLayout avec propre nav/footer)
+
+### Scorecard Phase 0
+
+| Critere | Cible | Statut |
+|---------|-------|--------|
+| VPS eteint, Supabase operationnel | 19 mars 2026 | En cours |
+| Zero erreur Sentry post-migration | 1 semaine sans incident | Pas commence |
+| Repo propre (plus de legacy) | Aucun fichier backend/ ou frontend/ | Done |
 
 ---
 
 ## PHASE 1 — STANDARD MINIMAL VIABLE (Avr → Sep 2026)
 
-> **Objectif unique** : Lancer le Standard Kucibok. Recruter 20 galeries pilotes. Ouvrir le corridor logistique.
+> Lancer le Standard Kucibok. Recruter 20 galeries pilotes. Ouvrir le corridor logistique.
 
 ### M1 — Avril 2026 : Standard Kucibok V1
 
 **Backend**
-- [ ] Refactoriser `artwork.controller.js` → champs standardisés obligatoires (titre, médium, dimensions, provenance, photos HD min 3)
-- [ ] Améliorer `documents.service.js` → certificat PDF aux normes Kucibok (layout institutionnel, QR, numéro unique)
-- [ ] Améliorer `generateCertificates.js` cron job → génération automatique à la validation
-- [ ] Ajouter endpoint `GET /artwork/:id/verify` → public, sans auth, retourne données certificat
-- [ ] Blockchain backend : s'assurer que le NFT Ethereum est généré silencieusement à la certification (invisible front)
+- [ ] Enrichir la table `artworks` : champs Standard obligatoires (provenance detaillee, photos HD min 3, condition)
+- [ ] Ameliorer generation certificat PDF (layout institutionnel, QR, numero unique KCB)
+- [ ] Endpoint `GET /api/artworks/verify/:kid` : enrichir la reponse publique (images, provenance, historique)
+- [ ] Blockchain : validation silencieuse hash ETH a la certification
 
 **Frontend**
-- [ ] Refaire `SubmitArtwork.jsx` → formulaire standardisé en étapes (données → photos → provenance → validation)
-- [ ] Créer page `/verify/:id` → page publique de vérification QR (aucun compte requis)
-- [ ] Mettre à jour dashboard Artiste → affichage certificat + QR téléchargeable
-
-**Design**
-- [ ] Appliquer nouvelle direction visuelle (voir DESIGN.md) sur les pages Standard
-- [ ] Template certificat PDF premium (noir/ivoire/or, logo Kucibok)
-
----
+- [ ] Refaire `SubmitArtwork.jsx` : formulaire standardise en etapes (donnees -> photos -> provenance -> validation)
+- [ ] Enrichir page `/verify/:kuciobkId` : affichage premium du certificat
+- [ ] Dashboard Artiste : affichage certificat + QR telechargeables
 
 ### M2 — Mai 2026 : Portail Africa V1
 
 **Backend**
-- [ ] Nouveau rôle `gallery_africa` dans le système de rôles JWT
-- [ ] Onboarding galeries africaines : validation manuelle par admin avant activation
-- [ ] `gallery.controller.js` → CRUD complet galerie + gestion catalogue
-- [ ] Endpoint import CSV artistes/œuvres pour galeries
+- [ ] Nouveau role `gallery_africa` dans la table `users`
+- [ ] Onboarding galeries : validation manuelle admin
+- [ ] Endpoint import CSV oeuvres batch
 
 **Frontend**
-- [ ] Refonte `AfricaLanding.jsx` → positionnement institutionnel (design system actif : indigo/violet)
-- [ ] Route `/africa` confirmée comme entrée principale (pas de subdomain)
-- [ ] Nouveau flow onboarding galeries africaines (4 étapes : profil → catalogue → validation → activation)
-- [ ] Dashboard galerie africaine → inventaire + statuts certification
-- [ ] Interface import masse œuvres (CSV + photos)
-
----
+- [x] Refonte `AfricaLanding.jsx` : positionnement institutionnel
+- [ ] Flow onboarding galeries (4 etapes : profil -> catalogue -> validation -> activation)
+- [ ] Dashboard galerie : inventaire + statuts certification
 
 ### M3 — Juin 2026 : Logistique V1
 
 **Backend**
-- [ ] Refactoriser `delivery.controller.js` → workflow standardisé en statuts : `draft → confirmed → packaging → in_transit → customs → delivered`
-- [ ] Améliorer `logidoo.service.js` → sync automatique statuts via `logidooSyncJob.js`
-- [ ] Génération automatique documents douaniers export (depuis `documents.service.js`)
-- [ ] Assurance intégrée : endpoint calcul prime selon valeur certifiée
-- [ ] Notifications email (Resend) à chaque changement de statut
+- [ ] Workflow standardise delivery_requests : 9 statuts
+- [ ] Generation documents douaniers export (PDF)
+- [ ] Assurance integree : calcul prime selon valeur certifiee
+- [ ] Notifications email Resend a chaque changement de statut
 
 **Frontend**
-- [ ] Refonte `DeliveryTab` → timeline visuelle des statuts
-- [ ] `TrackingPage.jsx` → accessible sans compte (via lien unique)
-- [ ] Checklist emballage muséal interactive (par type d'œuvre)
-- [ ] Simulateur de coût logistique (corridor AF ↔ France)
-
----
+- [ ] Refonte `DeliveryTab` : timeline visuelle des statuts
+- [ ] `TrackingPage.jsx` : tracking enrichi sans compte
+- [ ] Checklist emballage museal interactive
+- [ ] Simulateur cout logistique enrichi
 
 ### M4 — Juillet 2026 : Portail Global V1
 
 **Backend**
-- [ ] Nouveau rôle `curator_global` + `gallery_global`
-- [ ] Onboarding international : validation stricte + abonnement payant obligatoire
-- [ ] Catalogue certifié : endpoint filtrable par pays/artiste/style/disponibilité (accès restreint)
-- [ ] Système de demande de sourcing privée (anonymisée)
-- [ ] Paiements Stripe pour abonnements Global (complément PayDunya existant)
+- [ ] Nouveaux roles `curator_global` + `gallery_global`
+- [ ] Onboarding international : validation + abonnement payant
+- [ ] Catalogue certifie : endpoint filtrable (acces restreint)
+- [ ] Systeme demande sourcing privee (anonymisee)
+- [ ] Integration Stripe pour abonnements Global
 
 **Frontend**
-- [ ] Refonte `GlobalPage.jsx` → landing institutionnelle EN prioritaire (design system actif : indigo/violet)
-- [ ] Route `/global` confirmée comme entrée portail international (pas de subdomain)
-- [ ] Page catalogue certifié → accès sur approbation uniquement
-- [ ] Flow sourcing : demande → mise en relation → suivi
-- [ ] Page pricing Global → 3 plans (Starter/Pro/Institution)
+- [x] Refonte `GlobalPage.jsx` : landing institutionnelle EN
+- [ ] Page catalogue certifie (acces sur approbation)
+- [ ] Flow sourcing : demande -> mise en relation -> suivi
+- [ ] Page pricing Global (Starter EUR 79 / Pro EUR 149 / Institution EUR 299)
+
+### M5-M6 — Aout/Sep 2026 : Pilotes & Validation
+
+- [ ] Onboarding 20 galeries pilotes (SN + CI)
+- [ ] 5 partenaires France actifs
+- [ ] 100 premieres oeuvres certifiees
+- [ ] 10 premieres expeditions AF <-> France
+- [ ] Collecte feedback pilotes -> iterations
+
+### Scorecard Phase 1
+
+| Critere | Cible | Statut |
+|---------|-------|--------|
+| Galeries africaines actives | 20 | — |
+| Oeuvres certifiees | 100 | — |
+| Expeditions realisees | 10 | — |
+| Partenaires France actifs | 5 | — |
+| MRR | EUR 2K+ | — |
+| Tests automatises (Vitest) | Couverture business logic | — |
 
 ---
 
-### M5-M6 — Août/Sep 2026 : Pilotes & Validation
+## PHASE 2 — CORRIDOR OPERATIONNEL (Oct 2026 → Mar 2027)
 
-- [ ] Onboarding 20 galeries pilotes (SN + CI prioritaires)
-- [ ] 5 partenaires France actifs (curateurs / galeries)
-- [ ] 100 premières œuvres certifiées Standard Kucibok
-- [ ] 10 premières expéditions AF ↔ France réalisées
-- [ ] Collecte feedback structuré pilotes → itérations rapides
+> Prouver que le corridor fonctionne a l'echelle. Premieres transactions structurees.
 
-**Milestone Phase 1 ✅**
-> 20 galeries africaines actives · 100 œuvres certifiées · 10 expéditions · 5 partenaires France · MRR €2K+
+### Oct-Nov 2026 : Extension Afrique
 
----
-
-## PHASE 2 — CORRIDOR OPÉRATIONNEL (Oct 2026 → Mar 2027)
-
-> **Objectif** : Prouver que le corridor fonctionne à l'échelle. Générer les premières transactions structurées.
-
-### Oct–Nov 2026 : Extension Afrique
-
-- [ ] Onboarding Bénin + Nigeria (galeries structurées)
-- [ ] Adaptation documents douaniers Nigeria (complexité NAFDAC)
+- [ ] Onboarding Benin + Nigeria (galeries structurees)
+- [ ] Adaptation documents douaniers Nigeria
 - [ ] Portail Africa bilingue FR/EN complet
-- [ ] Passeport NFC V1 : intégration lecture/écriture puce NFC œuvres haute valeur
+- [ ] Passeport NFC V1 : lecture/ecriture puce NFC oeuvres haute valeur
 
-### Déc 2026 – Jan 2027 : Catalogue & Sourcing
+### Dec 2026 - Jan 2027 : Catalogue & Sourcing
 
-- [ ] 500+ œuvres certifiées dans le catalogue
-- [ ] Moteur de recherche catalogue amélioré (filtres avancés)
-- [ ] Profils artistes publics premium (visible curateurs approuvés)
-- [ ] Système de mise en relation structuré (Kucibok orchestre)
-- [ ] Dashboard analytics basique galeries : vues, demandes sourcing, expéditions
+- [ ] 500+ oeuvres certifiees
+- [ ] Moteur de recherche catalogue ameliore (filtres avances)
+- [ ] Profils artistes publics premium
+- [ ] Mise en relation structuree (Kucibok orchestre)
+- [ ] Dashboard analytics galeries : vues, demandes sourcing, expeditions
 
-### Fév–Mar 2027 : Transactions Structurées
+### Fev-Mar 2027 : Transactions structurees
 
-- [ ] 5 galeries France sur abonnement payant actif
-- [ ] Module transaction privée B2B (pas de vente publique)
-- [ ] Commission automatique sur transactions structurées (5-10%)
-- [ ] Contrats de vente générés automatiquement (PDF signable)
-- [ ] 50 expéditions cumulées AF ↔ France
+- [ ] 5 galeries France sur abonnement payant
+- [ ] Module transaction privee B2B
+- [ ] Commission automatique sur transactions (5-10%)
+- [ ] Contrats de vente generes automatiquement (PDF signable)
+- [ ] 50 expeditions cumulees
 
-**Milestone Phase 2 ✅**
-> 500 œuvres certifiées · 50 expéditions · 10 clients Global payants · MRR €8K · 1ère transaction structurée >€5K
+### Refactoring technique Phase 2
+
+- [ ] Migrer Context providers lourds vers React Query
+- [ ] Decouper `api/[...path].js` en modules internes
+- [ ] Ajouter tests d'integration API (Vitest)
+- [ ] Evaluer Zustand pour state UI globale
+
+### Scorecard Phase 2
+
+| Critere | Cible | Statut |
+|---------|-------|--------|
+| Oeuvres certifiees | 500 | — |
+| Expeditions cumulees | 50 | — |
+| Clients Global payants | 10 | — |
+| MRR | EUR 8K | — |
+| 1ere transaction structuree >EUR 5K | Oui | — |
+| React Query migre (3 contexts) | Oui | — |
 
 ---
 
 ## PHASE 3 — RECONNAISSANCE INSTITUTIONNELLE (Avr → Sep 2027)
 
-> **Objectif** : Faire reconnaître le Standard Kucibok par au moins 1 assureur majeur ou 1 maison de vente.
+> Faire reconnaitre le Standard Kucibok par le marche institutionnel.
 
-### Avr–Mai 2027 : Dossier Institutionnel
+### Avr-Mai 2027 : Dossier institutionnel
 
 - [ ] Export certificats format assureurs (Allianz Art, AXA Art)
-- [ ] Validation experte intégrée : circuit expert certifié Kucibok
-- [ ] Rapport patrimonial exportable (PDF pour assureurs, banques, héritiers)
-- [ ] Audit sécurité complet backend (pentest externe)
-- [ ] RGPD compliance complète + DPA pour clients UE
+- [ ] Validation experte integree : circuit expert certifie Kucibok
+- [ ] Rapport patrimonial exportable (PDF assureurs, banques, heritiers)
+- [ ] Audit securite complet (pentest externe)
+- [ ] RGPD compliance complete + DPA clients UE
 
-### Juin–Juil 2027 : Extension Europe
+### Juin-Juil 2027 : Extension Europe
 
 - [ ] Corridor Belgique actif (Bruxelles)
-- [ ] Documents douaniers UE standardisés
+- [ ] Documents douaniers UE standardises
 - [ ] 2-3 galeries belges partenaires
-- [ ] Préparation corridor UK (post-Brexit douanes)
+- [ ] Preparation corridor UK (post-Brexit)
 
-### Août–Sep 2027 : Validation & Partenariats
+### Aout-Sep 2027 : Partenariats
 
-- [ ] Signature partenariat assureur (objectif : 1 acteur majeur)
-- [ ] Intégration catalogue dans 1 maison de vente partenaire
-- [ ] 2,000 œuvres certifiées au total
-- [ ] 200 expéditions cumulées
+- [ ] Signature partenariat assureur (1 acteur majeur)
+- [ ] Integration catalogue dans 1 maison de vente
+- [ ] Refonte design institutionnel (palette noir/ivoire/or — `docs/DESIGN.md`)
+- [ ] Migration routing vers sous-domaines (africa.kucibok.com / global.kucibok.com)
+- [ ] Reactivation encheres (si pertinent)
 
-**Milestone Phase 3 ✅**
-> 1 assureur partenaire officiel · 1 maison de vente · 2K œuvres · 200 expéditions · MRR €20K
+### Scorecard Phase 3
+
+| Critere | Cible | Statut |
+|---------|-------|--------|
+| 1 assureur partenaire officiel | Oui | — |
+| 1 maison de vente partenaire | Oui | — |
+| Oeuvres certifiees | 2 000 | — |
+| Expeditions cumulees | 200 | — |
+| MRR | EUR 20K | — |
+| Corridors actifs | 2 (France + Belgique) | — |
 
 ---
 
 ## PHASE 4 — SCALE & EXTENSION (Oct 2027 → Mar 2028)
 
-> **Objectif** : Consolider, étendre, préparer Phase 5 (hub physique).
+> Consolider, etendre, preparer le hub physique.
 
-### Oct–Déc 2027
+### Oct-Dec 2027
 
-- [ ] Corridor UK opérationnel
-- [ ] Analytics avancé : valorisation collection, tendances marché
-- [ ] API publique Kucibok (pour intégrations galeries tierces)
-- [ ] Application mobile native (React Native — basée sur codebase React existante)
+- [ ] Corridor UK operationnel
+- [ ] Analytics avance : valorisation collection, tendances marche
+- [ ] API publique Kucibok (integrations galeries tierces)
+- [ ] Application mobile native (React Native)
 
-### Jan–Mar 2028
+### Jan-Mar 2028
 
-- [ ] 5,000 œuvres certifiées
-- [ ] 500+ expéditions cumulées
-- [ ] MRR €25K+
-- [ ] Étude de faisabilité hub physique (Dakar / Abidjan)
-- [ ] Préparation levée de fonds Série A
+- [ ] 5 000 oeuvres certifiees
+- [ ] 500+ expeditions cumulees
+- [ ] Etude de faisabilite hub physique (Dakar / Abidjan)
+- [ ] Preparation levee de fonds Serie A
 
-**Milestone Phase 4 ✅**
-> Standard reconnu · Corridor 3 pays EU · MRR €25K · Préparation hub physique
+### Scorecard Phase 4
 
----
-
-## DETTE TECHNIQUE À SURVEILLER
-
-| Item | Risque | Action recommandée |
-|------|--------|-------------------|
-| 15 Context providers React | Over-engineering, performance | Migrer vers Zustand ou React Query progressivement |
-| MongoDB sans transactions ACID | Risque intégrité données financières | Activer sessions MongoDB pour ops critiques |
-| `watchdog.js` backend | Redémarrage auto non documenté | Documenter comportement + alertes |
-| Upload fichiers sur VPS local | Perte données si crash serveur | Migrer vers Cloudinary ou S3 dès Phase 1 |
-| Pas de rate limiting global | Risque DDoS / abus | Activer `rateLimiter.service.js` sur toutes les routes publiques |
-| Cron jobs sans monitoring | Silence si échec | Ajouter alertes Slack/email sur échec cron |
+| Critere | Cible | Statut |
+|---------|-------|--------|
+| Standard reconnu internationalement | Oui | — |
+| Corridors EU actifs | 3 (France + Belgique + UK) | — |
+| MRR | EUR 25K+ | — |
+| Hub physique : etude faisabilite | Complete | — |
+| Serie A : dossier pret | Oui | — |
 
 ---
 
-## DÉCISIONS D'INFRASTRUCTURE CLÉS
+## DETTE TECHNIQUE — SUIVI
 
-```
-FRONTEND          BACKEND           DATABASE          STORAGE
-─────────         ───────           ────────          ───────
-Vercel            VPS Hostinger     MongoDB Atlas     → Cloudinary (Phase 1)
-(déjà prêt)       (garder pour      (existant)        Actuellement: /public/uploads
-                  cron jobs)                          sur VPS (⚠️ risque)
-
-EMAILS            PAIEMENTS AF      PAIEMENTS EU      BLOCKCHAIN
-──────            ────────────      ────────────      ──────────
-Resend            PayDunya          Stripe (à         Ethereum
-(existant)        (existant)        intégrer P2)      (backend invisible)
-```
+| Item | Phase cible | Statut |
+|------|-------------|--------|
+| Supprimer deps inutiles (dotenv, classnames, etc.) | 0 | Done |
+| Configurer ESLint + Prettier | 0 | Done |
+| Corriger `setVisitTime` non importe | 0 | Done |
+| Supprimer `pdfkit` + `resend` du frontend | 0 | Done |
+| Vitest + Testing Library : setup initial | 0 | Done |
+| Ecrire tests unitaires : hooks API, utils, stores | 1 | A faire |
+| Ecrire tests composants : pages critiques (auth, checkout) | 1 | A faire |
+| Migrer Context providers -> React Query | 2 | A faire |
+| Decouper `api/[...path].js` en modules | 2 | A faire |
+| Evaluer Zustand pour state UI | 2 | A faire |
 
 ---
 
-*Kucibok ROADMAP V1 — Mars 2026 — Confidentiel*
+*Kucibok ROADMAP V2.0 — Mars 2026 — Confidentiel*

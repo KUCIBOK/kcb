@@ -5,11 +5,14 @@ import { Loader2 } from 'lucide-react';
  * Design System - Button Component
  * 
  * Variants:
- * - primary: Main actions (indigo)
- * - secondary: Secondary actions (gray)
+ * - primary: Main actions (indigo) — dashboard legacy
+ * - secondary: Secondary actions (gray) — dashboard legacy
  * - danger: Destructive actions (red)
  * - ghost: Minimal actions
  * - outline: Border only
+ * - kcb: KCB gold primary (bg-kcb-or)
+ * - kcb_outline: KCB gold outline
+ * - kcb_ghost: KCB ghost (subtle hover)
  * 
  * Sizes:
  * - sm: Small (py-1.5 px-3 text-sm)
@@ -24,7 +27,10 @@ const variants = {
   danger: 'bg-red-600 hover:bg-red-500 text-white border border-transparent shadow-sm',
   ghost: 'bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white border border-transparent',
   outline: 'bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-600',
-  success: 'bg-green-600 hover:bg-green-500 text-white border border-transparent shadow-sm'
+  success: 'bg-green-600 hover:bg-green-500 text-white border border-transparent shadow-sm',
+  kcb: 'bg-kcb-or hover:bg-kcb-bronze text-kcb-noir border border-transparent font-semibold tracking-[0.05em] uppercase text-sm',
+  kcb_outline: 'bg-transparent hover:bg-kcb-or/10 text-kcb-or border border-kcb-or',
+  kcb_ghost: 'bg-transparent hover:bg-white/[0.03] text-kcb-sable border border-transparent',
 };
 
 const sizes = {

@@ -3,6 +3,8 @@ import { useArtist } from "../store/ArtistContext";
 import { Search } from "lucide-react";
 import { DataLoader } from "../components/loaders/PageLoader";
 import { ArtistList } from "../components/artists/ArtistsList";
+import RevealOnScroll from "../components/landing/RevealOnScroll";
+import SectionLabel from "../components/landing/SectionLabel";
 
 export default function Artists() {
     const { artists } = useArtist();
@@ -33,20 +35,33 @@ export default function Artists() {
 
     return (
         <div className="mx-auto px-4 md:px-6 flex-grow pb-16 mt-8">
-            <div className="text-center mb-10">
-                <h1 className="font-serif text-4xl md:text-5xl mb-2 text-white">Découvrez les artistes africains</h1>
-                <p className="text-gray-400 text-lg mt-2">Explorez les divers talents des artistes digitaux autour du continent</p>
+            <div className="text-center mb-14">
+                <RevealOnScroll>
+                    <SectionLabel text="Artistes" />
+                </RevealOnScroll>
+                <RevealOnScroll delay={0.1}>
+                    <h1 className="font-playfair font-bold text-[clamp(28px,3.5vw,48px)] text-white mt-4 mb-3">Découvrez les artistes africains</h1>
+                </RevealOnScroll>
+                <RevealOnScroll delay={0.2}>
+                    <p className="text-kcb-pierre text-[15px]">Explorez les divers talents des artistes digitaux autour du continent</p>
+                </RevealOnScroll>
             </div>
-            <div className="flex justify-center items-center mb-10 border mx-auto w-full max-w-xl rounded-lg border-gray-800 bg-gray-900/70 px-4">
-                <Search className="w-5 h-5 text-gray-400 mr-2" />
-                <input
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    type="text"
-                    className="flex-1 bg-transparent outline-none text-white placeholder-gray-500 px-2 py-3"
-                    placeholder="Cherchez les artistes par nom ou par pays"
-                />
-            </div>
+            <RevealOnScroll delay={0.25}>
+                <div className="flex justify-center items-center mb-10 mx-auto w-full max-w-xl">
+                    <div className="relative w-full">
+                        <input
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            type="text"
+                            className="w-full bg-kcb-noir border border-white/[0.08] focus:border-kcb-or transition-colors duration-200 outline-none text-white placeholder-kcb-pierre rounded-[4px] py-3 pl-12 pr-4 shadow-sm focus:shadow-md focus:ring-2 focus:ring-kcb-or"
+                            placeholder="Cherchez les artistes par nom ou par pays"
+                        />
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-kcb-pierre pointer-events-none">
+                            <Search className="w-5 h-5" />
+                        </span>
+                    </div>
+                </div>
+            </RevealOnScroll>
             <div className="flex flex-col gap-6">
                 {loading ? (
                     <div className="flex items-center justify-center h-40">
@@ -59,4 +74,3 @@ export default function Artists() {
         </div>
     );
 }
-

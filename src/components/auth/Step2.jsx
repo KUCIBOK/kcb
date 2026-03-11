@@ -9,16 +9,16 @@ export const Step2 = ({ formState, setFormState }) => {
 
     return (
         <>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-background px-4">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-kcb-noir-deep px-4">
           <div className="w-full max-w-sm mx-auto">
             {formState.error && (
               <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
                 {formState.error}
               </div>
             )}
-            <div className="bg-card rounded-xl border border-gray-800 shadow-sm p-6">
+            <div className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] shadow-sm p-6">
               <p className="text-center text-xl font-bold text-white mb-2">Créer un compte</p>
-              <p className="text-xs text-center text-gray-400 mb-6">Entrez votre email et créez un mot de passe</p>
+              <p className="text-xs text-center text-kcb-pierre mb-6">Entrez votre email et créez un mot de passe</p>
               <form
                 onSubmit={e => {
                   e.preventDefault();
@@ -42,7 +42,7 @@ export const Step2 = ({ formState, setFormState }) => {
                   onChange={e => setFormState({ ...formState, email: e.target.value })}
                 />
                 <div>
-                  <label htmlFor="password" className="text-xs font-medium text-gray-400">Mot de passe</label>
+                  <label htmlFor="password" className="text-xs font-medium text-kcb-pierre">Mot de passe</label>
                   <div className="flex items-center mt-1">
                     <input
                       onChange={e => setFormState({ ...formState, password: e.target.value })}
@@ -52,20 +52,20 @@ export const Step2 = ({ formState, setFormState }) => {
                       id="password"
                       minLength={8}
                       required
-                      className="w-9/10 border border-gray-800 bg-gray-900 rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                      className="w-9/10 border border-white/[0.06] bg-kcb-noir rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                       placeholder="Votre mot de passe"
                     />
                     <button
                       type="button"
                       onClick={() => setState({ ...state, showPassword: !state.showPassword })}
-                      className="w-1/10 flex justify-center border border-gray-800 bg-gray-900 rounded-e-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                      className="w-1/10 flex justify-center border border-white/[0.06] bg-kcb-noir rounded-e-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                     >
                       {state.showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="confirmPassword" className="text-xs font-medium text-gray-400">Confirmer le mot de passe</label>
+                  <label htmlFor="confirmPassword" className="text-xs font-medium text-kcb-pierre">Confirmer le mot de passe</label>
                   <div className="flex mt-1 items-center">
                     <input
                       onChange={e => setFormState({ ...formState, confirmPassword: e.target.value })}
@@ -75,13 +75,13 @@ export const Step2 = ({ formState, setFormState }) => {
                       id="confirmPassword"
                       minLength={8}
                       required
-                      className="w-9/10 border border-gray-800 bg-gray-900 rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                      className="w-9/10 border border-white/[0.06] bg-kcb-noir rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                       placeholder="Confirmez le mot de passe"
                     />
                     <button
                       type="button"
                       onClick={() => setState({ ...state, showPassword: !state.showPassword })}
-                      className="w-1/10 flex justify-center border border-gray-800 bg-gray-900 rounded-e-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                      className="w-1/10 flex justify-center border border-white/[0.06] bg-kcb-noir rounded-e-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                     >
                       {state.showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -94,7 +94,7 @@ export const Step2 = ({ formState, setFormState }) => {
                   type="submit"
                   fullWidth
                   disabled={!formState.confirmPassword || passwordMismatch}
-                  className="bg-indigo-kcb hover:bg-indigo-700 border-0 text-sm font-semibold mt-2"
+                  className="bg-kcb-or hover:bg-kcb-bronze border-0 text-sm font-semibold mt-2"
                 >
                   Suivant
                 </Button>
@@ -104,7 +104,7 @@ export const Step2 = ({ formState, setFormState }) => {
                   variant="ghost"
                   fullWidth
                   onClick={() => setFormState({ ...formState, step: 0, loading: false })}
-                  className="text-xs text-gray-400"
+                  className="text-xs text-kcb-pierre"
                   size="sm"
                 >
                   Retour

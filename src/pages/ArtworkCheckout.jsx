@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
+import RevealOnScroll from "../components/landing/RevealOnScroll"
 import { getArtistById } from "../api/useArtists";
 import { getArtworkById } from "../api/useArtworks";
 import { AlertCircle, ArrowLeft, Lock, ShoppingCart } from "lucide-react";
@@ -67,32 +68,33 @@ export default function ArtworkCheckout(){
     
     return (
         <>
-        <div className="min-h-screen flex py-8 justify-center bg-gray-900 px-2">
+        <div className="min-h-screen flex py-8 justify-center bg-kcb-noir-deep px-2">
             <div className="w-full max-w-3xl mx-auto">
-                <Link to={-1} className="flex items-center gap-2 text-gray-400 hover:text-white text-sm font-medium mb-6">
+                <Link to={-1} className="flex items-center gap-2 text-kcb-pierre hover:text-white text-sm font-medium mb-6">
                     <ArrowLeft className="w-5 h-5" /> Retour
                 </Link>
                 {artwork?.error && (
-                    <div className="bg-red-900/20 flex items-center text-red-200 font-medium py-2 rounded-lg mb-4 px-4">
+                    <div className="bg-red-900/20 flex items-center text-red-200 font-medium py-2 rounded-[4px] mb-4 px-4">
                         <AlertCircle className="w-4 h-4 mr-2" /> {artwork?.error}
                     </div>
                 )}
                 {!artwork?.loading ? (
-                    <div className="flex flex-col md:flex-row gap-8 animate-fade-in">
+                    <RevealOnScroll>
+                    <div className="flex flex-col md:flex-row gap-8">
                         {/* Résumé */}
-                        <div className="flex-1 bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col gap-6 shadow-md">
-                            <h2 className="font-serif text-xl text-white font-semibold mb-2">Résumé de la commande</h2>
+                        <div className="flex-1 bg-kcb-noir-deep border border-white/[0.06] rounded-[4px] p-6 flex flex-col gap-6 shadow-md">
+                            <h2 className="font-playfair text-xl text-white font-semibold mb-2">Résumé de la commande</h2>
                             <div className="flex gap-4 items-center">
-                                <img src={artwork?.image} alt={artwork?.title} className="rounded-lg w-24 h-24 object-cover border border-gray-800" />
+                                <img src={artwork?.image} alt={artwork?.title} className="rounded-[4px] w-24 h-24 object-cover border border-white/[0.06]" />
                                 <div className="flex flex-col gap-1">
                                     <span className="font-semibold text-white text-lg">{artwork?.title}</span>
                                     {artwork?.edition && (
-                                        <span className="text-xs text-gray-400">Édition #{artwork?.edition?.number}/{artwork?.edition?.total}</span>
+                                        <span className="text-xs text-kcb-pierre">Édition #{artwork?.edition?.number}/{artwork?.edition?.total}</span>
                                     )}
-                                    <span className="text-indigo-kcb font-bold text-lg">{artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {artwork?.currency}</span>
+                                    <span className="text-kcb-or font-bold text-lg">{artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {artwork?.currency}</span>
                                 </div>
                             </div>
-                            <div className="border-t border-gray-800 pt-4 mt-2 text-white text-base space-y-2">
+                            <div className="border-t border-white/[0.06] pt-4 mt-2 text-white text-base space-y-2">
                                 <div className="flex justify-between">
                                     <span>Prix</span>
                                     <span>{artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {artwork?.currency}</span>
@@ -104,7 +106,7 @@ export default function ArtworkCheckout(){
                             </div>
                         </div>
                         {/* Paiement */}
-                        <div className="w-full md:w-96 bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col gap-6 shadow-md">
+                        <div className="w-full md:w-96 bg-kcb-noir-deep border border-white/[0.06] rounded-[4px] p-6 flex flex-col gap-6 shadow-md">
                             <h3 className="flex items-center gap-2 text-white text-base font-semibold mb-2">
                                 <Lock className="w-4 h-4"/> Paiement sécurisé
                             </h3>
@@ -119,7 +121,7 @@ export default function ArtworkCheckout(){
                             <button
                                 disabled={user?.role !== "collector" || paymentLoading || artwork?.loading}
                                 onClick={handlePayment}
-                                className="rounded-md flex justify-center items-center gap-2 w-full bg-indigo-kcb hover:bg-indigo-kcb/90 transition shadow py-2 text-white font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="rounded-md flex justify-center items-center gap-2 w-full bg-kcb-or hover:bg-kcb-bronze transition shadow py-2 text-kcb-noir font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {user?.role === "collector" ? (
                                     (paymentLoading || artwork?.loading) ? <DataLoader/> : (
@@ -134,23 +136,24 @@ export default function ArtworkCheckout(){
                             </button>
                             
                             {(user?.role !== "collector" || !user?._id) && (
-                                <p className="flex items-center text-xs text-gray-400 mt-2"> 
+                                <p className="flex items-center text-xs text-kcb-pierre mt-2"> 
                                     <AlertCircle className="w-4 h-4 mr-2" /> 
                                     Vous devez être inscrit en tant que collectionneur pour acheter une œuvre.
                                 </p>
                             )}
 
                             {/* Informations de sécurité */}
-                            <div className="text-xs text-gray-500 border-t border-gray-800 pt-4">
+                            <div className="text-xs text-kcb-pierre border-t border-white/[0.06] pt-4">
                                 <p className="flex items-center gap-1 mb-1">
                                     <Lock className="w-3 h-3" />
                                     Paiement 100% sécurisé
                                 </p>
                                 <p>Vos données sont protégées par un cryptage SSL</p>
-                                <p className="mt-1 text-gray-600">Powered by PayDunya - Service de paiement agréé</p>
+                                <p className="mt-1 text-kcb-pierre">Powered by PayDunya - Service de paiement agréé</p>
                             </div>
                         </div>
                     </div>
+                    </RevealOnScroll>
                 ) : (
                     <div className="flex items-center justify-center min-h-[300px]">
                         <DataLoader />

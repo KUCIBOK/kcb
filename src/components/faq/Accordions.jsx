@@ -2,14 +2,14 @@ import { useState } from "react";
 
 const AccordionItem = ({ question, answer, isOpen, onClick }) => {
   return (
-    <div className="border-b border-gray-700 pb-4">
+    <div className="border-b border-white/[0.06] pb-4">
       <button
         className="flex justify-between items-center w-full text-left"
         onClick={onClick}
       >
         <h3 className="text-lg font-medium text-white">{question}</h3>
         <svg
-          className={`fill-[#7170c4] shrink-0 ml-4 transition-transform duration-200 ${
+          className={`fill-kcb-or shrink-0 ml-4 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
           width="16"
@@ -34,7 +34,7 @@ const AccordionItem = ({ question, answer, isOpen, onClick }) => {
         }`}
       >
         <div className="overflow-hidden">
-          <p className="pt-2 text-gray-300">{answer}</p>
+          <p className="pt-2 text-kcb-sable">{answer}</p>
         </div>
       </div>
     </div>

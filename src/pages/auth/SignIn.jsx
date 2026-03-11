@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { loginUser, loginWithGoogle } from "../../api/useAuth";
 import { Helmet } from "react-helmet";
 import { Button, Input } from "../../components/ui";
+import RevealOnScroll from "../../components/landing/RevealOnScroll";
 
 export default function SignIn () {
     const [formState, setFormState] = useState({
@@ -51,22 +52,22 @@ export default function SignIn () {
             <meta property="og:image" content={"/images/kucibok-black.png"} />
             <meta property="og:url" content={`https://kucibok.com/sign-in`} />
         </Helmet>
-        <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 pb-8">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-kcb-noir-deep px-4 pb-8">
+          <RevealOnScroll>
           <div className="w-full max-w-sm mx-auto">
             <div className="text-center mb-8 mt-8">
-              {/* <h1 className="font-serif text-2xl font-bold text-white tracking-tight mb-2">KUCIBOK</h1> */}
               <Link to='/'>
                 <img src="/images/kucibok-white-logo.svg" alt="logo kucibok" className="w-12 h-12 object-cover mx-auto" />
               </Link>
-              <h2 className="text-lg font-semibold text-gray-200 mb-1">Connexion</h2>
-              <p className="text-xs text-gray-400">La marketplace d'art africain</p>
+              <h2 className="font-playfair text-xl font-semibold text-white mb-1 mt-4">Connexion</h2>
+              <p className="text-xs text-kcb-pierre">La marketplace d'art africain</p>
             </div>
             {formState.error && (
               <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
                 {formState.error}
               </div>
             )}
-            <div className="rounded-xl border border-gray-800 bg-card shadow-sm">
+            <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise shadow-sm">
               <div className="p-5">
                 <button
                   className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 rounded-md mb-4 font-medium py-3 px-4 text-sm text-gray-800 transition border border-gray-200"
@@ -83,9 +84,9 @@ export default function SignIn () {
                   Se connecter avec Google
                 </button>
                 <div className="flex items-center my-4">
-                  <div className="flex-grow border-t border-gray-700" />
-                  <span className="mx-2 text-xs text-gray-500">ou</span>
-                  <div className="flex-grow border-t border-gray-700" />
+                  <div className="flex-grow border-t border-white/[0.06]" />
+                  <span className="mx-2 text-xs text-kcb-pierre">ou</span>
+                  <div className="flex-grow border-t border-white/[0.06]" />
                 </div>
                 <form onSubmit={handleConnect} className="space-y-4" method="post">
                   <Input
@@ -101,7 +102,7 @@ export default function SignIn () {
                     size="sm"
                   />
                   <div>
-                    <label htmlFor="password" className="text-xs font-medium text-gray-400">Mot de passe</label>
+                    <label htmlFor="password" className="text-xs font-medium text-kcb-pierre">Mot de passe</label>
                     <div className="flex mt-1">
                       <input
                         onChange={e => setFormState({ ...formState, password: e.target.value })}
@@ -111,39 +112,40 @@ export default function SignIn () {
                         id="password"
                         minLength={8}
                         required
-                        className="w-9/10 border border-gray-800 bg-gray-900 rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                        className="w-9/10 border border-white/[0.06] bg-kcb-noir rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                         placeholder="Votre mot de passe"
                       />
                       <button
                         type="button"
                         onClick={() => setFormState({ ...formState, seePassword: !formState.seePassword })}
-                        className={`w-1/10 border border-gray-800 bg-gray-900 rounded-e-md p-2 text-sm text-white hover:bg-gray-800 transition`}
+                        className={`w-1/10 border border-white/[0.06] bg-kcb-noir rounded-e-md p-2 text-sm text-white hover:bg-white/[0.03] transition`}
                       >
                         {formState.seePassword ? <EyeClosed className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
                       </button>
                     </div>
                   </div>
                   <div className="flex justify-end mb-2">
-                    <Link to="/forgot-password" className="text-xs text-indigo-kcb hover:underline">Mot de passe oublié ?</Link>
+                    <Link to="/forgot-password" className="text-xs text-kcb-or hover:underline">Mot de passe oublié ?</Link>
                   </div>
                   <Button
                     type="submit"
                     fullWidth
                     loading={formState.loading}
-                    className="bg-indigo-kcb hover:bg-indigo-700 border-0 text-sm font-semibold"
+                    className="bg-kcb-or hover:bg-kcb-bronze border-0 text-sm font-semibold"
                   >
                     Se connecter
                   </Button>
                 </form>
               </div>
-              <div className="flex items-center justify-center border-t border-gray-800 p-4">
-                <p className="text-xs text-gray-400">
+              <div className="flex items-center justify-center border-t border-white/[0.06] p-4">
+                <p className="text-xs text-kcb-pierre">
                   Pas de compte ?{' '}
-                  <Link to="/sign-up" className="font-semibold text-indigo-kcb hover:underline">Inscription</Link>
+                  <Link to="/sign-up" className="font-semibold text-kcb-or hover:underline">Inscription</Link>
                 </p>
               </div>
             </div>
           </div>
+          </RevealOnScroll>
         </div>
       </>
   );

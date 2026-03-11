@@ -122,12 +122,6 @@ export function Router() {
           } />
 
           <Route element={<Layout />}>
-            <Route path="/about" element={
-                <Suspense fallback={<PageLoader />}>
-                  <About />
-                </Suspense>
-              }
-            />
             {/* Fait */}
             <Route path="/explore" element={
                 <Suspense fallback={<PageLoader />}>
@@ -156,18 +150,6 @@ export function Router() {
             <Route path="/blog/:id" element={
                 <Suspense fallback={<PageLoader />}>
                   <BlogPostDetails />
-                </Suspense>
-              }
-            />
-            <Route path="/faq" element={
-                <Suspense fallback={<PageLoader />}>
-                  <Faq />
-                </Suspense>
-              }
-            />
-            <Route path="/contact" element={
-                <Suspense fallback={<PageLoader />}>
-                  <Contact />
                 </Suspense>
               }
             />
@@ -254,30 +236,6 @@ export function Router() {
                 </Suspense>
               }
             />
-            <Route path="/privacy-policy" element={
-                <Suspense fallback={<PageLoader />}>
-                  <PrivacyPolicy />
-                </Suspense>
-              }
-            />
-            <Route path="/terms-and-conditions" element={
-                <Suspense fallback={<PageLoader />}>
-                  <TermsAndConditions />
-                </Suspense>
-              }
-            />
-            <Route path="/sales-conditions" element={
-                <Suspense fallback={<PageLoader />}>
-                  <SalesConditions />
-                </Suspense>
-              }
-            />
-            <Route path="/ethic-chart" element={
-                <Suspense fallback={<PageLoader />}>
-                  <EthicChart />
-                </Suspense>
-              }
-            />
             <Route path="/tracking/:trackingId" element={
                 <Suspense fallback={<PageLoader />}>
                   <TrackingPage />
@@ -287,6 +245,21 @@ export function Router() {
           </Route>
 
           {/* Pages standalone — avec leur propre header/footer, hors Layout */}
+          <Route path="/about" element={
+            <Suspense fallback={<PageLoader />}>
+              <About />
+            </Suspense>
+          } />
+          <Route path="/contact" element={
+            <Suspense fallback={<PageLoader />}>
+              <Contact />
+            </Suspense>
+          } />
+          <Route path="/faq" element={
+            <Suspense fallback={<PageLoader />}>
+              <Faq />
+            </Suspense>
+          } />
           <Route path="/africa" element={
             <Suspense fallback={<PageLoader />}>
               <AfricaLanding />
@@ -295,6 +268,26 @@ export function Router() {
           <Route path="/global" element={
             <Suspense fallback={<PageLoader />}>
               <GlobalPage />
+            </Suspense>
+          } />
+          <Route path="/privacy-policy" element={
+            <Suspense fallback={<PageLoader />}>
+              <PrivacyPolicy />
+            </Suspense>
+          } />
+          <Route path="/terms-and-conditions" element={
+            <Suspense fallback={<PageLoader />}>
+              <TermsAndConditions />
+            </Suspense>
+          } />
+          <Route path="/sales-conditions" element={
+            <Suspense fallback={<PageLoader />}>
+              <SalesConditions />
+            </Suspense>
+          } />
+          <Route path="/ethic-chart" element={
+            <Suspense fallback={<PageLoader />}>
+              <EthicChart />
             </Suspense>
           } />
 

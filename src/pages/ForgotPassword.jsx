@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { DataLoader } from "../components/loaders/PageLoader";
 import { resetPassword } from "../api/useAuth";
+import RevealOnScroll from "../components/landing/RevealOnScroll";
 
 export default function ResetPasswordForm() {
   const { token } = useParams();
@@ -44,26 +45,27 @@ export default function ResetPasswordForm() {
       <Helmet>
         <title>Réinitialiser le mot de passe | Kucibok</title>
       </Helmet>
-      <div className="min-h-screen flex items-center justify-center bg-background px-2 py-10">
+      <div className="min-h-screen flex items-center justify-center bg-kcb-noir-deep px-2 py-10">
+        <RevealOnScroll>
         <div className="w-full max-w-sm mx-auto">
           <div className="text-center mb-7">
-            <h1 className="text-2xl font-bold text-gradient font-serif mb-1">Kucibok</h1>
-            <p className="text-base font-semibold text-white mb-1">Nouveau mot de passe</p>
-            <p className="text-xs text-gray-400">Entrez un nouveau mot de passe sécurisé</p>
+            <Link to="/"><img src="/images/kucibok-white-logo.svg" alt="logo kucibok" className="w-12 h-12 object-cover mx-auto" /></Link>
+            <p className="font-playfair text-xl font-semibold text-white mb-1">Nouveau mot de passe</p>
+            <p className="text-xs text-kcb-pierre">Entrez un nouveau mot de passe sécurisé</p>
           </div>
           {state?.error && (
-            <div className="mb-3 border border-red-900 rounded-lg bg-red-950/90 text-white p-3 text-xs flex items-center">
+            <div className="mb-3 border border-red-900 rounded-[4px] bg-red-950/90 text-white p-3 text-xs flex items-center">
               {state?.error}
             </div>
           )}
           {state?.success && (
-            <div className="mb-3 border border-green-900 rounded-lg bg-green-950/90 text-green-200 p-3 text-xs flex items-center">
+            <div className="mb-3 border border-green-900 rounded-[4px] bg-green-950/90 text-green-200 p-3 text-xs flex items-center">
               Mot de passe réinitialisé ! Redirection en cours...
             </div>
           )}
           <form
             onSubmit={handleSubmit}
-            className="bg-card border border-gray-800 rounded-xl shadow-md p-5 space-y-4"
+            className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] shadow-md p-5 space-y-4"
             autoComplete="off"
           >
             <div>
@@ -75,7 +77,7 @@ export default function ResetPasswordForm() {
                 required
                 minLength={8}
                 placeholder="Nouveau mot de passe"
-                className="w-full border border-gray-800 bg-gray-900 rounded-md px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition"
+                className="w-full border border-white/[0.06] bg-kcb-noir-deep rounded-md px-3 py-2 text-sm text-white placeholder:text-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
               />
             </div>
             <div>
@@ -87,18 +89,19 @@ export default function ResetPasswordForm() {
                 required
                 minLength={8}
                 placeholder="Répétez le mot de passe"
-                className="w-full border border-gray-800 bg-gray-900 rounded-md px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition"
+                className="w-full border border-white/[0.06] bg-kcb-noir-deep rounded-md px-3 py-2 text-sm text-white placeholder:text-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
               />
             </div>
             <button
               type="submit"
               disabled={state?.loading}
-              className="w-full py-2 rounded-md bg-indigo-kcb text-white font-semibold text-sm hover:bg-indigo-700 transition flex items-center justify-center min-h-[40px]"
+              className="w-full py-2 rounded-md bg-kcb-or text-white font-semibold text-sm hover:bg-kcb-bronze transition flex items-center justify-center min-h-[40px]"
             >
               {state?.loading ? <DataLoader /> : "Réinitialiser"}
             </button>
           </form>
         </div>
+        </RevealOnScroll>
       </div>
     </>
   );
