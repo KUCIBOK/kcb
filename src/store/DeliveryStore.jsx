@@ -17,10 +17,11 @@ export function DeliveryContextProvider({children}){
             try {
                 const deliveries = user?.role === "admin" ? await getDeliveries() : await getMyDeliveries();
                 if (deliveries?.length > 0) {
+                    const sorted = [...deliveries].reverse();
                     setState(prev => ({
                         ...prev,
-                        deliveries: deliveries?.reverse() || [],
-                        myDeliveries: deliveries?.reverse() || []
+                        deliveries: sorted,
+                        myDeliveries: sorted
                     }));
                     return
                 }

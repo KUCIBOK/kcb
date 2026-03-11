@@ -61,7 +61,7 @@ export function UserProvider({children}){
                 }
                 if(user?.role == 'admin') setState(prev => ({...prev, users : [user, ...prev.users], admins : [user, ...prev.admins]}))
                 if(user?.role == 'artist') setState(prev => ({...prev, users : [user, ...prev.users], artists : [user, ...prev.artists]}))
-                if(user?.role == 'collectors') setState(prev => ({...prev, users : [user, ...prev.users], collectors : [user, ...prev.collectors]}))
+                if(user?.role == 'collector') setState(prev => ({...prev, users : [user, ...prev.users], collectors : [user, ...prev.collectors]}))
                 if(user?.role == 'professional') setState(prev => ({...prev, users : [user, ...prev.users], professionals : [user, ...prev.professionals]}))
                 makeToast('Succès', 'success', 'L\'utilisateur a été ajouté avec succès')
                 await createLog({description : `L'utilisateur ${user?.name} a été ajouté`, userId : admin?._id})
@@ -82,7 +82,7 @@ export function UserProvider({children}){
                 }
                 if(user?.role == 'admin') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], admins : [user, ...prev.admins.filter(item => item?._id != user?._id)]}))
                 if(user?.role == 'artist') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], artists : [user, ...prev.artists.filter(item => item?._id != user?._id)]}))
-                if(user?.role == 'collectors') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], collectors : [user, ...prev.collectors.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'collector') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], collectors : [user, ...prev.collectors.filter(item => item?._id != user?._id)]}))
                 if(user?.role == 'professional') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], professionals : [user, ...prev.professionals.filter(item => item?._id != user?._id)]}))
                 makeToast('Succès', 'success', 'L\'utilisateur a été mis à jour avec succès')
                 await createLog({description : `L'utilisateur ${user?.name} a été mis à jour`, userId : admin?._id})
@@ -125,7 +125,7 @@ export function UserProvider({children}){
                 }
                 if(user?.role == 'admin') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], admins : [user, ...state.admins.filter(item => item?._id != user?._id)]})
                 if(user?.role == 'artist') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], artists : [user, ...state.artists.filter(item => item?._id != user?._id)]})
-                if(user?.role == 'collectors') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], collectors : [user, ...state.collectors.filter(item => item?._id != user?._id)]})
+                if(user?.role == 'collector') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], collectors : [user, ...state.collectors.filter(item => item?._id != user?._id)]})
                 if(user?.role == 'professional') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], professionals : [user, ...state.professionals.filter(item => item?._id != user?._id)]})
                 makeToast('Succès', 'success', `L'utilisateur a été ${user?.isActive ? "activé" : "suspendu"}`)
                 await createLog({description : `L'utilisateur ${user?.name} a été ${user?.isActive ? "activé" : "suspendu"}}`, userId : admin?._id})

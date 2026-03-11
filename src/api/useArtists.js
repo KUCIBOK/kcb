@@ -47,7 +47,7 @@ export async function getAllArtists(params = {}) {
     const response = await fetch(`${api}/artist${qs ? `?${qs}` : ''}`, { ...utils.options });
     const body = await response.json();
     if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body;
+    return body?.data ?? body;
   } catch (err) {
     return { error: err.message };
   }

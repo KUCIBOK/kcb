@@ -20,7 +20,7 @@ export function CollectionProvider({children}){
         // Fonction pour récupérer les collections gérées par l'utilisateur
         const getMyCollections = async function (){
             try {
-                const collections = await getManagedCollection()
+                const collections = await getCollections()
                 if(collections?.length > 0){
                     setState(prev => ({...prev, myCollections : collections}))
                 }

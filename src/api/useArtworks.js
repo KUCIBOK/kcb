@@ -27,7 +27,7 @@ async function fetchArtworks(params = {}) {
     const response = await fetch(`${api}/artworks${qs ? `?${qs}` : ''}`, { ...utils.options });
     const body = await response.json();
     if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body; // { data: [...], pagination: { page, limit, total } }
+    return body?.data ?? body;
   } catch (err) {
     return { error: err.message };
   }
@@ -173,7 +173,7 @@ export async function getRejectedArtworks() {
 export async function getRandomArtworks() {
   const result = await fetchArtworks({ for_sale: true, limit: 20 });
   if (result.error) return result;
-  const items = result?.data ?? [];
+  const items = Array.isArray(result) ? result : [];
   return items.sort(() => Math.random() - 0.5).slice(0, 8);
 }
 
@@ -186,7 +186,7 @@ export async function getRandomArtworks() {
 export async function getRandomArtworksByCategories(category) {
   const result = await fetchArtworks({ category, for_sale: true, limit: 20 });
   if (result.error) return result;
-  const items = result?.data ?? [];
+  const items = Array.isArray(result) ? result : [];
   return items.sort(() => Math.random() - 0.5).slice(0, 8);
 }
 

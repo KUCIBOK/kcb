@@ -120,7 +120,7 @@ export const ArtistContextProvider = memo(({children}) => {
                 }
                 makeToast('Erreur', 'warning', artist?.error || 'Impossible de mettre à jour l\'artiste')
                 return {
-                    error : error.message
+                    error : artist?.error || 'Erreur mise à jour'
                 }
             } catch (error) {
                 return {

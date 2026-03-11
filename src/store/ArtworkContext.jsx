@@ -132,8 +132,8 @@ export const ArtworksContextProvider = ({children}) => {
                         if(artwork?.status == "approved"){
                             setState(prev => ({
                                 ...prev,
-                                pending : prev.pending?.map(d => d._id !== id && d),
-                                rejected : prev.deliveries?.map(d => d._id !== id && d),
+                                pending : prev.pending?.filter(d => d._id !== id),
+                                rejected : prev.rejected?.filter(d => d._id !== id),
                                 approved : [artwork, ...prev.approved],
                             }))
                         }
@@ -205,7 +205,7 @@ export const ArtworksContextProvider = ({children}) => {
                     if(data?.id){
                         setState((prev) => ({
                             ...prev,
-                            forSale : prev.forSale?.filter(item => item != artwork?.id)
+                            forSale : prev.forSale?.filter(item => item._id != artwork?.id && item.id != artwork?.id)
                         }))
                         makeToast('Félicitations ', 'success', `Vous avez acheté une oeuvre`)
                         await createLog({description : `L'oeuvre ${artwork?._id} a été achetée`, userId : user?._id})

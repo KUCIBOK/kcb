@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { archivePost, createBlogPost, getArchivedPosts, getPublishedPosts, publishPost, updateBlogPost } from "../api/useBlogPost"
 import { createLog } from "../api/useLog"
 import { useAuth } from "./AuthContext"
+import { useToast } from "./ToastContext"
 
 const initialState = {
     blogPosts : [],
@@ -13,6 +14,7 @@ const BlogContext = createContext(initialState)
 export function BlogContextProvider({children}){
     const [state, setState] = useState(initialState)
     const {user} = useAuth()
+    const {makeToast} = useToast()
     useEffect(() => {
         const getPosts = async () => {
             const posts = await getPublishedPosts()
@@ -46,7 +48,7 @@ export function BlogContextProvider({children}){
                     if(post?._id){
                         setState(prev => ({
                             ...prev,
-                            blogPosts : [post, ...state?.blogPosts]
+                            blogPosts : [post, ...prev.blogPosts]
                         }))
                         makeToast('Succès', 'success', 'L\'article a été ajouté et publié avec succès')
                         await createLog({description : `L'article ${post?._id} a été ajouté et publié`, userId : user?._id})
@@ -67,8 +69,8 @@ export function BlogContextProvider({children}){
                     if(post?._id){
                         setState(prev => ({
                             ...prev,
-                            blogPosts : [post, ...state?.blogPosts],
-                            archive : state?.archive?.filter(item => item._id != post?._id)
+                            blogPosts : [post, ...prev.blogPosts],
+                            archive : prev.archive?.filter(item => item._id != post?._id)
                         }))
                         makeToast('Succès', 'success', 'L\'article a été publié avec succès')
                         await createLog({description : `L'article ${post?._id} a été publié`, userId : user?._id})
@@ -89,8 +91,8 @@ export function BlogContextProvider({children}){
                     if(post?._id){
                         setState(prev => ({
                             ...prev,
-                            archive : [post, ...state?.archive],
-                            blogPosts : state?.blogPosts?.filter(item => item._id != post?._id)
+                            archive : [post, ...prev.archive],
+                            blogPosts : prev.blogPosts?.filter(item => item._id != post?._id)
                         }))
                         makeToast('Succès', 'success', 'L\'article a été archivé avec succès')
                         await createLog({description : `L'article ${post?._id} a été archivé`, userId : user?._id})
@@ -111,16 +113,16 @@ export function BlogContextProvider({children}){
                     const post  = await updateBlogPost(id, payload)
                     if(!post?._id) return {error : post?.message || post?.error}
                     if(post?.status == "published"){
-                        setState({
-                            ...state,
-                            blogPosts : [post, ...state?.blogPosts?.filter(item => item._id != post?._id)]
-                        })
+                        setState(prev => ({
+                            ...prev,
+                            blogPosts : [post, ...prev.blogPosts?.filter(item => item._id != post?._id)]
+                        }))
                     }
                     if(post?.status == "archived"){
-                        setState({
-                            ...state,
-                            archive : [post, ...state?.archive?.filter(item => item._id != post?._id)]
-                        })
+                        setState(prev => ({
+                            ...prev,
+                            archive : [post, ...prev.archive?.filter(item => item._id != post?._id)]
+                        }))
                     }
                     makeToast('Succès', 'success', 'L\'article a été mis à jour avec succès')
                     await createLog({description : `L'article ${post?._id} a été mis à jour`, userId : user?._id})
