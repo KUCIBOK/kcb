@@ -1,15 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { XCircle, ArrowLeft, RefreshCcw, HelpCircle } from 'lucide-react';
 import RevealOnScroll from '../components/landing/RevealOnScroll';
 
 const PayDunyaFailed = () => {
   const { transactionId } = useParams();
-
-  useEffect(() => {
-    // Log de l'échec pour analytics
-    console.log('Échec de paiement PayDunya:', transactionId);
-  }, [transactionId]);
 
   return (
     <div className="min-h-screen bg-kcb-noir-deep flex items-center justify-center px-4">

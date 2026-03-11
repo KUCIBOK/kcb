@@ -15,7 +15,7 @@ export function PlansTab() {
           <h2 className="text-lg font-semibold text-white">Gestion des plans</h2>
           <button
             onClick={() => setState({ ...state, addUser: true })}
-            className="rounded bg-indigo-kcb/90 hover:bg-indigo-kcb px-3 py-2 text-white text-xs md:text-sm font-medium flex items-center gap-2 transition"
+            className="rounded bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-3 py-2 text-white text-xs md:text-sm font-medium flex items-center gap-2 transition"
           >
             <Plus className="w-4 h-4" /> Ajouter
           </button>
@@ -177,7 +177,7 @@ function AddPlanModal({ closeModal }) {
                     </div>
                     <div className="flex gap-2 flex-wrap mt-2">
                         {state?.features?.length > 0 && state?.features.map((feature, index) => (
-                            <div key={index} className="flex items-center gap-2 bg-indigo-600/80 rounded-full px-3 py-1 text-xs">
+                            <div key={index} className="flex items-center gap-2 bg-kcb-or/80 rounded-full px-3 py-1 text-xs">
                                 <span className="text-white">{feature}</span>
                                 <button 
                                     type="button"

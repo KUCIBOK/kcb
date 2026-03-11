@@ -49,7 +49,6 @@ export default function SubscriptionFailed() {
         }))
 
       } catch (error) {
-        console.error('Erreur lors du marquage d\'échec:', error)
         setState(prev => ({
           ...prev,
           error: 'Erreur lors du traitement de l\'échec de paiement',

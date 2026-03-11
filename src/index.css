@@ -89,10 +89,10 @@ td {
 }
 
 .bg-card {
-  background-color: #141b29;
+  background-color: #1C1C1E;
 }
 .border-border {
-  border-color: #242e42;
+  border-color: #2A2A2C;
 }
 
 .animate-fade-in-up {
@@ -281,42 +281,42 @@ td {
     --font-body-kcb: 'DM Sans', system-ui, sans-serif;
     --font-mono-kcb: 'JetBrains Mono', monospace;
 
-    --background: 220 40% 10%;
+    --background: 0 0% 4%;
     --foreground: 30 33% 98%;
 
-    --card: 220 35% 12%;
+    --card: 0 0% 11%;
     --card-foreground: 30 33% 98%;
 
-    --popover: 220 35% 12%;
+    --popover: 0 0% 11%;
     --popover-foreground: 30 33% 98%;
 
-    --primary: 24 54% 50%;
-    --primary-foreground: 30 33% 98%;
+    --primary: 43 50% 54%;
+    --primary-foreground: 0 0% 4%;
 
     --secondary: 36 30% 45%;
     --secondary-foreground: 30 33% 98%;
 
-    --muted: 220 30% 20%;
-    --muted-foreground: 30 20% 80%;
+    --muted: 0 0% 11%;
+    --muted-foreground: 38 24% 74%;
 
-    --accent: 220 40% 30%;
+    --accent: 0 0% 16%;
     --accent-foreground: 30 33% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 30% 20%;
-    --input: 220 30% 20%;
-    --ring: 24 54% 50%;
+    --border: 0 0% 16%;
+    --input: 0 0% 11%;
+    --ring: 43 50% 54%;
 
-    --sidebar-background: 240 5.9% 10%;
+    --sidebar-background: 0 0% 2%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 43 50% 54%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent: 0 0% 11%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-border: 0 0% 11%;
+    --sidebar-ring: 43 50% 54%;
   }
 }
 
@@ -378,7 +378,7 @@ td {
   }
 
   .bg-muted {
-    background-color: hsl(220 30% 20%);
+    background-color: #1C1C1E;
   }
 
   .hover-card {
@@ -394,7 +394,7 @@ td {
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-  --color-background: hsl(220 40% 10%);
+  --color-background: hsl(0 0% 4%);
   --color-foreground: hsl(var(--foreground));
   --color-primary: hsl(var(--primary));
   --color-secondary: hsl(var(--secondary));

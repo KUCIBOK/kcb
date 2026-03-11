@@ -119,7 +119,7 @@ export function CrmGalerie() {
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-4 py-2 rounded-lg transition"
+            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir text-white px-4 py-2 rounded-lg transition"
           >
             <Plus className="w-4 h-4" />
             Ajouter un client
@@ -147,7 +147,7 @@ export function CrmGalerie() {
                       setSearch(e.target.value);
                       setPage(1);
                     }}
-                    className="w-full pl-10 pr-4 py-2 bg-background border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-kcb"
+                    className="w-full pl-10 pr-4 py-2 bg-background border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-kcb-or"
                   />
                 </div>
               </div>
@@ -158,7 +158,7 @@ export function CrmGalerie() {
                   setStatus(e.target.value);
                   setPage(1);
                 }}
-                className="px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-kcb"
+                className="px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:outline-none focus:border-kcb-or"
               >
                 <option value="">Tous les statuts</option>
                 <option value="prospect">Prospect</option>
@@ -173,7 +173,7 @@ export function CrmGalerie() {
                   setSegment(e.target.value);
                   setPage(1);
                 }}
-                className="px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-kcb"
+                className="px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:outline-none focus:border-kcb-or"
               >
                 <option value="">Tous les segments</option>
                 <option value="art-collector">Collectionneur</option>

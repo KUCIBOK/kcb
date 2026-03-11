@@ -53,9 +53,7 @@ const AmbientAudio = () => {
     if (isPlaying) {
       audio.pause();
     } else {
-      audio.play().catch((error) => {
-        console.log('Erreur lecture audio:', error);
-      });
+      audio.play().catch(() => {});
     }
   };
 

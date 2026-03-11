@@ -35,7 +35,7 @@ export default function SupportTicketTab() {
       };
       setStats(newStats);
     } catch (error) {
-      console.error('Erreur:', error);
+      // Silenced for production
     } finally {
       setLoading(false);
     }

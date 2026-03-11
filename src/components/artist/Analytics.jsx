@@ -85,7 +85,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
       {/* En-tête */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">📊 Analytique</h1>
+          <h1 className="text-3xl font-bold text-white">Analytique</h1>
           <p className="text-gray-400 mt-1">Suivez vos performances en temps réel</p>
         </div>
         <button
@@ -140,7 +140,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Vues temps réel */}
         <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-white mb-4">📈 Vues cette semaine</h3>
+          <h3 className="text-lg font-bold text-white mb-4">Vues cette semaine</h3>
           <div className="h-48 flex items-end justify-between gap-2">
             {viewsData.labels.map((day, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center">
@@ -160,7 +160,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
 
         {/* Revenus mensuels */}
         <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-white mb-4">💰 Revenus mensuels</h3>
+          <h3 className="text-lg font-bold text-white mb-4">Revenus mensuels</h3>
           <div className="h-48 flex items-end justify-between gap-2">
             {revenueData.labels.map((month, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center">
@@ -210,7 +210,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
 
       {/* Top performances */}
       <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
-        <h3 className="text-lg font-bold text-white mb-4">🏆 Top performances</h3>
+        <h3 className="text-lg font-bold text-white mb-4">Top performances</h3>
         <div className="space-y-3">
           {[
             { title: 'Tableau Abstrait', views: 850, favorites: 45, price: 2500 },

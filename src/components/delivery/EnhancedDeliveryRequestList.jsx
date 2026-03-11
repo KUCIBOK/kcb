@@ -42,13 +42,13 @@ export function EnhancedDeliveryRequestList({ deliveries }) {
             const tracking = await getTrackingInfo(delivery.trackingId);
             newTrackingData[delivery.trackingId] = tracking;
           } catch (error) {
-            console.error(`Failed to get tracking for ${delivery.trackingId}:`, error);
+            // Tracking fetch failed silently
           }
         }
       }
       setTrackingData(newTrackingData);
     } catch (error) {
-      console.error('Sync failed:', error);
+      // Sync failed silently
     }
   };
 
@@ -271,7 +271,7 @@ export function EnhancedDeliveryRequestList({ deliveries }) {
                                   [delivery.trackingId]: tracking
                                 }));
                               } catch (error) {
-                                console.error('Failed to refresh tracking:', error);
+                                // Refresh failed silently
                               }
                             }}
                             className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs transition"

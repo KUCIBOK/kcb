@@ -21,8 +21,8 @@ export function KPICard({
   trend, // { value: '+12%', direction: 'up' | 'down' | 'neutral' }
   subtitle,
   loading = false,
-  iconColor = 'text-indigo-400',
-  iconBgColor = 'bg-indigo-900/20',
+  iconColor = 'text-kcb-or',
+  iconBgColor = 'bg-kcb-or/10',
   className = ''
 }) {
   const getTrendIcon = () => {
@@ -53,7 +53,7 @@ export function KPICard({
 
   if (loading) {
     return (
-      <div className={`bg-card border border-gray-800 rounded-lg p-6 ${className}`}>
+      <div className={`bg-card border border-white/[0.06] rounded-lg p-6 ${className}`}>
         <div className="animate-pulse">
           <div className="flex items-center justify-between mb-4">
             <div className="w-10 h-10 bg-gray-700 rounded-lg"></div>
@@ -66,7 +66,7 @@ export function KPICard({
   }
 
   return (
-    <div className={`bg-card border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-all duration-200 ${className}`}>
+    <div className={`bg-card border border-white/[0.06] rounded-lg p-6 hover:border-gray-700 transition-all duration-200 ${className}`}>
       {/* Icon and Trend */}
       <div className="flex items-center justify-between mb-4">
         {Icon && (

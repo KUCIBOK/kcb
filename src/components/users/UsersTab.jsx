@@ -35,7 +35,7 @@ export function UsersTab() {
                     <h2 className="text-xl font-semibold text-white/90">Gestion des utilisateurs</h2>
                     <button
                         onClick={() => setState({ ...state, addUser: true })}
-                        className="rounded-md bg-indigo-kcb/90 hover:bg-indigo-kcb text-white text-xs font-medium py-2 px-3 flex items-center gap-2 transition shadow-none border-none"
+                        className="rounded-md bg-kcb-or hover:bg-kcb-bronze text-kcb-noir text-white text-xs font-medium py-2 px-3 flex items-center gap-2 transition shadow-none border-none"
                     >
                         <Plus className="w-4 h-4 text-white" />Ajouter un admin
                     </button>

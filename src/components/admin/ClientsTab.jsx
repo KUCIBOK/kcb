@@ -41,7 +41,7 @@ const ClientsTab = () => {
 
       setArtists(artistsData);
     } catch (error) {
-      console.error("Erreur lors du chargement des artistes:", error);
+      // Silenced for production
     }
   };
 

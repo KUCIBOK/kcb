@@ -217,7 +217,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             ) : (
               <button
                 onClick={() => setEditing(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg transition"
+                className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition"
               >
                 <Edit className="w-4 h-4" />
                 Modifier
@@ -373,7 +373,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             onClick={() => {
               document.getElementById("add-interaction-modal").showModal();
             }}
-            className="flex items-center gap-2 px-3 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg text-sm transition"
+            className="flex items-center gap-2 px-3 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg text-sm transition"
           >
             <Plus className="w-4 h-4" />
             Ajouter
@@ -438,12 +438,12 @@ export function ClientDetail({ client, onClientUpdated }) {
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
             placeholder="Ajouter une note..."
-            className="flex-1 px-4 py-2 bg-background border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-kcb"
+            className="flex-1 px-4 py-2 bg-background border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-kcb-or"
           />
           <button
             onClick={handleAddNote}
             disabled={!newNote.trim()}
-            className="px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 disabled:opacity-50 text-white rounded-lg transition"
+            className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 text-kcb-noir rounded-lg transition"
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -547,7 +547,7 @@ export function ClientDetail({ client, onClientUpdated }) {
               <button
                 onClick={handleAddInteraction}
                 disabled={!newInteraction.description.trim()}
-                className="px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 disabled:opacity-50 text-white rounded-lg transition"
+                className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 text-kcb-noir rounded-lg transition"
               >
                 Ajouter
               </button>

@@ -66,7 +66,6 @@ export default function SubscriptionPlanCheckout(){
             }
 
         } catch (error) {
-            console.error('Erreur paiement:', error)
             toast.error("Erreur lors du traitement du paiement")
         }
     }

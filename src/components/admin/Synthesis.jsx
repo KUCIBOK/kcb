@@ -124,28 +124,28 @@ export function Synthesis({setTab, setToggle}){
         <div className="rounded-xl border p-4 my-4">
             <h3 className="flex gap-2 items-center my-2"> <Clock className="w-6 h-6" /> Actions rapides</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div onClick={() => {setTab("En attente"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer">
+                <div onClick={() => {setTab("En attente"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <AlertTriangle className="w-4 h-4" />
                     Réviser les oeuvres
                     <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-red-900">
                         {pending?.length}
                     </span>
                 </div>
-                <div onClick={() => {setTab("Utilisateurs"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer">
+                <div onClick={() => {setTab("Utilisateurs"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <Users className="w-4 h-4" />
                     Gérer les utilisateurs
                     <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-gray-700/80">
                         {users?.length}
                     </span>
                 </div>
-                <div onClick={() => {setTab("Abonnements"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer">
+                <div onClick={() => {setTab("Abonnements"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <CreditCard className="w-4 h-4" />
                     Abonnements
                     <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-blue-700/80">
                         {state?.subscriptions?.length}
                     </span>
                 </div>
-                <div onClick={() => {setTab("Analytique"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer">
+                <div onClick={() => {setTab("Analytique"); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <BarChart4 className="w-4 h-4" />
                     Voir les rapports
                     <span className="rounded-full text-center text-xs font-medium px-2 text-white border px-1">

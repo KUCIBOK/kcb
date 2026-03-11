@@ -139,7 +139,7 @@ export function MultiEntite() {
   if (loading && entities.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-kcb"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
       </div>
     );
   }
@@ -164,7 +164,7 @@ export function MultiEntite() {
                 socialMedia: {},
               });
             }}
-            className="flex items-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-4 py-2 rounded-lg transition"
+            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-4 py-2 rounded-lg transition"
           >
             <Plus className="w-4 h-4" />
             Créer une entité
@@ -185,7 +185,7 @@ export function MultiEntite() {
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-background border border-gray-700 rounded-lg text-white hover:border-indigo-kcb transition"
+              className="w-full flex items-center justify-between px-4 py-3 bg-background border border-gray-700 rounded-lg text-white hover:border-kcb-or transition"
             >
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
@@ -206,7 +206,7 @@ export function MultiEntite() {
                     onClick={() => handleSelectEntity(entity)}
                     className={`w-full text-left px-4 py-3 transition flex items-center gap-2 ${
                       selectedEntity?._id === entity._id
-                        ? "bg-indigo-kcb text-white"
+                        ? "bg-kcb-or text-kcb-noir"
                         : "text-gray-300 hover:bg-gray-800"
                     }`}
                   >
@@ -240,7 +240,7 @@ export function MultiEntite() {
                       setEditing(true);
                       setFormData(selectedEntity);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg transition"
+                    className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition"
                   >
                     <Edit className="w-4 h-4" />
                     Éditer
@@ -267,7 +267,7 @@ export function MultiEntite() {
                     name="name"
                     value={formData.name || ""}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
 
@@ -280,7 +280,7 @@ export function MultiEntite() {
                     value={formData.description || ""}
                     onChange={handleFormChange}
                     rows={3}
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
 
@@ -294,7 +294,7 @@ export function MultiEntite() {
                       name="email"
                       value={formData.email || ""}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                      className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                     />
                   </div>
 
@@ -307,7 +307,7 @@ export function MultiEntite() {
                       name="phone"
                       value={formData.phone || ""}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                      className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                     />
                   </div>
                 </div>
@@ -321,7 +321,7 @@ export function MultiEntite() {
                     name="website"
                     value={formData.website || ""}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
 
@@ -395,7 +395,7 @@ export function MultiEntite() {
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="px-3 py-1 bg-indigo-kcb/50 text-indigo-300 rounded-full text-sm">
+                      <span className="px-3 py-1 bg-kcb-or/20 text-kcb-or rounded-full text-sm">
                         {member.role}
                       </span>
                       {member.role !== "owner" && (
@@ -435,7 +435,7 @@ export function MultiEntite() {
                 value={formData.name || ""}
                 onChange={handleFormChange}
                 required
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
               />
             </div>
 
@@ -447,7 +447,7 @@ export function MultiEntite() {
                 name="type"
                 value={formData.type || "gallery"}
                 onChange={handleFormChange}
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
               >
                 <option value="gallery">Galerie</option>
                 <option value="studio">Studio</option>
@@ -466,7 +466,7 @@ export function MultiEntite() {
                 value={formData.description || ""}
                 onChange={handleFormChange}
                 rows={3}
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
               />
             </div>
 
@@ -480,7 +480,7 @@ export function MultiEntite() {
                   name="email"
                   value={formData.email || ""}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                  className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                 />
               </div>
 
@@ -493,7 +493,7 @@ export function MultiEntite() {
                   name="phone"
                   value={formData.phone || ""}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                  className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                 />
               </div>
             </div>
@@ -507,14 +507,14 @@ export function MultiEntite() {
                 name="website"
                 value={formData.website || ""}
                 onChange={handleFormChange}
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
               />
             </div>
 
             <div className="flex gap-2 pt-4">
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg transition font-medium"
+                className="flex-1 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition font-medium"
               >
                 Créer l'entité
               </button>
@@ -550,7 +550,7 @@ export function MultiEntite() {
                 socialMedia: {},
               });
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition"
           >
             <Plus className="w-4 h-4" />
             Créer une entité

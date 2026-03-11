@@ -118,7 +118,7 @@ export default function DashboardSidebar({
             placeholder="Rechercher..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition"
+            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-kcb-or transition"
           />
         </div>
 
@@ -131,7 +131,7 @@ export default function DashboardSidebar({
                 className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-800 transition text-gray-300 hover:text-white group"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-gray-400 group-hover:text-indigo-400 transition">
+                  <span className="text-gray-400 group-hover:text-kcb-or transition">
                     {menu.icon}
                   </span>
                   <span className="text-sm font-medium">{menu.category}</span>
@@ -165,13 +165,13 @@ export default function DashboardSidebar({
                         }}
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition ${
                           tab === item.index
-                            ? "bg-indigo-600 text-white"
+                            ? "bg-kcb-or/15 text-kcb-or border-l-2 border-kcb-or"
                             : "text-gray-400 hover:bg-gray-800 hover:text-white"
                         }`}
                       >
                         <span
                           className={
-                            tab === item.index ? "text-white" : "text-gray-500"
+                            tab === item.index ? "text-kcb-or" : "text-gray-500"
                           }
                         >
                           {item.icon}
@@ -201,7 +201,7 @@ export default function DashboardSidebar({
         {!subscription && pricingPath && (
           <Link
             to={pricingPath}
-            className="w-full text-white text-xs font-medium bg-yellow-900/90 hover:bg-yellow-800/90 transition py-2 px-4 flex gap-2 items-center rounded-md mb-2"
+            className="w-full text-kcb-or text-xs font-medium bg-kcb-or/10 border border-kcb-or/30 hover:bg-kcb-or/20 transition py-2 px-4 flex gap-2 items-center rounded-md mb-2"
           >
             <Crown className="w-4 h-4" /> Mettre à jour l'abonnement
           </Link>

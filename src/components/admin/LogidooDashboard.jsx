@@ -42,7 +42,7 @@ export default function LogidooDashboard() {
         setAlerts(data.alerts);
       }
     } catch (err) {
-      console.error('Erreur chargement alertes:', err);
+      // Silenced for production
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ export default function LogidooDashboard() {
         setStats(data.stats);
       }
     } catch (err) {
-      console.error('Erreur chargement stats:', err);
+      // Silenced for production
     }
   };
 
@@ -71,7 +71,7 @@ export default function LogidooDashboard() {
       loadAlerts();
       loadStats();
     } catch (err) {
-      console.error('Erreur:', err);
+      // Silenced for production
     }
   };
 
@@ -84,7 +84,7 @@ export default function LogidooDashboard() {
       loadAlerts();
       loadStats();
     } catch (err) {
-      console.error('Erreur:', err);
+      // Silenced for production
     }
   };
 
@@ -98,7 +98,7 @@ export default function LogidooDashboard() {
       loadAlerts();
       loadStats();
     } catch (err) {
-      console.error('Erreur sync:', err);
+      // Silenced for production
     } finally {
       setSyncing(false);
     }

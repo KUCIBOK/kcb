@@ -144,7 +144,7 @@ export default function Artist() {
             to: "submit-artwork",
             label: "Ajouter une œuvre",
             icon: <Plus className="w-4 h-4" />,
-            className: "bg-indigo-kcb/90 hover:bg-indigo-kcb",
+            className: "bg-kcb-or text-kcb-noir hover:bg-kcb-bronze",
           }}
         />
         {/* Main content */}

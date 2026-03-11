@@ -165,7 +165,7 @@ export default function Professional() {
             to: "add-artwork",
             label: "Ajouter une œuvre",
             icon: <Plus className="w-4 h-4" />,
-            className: "bg-blue-900/90 hover:bg-blue-800/90",
+            className: "bg-kcb-or text-kcb-noir hover:bg-kcb-bronze",
           }}
           subscription={subscription}
           pricingPath="/professional/pricing"

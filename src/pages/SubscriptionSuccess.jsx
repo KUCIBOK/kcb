@@ -53,7 +53,6 @@ export default function SubscriptionSuccess() {
         toast.success('Abonnement activé avec succès !')
 
       } catch (error) {
-        console.error('Erreur lors de l\'activation:', error)
         setState(prev => ({
           ...prev,
           error: 'Erreur lors de l\'activation de l\'abonnement',

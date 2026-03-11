@@ -105,21 +105,21 @@ export function ContactsLists() {
           <div className="flex gap-2">
             <button
               onClick={() => setShowCRMSyncModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-white transition"
+              className="flex items-center gap-2 px-4 py-2 bg-kcb-pierre hover:bg-kcb-ardoise rounded-lg text-white transition"
             >
               <RefreshCw className="w-4 h-4" />
               Synchroniser CRM
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition"
+              className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg text-white transition"
             >
               <UserPlus className="w-4 h-4" />
               Nouveau Contact
             </button>
             <button
               onClick={() => setShowListModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-white transition"
+              className="flex items-center gap-2 px-4 py-2 bg-green-800 hover:bg-green-700 rounded-lg text-white transition"
             >
               <List className="w-4 h-4" />
               Nouvelle Liste
@@ -175,7 +175,7 @@ export function ContactsLists() {
             onClick={() => setActiveTab('contacts')}
             className={`px-4 py-2 font-medium transition ${
               activeTab === 'contacts'
-                ? 'text-indigo-400 border-b-2 border-indigo-400'
+                ? 'text-kcb-or border-b-2 border-kcb-or'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
@@ -186,7 +186,7 @@ export function ContactsLists() {
             onClick={() => setActiveTab('lists')}
             className={`px-4 py-2 font-medium transition ${
               activeTab === 'lists'
-                ? 'text-indigo-400 border-b-2 border-indigo-400'
+                ? 'text-kcb-or border-b-2 border-kcb-or'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
@@ -207,7 +207,7 @@ export function ContactsLists() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && loadData()}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                 />
               </div>
             </div>
@@ -217,7 +217,7 @@ export function ContactsLists() {
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                 >
                   <option value="all">Tous les statuts</option>
                   <option value="active">Actifs</option>
@@ -228,7 +228,7 @@ export function ContactsLists() {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                 >
                   <option value="all">Tous les types</option>
                   <option value="collector">Collectionneurs</option>
@@ -351,7 +351,7 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
                 </div>
               </td>
               <td className="px-4 py-3">
-                <span className="px-2 py-1 bg-indigo-900/50 text-indigo-300 text-xs rounded capitalize">
+                <span className="px-2 py-1 bg-kcb-or/10 text-kcb-or text-xs rounded capitalize">
                   {contact.type}
                 </span>
               </td>
@@ -381,7 +381,7 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => onEdit(contact)}
-                    className="p-2 text-gray-400 hover:text-indigo-400 transition"
+                    className="p-2 text-gray-400 hover:text-kcb-or transition"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -436,7 +436,7 @@ function ListsGrid({ lists, loading }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {lists.map((list) => (
-        <div key={list._id} className="bg-card border border-gray-700 rounded-lg p-6 hover:border-indigo-500 transition">
+        <div key={list._id} className="bg-card border border-gray-700 rounded-lg p-6 hover:border-kcb-or transition">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
@@ -629,7 +629,7 @@ function CreateListModal({ onClose, onSave }) {
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({...formData, description: e.target.value})}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-kcb-or focus:outline-none"
             rows={3}
             placeholder="Description de la liste"
           />
@@ -731,7 +731,7 @@ function CRMSyncModal({ onClose, onSync, lists }) {
               <button
                 onClick={handleSync}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded text-white transition disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-kcb-pierre hover:bg-kcb-ardoise rounded text-white transition disabled:opacity-50"
               >
                 {loading ? 'Synchronisation...' : 'Synchroniser'}
               </button>
@@ -754,7 +754,7 @@ function CRMSyncModal({ onClose, onSync, lists }) {
 
             <button
               onClick={() => { onClose(); onSync(); }}
-              className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded text-white transition"
+              className="w-full px-4 py-2 bg-kcb-pierre hover:bg-kcb-ardoise rounded text-white transition"
             >
               Fermer
             </button>

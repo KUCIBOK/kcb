@@ -28,7 +28,7 @@ export default function SupportTicketUser() {
       const data = await response.json();
       setTickets(data.tickets || []);
     } catch (error) {
-      console.error('Erreur:', error);
+      // Silenced for production
     } finally {
       setLoading(false);
     }
@@ -56,7 +56,7 @@ export default function SupportTicketUser() {
         loadTickets();
       }
     } catch (error) {
-      console.error('Erreur:', error);
+      // Silenced for production
     } finally {
       setSubmitting(false);
     }
@@ -82,7 +82,7 @@ export default function SupportTicketUser() {
         loadTickets();
       }
     } catch (error) {
-      console.error('Erreur:', error);
+      // Silenced for production
     }
   };
 

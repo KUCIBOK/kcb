@@ -118,7 +118,7 @@ export default function Collector() {
     }
     return (
         <>
-        <div className="min-h-screen flex flex-col lg:flex-row bg-gray-900/90">
+        <div className="min-h-screen flex flex-col lg:flex-row bg-kcb-noir">
           {/* Sidebar */}
           <DashboardSidebar
             menuStructure={menuStructure}
@@ -131,7 +131,7 @@ export default function Collector() {
               to: "/explore",
               label: "Marketplace",
               icon: <ShoppingBag className="w-4 h-4" />,
-              className: "bg-indigo-kcb/90 hover:bg-indigo-kcb justify-center",
+              className: "bg-kcb-or text-kcb-noir hover:bg-kcb-bronze justify-center",
             }}
             subscription={subscription}
             pricingPath="/collector/pricing"

@@ -155,7 +155,7 @@ function App() {
             (adresse IP, pages visitées). Conformément au RGPD, votre
             consentement est requis avant toute collecte.{" "}
             <a
-              href="/politique-de-confidentialite"
+              href="/privacy-policy"
               style={{ color: "#c9a84c", textDecoration: "underline" }}
             >
               En savoir plus

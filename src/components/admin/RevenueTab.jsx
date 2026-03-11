@@ -178,7 +178,7 @@ export function RevenueTab() {
         <button
           onClick={loadTransactions}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg text-white text-sm font-medium transition"
+          className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 rounded-lg text-kcb-noir text-sm font-medium transition"
         >
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
           Actualiser
@@ -230,7 +230,7 @@ export function RevenueTab() {
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-indigo-500 transition"
+          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
         >
           <option value="all">Tous les types</option>
           <option value="artwork_sale">Ventes d'œuvres</option>
@@ -241,7 +241,7 @@ export function RevenueTab() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-indigo-500 transition"
+          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
         >
           <option value="all">Tous les statuts</option>
           <option value="completed">Complétées</option>
@@ -252,7 +252,7 @@ export function RevenueTab() {
         <select
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-indigo-500 transition"
+          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
         >
           <option value="all">Tous les mois</option>
           {availableMonths.map((m) => (
@@ -341,7 +341,7 @@ export function RevenueTab() {
               </div>
               <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-kcb-or to-kcb-bronze rounded-full transition-all duration-500"
                   style={{ width: `${(m.gmv / maxGmv) * 100}%` }}
                 />
               </div>
@@ -351,7 +351,7 @@ export function RevenueTab() {
         {/* Legend */}
         <div className="flex gap-6 mt-5 text-xs text-gray-500">
           <span className="flex items-center gap-1">
-            <span className="w-3 h-3 rounded-full bg-indigo-500 inline-block" /> GMV
+            <span className="w-3 h-3 rounded-full bg-kcb-or inline-block" /> GMV
           </span>
           <span className="flex items-center gap-1">
             <span className="w-3 h-3 rounded-full bg-green-500 inline-block" /> Commissions

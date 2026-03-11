@@ -53,7 +53,7 @@ export function AnalytiquePro() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <RefreshCw className="w-8 h-8 animate-spin text-indigo-kcb" />
+        <RefreshCw className="w-8 h-8 animate-spin text-kcb-or" />
       </div>
     );
   }
@@ -119,7 +119,7 @@ export function AnalytiquePro() {
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="bg-card border border-gray-700 text-white rounded-lg px-4 py-2 focus:border-indigo-kcb focus:outline-none"
+            className="bg-card border border-gray-700 text-white rounded-lg px-4 py-2 focus:border-kcb-or focus:outline-none"
           >
             <option value="week">Cette semaine</option>
             <option value="month">Ce mois</option>
@@ -129,7 +129,7 @@ export function AnalytiquePro() {
           </select>
           <button
             onClick={loadAnalytics}
-            className="p-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg transition"
+            className="p-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-lg transition"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
@@ -188,7 +188,7 @@ export function AnalytiquePro() {
           <div className="flex justify-between items-center mb-2">
             <DollarSign className="w-5 h-5 text-yellow-400" />
           </div>
-          <p className="text-2xl font-bold text-white">{(analytics?.overview?.totalRevenue / 1000000).toFixed(2)}M</p>
+          <p className="text-2xl font-bold text-white">{((analytics?.overview?.totalRevenue || 0) / 1000000).toFixed(2)}M</p>
           <p className="text-xs text-gray-400 mt-1">Revenu total</p>
         </div>
       </div>

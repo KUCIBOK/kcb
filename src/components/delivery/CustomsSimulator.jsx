@@ -96,7 +96,7 @@ export function CustomsSimulator() {
                 ]
             });
         } catch (error) {
-            console.error("Calculation error:", error);
+            // Calculation failed silently
         }
 
         setLoading(false);

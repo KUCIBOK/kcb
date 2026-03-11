@@ -253,7 +253,7 @@ export function Integrations() {
             return (
               <div
                 key={key}
-                className="bg-card rounded-lg p-6 border border-gray-700 hover:border-indigo-kcb/50 transition"
+                className="bg-card rounded-lg p-6 border border-gray-700 hover:border-kcb-or/50 transition"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -323,7 +323,7 @@ export function Integrations() {
                   {!connected ? (
                     <button
                       onClick={() => handleConnect(key)}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg transition text-sm"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition text-sm"
                     >
                       <LinkIcon className="w-4 h-4" />
                       Connecter
@@ -358,7 +358,7 @@ export function Integrations() {
         </div>
       ) : (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-kcb"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
         </div>
       )}
 
@@ -402,7 +402,7 @@ export function Integrations() {
                       })
                     }
                     required
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-indigo-kcb focus:outline-none"
+                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
               ))}
@@ -410,7 +410,7 @@ export function Integrations() {
               <div className="flex gap-2 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white rounded-lg transition font-medium"
+                  className="flex-1 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition font-medium"
                 >
                   Connecter
                 </button>

@@ -129,7 +129,7 @@ export function Analytics() {
         setData(result.data);
       }
     } catch (err) {
-      console.warn('Données par défaut utilisées');
+      // Fallback to default data
     }
   };
 
@@ -140,7 +140,7 @@ export function Analytics() {
       {/* En-tête */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-white">📊 Dashboard Principal</h1>
+          <h1 className="text-4xl font-bold text-white">Dashboard Principal</h1>
           <p className="text-gray-400 mt-2">Vue d'ensemble complète de la plateforme</p>
         </div>
         <div className="flex gap-2">
@@ -156,7 +156,7 @@ export function Analytics() {
           </button>
           <button
             onClick={loadData}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-white text-sm font-medium transition"
+            className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze rounded text-kcb-noir text-sm font-medium transition"
           >
             Refresh
           </button>
@@ -188,33 +188,33 @@ export function Analytics() {
         </div>
       )}
 
-      {/* Section 1: 💰 Revenue & Finance */}
-      <Section title="💰 Revenue & Finance">
+      {/* Section 1: Revenue & Finance */}
+      <Section title="Revenue & Finance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="MRR"
-            value={`$${data.mrr.toLocaleString()}`}
+            value={`${data.mrr.toLocaleString('fr-FR')} XOF`}
             change={`+${data.mrrGrowth}% MoM`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="ARR"
-            value={`$${data.arr.toLocaleString()}`}
+            value={`${data.arr.toLocaleString('fr-FR')} XOF`}
             change={`+${data.arr_growth}% YoY`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="CAC"
-            value={`$${data.cac}`}
+            value={`${data.cac.toLocaleString('fr-FR')} XOF`}
             change="Coût d'acquisition"
             trend="down"
             color="blue"
           />
           <MetricCard
             label="LTV"
-            value={`$${data.ltv}`}
+            value={`${data.ltv.toLocaleString('fr-FR')} XOF`}
             change={`Ratio LTV:CAC = ${(data.ltv / data.cac).toFixed(1)}x`}
             trend="up"
             color="purple"
@@ -234,15 +234,15 @@ export function Analytics() {
           />
           <MetricCard
             label="Projection 3M"
-            value={`$${data.revenue_projection_3m.toLocaleString()}`}
+            value={`${data.revenue_projection_3m.toLocaleString('fr-FR')} XOF`}
             change="Revenu estimé"
             color="emerald"
           />
         </div>
       </Section>
 
-      {/* Section 2: 👥 Utilisateurs & Croissance */}
-      <Section title="👥 Utilisateurs & Croissance">
+      {/* Section 2: Utilisateurs & Croissance */}
+      <Section title="Utilisateurs & Croissance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Total Utilisateurs"
@@ -279,8 +279,8 @@ export function Analytics() {
         </div>
       </Section>
 
-      {/* Section 3: 🎨 Contenu & Inventaire */}
-      <Section title="🎨 Contenu & Inventaire">
+      {/* Section 3: Contenu & Inventaire */}
+      <Section title="Contenu & Inventaire">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Œuvres Total"
@@ -313,7 +313,7 @@ export function Analytics() {
               {data.top_artists.slice(0, 3).map((artist, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
                   <span className="text-gray-300">{artist.name}</span>
-                  <span className="text-green-300 font-semibold">${(artist.revenue / 1000).toFixed(1)}k</span>
+                  <span className="text-green-300 font-semibold">{(artist.revenue / 1000).toFixed(1)}k XOF</span>
                 </div>
               ))}
             </div>
@@ -321,18 +321,18 @@ export function Analytics() {
         </div>
       </Section>
 
-      {/* Section 4: 🛒 Marketplace & Ventes */}
-      <Section title="🛒 Marketplace & Ventes">
+      {/* Section 4: Marketplace & Ventes */}
+      <Section title="Marketplace & Ventes">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="GMV"
-            value={`$${(data.gmv / 1000).toFixed(0)}k`}
+            value={`${(data.gmv / 1000).toFixed(0)}k XOF`}
             change="Volume marchand brut"
             color="green"
           />
           <MetricCard
             label="AOV"
-            value={`$${data.aov}`}
+            value={`${data.aov.toLocaleString('fr-FR')} XOF`}
             change="Valeur moyenne par commande"
             color="blue"
           />
@@ -344,7 +344,7 @@ export function Analytics() {
           />
           <MetricCard
             label="Commission"
-            value={`$${(data.commission_revenue / 1000).toFixed(1)}k`}
+            value={`${(data.commission_revenue / 1000).toFixed(1)}k XOF`}
             change="Revenu commission"
             color="amber"
           />
@@ -368,7 +368,7 @@ export function Analytics() {
                     <p className="text-white text-sm font-medium">{item.title}</p>
                     <p className="text-gray-400 text-xs">{item.sales} ventes</p>
                   </div>
-                  <span className="text-green-300 font-semibold">${(item.revenue / 1000).toFixed(1)}k</span>
+                  <span className="text-green-300 font-semibold">{(item.revenue / 1000).toFixed(1)}k XOF</span>
                 </div>
               ))}
             </div>
@@ -376,8 +376,8 @@ export function Analytics() {
         </div>
       </Section>
 
-      {/* Section 5: 📊 Engagement & Rétention */}
-      <Section title="📊 Engagement & Rétention">
+      {/* Section 5: Engagement & Rétention */}
+      <Section title="Engagement & Rétention">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Stickiness"
@@ -399,7 +399,7 @@ export function Analytics() {
             color="blue"
           />
           <MetricCard
-            label="⚠️ À Risque"
+            label="À Risque"
             value={data.at_risk_users}
             change="Utilisateurs de churn"
             trend="down"
@@ -420,8 +420,8 @@ export function Analytics() {
         </div>
       </Section>
 
-      {/* Section 6: ⚙️ Technique & Performance */}
-      <Section title="⚙️ Technique & Performance">
+      {/* Section 6: Technique & Performance */}
+      <Section title="Technique & Performance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Uptime"
@@ -460,8 +460,8 @@ export function Analytics() {
         </div>
       </Section>
 
-      {/* Section 7: 📞 Support & Satisfaction */}
-      <Section title="📞 Support & Satisfaction">
+      {/* Section 7: Support & Satisfaction */}
+      <Section title="Support & Satisfaction">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="NPS"
@@ -510,24 +510,24 @@ export function Analytics() {
         </div>
       </Section>
 
-      {/* Section 8: 🔮 Prédictions & Alertes */}
-      <Section title="🔮 Prédictions & Opportunités">
+      {/* Section 8: Prédictions & Alertes */}
+      <Section title="Prédictions & Opportunités">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             label="MRR Projection"
-            value={`$${data.mrr_projection.toLocaleString()}`}
+            value={`${data.mrr_projection.toLocaleString('fr-FR')} XOF`}
             change="Estimé le mois prochain"
             color="green"
           />
           <MetricCard
-            label="⚠️ Churn Risk"
+            label="Churn Risk"
             value={data.churn_risk_users}
             change="Utilisateurs à risque"
             trend="down"
             color="orange"
           />
           <MetricCard
-            label="🎯 Upsell"
+            label="Upsell"
             value={data.upsell_opportunities}
             change="Opportunités identifiées"
             color="purple"
@@ -535,26 +535,26 @@ export function Analytics() {
         </div>
       </Section>
 
-      {/* Section 9: ⚡ Actions Rapides */}
-      <Section title="⚡ Actions Rapides">
+      {/* Section 9: Actions Rapides */}
+      <Section title="Actions Rapides">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <ActionButton
-            icon="📋"
+            icon=""
             label="Réviser Œuvres"
             badge={data.pendingArtworks || 18}
-            onClick={() => console.log('Réviser')}
+            onClick={() => {}}
           />
           <ActionButton
-            icon="👥"
+            icon=""
             label="Gérer Utilisateurs"
             badge={data.totalUsers || 23}
-            onClick={() => console.log('Gérer users')}
+            onClick={() => {}}
           />
           <ActionButton
-            icon="🎫"
+            icon=""
             label="Tickets Support"
             badge={data.openTickets || 8}
-            onClick={() => console.log('Support')}
+            onClick={() => {}}
           />
         </div>
       </Section>
@@ -687,7 +687,7 @@ function ActionButton({ icon, label, badge, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="bg-gray-900/50 border border-gray-800 hover:border-indigo-500/50 rounded-lg p-4 text-left transition group"
+      className="bg-gray-900/50 border border-gray-800 hover:border-kcb-or/50 rounded-lg p-4 text-left transition group"
     >
       <div className="flex items-start justify-between mb-2">
         <span className="text-2xl">{icon}</span>
@@ -697,7 +697,7 @@ function ActionButton({ icon, label, badge, onClick }) {
           </span>
         )}
       </div>
-      <p className="text-white font-semibold group-hover:text-indigo-300 transition">{label}</p>
+      <p className="text-white font-semibold group-hover:text-kcb-or transition">{label}</p>
     </button>
   );
 }

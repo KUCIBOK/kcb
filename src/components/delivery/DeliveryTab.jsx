@@ -51,7 +51,7 @@ export function DeliveryTab() {
                 setPickupPoints(pickupData.pickupPoints);
             }
         } catch (error) {
-            console.error("Error loading Logidoo data:", error);
+            // Loading failed silently
         }
     };
 
@@ -79,7 +79,7 @@ export function DeliveryTab() {
             );
             setRates(rateData);
         } catch (error) {
-            console.error("Error calculating rate:", error);
+            // Rate calculation failed silently
         }
     };
 

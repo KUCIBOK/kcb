@@ -134,7 +134,7 @@ export function Abonnement() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-kcb"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
       </div>
     );
   }
@@ -149,7 +149,7 @@ export function Abonnement() {
         {!subscription && (
           <Link
             to="/global#pricing"
-            className="flex items-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-6 py-3 rounded-lg transition font-medium"
+            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir text-white px-6 py-3 rounded-lg transition font-medium"
           >
             <Crown className="w-5 h-5" />
             Voir les plans
@@ -158,7 +158,7 @@ export function Abonnement() {
       </div>
 
       {/* Current Plan Card */}
-      <div className="bg-gradient-to-r from-indigo-kcb/20 to-purple-kcb/20 rounded-xl p-6 border border-indigo-kcb/30">
+      <div className="bg-gradient-to-r from-kcb-or/10 to-kcb-bronze/10 rounded-xl p-6 border border-kcb-or/30">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -407,7 +407,7 @@ export function Abonnement() {
           </p>
           <Link
             to="/global#pricing"
-            className="inline-flex items-center gap-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white px-8 py-3 rounded-lg transition font-medium"
+            className="inline-flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir text-white px-8 py-3 rounded-lg transition font-medium"
           >
             Voir les plans premium
             <ArrowUp className="w-4 h-4" />
