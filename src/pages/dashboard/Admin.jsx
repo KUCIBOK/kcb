@@ -23,7 +23,8 @@ import {
   ChevronRight,
   LayoutDashboard,
   Settings,
-  MessageSquare
+  MessageSquare,
+  X
 } from "lucide-react";
 import DashboardSidebar from "../../components/shared/DashboardSidebar";
 import { BlogTab } from "../../components/admin/BlogTab";
@@ -34,9 +35,6 @@ import { CategoryTab } from "../../components/category/CategoryTab";
 import { LogsTab } from "../../components/logsComponents/LogsTab";
 import { SubscriptionTab } from "../../components/subscriptions/SusbscriptionsTab";
 import { Link } from "react-router-dom";
-import { DeliveryRequestList } from "../../components/delivery/DeliveryRequestList";
-import { EnhancedDeliveryRequestList } from "../../components/delivery/EnhancedDeliveryRequestList";
-import { useDelivery } from "../../store/DeliveryStore";
 import { AuctionTab } from "../../components/professional/AuctionTab";
 import { useNumerisation } from "../../store/NumerisationStore";
 import { NumerisationList } from "../../components/numerisation/NumeristionList";
@@ -47,10 +45,9 @@ import SupportTicketTab from "../../components/admin/SupportTicketTab";
 import LogidooDashboard from "../../components/admin/LogidooDashboard";
 export default function Admin() {
   const { pending, approved, rejected } = useArtworks();
-  const { deliveries } = useDelivery();
   const { numerisations } = useNumerisation();
   const [toggle, setToggle] = useState(false);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [tab, setTab] = useState(0);
 
   // Menu structure with categories
@@ -193,9 +190,17 @@ export default function Admin() {
         );
     }
   };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-kcb-noir">
+        <div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="min-h-full flex flex-col lg:flex-row bg-kcb-noir">
+      <div className="min-h-screen flex flex-col lg:flex-row bg-kcb-noir">
         {/* Sidebar */}
         <DashboardSidebar
           menuStructure={menuStructure}
@@ -212,10 +217,10 @@ export default function Admin() {
           }}
         />
         {/* Main content */}
-        <main className="flex flex-col lg:absolute right-0 py-8 transition duration-300 lg:w-13/16 w-full lg:px-4 px-8 min-h-screen">
+        <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">
           {/* Breadcrumb */}
           <div className="mb-6">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm text-kcb-pierre">
               <span>{getCurrentPageInfo().category}</span>
               <ChevronRight className="w-4 h-4" />
               <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
@@ -225,7 +230,7 @@ export default function Admin() {
           <div className="lg:hidden flex justify-end mb-4">
             <button
               onClick={() => setToggle(!toggle)}
-              className="text-gray-400 hover:text-white"
+              className="text-kcb-pierre hover:text-white"
             >
               <Menu className="w-6 h-6" />
               <span className="sr-only">Toggle menu</span>

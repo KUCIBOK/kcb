@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import {
   Award,
   Briefcase,
+  Clock,
   Building,
   CreditCard,
   Gavel,
@@ -45,7 +46,7 @@ import ContactsLists from "../../components/professional/ContactsLists";
 export default function Professional() {
   const { myArtworks } = useArtworks();
   const [toggle, setToggle] = useState(false);
-  const { user, professionalProfile, subscription } = useAuth();
+  const { user, professionalProfile, subscription, loading } = useAuth();
   const [tab, setTab] = useState(0);
 
   // Menu structure with categories
@@ -140,19 +141,30 @@ export default function Professional() {
         return <Abonnement />;
       default:
         return (
-          <>
-            <div className="flex flex-col items-center justify-center h-64">
-              <span className="text-lg font-semibold text-gray-500">
-                Bientôt disponible
-              </span>
+          <div className="flex flex-col items-center justify-center h-64 rounded-xl border border-dashed border-white/[0.06] bg-kcb-ardoise/40 p-8 text-center gap-4">
+            <Clock className="w-10 h-10 text-kcb-pierre" />
+            <div>
+              <p className="text-white font-semibold text-lg mb-1">Fonctionnalité à venir</p>
+              <p className="text-kcb-pierre text-sm max-w-md">Cette section est en cours de développement.</p>
             </div>
-          </>
+            <span className="text-xs font-medium px-3 py-1 rounded-full border border-white/[0.06] text-kcb-pierre">
+              Prochainement
+            </span>
+          </div>
         );
     }
   };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-kcb-noir">
+        <div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="min-h-screen flex flex-col lg:flex-row bg-background">
+      <div className="min-h-screen flex flex-col lg:flex-row bg-kcb-noir">
         {/* Sidebar */}
         <DashboardSidebar
           menuStructure={menuStructure}
@@ -174,7 +186,7 @@ export default function Professional() {
         <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">
           {/* Breadcrumb */}
           <div className="mb-6">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm text-kcb-pierre">
               <span>{getCurrentPageInfo().category}</span>
               <ChevronRight className="w-4 h-4" />
               <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
@@ -184,7 +196,7 @@ export default function Professional() {
           <div className="lg:hidden flex justify-end mb-4">
             <button
               onClick={() => setToggle(!toggle)}
-              className="text-gray-400 hover:text-white"
+              className="text-kcb-pierre hover:text-white"
             >
               <Menu className="w-6 h-6" />
               <span className="sr-only">Toggle menu</span>

@@ -33,7 +33,7 @@ import ArtistSales from "../../components/artist/ArtistSales";
 import ArtistNotifications from "../../components/artist/ArtistNotifications";
 
 export default function Artist() {
-  const { user, artistProfile } = useAuth();
+  const { user, artistProfile, loading } = useAuth();
   const [toggle, setToggle] = useState(false);
   const { myArtworks } = useArtworks();
   const [tab, setTab] = useState(0);
@@ -129,9 +129,17 @@ export default function Artist() {
         return null;
     }
   };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-kcb-noir">
+        <div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="min-h-[200vh] flex flex-col lg:flex-row bg-background">
+      <div className="min-h-screen flex flex-col lg:flex-row bg-kcb-noir">
         {/* Sidebar */}
         <DashboardSidebar
           menuStructure={menuStructure}
@@ -148,10 +156,10 @@ export default function Artist() {
           }}
         />
         {/* Main content */}
-        <main className="flex flex-col lg:absolute right-0 lg:px-4 py-8 transition duration-300 lg:w-12/15 w-full px-8 overflow-auto">
+        <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">
           {/* Breadcrumb */}
           <div className="mb-6">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm text-kcb-pierre">
               <span>{getCurrentPageInfo().category}</span>
               <ChevronRight className="w-4 h-4" />
               <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
@@ -161,7 +169,7 @@ export default function Artist() {
           <div className="lg:hidden flex justify-end mb-4">
             <button
               onClick={() => setToggle(!toggle)}
-              className="text-gray-400 hover:text-white"
+              className="text-kcb-pierre hover:text-white"
             >
               <Menu className="w-6 h-6" />
               <span className="sr-only">Toggle menu</span>

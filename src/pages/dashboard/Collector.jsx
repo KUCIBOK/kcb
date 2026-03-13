@@ -16,7 +16,7 @@ import CollectorAbonnement from "../../components/collector/CollectorAbonnement"
 export default function Collector() {
     const {buyed, myArtworks} = useArtworks()
     const [toggle, setToggle] = useState(false)
-    const {user, collectorProfile, subscription} = useAuth()
+    const {user, collectorProfile, subscription, loading} = useAuth()
     const [tab, setTab] = useState(0)
 
     // Menu structure with categories
@@ -154,6 +154,14 @@ export default function Collector() {
                 )
         }
     }
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-kcb-noir">
+                <div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" />
+            </div>
+        )
+    }
+
     return (
         <>
         <div className="min-h-screen flex flex-col lg:flex-row bg-kcb-noir">
@@ -178,7 +186,7 @@ export default function Collector() {
           <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">
             {/* Breadcrumb */}
             <div className="mb-6">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="flex items-center gap-2 text-sm text-kcb-pierre">
                 <span>{getCurrentPageInfo().category}</span>
                 <ChevronRight className="w-4 h-4" />
                 <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
@@ -186,7 +194,7 @@ export default function Collector() {
             </div>
 
             <div className="lg:hidden flex justify-end mb-4">
-              <button onClick={() => setToggle(!toggle)} className="text-gray-400 hover:text-white">
+              <button onClick={() => setToggle(!toggle)} className="text-kcb-pierre hover:text-white">
                 <Menu className="w-6 h-6" />
                 <span className="sr-only">Toggle menu</span>
               </button>
@@ -200,13 +208,13 @@ export default function Collector() {
 
 function ComingSoon({ title, description, phase }) {
     return (
-        <div className="flex flex-col items-center justify-center h-64 rounded-xl border border-dashed border-gray-700 bg-gray-900/40 p-8 text-center gap-4">
-            <Clock className="w-10 h-10 text-gray-600" />
+        <div className="flex flex-col items-center justify-center h-64 rounded-xl border border-dashed border-white/[0.06] bg-kcb-ardoise/40 p-8 text-center gap-4">
+            <Clock className="w-10 h-10 text-kcb-pierre" />
             <div>
                 <p className="text-white font-semibold text-lg mb-1">{title}</p>
-                <p className="text-gray-400 text-sm max-w-md">{description}</p>
+                <p className="text-kcb-pierre text-sm max-w-md">{description}</p>
             </div>
-            <span className="text-xs font-medium px-3 py-1 rounded-full border border-gray-700 text-gray-500">
+            <span className="text-xs font-medium px-3 py-1 rounded-full border border-white/[0.06] text-kcb-pierre">
                 {phase}
             </span>
         </div>

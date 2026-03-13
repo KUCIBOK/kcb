@@ -62,9 +62,9 @@ export function AuthContextProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [artistProfile, setArtistProfile] = useState(null);
-  const [collectorProfile, setCollectorProfile] = useState({});
-  const [professionalProfile, setProfessionalProfile] = useState({});
-  const [adminProfile, setAdminProfile] = useState({});
+  const [collectorProfile, setCollectorProfile] = useState(null);
+  const [professionalProfile, setProfessionalProfile] = useState(null);
+  const [adminProfile, setAdminProfile] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -112,9 +112,9 @@ export function AuthContextProvider({ children }) {
 
         if (event === 'SIGNED_OUT') {
           setArtistProfile(null);
-          setCollectorProfile({});
-          setProfessionalProfile({});
-          setAdminProfile({});
+          setCollectorProfile(null);
+          setProfessionalProfile(null);
+          setAdminProfile(null);
           setSubscription(null);
           setPlan(null);
         }
