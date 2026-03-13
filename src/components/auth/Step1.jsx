@@ -12,7 +12,7 @@ export const Step1 = ({ formState, setFormState, onGoogleSignup }) => {
                 {formState.error}
               </div>
             )}
-            <div className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] shadow-sm p-6">
+            <div className="bg-kcb-ardoise rounded-xl border border-white/[0.06] shadow-sm p-6">
               <p className="text-center text-xl font-bold text-white mb-2">Inscription</p>
               <p className="text-xs text-center text-kcb-pierre mb-6">Choisissez votre mode de connexion</p>
 

@@ -11,7 +11,7 @@ export const Step4Collector = ({ formState, setFormState, handleSignUp }) => {
             {formState.error}
           </div>
         )}
-        <div className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] shadow-sm p-6">
+        <div className="bg-kcb-ardoise rounded-xl border border-white/[0.06] shadow-sm p-6">
           <p className="text-center text-xl font-bold text-white mb-2">Profil Collectionneur</p>
           <p className="text-xs text-center text-kcb-pierre mb-6">Parlez-nous un peu plus de vous</p>
           <form onSubmit={handleSignUp} className="space-y-4" method="post">

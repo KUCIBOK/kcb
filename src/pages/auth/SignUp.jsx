@@ -269,19 +269,49 @@ export default function SignUp() {
               Rejoignez la marketplace d'art digital d'Afrique
             </p>
           </div>
-          {/* Progress indicator minimaliste */}
-          {formState.step < steps.length - 1 && (
-            <div className="flex justify-center gap-2 mb-6">
-              {steps.map((_, idx) => (
-                <span
-                  key={idx}
-                  className={`w-2.5 h-2.5 rounded-full ${
-                    formState.step === idx ? "bg-kcb-or" : "bg-kcb-pierre"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
+          {/* Connected step indicator */}
+          {(() => {
+            const stepLabels = ["Méthode", "Compte", "Rôle", "Profil"];
+            return (
+              <div className="flex items-center justify-center mb-8">
+                {stepLabels.map((label, idx) => (
+                  <div key={idx} className="flex items-center">
+                    <div className="flex flex-col items-center">
+                      <span
+                        className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold transition-colors ${
+                          formState.step === idx
+                            ? "bg-kcb-or text-kcb-noir"
+                            : formState.step > idx
+                            ? "bg-kcb-or/20 text-kcb-or"
+                            : "bg-kcb-ardoise text-kcb-pierre"
+                        }`}
+                      >
+                        {formState.step > idx ? "\u2713" : idx + 1}
+                      </span>
+                      <span
+                        className={`mt-1.5 text-[10px] font-medium ${
+                          formState.step === idx
+                            ? "text-kcb-or"
+                            : formState.step > idx
+                            ? "text-kcb-or/60"
+                            : "text-kcb-pierre"
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    </div>
+                    {idx < stepLabels.length - 1 && (
+                      <div
+                        className={`w-8 h-px mx-1 mb-5 ${
+                          formState.step > idx ? "bg-kcb-or/40" : "bg-white/[0.08]"
+                        }`}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
           {renderStepContent()}
           {formState.step !== 0 && formState.step < steps.length - 1 && (
             <div className="text-center mt-6">

@@ -16,7 +16,7 @@ export const Step2 = ({ formState, setFormState }) => {
                 {formState.error}
               </div>
             )}
-            <div className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] shadow-sm p-6">
+            <div className="bg-kcb-ardoise rounded-xl border border-white/[0.06] shadow-sm p-6">
               <p className="text-center text-xl font-bold text-white mb-2">Créer un compte</p>
               <p className="text-xs text-center text-kcb-pierre mb-6">Entrez votre email et créez un mot de passe</p>
               <form
@@ -42,8 +42,8 @@ export const Step2 = ({ formState, setFormState }) => {
                   onChange={e => setFormState({ ...formState, email: e.target.value })}
                 />
                 <div>
-                  <label htmlFor="password" className="text-xs font-medium text-kcb-pierre">Mot de passe</label>
-                  <div className="flex items-center mt-1">
+                  <label htmlFor="password" className="block text-sm font-medium text-kcb-sable">Mot de passe</label>
+                  <div className="relative mt-2">
                     <input
                       onChange={e => setFormState({ ...formState, password: e.target.value })}
                       value={formState?.password}
@@ -52,21 +52,21 @@ export const Step2 = ({ formState, setFormState }) => {
                       id="password"
                       minLength={8}
                       required
-                      className="w-9/10 border border-white/[0.06] bg-kcb-noir rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                      className="w-full border border-white/[0.08] bg-kcb-noir rounded-[4px] px-3 py-1.5 pr-10 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or focus:ring-offset-2 focus:ring-offset-kcb-noir focus:border-kcb-or transition-all duration-200"
                       placeholder="Votre mot de passe"
                     />
                     <button
                       type="button"
                       onClick={() => setState({ ...state, showPassword: !state.showPassword })}
-                      className="w-1/10 flex justify-center border border-white/[0.06] bg-kcb-noir rounded-e-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-kcb-pierre hover:text-white transition"
                     >
-                      {state.showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {state.showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="confirmPassword" className="text-xs font-medium text-kcb-pierre">Confirmer le mot de passe</label>
-                  <div className="flex mt-1 items-center">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-kcb-sable">Confirmer le mot de passe</label>
+                  <div className="relative mt-2">
                     <input
                       onChange={e => setFormState({ ...formState, confirmPassword: e.target.value })}
                       value={formState?.confirmPassword}
@@ -75,15 +75,15 @@ export const Step2 = ({ formState, setFormState }) => {
                       id="confirmPassword"
                       minLength={8}
                       required
-                      className="w-9/10 border border-white/[0.06] bg-kcb-noir rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                      className="w-full border border-white/[0.08] bg-kcb-noir rounded-[4px] px-3 py-1.5 pr-10 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or focus:ring-offset-2 focus:ring-offset-kcb-noir focus:border-kcb-or transition-all duration-200"
                       placeholder="Confirmez le mot de passe"
                     />
                     <button
                       type="button"
                       onClick={() => setState({ ...state, showPassword: !state.showPassword })}
-                      className="w-1/10 flex justify-center border border-white/[0.06] bg-kcb-noir rounded-e-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-kcb-pierre hover:text-white transition"
                     >
-                      {state.showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {state.showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                   {passwordMismatch && (

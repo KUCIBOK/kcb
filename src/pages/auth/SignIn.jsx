@@ -52,9 +52,13 @@ export default function SignIn () {
             <meta property="og:image" content={"/images/kucibok-black.png"} />
             <meta property="og:url" content={`https://kucibok.com/sign-in`} />
         </Helmet>
-        <div className="flex min-h-screen flex-col items-center justify-center bg-kcb-noir-deep px-4 pb-8">
+        <div className="relative flex min-h-screen flex-col items-center justify-center bg-kcb-noir-deep px-4 pb-8 overflow-hidden">
+          {/* Background atmosphere orbs */}
+          <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-kcb-or/5 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-kcb-bronze/5 blur-3xl" />
+
           <RevealOnScroll>
-          <div className="w-full max-w-sm mx-auto">
+          <div className="relative w-full max-w-sm mx-auto">
             <div className="text-center mb-8 mt-8">
               <Link to='/'>
                 <img src="/images/kucibok-white-logo.svg" alt="logo kucibok" className="w-12 h-12 object-cover mx-auto" />
@@ -67,7 +71,7 @@ export default function SignIn () {
                 {formState.error}
               </div>
             )}
-            <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise shadow-sm">
+            <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise shadow-sm">
               <div className="p-5">
                 <button
                   className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 rounded-md mb-4 font-medium py-3 px-4 text-sm text-gray-800 transition border border-gray-200"
@@ -102,8 +106,8 @@ export default function SignIn () {
                     size="sm"
                   />
                   <div>
-                    <label htmlFor="password" className="text-xs font-medium text-kcb-pierre">Mot de passe</label>
-                    <div className="flex mt-1">
+                    <label htmlFor="password" className="block text-sm font-medium text-kcb-sable">Mot de passe</label>
+                    <div className="relative mt-2">
                       <input
                         onChange={e => setFormState({ ...formState, password: e.target.value })}
                         value={formState.password}
@@ -112,19 +116,19 @@ export default function SignIn () {
                         id="password"
                         minLength={8}
                         required
-                        className="w-9/10 border border-white/[0.06] bg-kcb-noir rounded-s-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                        className="w-full border border-white/[0.08] bg-kcb-noir rounded-[4px] px-3 py-1.5 pr-10 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or focus:ring-offset-2 focus:ring-offset-kcb-noir focus:border-kcb-or transition-all duration-200"
                         placeholder="Votre mot de passe"
                       />
                       <button
                         type="button"
                         onClick={() => setFormState({ ...formState, seePassword: !formState.seePassword })}
-                        className={`w-1/10 border border-white/[0.06] bg-kcb-noir rounded-e-md p-2 text-sm text-white hover:bg-white/[0.03] transition`}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-kcb-pierre hover:text-white transition"
                       >
                         {formState.seePassword ? <EyeClosed className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
                       </button>
                     </div>
                   </div>
-                  <div className="flex justify-end mb-2">
+                  <div className="flex justify-end">
                     <Link to="/forgot-password" className="text-xs text-kcb-or hover:underline">Mot de passe oublié ?</Link>
                   </div>
                   <Button
@@ -137,7 +141,7 @@ export default function SignIn () {
                   </Button>
                 </form>
               </div>
-              <div className="flex items-center justify-center border-t border-white/[0.06] p-4">
+              <div className="flex items-center justify-center border-t border-white/[0.06] p-4 rounded-b-xl">
                 <p className="text-xs text-kcb-pierre">
                   Pas de compte ?{' '}
                   <Link to="/sign-up" className="font-semibold text-kcb-or hover:underline">Inscription</Link>

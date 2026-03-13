@@ -61,7 +61,7 @@ const VARIANT_STYLES = {
 };
 
 export const Input = forwardRef(({
-  variant = 'default',
+  variant = 'kcb',
   label,
   tooltip,
   tooltipPlacement = 'top',
@@ -83,7 +83,7 @@ export const Input = forwardRef(({
   const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
   const v = VARIANT_STYLES[variant] || VARIANT_STYLES.default;
 
-  const baseStyles = `${v.base} border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed`;
+  const baseStyles = `${v.base} border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-kcb-noir disabled:opacity-50 disabled:cursor-not-allowed`;
 
   const widthStyles = fullWidth ? 'w-full' : '';
   const sizeStyles = sizes[size] || sizes.md;

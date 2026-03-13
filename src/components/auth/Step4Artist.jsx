@@ -22,7 +22,7 @@ export const Step4Artist = ({ formState, setFormState, handleSignUp }) => {
             {formState.error}
           </div>
         )}
-        <div className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] shadow-sm p-6">
+        <div className="bg-kcb-ardoise rounded-xl border border-white/[0.06] shadow-sm p-6">
           <p className="text-center text-xl font-bold text-white mb-2">Profil Artiste</p>
           <p className="text-xs text-center text-kcb-pierre mb-6">Parlez-nous un peu plus de vous</p>
 
@@ -30,7 +30,7 @@ export const Step4Artist = ({ formState, setFormState, handleSignUp }) => {
             {formState?.image ? (
                 <img src={formState?.show} alt="Profile" className="w-28 h-28 object-cover rounded-full mb-4 mx-auto border-4 border-white/[0.06] shadow" />
             ) : (
-                <div className="w-28 h-28 rounded-full bg-gray-800 mb-4 flex justify-center items-center mx-auto border-4 border-white/[0.06]">
+                <div className="w-28 h-28 rounded-full bg-kcb-ardoise mb-4 flex justify-center items-center mx-auto border-4 border-white/[0.06]">
                 <Camera className="w-10 h-10 text-kcb-pierre" />
                 </div>
             )}
