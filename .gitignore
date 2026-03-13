@@ -49,3 +49,4 @@ preview.html
 
 # Local screenshots
 /dashboard/
+.env*.local

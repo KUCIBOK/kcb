@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../store/AuthContext";
 import { ArtworksList } from "../../components/artworks/ArtworksList";
 import { useArtworks } from "../../store/ArtworkContext";
-import { Activity, BarChart4, ChartLine, CreditCard, Menu, Shield, ShoppingBag, TrendingUp, User, Users, Truck, Scan, Frame, Palette, ChevronRight, LayoutDashboard, Package, Settings } from "lucide-react";
+import { Activity, BarChart4, ChartLine, Clock, CreditCard, Menu, Shield, ShoppingBag, TrendingUp, User, Users, Truck, Scan, Frame, Palette, ChevronRight, LayoutDashboard, Package, Settings } from "lucide-react";
 import DashboardSidebar from "../../components/shared/DashboardSidebar";
 import { Profile } from "../../components/collector/Profile";
 import { Link } from "react-router-dom";
@@ -100,20 +100,58 @@ export default function Collector() {
               return <ArtistTab />
             case 6:
                return <InsuranceTab />
-
-
+            case 7:
+                return (
+                    <ComingSoon
+                        title="Estimation & Valorisation"
+                        description="Obtenez une estimation de la valeur de marché de vos œuvres basée sur les transactions récentes et les indices de prix de l'art africain."
+                        phase="Phase 2"
+                    />
+                )
+            case 8:
+                return (
+                    <ComingSoon
+                        title="Services connectés"
+                        description="Connectez Kucibok à vos outils existants : CRM, comptabilité, assurance. Centralisez la gestion de votre collection."
+                        phase="Phase 2"
+                    />
+                )
+            case 9:
+                return (
+                    <ComingSoon
+                        title="Mode Transmission"
+                        description="Planifiez la transmission de votre collection : désignez des bénéficiaires, organisez la documentation successorale de vos œuvres certifiées."
+                        phase="Phase 3"
+                    />
+                )
+            case 10:
+                return (
+                    <ComingSoon
+                        title="Comparaison & Analyse"
+                        description="Analysez l'évolution de votre portefeuille, comparez vos acquisitions aux indices de marché et identifiez les opportunités de valorisation."
+                        phase="Phase 2"
+                    />
+                )
+            case 11:
+                return (
+                    <ComingSoon
+                        title="Activité"
+                        description="Retrouvez l'historique complet de vos actions sur la plateforme : achats, demandes de livraison, certifications consultées."
+                        phase="Phase 2"
+                    />
+                )
             case 12 :
               return <Profile/>
             case 13 :
               return <CollectorAbonnement/>
             default:
                 return (
-                    <>
-                    <div className="flex flex-col items-center justify-center h-64">
-                        <span className="text-lg font-semibold text-gray-500">Bientôt disponible</span>
-                    </div>
-                    </>
-                )               
+                    <ComingSoon
+                        title="Fonctionnalité à venir"
+                        description="Cette section est en cours de développement."
+                        phase="Prochainement"
+                    />
+                )
         }
     }
     return (
@@ -157,5 +195,20 @@ export default function Collector() {
           </main>
         </div>
         </>
+    )
+}
+
+function ComingSoon({ title, description, phase }) {
+    return (
+        <div className="flex flex-col items-center justify-center h-64 rounded-xl border border-dashed border-gray-700 bg-gray-900/40 p-8 text-center gap-4">
+            <Clock className="w-10 h-10 text-gray-600" />
+            <div>
+                <p className="text-white font-semibold text-lg mb-1">{title}</p>
+                <p className="text-gray-400 text-sm max-w-md">{description}</p>
+            </div>
+            <span className="text-xs font-medium px-3 py-1 rounded-full border border-gray-700 text-gray-500">
+                {phase}
+            </span>
+        </div>
     )
 }

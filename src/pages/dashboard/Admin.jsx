@@ -34,7 +34,6 @@ import { CategoryTab } from "../../components/category/CategoryTab";
 import { LogsTab } from "../../components/logsComponents/LogsTab";
 import { SubscriptionTab } from "../../components/subscriptions/SusbscriptionsTab";
 import { Link } from "react-router-dom";
-import { Synthesis } from "../../components/admin/Synthesis";
 import { DeliveryRequestList } from "../../components/delivery/DeliveryRequestList";
 import { EnhancedDeliveryRequestList } from "../../components/delivery/EnhancedDeliveryRequestList";
 import { useDelivery } from "../../store/DeliveryStore";

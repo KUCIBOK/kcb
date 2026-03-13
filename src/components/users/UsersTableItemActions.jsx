@@ -1,60 +1,56 @@
 import { useState } from "react"
 import { useUsersContext } from "../../store/UsersStore"
-import { LockOpen, Lock, Key, X, AlertCircle, Trash2 } from "lucide-react"
+import { useAuth } from "../../store/AuthContext"
+import { LockOpen, Lock, Trash2 } from "lucide-react"
 import { DataLoader } from "../loaders/PageLoader"
+import { ConfirmDialog } from "../ui"
+import { createLog } from "../../api/useLog"
 
 export function UserTableItemActions({user}){
     const {setStatus, deleteUser} = useUsersContext()
+    const { user: adminUser } = useAuth()
     const [state, setState] = useState({
-        loading : false,
-        updatePassword : false
+        loading: false,
+        confirmDelete: false,
+        confirmSuspend: false,
     })
+
     const handleDeleteUser = async () => {
         try {
-            setState(prev => ({
-                ...prev,
-                loading : true
-            }))
-            const updated = await deleteUser(user?._id)
-            if(updated?._id || updated?.id){
-                setState(prev => ({
-                    ...prev,
-                    loading : false
-                }))
-            }
+            setState(prev => ({ ...prev, loading: true, confirmDelete: false }))
+            await deleteUser(user?._id)
+            createLog({
+                description: `Suppression de l'utilisateur "${user?.name}" (${user?.email}) — rôle : ${user?.role}`,
+                userId: adminUser?._id,
+            })
+            setState(prev => ({ ...prev, loading: false }))
         } catch (error) {
-            setState(prev => ({
-                ...prev,
-                loading : false
-            }))
+            setState(prev => ({ ...prev, loading: false }))
         }
     }
+
     const handleSetStatus = async () => {
         try {
-            setState(prev => ({
-                ...prev,
-                loading : true
-            }))
-            const updated = await setStatus(user?._id)
-            if(updated?._id || updated?.id){
-                setState(prev => ({
-                    ...prev,
-                    loading : false
-                }))
-            }
+            setState(prev => ({ ...prev, loading: true, confirmSuspend: false }))
+            await setStatus(user?._id)
+            createLog({
+                description: user?.isActive
+                    ? `Suspension de l'utilisateur "${user?.name}" (${user?.email})`
+                    : `Réactivation de l'utilisateur "${user?.name}" (${user?.email})`,
+                userId: adminUser?._id,
+            })
+            setState(prev => ({ ...prev, loading: false }))
         } catch (error) {
-            setState(prev => ({
-                ...prev,
-                loading : false
-            }))
+            setState(prev => ({ ...prev, loading: false }))
         }
     }
+
     return (
         <>
            <div className="flex items-center gap-1">
                 {user?.isActive ?
                     <button
-                        onClick={handleSetStatus}
+                        onClick={() => setState(prev => ({...prev, confirmSuspend: true}))}
                         className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
                         title="Suspendre"
                     >
@@ -62,7 +58,7 @@ export function UserTableItemActions({user}){
                     </button>
                 :
                     <button
-                        onClick={handleSetStatus}
+                        onClick={() => setState(prev => ({...prev, confirmSuspend: true}))}
                         className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
                         title="Réactiver"
                     >
@@ -70,75 +66,37 @@ export function UserTableItemActions({user}){
                     </button>
                 }
                 <button
-                    onClick={handleDeleteUser}
+                    onClick={() => setState(prev => ({...prev, confirmDelete: true}))}
                     className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
                     title="Supprimer"
                 >
                     {state?.loading ? <DataLoader/> : <Trash2 className="w-4 h-4 text-red-500" />}
                 </button>
            </div>
-            {/* {state?.updatePassword && <UpdatePasswordModal user={user} closeModal={() => setState({...state, updatePassword : false})} />} */}
+
+           <ConfirmDialog
+               isOpen={state.confirmDelete}
+               onClose={() => setState(prev => ({...prev, confirmDelete: false}))}
+               onConfirm={handleDeleteUser}
+               title="Supprimer l'utilisateur"
+               message={`Supprimer définitivement "${user?.name}" ? Cette action est irréversible.`}
+               confirmText="Supprimer"
+               variant="danger"
+               loading={state.loading}
+           />
+
+           <ConfirmDialog
+               isOpen={state.confirmSuspend}
+               onClose={() => setState(prev => ({...prev, confirmSuspend: false}))}
+               onConfirm={handleSetStatus}
+               title={user?.isActive ? "Suspendre l'utilisateur" : "Réactiver l'utilisateur"}
+               message={user?.isActive
+                   ? `Suspendre "${user?.name}" ? Il ne pourra plus se connecter.`
+                   : `Réactiver le compte de "${user?.name}" ?`}
+               confirmText={user?.isActive ? "Suspendre" : "Réactiver"}
+               variant={user?.isActive ? "danger" : "primary"}
+               loading={state.loading}
+           />
         </>
     )
 }
-
-// function UpdatePasswordModal({user, closeModal}){
-//     const {updateUser} = useUsersContext()
-//     const [state, setState] = useState({
-//         password : "",
-//         loading : false 
-//     })
-//     const handleUpdateUser = async (e) => {
-//         e.preventDefault()
-//         try {
-//             setState(({...state, error : "", loading : true}))
-//             const charge = {...state}
-//             delete charge.loading
-//             delete charge.error
-//             const updated = await updateUser(user?._id, charge)
-//             if(updated?._id){
-//                 closeModal()
-//             }
-//             setState(({...state, error : updated?.error, loading : false}))
-//         } catch (error) {
-//             setState(({
-//                 ...state,
-//                 loading : false,
-//                 error : error.message
-//             }))
-//         }
-//     }
-//     return (
-//         <>
-//         <div className="w-screen h-screen flex z-999 justify-center items-center bg-stone-950/80 fixed top-0 left-0">
-//             <div className="rounded-xl border border-border bg-background p-6 w-13/15 xl:w-4/9 animate-scale-up overflow-auto">
-//                 <div className="flex justify-between items-start mb-4">
-//                     <p className="text-lg font-serif font-bold">Modifier le mot de passe</p>
-//                     <button onClick={() => closeModal()}>
-//                         <X className="w-4 w-4" />
-//                     </button>
-//                 </div>
-//                 {state?.error && (
-//                     <div className="rounded-md flex gap-3 p-4 bg-red-700/60 border border-red-500 text-white-900">
-//                         <AlertCircle className="w-5 h-5" /> {state?.error}
-//                     </div>
-//                 )}
-//                 <form onSubmit={handleUpdateUser} method="post" className="flex flex-col gap-4 overflow-auto">
-//                     <div className="flex flex-col gap-1">
-//                         <label htmlFor="password" className="text-white font-semibold text-[16px] ">Mot de passe</label>
-//                         <input required onChange={(e) => setState({...state, password : e.target.value})} value={state?.password} minLength={5} id="password" name="password" type="password" className="border border-border rounded-md bg-stone-700/90 px-4 py-2 font-normal text-[16px]" placeholder="Mot de passe de l'admin" />
-//                     </div>
-//                     <div className="flex items-center justify-end gap-4">
-//                         <button onClick={() => closeModal()} className="border border-border rounded-md px-4 py-2">
-//                             Annuler
-//                         </button>
-//                         <button type="submit" className="rounded-md px-4 py-2.5 bg-indigo-kcb">
-//                             {state?.loading ? <DataLoader/> : 'Modifier'}
-//                         </button>
-//                     </div>
-//                 </form>
-//             </div>
-//         </div>
-//         </>
-//     )
-// }

@@ -149,7 +149,7 @@ export function Synthesis(){
                 icon={Truck}
                 label="Oeuvres livrées"
                 value={`${deliveredArtworks}/${soldArtworksNumber}`}
-                subtitle={`${((deliveredArtworks/soldArtworksNumber)*100 || 0).toFixed(0)}% livrées`}
+                subtitle={`${(soldArtworksNumber > 0 ? (deliveredArtworks / soldArtworksNumber) * 100 : 0).toFixed(0)}% livrées`}
                 iconColor="text-orange-400"
                 iconBgColor="bg-orange-900/20"
             />

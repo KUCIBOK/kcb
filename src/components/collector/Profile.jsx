@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import { useAuth } from "../../store/AuthContext";
-import { Camera, Eye, EyeOff } from "lucide-react";
+import { Camera, Copy } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ChangePassword } from "../auth/ChangePassword";
@@ -23,7 +23,6 @@ export const Profile = () => {
     loading: false,
     error: "",
     show: collectorProfile?.image,
-    addresskeyShow: false,
   });
   useEffect(() => {
     const fetchCountries = async () => {
@@ -35,13 +34,16 @@ export const Profile = () => {
   }, []);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setState({ ...state, show: reader.result, image: file });
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setState(prev => ({ ...prev, error: "L'image ne doit pas dépasser 5 Mo." }));
+      return;
     }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setState(prev => ({ ...prev, show: reader.result, image: file, error: "" }));
+    };
+    reader.readAsDataURL(file);
   };
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -62,13 +64,20 @@ export const Profile = () => {
       Object.keys(charge).forEach((key) => {
         formData.append(key, charge[key]);
       });
-      if (state.interests.length > 20) {
-        const updatedUser = await updateUser(userPayload);
-        const updatedProfile = await updateProfile(formData);
-        if (updatedUser?._id && updatedProfile?._id) {
-          setState({ ...state, loading: false, error: "" });
-          toast.success("Profil mis à jour !");
-        }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (state.email && !emailRegex.test(state.email)) {
+        setState(prev => ({ ...prev, loading: false, error: "Adresse email invalide." }));
+        return;
+      }
+      if (!state.interests || state.interests.length <= 20) {
+        setState(prev => ({ ...prev, loading: false, error: "Les intérêts doivent contenir au moins 20 caractères." }));
+        return;
+      }
+      const updatedUser = await updateUser(userPayload);
+      const updatedProfile = await updateProfile(formData);
+      if (updatedUser?._id && updatedProfile?._id) {
+        setState(prev => ({ ...prev, loading: false, error: "" }));
+        toast.success("Profil mis à jour !");
       }
     } catch (error) {
       setState({ ...state, loading: false, error: error?.message || "Erreur lors de la sauvegarde." });
@@ -169,19 +178,21 @@ export const Profile = () => {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Clé privée</label>
                 <div className="flex gap-2">
                   <input
-                    type={state?.addresskeyShow ? "text" : "password"}
-                    value={user?.wallet?.privateKey || ''}
-                    className="flex-1 px-4 py-2 bg-background border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-indigo-500"
+                    type="text"
+                    value={user?.wallet?.privateKey ? user.wallet.privateKey.slice(0, 6) + '••••••••••••••••••••' + user.wallet.privateKey.slice(-4) : ''}
+                    className="flex-1 px-4 py-2 bg-background border border-gray-700 rounded-lg text-white text-sm focus:outline-none font-mono"
                     readOnly
                   />
                   <button
                     type="button"
-                    onClick={() => setState({ ...state, addresskeyShow: !state?.addresskeyShow })}
+                    onClick={() => navigator.clipboard.writeText(user?.wallet?.privateKey || '')}
                     className="px-4 py-2 border border-gray-700 bg-background rounded-lg hover:bg-gray-800 transition"
+                    title="Copier la clé privée"
                   >
-                    {state?.addresskeyShow ? <Eye className="w-4 h-4 text-gray-400" /> : <EyeOff className="w-4 h-4 text-gray-400" />}
+                    <Copy className="w-4 h-4 text-gray-400" />
                   </button>
                 </div>
+                <p className="text-xs text-yellow-600 mt-1">Ne partagez jamais votre clé privée.</p>
               </div>
             </div>
           </div>
