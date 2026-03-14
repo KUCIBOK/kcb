@@ -1,73 +1,7 @@
 import { Link } from "react-router-dom"
-
-const FOOTER_CONFIG = {
-  africa: {
-    description: "Infrastructure de standardisation et de circulation securisee de l'art africain. Certification gratuite pour les artistes d'Afrique.",
-    columns: [
-      {
-        title: "Plateforme",
-        links: [
-          { label: "Services", hash: "services" },
-          { label: "Comment ca marche", hash: "timeline" },
-          { label: "Temoignages", hash: "testimonials" },
-          { label: "Artistes", to: "/artists" },
-        ],
-      },
-      {
-        title: "Ressources",
-        links: [
-          { label: "Blog", to: "/blog" },
-          { label: "FAQ", to: "/faq" },
-          { label: "Contact", to: "/contact" },
-          { label: "Explorer", to: "/explore" },
-        ],
-      },
-      {
-        title: "Legal",
-        links: [
-          { label: "Confidentialite", to: "/privacy-policy" },
-          { label: "CGV", to: "/sales-conditions" },
-          { label: "CGU", to: "/terms-and-conditions" },
-          { label: "Charte ethique", to: "/ethic-chart" },
-        ],
-      },
-    ],
-    copyright: "Kucibok — Art africain certifie",
-  },
-  global: {
-    description: "The standard for African art certification and cross-border circulation. Curated catalogue, certified provenance, door-to-door logistics.",
-    columns: [
-      {
-        title: "Platform",
-        links: [
-          { label: "Catalogue", hash: "catalogue" },
-          { label: "Logistics", hash: "logistics" },
-          { label: "Sourcing", hash: "sourcing" },
-          { label: "Pricing", hash: "pricing" },
-        ],
-      },
-      {
-        title: "Resources",
-        links: [
-          { label: "Explore", to: "/explore" },
-          { label: "Blog", to: "/blog" },
-          { label: "FAQ", to: "/faq" },
-          { label: "Contact", to: "/contact" },
-        ],
-      },
-      {
-        title: "Legal",
-        links: [
-          { label: "Privacy Policy", to: "/privacy-policy" },
-          { label: "Terms", to: "/terms-and-conditions" },
-          { label: "Sales Conditions", to: "/sales-conditions" },
-          { label: "Ethics Charter", to: "/ethic-chart" },
-        ],
-      },
-    ],
-    copyright: "Kucibok — Certified African Art",
-  },
-}
+import { useLang } from "../../store/LangContext"
+import { africaT } from "../../i18n/africa"
+import { globalT } from "../../i18n/global"
 
 /**
  * Portal-specific footer with 4-column layout.
@@ -75,7 +9,8 @@ const FOOTER_CONFIG = {
  * @param {"africa"|"global"} props.portal - Active portal
  */
 export default function PortalFooter({ portal }) {
-  const cfg = FOOTER_CONFIG[portal]
+  const { lang } = useLang()
+  const cfg = portal === "africa" ? africaT[lang].footer : globalT[lang].footer
 
   return (
     <footer className="pt-20 pb-10 border-t border-white/[0.03]">
@@ -133,10 +68,10 @@ export default function PortalFooter({ portal }) {
           </p>
           <div className="flex gap-6">
             <Link to="/privacy-policy" className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors">
-              {portal === "africa" ? "Confidentialite" : "Privacy"}
+              {cfg.privacy}
             </Link>
             <Link to="/terms-and-conditions" className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors">
-              {portal === "africa" ? "CGU" : "Terms"}
+              {cfg.terms}
             </Link>
           </div>
         </div>

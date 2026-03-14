@@ -321,9 +321,9 @@ export default function AfricaFeatureSection() {
             </div>
 
             {/* Body */}
-            <div className="flex" style={{ minHeight: "380px" }}>
-              {/* Sidebar */}
-              <div className="flex-shrink-0 border-r border-kcb-silver/[0.06] pt-5" style={{ width: "176px", background: "#0b0e14" }}>
+            <div className="flex" style={{ minHeight: "320px" }}>
+              {/* Sidebar — hidden on mobile */}
+              <div className="hidden sm:block flex-shrink-0 border-r border-kcb-silver/[0.06] pt-5" style={{ width: "160px", background: "#0b0e14" }}>
                 {NAV_LABELS.map((label, i) => {
                   const isActive = i === activeNavIndex
                   return (

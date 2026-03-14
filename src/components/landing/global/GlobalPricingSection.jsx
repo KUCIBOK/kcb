@@ -2,42 +2,16 @@ import { Link } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import RevealOnScroll from "../RevealOnScroll"
 import SectionLabel from "../SectionLabel"
-
-const PLANS = [
-  {
-    name: "Explorer",
-    desc: "Browse and connect with artists",
-    price: "Free",
-    period: "No commitment",
-    features: ["Browse certified artworks", "View artist profiles", "Verify KCB certificates", "Request information"],
-    featured: false,
-    cta: { label: "Get Started", to: "/sign-up" },
-  },
-  {
-    name: "Collector",
-    desc: "Full access with priority logistics",
-    price: "49",
-    priceSuffix: " EUR",
-    period: "per month",
-    features: ["Everything in Explorer", "Purchase certified artworks", "Priority logistics booking", "Dedicated account manager", "Provenance reports"],
-    featured: true,
-    cta: { label: "Start Collecting", to: "/sign-up" },
-  },
-  {
-    name: "Institution",
-    desc: "Galleries, museums, corporate",
-    price: "Custom",
-    period: "Annual contract",
-    features: ["Everything in Collector", "B2B sourcing access", "Exhibition logistics", "Volume discounts", "API integration"],
-    featured: false,
-    cta: { label: "Contact Sales", to: "/contact" },
-  },
-]
+import { useLang } from "../../../store/LangContext"
+import { globalT } from "../../../i18n/global"
 
 /**
  * Pricing section with 3 plans for Global portal.
  */
 export default function GlobalPricingSection() {
+  const { lang } = useLang()
+  const t = globalT[lang].pricing
+
   return (
     <section id="pricing" className="py-36 bg-kcb-ivoire text-kcb-noir">
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
@@ -45,19 +19,19 @@ export default function GlobalPricingSection() {
           <div className="text-center mb-20">
             <div className="font-jetbrains text-[10px] tracking-[0.25em] uppercase text-kcb-silver-dark inline-flex items-center gap-4">
               <span className="block w-12 h-px bg-kcb-silver-dark" />
-              Pricing
+              {t.label}
             </div>
             <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-kcb-noir mt-6">
-              Choose Your Access Level
+              {t.title}
             </h2>
             <p className="text-[15px] text-kcb-pierre mt-3 max-w-[440px] mx-auto">
-              From browsing to institutional sourcing. Every plan includes access to the certified catalogue.
+              {t.subtitle}
             </p>
           </div>
         </RevealOnScroll>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px max-w-[920px] mx-auto">
-          {PLANS.map((plan, i) => (
+          {t.plans.map((plan, i) => (
             <RevealOnScroll key={i} delay={i * 0.1}>
               <div className={`p-8 lg:p-11 flex flex-col h-full relative ${plan.featured ? "bg-kcb-steel text-white" : "bg-white"}`}>
                 {plan.featured && <div className="absolute top-0 left-0 right-0 h-0.5 bg-kcb-silver" />}

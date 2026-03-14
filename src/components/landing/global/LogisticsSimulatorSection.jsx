@@ -3,6 +3,8 @@ import { Link } from "react-router-dom"
 import { ArrowRight, Package, Shield, Truck, FileCheck, Info } from "lucide-react"
 import RevealOnScroll from "../RevealOnScroll"
 import SectionLabel from "../SectionLabel"
+import { useLang } from "../../../store/LangContext"
+import { globalT } from "../../../i18n/global"
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -139,6 +141,9 @@ function CostRow({ icon: Icon, label, value, accent = false }) {
 // ── Main component ───────────────────────────────────────────────────────────
 
 export default function LogisticsSimulatorSection() {
+  const { lang } = useLang()
+  const t = globalT[lang].simulator
+
   const [params, setParams] = useState({
     originId: "dakar",
     destId:   "paris",
@@ -158,12 +163,12 @@ export default function LogisticsSimulatorSection() {
 
         <RevealOnScroll>
           <div className="mb-14">
-            <SectionLabel text="Quote Simulator" />
+            <SectionLabel text={t.label} />
             <h2 className="font-playfair font-bold text-[clamp(26px,3vw,38px)] text-white mt-6 mb-3">
-              Estimate your shipment in seconds
+              {t.title}
             </h2>
             <p className="text-[15px] leading-[1.8] text-kcb-pierre max-w-[560px]">
-              Select your origin, destination, and artwork parameters. We'll break down every cost — transport, insurance, customs, and packing — before you commit to anything.
+              {t.desc}
             </p>
           </div>
         </RevealOnScroll>
@@ -174,31 +179,31 @@ export default function LogisticsSimulatorSection() {
             {/* ── Left: Parameters ── */}
             <div className="bg-kcb-noir px-8 py-10 border border-kcb-silver/[0.07]">
               <div className="font-jetbrains text-[9px] tracking-[0.18em] text-[var(--accent)] mb-8 uppercase">
-                01 — Shipment Parameters
+                {t.step1}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
                 <Select
-                  label="Origin"
+                  label={t.originLabel}
                   value={params.originId}
                   onChange={set("originId")}
                   options={ORIGINS}
                 />
                 <Select
-                  label="Destination"
+                  label={t.destLabel}
                   value={params.destId}
                   onChange={set("destId")}
                   options={DESTINATIONS}
                 />
                 <Select
-                  label="Artwork type"
+                  label={t.typeLabel}
                   value={params.typeId}
                   onChange={set("typeId")}
                   options={ARTWORK_TYPES}
                 />
                 <div>
                   <label className="block font-jetbrains text-[9px] tracking-[0.14em] text-kcb-pierre/70 uppercase mb-2">
-                    Declared value
+                    {t.valueLabel}
                   </label>
                   <div className="relative">
                     <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-kcb-pierre/50 text-[13px]">€</span>
@@ -218,7 +223,7 @@ export default function LogisticsSimulatorSection() {
               {/* Size selector */}
               <div>
                 <label className="block font-jetbrains text-[9px] tracking-[0.14em] text-kcb-pierre/70 uppercase mb-3">
-                  Artwork size (largest dimension)
+                  {t.sizeLabel}
                 </label>
                 <div className="grid grid-cols-4 gap-1.5">
                   {SIZES.map(s => (
@@ -243,7 +248,7 @@ export default function LogisticsSimulatorSection() {
               {/* Value slider */}
               <div className="mt-7">
                 <div className="flex justify-between mb-2">
-                  <span className="font-jetbrains text-[9px] tracking-[0.14em] text-kcb-pierre/70 uppercase">Value range</span>
+                  <span className="font-jetbrains text-[9px] tracking-[0.14em] text-kcb-pierre/70 uppercase">{t.valueRangeLabel}</span>
                   <span className="font-jetbrains text-[10px] text-[var(--accent)]">{params.value.toLocaleString("fr-FR")} €</span>
                 </div>
                 <input
@@ -265,20 +270,20 @@ export default function LogisticsSimulatorSection() {
             {/* ── Right: Cost breakdown ── */}
             <div className="bg-kcb-noir px-8 py-10 border border-kcb-silver/[0.07] flex flex-col">
               <div className="font-jetbrains text-[9px] tracking-[0.18em] text-[var(--accent)] mb-8 uppercase">
-                02 — Cost Breakdown
+                {t.step2}
               </div>
 
               <div className="flex-1">
-                <CostRow icon={Truck}      label="Transport international" value={quote.transport}  />
-                <CostRow icon={Package}    label="Emballage muséal"          value={quote.packing}   />
-                <CostRow icon={Shield}     label="Assurance valeur déclarée" value={quote.insurance} />
-                <CostRow icon={FileCheck}  label="Frais douane & transit"    value={quote.importFees}/>
-                <CostRow icon={FileCheck}  label="Kucibok Bridge fee"        value={quote.kucibok}   />
+                <CostRow icon={Truck}      label={t.rows.transport}   value={quote.transport}  />
+                <CostRow icon={Package}    label={t.rows.packing}     value={quote.packing}   />
+                <CostRow icon={Shield}     label={t.rows.insurance}   value={quote.insurance} />
+                <CostRow icon={FileCheck}  label={t.rows.importFees}  value={quote.importFees}/>
+                <CostRow icon={FileCheck}  label={t.rows.kucibok}     value={quote.kucibok}   />
 
                 {/* Separator */}
                 <div className="border-t border-kcb-silver/[0.12] mt-1 mb-1" />
 
-                <CostRow icon={ArrowRight} label="Total estimé" value={quote.total} accent />
+                <CostRow icon={ArrowRight} label={t.rows.total} value={quote.total} accent />
               </div>
 
               {/* Transit + cert */}
@@ -286,16 +291,16 @@ export default function LogisticsSimulatorSection() {
                 <div className="flex items-center gap-2.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] flex-shrink-0" />
                   <span className="text-[12px] text-kcb-pierre">
-                    Transit estimé vers <span className="text-white">{dest.label}</span> : <span className="text-white font-medium">{quote.transit}</span>
+                    {t.transitTo} <span className="text-white">{dest.label}</span> : <span className="text-white font-medium">{quote.transit}</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] flex-shrink-0" />
-                  <span className="text-[12px] text-kcb-pierre">Certificat d'authenticité KCB : <span className="text-white font-medium">inclus</span></span>
+                  <span className="text-[12px] text-kcb-pierre">{t.cert} : <span className="text-white font-medium">{t.included}</span></span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] flex-shrink-0" />
-                  <span className="text-[12px] text-kcb-pierre">Tracking en temps réel : <span className="text-white font-medium">inclus</span></span>
+                  <span className="text-[12px] text-kcb-pierre">{t.tracking} : <span className="text-white font-medium">{t.included}</span></span>
                 </div>
               </div>
 
@@ -305,11 +310,11 @@ export default function LogisticsSimulatorSection() {
                   to="/contact"
                   className="flex items-center justify-center gap-2 bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-6 py-3.5 w-full transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline"
                 >
-                  Obtenir une cotation formelle <ArrowRight className="w-3.5 h-3.5" />
+                  {t.cta} <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
                 <p className="text-[10px] text-kcb-pierre/50 leading-relaxed flex gap-1.5 items-start">
                   <Info className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                  Estimation indicative. Cotation précise et contractuelle sous 24h. Les frais de douane peuvent varier selon la classification douanière exacte de l'œuvre.
+                  {t.disclaimer}
                 </p>
               </div>
             </div>

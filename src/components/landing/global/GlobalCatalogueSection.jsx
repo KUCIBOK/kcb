@@ -2,6 +2,8 @@ import { Link } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import RevealOnScroll from "../RevealOnScroll"
 import SectionLabel from "../SectionLabel"
+import { useLang } from "../../../store/LangContext"
+import { globalT } from "../../../i18n/global"
 
 const ITEMS = [
   { title: "Memoires du Sahel", artist: "Ousmane Ndiaye", id: "KCB-20260087", bgStyle: "repeating-linear-gradient(45deg, var(--kcb-silver-dark) 0px, var(--kcb-silver-dark) 1px, transparent 1px, transparent 16px), var(--kcb-ardoise)" },
@@ -14,19 +16,22 @@ const ITEMS = [
  * Catalogue grid for Global portal showing 4 certified artworks.
  */
 export default function GlobalCatalogueSection() {
+  const { lang } = useLang()
+  const t = globalT[lang].catalogue
+
   return (
     <section id="catalogue" className="py-36 bg-kcb-noir-deep">
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <div className="flex justify-between items-end mb-20 flex-wrap gap-6">
           <RevealOnScroll>
-            <SectionLabel text="Certified Collection" />
+            <SectionLabel text={t.label} />
             <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6">
-              Curated, Not Aggregated
+              {t.title}
             </h2>
           </RevealOnScroll>
           <RevealOnScroll>
             <Link to="/explore" className="inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase transition-colors hover:text-[var(--accent)] no-underline">
-              View full catalogue <ArrowRight className="w-3.5 h-3.5" />
+              {t.linkLabel} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </RevealOnScroll>
         </div>
