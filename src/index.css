@@ -527,6 +527,18 @@ td {
   50% { transform: translateX(-50%) scale(1.2) translateY(-10px); opacity: 0.5; }
 }
 
+/* Kuzi mascot — gentle float */
+@keyframes kuzi-float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-10px); }
+}
+/* Kuzi mascot — eyelid blink overlay (double blink every 5s) */
+@keyframes kuzi-eyelid {
+  0%, 82%, 86%, 91%, 95%, 100% { transform: scaleY(0); opacity: 0; }
+  83%, 84%                      { transform: scaleY(1); opacity: 1; }
+  92%, 93%                      { transform: scaleY(1); opacity: 1; }
+}
+
 /* Float animations — Global hero stats */
 @keyframes kcb-float-1 {
   0%, 100% { transform: translateY(0); }

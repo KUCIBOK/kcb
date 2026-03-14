@@ -31,15 +31,35 @@ export default function Gateway() {
         />
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          <img
-            src="/images/Kuzi.webp"
-            alt="Kuzi"
-            className="w-[280px] md:w-[280px] sm:w-[120px] h-auto mb-8 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-            style={{
-              filter: "drop-shadow(0 16px 40px rgba(0,0,0,0.4))",
-              transform: hover === "africa" ? "scale(1.05) translateY(-4px)" : "scale(1)",
-            }}
-          />
+          {/* Kuzi — float + eyelid blink overlay */}
+          <div
+            className="relative mb-8 flex-shrink-0"
+            style={{ width: "280px", animation: "kuzi-float 3.5s ease-in-out infinite" }}
+          >
+            <img
+              src="/images/Kuzi.webp"
+              alt="Kuzi"
+              className="w-full h-auto transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                filter: "drop-shadow(0 16px 40px rgba(0,0,0,0.4))",
+                transform: hover === "africa" ? "scale(1.05)" : "scale(1)",
+              }}
+            />
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: "43%",
+                top: "35%",
+                width: "13%",
+                height: "4.5%",
+                background: "#2C2424",
+                borderRadius: "50% 50% 45% 45% / 100% 100% 0% 0%",
+                transformOrigin: "50% 0%",
+                transform: "scaleY(0)",
+                animation: "kuzi-eyelid 5s ease-in-out infinite",
+              }}
+            />
+          </div>
           <div className="font-jetbrains text-[10px] tracking-[0.3em] uppercase text-kcb-or mb-5">
             Portail Afrique
           </div>
@@ -78,7 +98,7 @@ export default function Gateway() {
         />
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          <div className="w-[280px] h-[280px] md:w-[280px] md:h-[280px] sm:w-[200px] sm:h-[200px] relative mb-8">
+          <div className="w-[300px] h-[300px] md:w-[300px] md:h-[300px] sm:w-[220px] sm:h-[220px] relative mb-8">
             <GatewayMapSvg />
           </div>
           <div className="font-jetbrains text-[10px] tracking-[0.3em] uppercase text-kcb-silver mb-5">

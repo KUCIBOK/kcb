@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import RevealOnScroll from "../RevealOnScroll"
 import SectionLabel from "../SectionLabel"
@@ -12,35 +11,44 @@ const STEPS = [
 ]
 
 /**
- * Logistics corridor section with SVG map for Global portal.
+ * Logistics corridor section with world map for Global portal.
+ * Map shows animated routes from West Africa to all major continents.
  */
 export default function GlobalLogisticsSection() {
   return (
     <section id="logistics" className="py-36">
+      {/* Header — constrained */}
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <div className="flex justify-between items-end mb-16 flex-wrap gap-6">
           <RevealOnScroll>
-            <SectionLabel text="Logistics Corridor" />
+            <SectionLabel text="Global Logistics Network" />
             <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-3">
-              West Africa — Europe, Door to Door
+              Africa to the World — Every Continent, One Standard
             </h2>
             <p className="text-[15px] leading-[1.8] text-kcb-pierre max-w-[520px]">
-              Museum-grade packing, climate-controlled transport, customs clearance, and last-mile delivery. One corridor, fully managed.
+              Museum-grade packing, climate-controlled transport, customs clearance, and last-mile delivery. From Dakar to Dubai, Abidjan to Tokyo — one fully managed corridor.
             </p>
           </RevealOnScroll>
           <RevealOnScroll>
-            <Link to="/contact" className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline">
-              Request a Quote <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <button
+              onClick={() => document.getElementById("simulator")?.scrollIntoView({ behavior: "smooth" })}
+              className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px"
+            >
+              Estimate in seconds <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </RevealOnScroll>
         </div>
+      </div>
 
-        <RevealOnScroll>
-          <div className="mb-16">
-            <CorridorMapSvg />
-          </div>
-        </RevealOnScroll>
+      {/* World map — true full width */}
+      <RevealOnScroll>
+        <div className="w-full mb-16">
+          <CorridorMapSvg />
+        </div>
+      </RevealOnScroll>
 
+      {/* Steps — constrained */}
+      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0.5">
           {STEPS.map((step, i) => (
             <RevealOnScroll key={i} delay={i * 0.1}>

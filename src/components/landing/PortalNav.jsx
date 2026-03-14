@@ -1,38 +1,35 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Menu, X } from "lucide-react"
-
-/** @type {Record<string, {links: {label: string, to?: string, id?: string}[], cta: {label: string, to: string}, switch: {label: string, to: string}}>} */
-const NAV_CONFIG = {
-  africa: {
-    links: [
-      { label: "Services", id: "services" },
-      { label: "Comment ca marche", id: "timeline" },
-      { label: "Temoignages", id: "testimonials" },
-    ],
-    cta: { label: "Inscription", to: "/sign-up" },
-    switch: { label: "Global Portal", to: "/global" },
-  },
-  global: {
-    links: [
-      { label: "Catalogue", id: "catalogue" },
-      { label: "Logistics", id: "logistics" },
-      { label: "Sourcing", id: "sourcing" },
-      { label: "Pricing", id: "pricing" },
-    ],
-    cta: { label: "Sign Up", to: "/sign-up" },
-    switch: { label: "Portail Afrique", to: "/africa" },
-  },
-}
+import { useLang } from "../../store/LangContext"
+import { africaT } from "../../i18n/africa"
+import { globalT } from "../../i18n/global"
+import LangToggle from "../ui/LangToggle"
 
 /**
- * Sticky navigation bar that adapts to the active portal.
+ * Sticky navigation bar that adapts to the active portal and current language.
  * @param {object} props
  * @param {"africa"|"global"} props.portal - Active portal
  */
 export default function PortalNav({ portal }) {
   const [open, setOpen] = useState(false)
-  const cfg = NAV_CONFIG[portal]
+  const { lang } = useLang()
+
+  const t = portal === "africa" ? africaT[lang].nav : globalT[lang].nav
+
+  const links =
+    portal === "africa"
+      ? [
+          { label: t.services,     id: "services" },
+          { label: t.howItWorks,   id: "timeline" },
+          { label: t.testimonials, id: "testimonials" },
+        ]
+      : [
+          { label: t.catalogue, id: "catalogue" },
+          { label: t.logistics, id: "logistics" },
+          { label: t.sourcing,  id: "sourcing" },
+          { label: t.pricing,   id: "pricing" },
+        ]
 
   const scrollTo = (id) => {
     setOpen(false)
@@ -54,94 +51,78 @@ export default function PortalNav({ portal }) {
 
         {/* Desktop links */}
         <ul className="hidden lg:flex items-center gap-9 list-none">
-          {cfg.links.map((link, i) => {
-            if (link.to) {
-              return (
-                <li key={i}>
-                  <Link
-                    to={link.to}
-                    className="text-xs font-medium tracking-[0.06em] uppercase text-kcb-pierre no-underline transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              )
-            }
-            return (
-              <li key={i}>
-                <button
-                  onClick={() => scrollTo(link.id)}
-                  className="text-xs font-medium tracking-[0.06em] uppercase text-kcb-pierre transition-colors hover:text-white"
-                >
-                  {link.label}
-                </button>
-              </li>
-            )
-          })}
+          {links.map((link, i) => (
+            <li key={i}>
+              <button
+                onClick={() => scrollTo(link.id)}
+                className="text-xs font-medium tracking-[0.06em] uppercase text-kcb-pierre transition-colors hover:text-white"
+              >
+                {link.label}
+              </button>
+            </li>
+          ))}
+
+          {/* Lang toggle */}
+          <li>
+            <LangToggle />
+          </li>
+
+          {/* Switch portal */}
           <li>
             <Link
-              to={cfg.switch.to}
+              to={portal === "africa" ? "/global" : "/africa"}
               className="text-xs tracking-[0.06em] uppercase text-kcb-pierre no-underline border border-white/[0.08] px-4 py-1.5 transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
             >
-              {cfg.switch.label}
+              {t.switchPortal}
             </Link>
           </li>
+
+          {/* CTA */}
           <li>
             <Link
-              to={cfg.cta.to}
+              to="/sign-up"
               className="text-xs font-semibold tracking-[0.06em] uppercase bg-[var(--accent)] text-kcb-noir no-underline px-5 py-2 transition-colors hover:bg-[var(--accent-dark)]"
             >
-              {cfg.cta.label}
+              {t.cta}
             </Link>
           </li>
         </ul>
 
-        {/* Mobile toggle */}
-        <button onClick={() => setOpen(!open)} className="lg:hidden text-white p-2">
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Mobile: lang toggle + burger */}
+        <div className="lg:hidden flex items-center gap-4">
+          <LangToggle />
+          <button onClick={() => setOpen(!open)} className="text-white p-2">
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
       {open && (
         <div className="lg:hidden border-t border-white/[0.03] mt-4 pt-4 pb-6 px-[clamp(24px,5vw,80px)] flex flex-col gap-4">
-          {cfg.links.map((link, i) => {
-            if (link.to) {
-              return (
-                <Link
-                  key={i}
-                  to={link.to}
-                  onClick={() => setOpen(false)}
-                  className="text-sm text-kcb-pierre no-underline hover:text-white transition-colors"
-                >
-                  {link.label}
-                </Link>
-              )
-            }
-            return (
-              <button
-                key={i}
-                onClick={() => scrollTo(link.id)}
-                className="text-left text-sm text-kcb-pierre hover:text-white transition-colors"
-              >
-                {link.label}
-              </button>
-            )
-          })}
+          {links.map((link, i) => (
+            <button
+              key={i}
+              onClick={() => scrollTo(link.id)}
+              className="text-left text-sm text-kcb-pierre hover:text-white transition-colors"
+            >
+              {link.label}
+            </button>
+          ))}
           <div className="flex flex-col gap-2 pt-3 border-t border-white/[0.03]">
             <Link
-              to={cfg.switch.to}
+              to={portal === "africa" ? "/global" : "/africa"}
               onClick={() => setOpen(false)}
               className="text-sm text-center text-kcb-pierre border border-white/[0.08] py-2 no-underline"
             >
-              {cfg.switch.label}
+              {t.switchPortal}
             </Link>
             <Link
-              to={cfg.cta.to}
+              to="/sign-up"
               onClick={() => setOpen(false)}
               className="text-sm text-center font-semibold bg-[var(--accent)] text-kcb-noir py-2 no-underline"
             >
-              {cfg.cta.label}
+              {t.cta}
             </Link>
           </div>
         </div>

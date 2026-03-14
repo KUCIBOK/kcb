@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import PortalNav from "./PortalNav"
 import PortalFooter from "./PortalFooter"
+import { LangProvider } from "../../store/LangContext"
 
 /** CSS variable maps per portal. */
 const PORTAL_VARS = {
@@ -21,13 +22,15 @@ export default function PortalLayout({ portal, children }) {
   }, [])
 
   return (
-    <div
-      className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans grain-overlay"
-      style={PORTAL_VARS[portal]}
-    >
-      <PortalNav portal={portal} />
-      <main>{children}</main>
-      <PortalFooter portal={portal} />
-    </div>
+    <LangProvider defaultLang={portal === "africa" ? "fr" : "en"}>
+      <div
+        className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans grain-overlay"
+        style={PORTAL_VARS[portal]}
+      >
+        <PortalNav portal={portal} />
+        <main>{children}</main>
+        <PortalFooter portal={portal} />
+      </div>
+    </LangProvider>
   )
 }
