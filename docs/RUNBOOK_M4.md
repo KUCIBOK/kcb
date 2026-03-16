@@ -173,17 +173,19 @@ node scripts/migrate_cloudinary.js --table=artworks --offset=150
 # SUPABASE_URL              ✓
 # SUPABASE_SERVICE_ROLE_KEY ✓
 # API_KEY                   ✓
-# CORS_ORIGIN               ✓
+# CORS_ORIGIN               ✓  (valeur exacte : https://kucibok.com — jamais de wildcard)
 # RESEND_API_KEY            ✓
 # ADMIN_EMAIL               ✓
-# PAYDUNYA_*                ✓
+# PAYDUNYA_MASTER_KEY       ✓
+# PAYDUNYA_PRIVATE_KEY      ✓
+# PAYDUNYA_TOKEN            ✓
 
 # 5.2 Deployer (si pas encore fait depuis M3)
 vercel --prod
 
 # 5.3 Tester le healthcheck
 curl https://kucibok.com/api/health
-# Reponse attendue : { "status": "ok", "supabase": true }
+# Reponse attendue : { "status": "ok", "supabase": true, "database": "supabase_ok", ... }
 ```
 
 ---

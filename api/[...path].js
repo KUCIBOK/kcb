@@ -380,6 +380,7 @@ async function routeHealth(req, res) {
   const status = dbOk ? 200 : 503;
   return res.status(status).json({
     status:    dbOk ? 'ok' : 'degraded',
+    supabase:  dbOk,
     database:  dbOk ? 'supabase_ok' : 'supabase_error',
     timestamp: new Date().toISOString(),
     version:   '2.0.0-supabase',
