@@ -11,7 +11,7 @@
 Verifier que les phases precedentes sont terminees et validees :
 
 - [x] Phase M1 : Supabase Auth + Storage configure (buckets crees)
-- [x] Phase M2 : Schema PostgreSQL cree + RLS actif (34 tables)
+- [x] Phase M2 : Schema PostgreSQL cree + RLS actif (36 tables)
 - [x] Phase M3 : Vercel Functions deployees et testees en staging
 - [ ] VPS Hostinger renouvele (minimum 1 mois de marge)
 - [ ] Snapshot MongoDB Atlas cree (backup obligatoire)

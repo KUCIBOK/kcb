@@ -9,7 +9,7 @@ Infrastructure digitale de standardisation et de circulation securisee de l'art 
 
 - **Frontend** : React 18 + Vite 6 + TailwindCSS 4 + React Router 7 + Framer Motion
 - **Backend** : Vercel Functions (catch-all unique `api/[...path].js`)
-- **Database** : Supabase PostgreSQL (34 tables + RLS + triggers)
+- **Database** : Supabase PostgreSQL (36 tables + RLS + triggers)
 - **Auth** : Supabase Auth (email + Google OAuth)
 - **Storage** : Supabase Storage (buckets: artworks, profiles, blogs, certificates)
 - **Paiements** : PayDunya (AF), Stripe (EU — Phase 2)
@@ -113,7 +113,7 @@ Triggers automatiques :
 - `artworks_kucibok_id` : genere KCB-XXXXXXXX a l'insertion
 - `on_auth_user_created` : cree l'enregistrement `users` a l'inscription
 
-RLS actif sur toutes les tables. Le service_role bypass RLS (utilise par les Functions).
+36 tables. RLS actif sur toutes les tables. Le service_role bypass RLS (utilise par les Functions).
 
 ## Dette technique connue
 
