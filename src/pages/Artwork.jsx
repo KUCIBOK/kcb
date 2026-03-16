@@ -1,4 +1,5 @@
 import { ArrowLeft, Image, Share, ShoppingCart, Volume2, Truck } from "lucide-react";
+import DOMPurify from 'dompurify';
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getArtworkById } from "../api/useArtworks";
@@ -147,7 +148,7 @@ export default function Artwork() {
                                     </div>
                                     <div className="mt-4">
                                         <h2 className="text-lg font-semibold text-white mb-1">Description</h2>
-                                        <p id="artwork-description" className="text-kcb-sable text-sm text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: artwork?.description }}></p>
+                                        <p id="artwork-description" className="text-kcb-sable text-sm text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(artwork?.description ?? '') }}></p>
                                     </div>
 
                                     {/* Bouton expédition transfrontalière */}

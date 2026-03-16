@@ -82,14 +82,34 @@ export function AuthContextProvider({ children }) {
     else if (key === 'adminProfile') setAdminProfile(profileData);
   }, []);
 
+  /**
+   * Récupère le rôle autoritatif depuis public.users (source de vérité DB).
+   * Ne jamais lire le rôle depuis user_metadata côté client.
+   */
+  const loadDbRole = useCallback(async (userId) => {
+    if (!userId) return null;
+    const { data } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', userId)
+      .single();
+    return data?.role ?? null;
+  }, []);
+
   // ── Écoute les changements de session Supabase ────────────────────────────
   useEffect(() => {
     // Récupère la session initiale au montage
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSupabaseToken(session?.access_token ?? null);
       const kcbUser = toKcbUser(session?.user ?? null);
-      setUser(kcbUser);
-      if (kcbUser) loadProfile(kcbUser);
+      if (kcbUser) {
+        const dbRole = await loadDbRole(kcbUser._id);
+        if (dbRole) kcbUser.role = dbRole;
+        setUser(kcbUser);
+        loadProfile(kcbUser);
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
@@ -100,7 +120,14 @@ export function AuthContextProvider({ children }) {
         setSupabaseToken(session?.access_token ?? null);
 
         const kcbUser = toKcbUser(session?.user ?? null);
-        setUser(kcbUser);
+
+        if (kcbUser) {
+          const dbRole = await loadDbRole(kcbUser._id);
+          if (dbRole) kcbUser.role = dbRole;
+          setUser(kcbUser);
+        } else {
+          setUser(null);
+        }
 
         if (event === 'SIGNED_IN' && kcbUser) {
           loadProfile(kcbUser);
@@ -124,7 +151,7 @@ export function AuthContextProvider({ children }) {
     );
 
     return () => authListener.unsubscribe();
-  }, [loadProfile]);
+  }, [loadProfile, loadDbRole]);
 
   // ── Actions exposées ──────────────────────────────────────────────────────
 

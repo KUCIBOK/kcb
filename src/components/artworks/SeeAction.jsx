@@ -1,4 +1,5 @@
 import { Eye, X } from "lucide-react";
+import DOMPurify from 'dompurify';
 import { memo, useState } from "react";
 import { ApproveAction } from "./ApproveAction";
 
@@ -40,7 +41,7 @@ const ArtworkModal = memo(({ setShow, artwork, user }) => {
                     <div className="lg:w-1/2 flex flex-col gap-2">
                         <div className="mb-2">
                             <span className="text-xs text-zinc-400">Description</span>
-                            <p className="text-white text-sm font-medium mt-1"><span dangerouslySetInnerHTML={{ __html: artwork?.description }} /></p>
+                            <p className="text-white text-sm font-medium mt-1"><span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(artwork?.description ?? '') }} /></p>
                         </div>
                         <div className="flex flex-wrap gap-2 mt-2">
                             {artwork?.tags?.map((tag, index) => (

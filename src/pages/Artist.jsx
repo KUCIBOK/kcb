@@ -1,4 +1,5 @@
 import { memo, useEffect, useState } from "react";
+import DOMPurify from 'dompurify';
 import { Link, useParams } from "react-router-dom";
 import { getArtistForSaleArtworks } from "../api/useArtworks";
 import { ArrowLeft, Camera } from "lucide-react";
@@ -57,7 +58,7 @@ export default function ArtistDetails () {
             case 1:
                 return (
                     <div className="border border-white/[0.06] bg-kcb-ardoise/30 rounded-[4px] p-4 text-kcb-sable">
-                        <span dangerouslySetInnerHTML={{ __html: state?.artist?.biography }}></span>
+                        <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(state?.artist?.biography ?? '') }}></span>
                     </div>
                 )
 

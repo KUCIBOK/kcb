@@ -50,3 +50,11 @@ preview.html
 # Local screenshots
 /dashboard/
 .env*.local
+
+# Migration scripts — fichiers secrets (ne jamais commiter)
+scripts/.env.migration
+scripts/.env.migration.json
+scripts/.env.migration.txt
+scripts/migration_id_map.json
+scripts/user_id_map.json
+scripts/yarn.lock

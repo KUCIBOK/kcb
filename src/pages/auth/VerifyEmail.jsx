@@ -1,42 +1,43 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../../store/AuthContext";
-import { verifyEmail } from "../../api/useAuth";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabase";
 import RevealOnScroll from "../../components/landing/RevealOnScroll";
 
+const ROLE_DASHBOARDS = {
+  artist:       '/dashboard/artist',
+  collector:    '/dashboard/collector',
+  professional: '/dashboard/professional',
+  admin:        '/dashboard/admin',
+};
+
 export default function VerifyEmail() {
-  const { token } = useParams();
-  const {login, setProfile} = useAuth();
-  const [state, setState] = useState({
-    loading : true,
-    user : null,
-    profile : null,
-    artist : null,
-    error: null
-  });
+  const [state, setState] = useState({ loading: true, error: null });
   const navigate = useNavigate();
 
   useEffect(() => {
-    const verify = async () => {
-      try {
-        const data = await verifyEmail(token);
-        if(!data?.user?._id || !data?.user?.role || data?.error) {setState(prev => ({ ...prev, error: data?.error || "Erreur lors de la vérification.", loading: false })); setTimeout(() => {navigate("/sign-in")}, 3000); return;};
-        login({ ...data?.user, isLogin: true });
-        if (data?.user?.role == "artist") {
-          setProfile(data?.artist);
+    // Supabase détecte automatiquement le token dans l'URL (detectSessionInUrl: true)
+    // et déclenche SIGNED_IN via onAuthStateChange — on écoute et on redirige.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+          // Lire le rôle depuis public.users (source de vérité)
+          const { data: dbUser } = await supabase
+            .from('users').select('role').eq('id', session.user.id).single();
+          const role = dbUser?.role ?? 'collector';
+          navigate(ROLE_DASHBOARDS[role] ?? '/', { replace: true });
         }
-        if (data?.user?.role) {
-          setProfile(data?.profile);
-        }
-        window.location.reload();
-      } catch (err) {
-        setState(prev => ({ ...prev, error: "Erreur lors de la vérification." }));
+        if (event === 'TOKEN_REFRESHED') return;
+        // Timeout : si aucun événement SIGNED_IN après 5s, le lien est invalide
       }
-    };
-    
-    token ? verify() : setState({ ...state, error: "Aucun token fourni." });
+    );
 
-  }, [token, navigate]);
+    const timeout = setTimeout(() => {
+      setState({ loading: false, error: 'Lien de vérification invalide ou expiré.' });
+      setTimeout(() => navigate('/sign-in', { replace: true }), 3000);
+    }, 5000);
+
+    return () => { subscription.unsubscribe(); clearTimeout(timeout); };
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-kcb-noir-deep px-4">

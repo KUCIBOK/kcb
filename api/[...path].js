@@ -57,6 +57,30 @@
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes }  from 'crypto';
 
+// ─── Validation des variables d'environnement ────────────────────────────────
+
+const REQUIRED_ENV = [
+  'SUPABASE_URL',
+  'SUPABASE_SERVICE_ROLE_KEY',
+  'API_KEY',
+  'CORS_ORIGIN',
+  'RESEND_API_KEY',
+  'ADMIN_EMAIL',
+  'PAYDUNYA_MASTER_KEY',
+  'PAYDUNYA_PRIVATE_KEY',
+  'PAYDUNYA_TOKEN',
+];
+
+for (const key of REQUIRED_ENV) {
+  if (!process.env[key]) {
+    throw new Error(`[API] Variable d'environnement manquante : ${key}`);
+  }
+}
+
+if (process.env.CORS_ORIGIN === '*') {
+  throw new Error('[API] CORS_ORIGIN ne peut pas être un wildcard (*).');
+}
+
 // ─── Supabase Admin Client ────────────────────────────────────────────────────
 
 const supabaseAdmin = createClient(
@@ -417,10 +441,11 @@ const BASE_URL = process.env.CORS_ORIGIN ?? 'https://kucibok.com';
  * @param {string} action - s1 (signup, signin, signout, me, …)
  */
 async function routeAuth(req, res, action) {
-  // GET /api/auth/:uuid — lookup utilisateur par ID (admin uniquement)
+  // GET|PUT /api/auth/:uuid — lookup ou mise à jour utilisateur par ID
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (req.method === 'GET' && action && UUID_RE.test(action)) {
-    return await authGetById(req, res, action);
+  if (action && UUID_RE.test(action)) {
+    if (req.method === 'GET') return await authGetById(req, res, action);
+    if (req.method === 'PUT') return await authUpdateById(req, res, action);
   }
 
   switch (action) {
@@ -463,6 +488,41 @@ async function authGetById(req, res, id) {
     created_at: u.created_at,
     confirmed:  !!u.email_confirmed_at,
   });
+}
+
+/**
+ * PUT /api/auth/:id — Met à jour les champs non-sensibles d'un utilisateur dans public.users.
+ * L'utilisateur ne peut mettre à jour que son propre compte (sauf admin).
+ *
+ * @param {import('@vercel/node').VercelRequest}  req
+ * @param {import('@vercel/node').VercelResponse} res
+ * @param {string} id - UUID utilisateur
+ */
+async function authUpdateById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const { user } = authResult;
+
+  // Seul l'utilisateur lui-même ou un admin peut mettre à jour
+  const { data: dbUser } = await supabaseAdmin.from('users').select('role').eq('id', user.id).single();
+  const isAdmin = dbUser?.role === 'admin';
+  if (user.id !== id && !isAdmin) return fail(res, 'Accès refusé', 403);
+
+  // Whitelist stricte — le rôle ne peut jamais être modifié depuis cet endpoint
+  const ALLOWED = ['name', 'username', 'country', 'image'];
+  const updates = {};
+  for (const key of ALLOWED) {
+    if (req.body?.[key] !== undefined) updates[key] = req.body[key];
+  }
+
+  if (!Object.keys(updates).length) return fail(res, 'Aucun champ valide à mettre à jour');
+
+  const { data, error } = await supabaseAdmin
+    .from('users').update(updates).eq('id', id).select().single();
+
+  if (error) return fail(res, error.message);
+
+  return ok(res, { _id: data.id, ...data });
 }
 
 /**
@@ -691,17 +751,28 @@ async function authGoogleCallback(req, res) {
   if (authResult.error) return fail(res, authResult.error, authResult.status);
   const { user } = authResult;
 
-  // Si le rôle est déjà défini, retourner l'utilisateur tel quel
-  if (user.user_metadata?.role) {
+  // Vérifier le rôle depuis public.users (source de vérité DB)
+  const { data: dbUser } = await supabaseAdmin
+    .from('users').select('role').eq('id', user.id).single();
+
+  const existingRole = dbUser?.role;
+
+  // Utilisateur existant avec rôle — retourner directement
+  if (existingRole && existingRole !== 'collector') {
     return ok(res, {
-      user: { id: user.id, email: user.email, role: user.user_metadata.role },
+      needs_role_selection: false,
+      user: { id: user.id, email: user.email, role: existingRole },
     });
   }
 
+  // Nouvel utilisateur Google sans rôle — demander la sélection
   const { role } = req.body ?? {};
   if (!['collector', 'artist', 'professional'].includes(role)) {
-    return fail(res, 'Rôle invalide. Valeurs acceptées : collector, artist, professional');
+    return ok(res, { needs_role_selection: true, user: { id: user.id, email: user.email } });
   }
+
+  // Rôle fourni — assigner dans public.users ET user_metadata
+  await supabaseAdmin.from('users').upsert({ id: user.id, role }, { onConflict: 'id' });
 
   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
     user_metadata: { ...user.user_metadata, role },
@@ -710,11 +781,8 @@ async function authGoogleCallback(req, res) {
   if (error) return fail(res, error.message);
 
   return ok(res, {
-    user: {
-      id:    data.user.id,
-      email: data.user.email,
-      role:  data.user.user_metadata?.role,
-    },
+    needs_role_selection: false,
+    user: { id: data.user.id, email: data.user.email, role },
   });
 }
 
@@ -1589,85 +1657,95 @@ async function routePaydunyaInit(req, res) {
 async function routePaydunyaCallback(req, res) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
 
-  // Vérifier le hash PayDunya pour authentifier le webhook
-  const receivedHash = req.headers['paydunya-hash'];
-  if (!receivedHash || receivedHash !== PAYDUNYA_MASTER_KEY) {
-    console.error('[PAYDUNYA] Hash de webhook invalide');
-    return fail(res, 'Signature webhook invalide', 403);
-  }
-
-  const { data: paymentData } = req.body ?? {};
-  if (!paymentData) return fail(res, 'Données PayDunya manquantes');
-
-  const { token } = paymentData;
-  if (!token) return fail(res, 'Token manquant');
-
-  const verifyRes = await fetch(`${PAYDUNYA_VERIFY_ENDPOINTS[PAYDUNYA_MODE]}/${token}`, {
-    method:  'GET',
-    headers: {
-      'PAYDUNYA-MASTER-KEY':  PAYDUNYA_MASTER_KEY,
-      'PAYDUNYA-PRIVATE-KEY': PAYDUNYA_PRIVATE_KEY,
-      'PAYDUNYA-TOKEN':       PAYDUNYA_TOKEN,
-    },
-  });
-
-  const verified = await verifyRes.json();
-  if (verified.status !== 'completed') return fail(res, 'Paiement non complété');
-
-  // Idempotence — ignorer si le webhook a déjà été traité (double appel PayDunya)
-  const { data: existingTx } = await supabaseAdmin
-    .from('transactions').select('id').eq('payment_ref', token).maybeSingle();
-  if (existingTx) return ok(res, { received: true });
-
-  const { user_id, type, artwork_id, plan_id } = verified.custom_data ?? {};
-
-  if (type === 'artwork' && artwork_id) {
-    await supabaseAdmin
-      .from('artworks')
-      .update({ sold: true, sold_at: new Date().toISOString(), for_sale: false })
-      .eq('id', artwork_id);
-
-    const { data: artwork } = await supabaseAdmin
-      .from('artworks').select('price, currency, user_id').eq('id', artwork_id).single();
-
-    if (artwork) {
-      await supabaseAdmin.from('transactions').insert({
-        artwork_id,
-        buyer_id:       user_id,
-        seller_id:      artwork.user_id,
-        amount:         artwork.price,
-        currency:       artwork.currency,
-        status:         'completed',
-        payment_method: 'paydunya',
-        payment_ref:    token,
-      });
+  try {
+    // Vérifier le hash PayDunya pour authentifier le webhook
+    const receivedHash = req.headers['paydunya-hash'];
+    if (!receivedHash || receivedHash !== PAYDUNYA_MASTER_KEY) {
+      console.error('[PAYDUNYA] Hash de webhook invalide');
+      return fail(res, 'Signature webhook invalide', 403);
     }
-  }
 
-  if ((type === 'subscription' || type === 'plan') && plan_id) {
-    const { data: plan } = await supabaseAdmin
-      .from('plans').select('duration_days, price, currency').eq('id', plan_id).single();
+    const { data: paymentData } = req.body ?? {};
+    if (!paymentData) return fail(res, 'Données PayDunya manquantes');
 
-    if (plan) {
-      const start_date = new Date();
-      const end_date   = new Date(start_date);
-      end_date.setDate(end_date.getDate() + (plan.duration_days ?? 30));
+    const { token } = paymentData;
+    if (!token) return fail(res, 'Token manquant');
 
-      await supabaseAdmin.from('subscriptions').upsert({
-        user_id,
-        plan_id,
-        status:            'active',
-        start_date:        start_date.toISOString(),
-        end_date:          end_date.toISOString(),
-        next_payment_date: end_date.toISOString(),
-        amount:            plan.price,
-        currency:          plan.currency,
-        payment_ref:       token,
-      }, { onConflict: 'user_id,plan_id' });
+    const verifyRes = await fetch(`${PAYDUNYA_VERIFY_ENDPOINTS[PAYDUNYA_MODE]}/${token}`, {
+      method:  'GET',
+      headers: {
+        'PAYDUNYA-MASTER-KEY':  PAYDUNYA_MASTER_KEY,
+        'PAYDUNYA-PRIVATE-KEY': PAYDUNYA_PRIVATE_KEY,
+        'PAYDUNYA-TOKEN':       PAYDUNYA_TOKEN,
+      },
+    });
+
+    const verified = await verifyRes.json();
+    if (verified.status !== 'completed') return fail(res, 'Paiement non complété');
+
+    // Idempotence — ignorer si le webhook a déjà été traité (double appel PayDunya)
+    const { data: existingTx } = await supabaseAdmin
+      .from('transactions').select('id').eq('payment_ref', token).maybeSingle();
+    if (existingTx) return ok(res, { received: true });
+
+    const { user_id, type, artwork_id, plan_id } = verified.custom_data ?? {};
+
+    if (!user_id) {
+      console.error('[PAYDUNYA] user_id manquant dans custom_data', { token });
+      return fail(res, 'user_id manquant dans les données de paiement', 400);
     }
-  }
 
-  return ok(res, { received: true });
+    if (type === 'artwork' && artwork_id) {
+      await supabaseAdmin
+        .from('artworks')
+        .update({ sold: true, sold_at: new Date().toISOString(), for_sale: false })
+        .eq('id', artwork_id);
+
+      const { data: artwork } = await supabaseAdmin
+        .from('artworks').select('price, currency, user_id').eq('id', artwork_id).single();
+
+      if (artwork) {
+        await supabaseAdmin.from('transactions').insert({
+          artwork_id,
+          buyer_id:       user_id,
+          seller_id:      artwork.user_id,
+          amount:         artwork.price,
+          currency:       artwork.currency,
+          status:         'completed',
+          payment_method: 'paydunya',
+          payment_ref:    token,
+        });
+      }
+    }
+
+    if ((type === 'subscription' || type === 'plan') && plan_id) {
+      const { data: plan } = await supabaseAdmin
+        .from('plans').select('duration_days, price, currency').eq('id', plan_id).single();
+
+      if (plan) {
+        const start_date = new Date();
+        const end_date   = new Date(start_date);
+        end_date.setDate(end_date.getDate() + (plan.duration_days ?? 30));
+
+        await supabaseAdmin.from('subscriptions').upsert({
+          user_id,
+          plan_id,
+          status:            'active',
+          start_date:        start_date.toISOString(),
+          end_date:          end_date.toISOString(),
+          next_payment_date: end_date.toISOString(),
+          amount:            plan.price,
+          currency:          plan.currency,
+          payment_ref:       token,
+        }, { onConflict: 'user_id,plan_id' });
+      }
+    }
+
+    return ok(res, { received: true });
+  } catch (err) {
+    console.error('[PAYDUNYA CALLBACK]', err?.message ?? err);
+    return fail(res, 'Erreur traitement webhook', 500);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1860,16 +1938,22 @@ async function routeCampaignSend(req, res) {
 
   const BATCH_SIZE = 50;
   let sent = 0;
+  let failed = 0;
 
   for (let i = 0; i < emails.length; i += BATCH_SIZE) {
     const batch = emails.slice(i, i + BATCH_SIZE);
-    await resend.emails.send({
-      from:    FROM_EMAIL,
-      to:      batch,
-      subject: campaign.subject,
-      html:    campaign.content,
-    });
-    sent += batch.length;
+    try {
+      await resend.emails.send({
+        from:    FROM_EMAIL,
+        to:      batch,
+        subject: campaign.subject,
+        html:    campaign.content,
+      });
+      sent += batch.length;
+    } catch (err) {
+      console.error('[RESEND] Batch failed:', err?.message);
+      failed += batch.length;
+    }
   }
 
   await supabaseAdmin
@@ -1877,7 +1961,7 @@ async function routeCampaignSend(req, res) {
     .update({ status: 'sent', sent_at: new Date().toISOString() })
     .eq('id', campaign_id);
 
-  return ok(res, { sent, campaign_id });
+  return ok(res, { sent, failed, campaign_id });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

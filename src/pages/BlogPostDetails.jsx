@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import DOMPurify from 'dompurify';
 import { Link, useParams } from "react-router-dom"
 import { getBlogPost } from "../api/useBlogPost"
 import { DataLoader } from "../components/loaders/PageLoader"
@@ -100,7 +101,7 @@ export default function BlogPostDetails(){
                         <div className="border-b border-white/[0.06] pb-6">
                             <span
                                 className="text-base text-white leading-relaxed"
-                                dangerouslySetInnerHTML={{ __html: `<p className="text-xs">${state?.post?.content}</p>` }}
+                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(state?.post?.content ?? '') }}
                             />
                         </div>
                         {state?.post?.tags?.length > 0 && (

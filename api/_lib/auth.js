@@ -37,13 +37,19 @@ export async function requireAuth(req) {
 
 /**
  * Vérifie que l'utilisateur possède l'un des rôles requis.
+ * Lit le rôle depuis la table `users` (source de vérité) — jamais depuis user_metadata.
  *
  * @param {object} user - Utilisateur Supabase
  * @param {string[]} roles - Rôles autorisés
- * @returns {{ ok: true } | { error: string, status: number }}
+ * @returns {Promise<{ ok: true } | { error: string, status: number }>}
  */
-export function requireRole(user, roles) {
-  const userRole = user.user_metadata?.role ?? 'collector';
+export async function requireRole(user, roles) {
+  const { data: dbUser } = await supabaseAdmin
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+  const userRole = dbUser?.role ?? 'collector';
   if (!roles.includes(userRole)) {
     return { error: `Accès refusé. Rôle requis : ${roles.join(' ou ')}`, status: 403 };
   }
@@ -54,7 +60,7 @@ export function requireRole(user, roles) {
  * Vérifie que l'utilisateur est admin.
  *
  * @param {object} user - Utilisateur Supabase
- * @returns {{ ok: true } | { error: string, status: number }}
+ * @returns {Promise<{ ok: true } | { error: string, status: number }>}
  */
 export const requireAdmin = (user) => requireRole(user, ['admin']);
 
@@ -62,7 +68,7 @@ export const requireAdmin = (user) => requireRole(user, ['admin']);
  * Vérifie que l'utilisateur est professional ou admin.
  *
  * @param {object} user - Utilisateur Supabase
- * @returns {{ ok: true } | { error: string, status: number }}
+ * @returns {Promise<{ ok: true } | { error: string, status: number }>}
  */
 export const requirePro = (user) => requireRole(user, ['professional', 'admin']);
 

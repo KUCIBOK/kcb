@@ -80,38 +80,43 @@ import { GalleryContextProvider } from "../store/GalleryContext";
 
 // AutoAuth component
 import { AutoAuth } from "../store/AutoAuth";
+import { ErrorBoundary } from "react-error-boundary";
+import Error500 from "../components/fallback/Error500";
+
 export function Router() {
   return (
     <>
       <Routes>
         <Route
           element={
-            <AuthContextProvider>
-              <ArtistContextProvider>
-                <ArtworksContextProvider>
-                  <BlogContextProvider>
-                    <UserProvider>
-                      <PlanProvider>
-                        <CategoryProvider>
-                          <CollectionProvider>
-                            <DeliveryContextProvider>
-                              <NumerisationProvider>
-                                <ClientProvider>
-                                  <GalleryContextProvider>
-                                    <AutoAuth />
-                                    <Outlet />
-                                  </GalleryContextProvider>
-                                </ClientProvider>
-                              </NumerisationProvider>
-                            </DeliveryContextProvider>
-                          </CollectionProvider>
-                        </CategoryProvider>
-                      </PlanProvider>
-                    </UserProvider>
-                  </BlogContextProvider>
-                </ArtworksContextProvider>
-              </ArtistContextProvider>
-            </AuthContextProvider>
+            <ErrorBoundary FallbackComponent={Error500}>
+              <AuthContextProvider>
+                <ArtistContextProvider>
+                  <ArtworksContextProvider>
+                    <BlogContextProvider>
+                      <UserProvider>
+                        <PlanProvider>
+                          <CategoryProvider>
+                            <CollectionProvider>
+                              <DeliveryContextProvider>
+                                <NumerisationProvider>
+                                  <ClientProvider>
+                                    <GalleryContextProvider>
+                                      <AutoAuth />
+                                      <Outlet />
+                                    </GalleryContextProvider>
+                                  </ClientProvider>
+                                </NumerisationProvider>
+                              </DeliveryContextProvider>
+                            </CollectionProvider>
+                          </CategoryProvider>
+                        </PlanProvider>
+                      </UserProvider>
+                    </BlogContextProvider>
+                  </ArtworksContextProvider>
+                </ArtistContextProvider>
+              </AuthContextProvider>
+            </ErrorBoundary>
           }
         >
           {/* Gateway — standalone split-screen entry */}

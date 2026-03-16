@@ -121,16 +121,19 @@ export async function loginWithGoogle() {
 }
 
 /**
- * Vérifie l'email après inscription (géré automatiquement par Supabase via lien email).
- * Cette fonction récupère la session active après redirection de confirmation.
+ * Vérifie l'email après inscription.
+ * Supabase gère automatiquement le token via detectSessionInUrl: true —
+ * cette fonction récupère la session établie après la redirection du lien email.
  *
  * @returns {Promise<{ user: object } | { error: string }>}
  */
 export async function verifyEmail() {
   try {
+    // Laisser Supabase un court délai pour traiter le token de l'URL
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const { data, error } = await supabase.auth.getSession();
     if (error) return { error: error.message };
-    if (!data.session) return { error: "Aucune session active après vérification." };
+    if (!data.session?.user) return { error: 'Lien de vérification invalide ou expiré.' };
     return { user: toKcbUser(data.session.user) };
   } catch (err) {
     return { error: err.message };
