@@ -4,7 +4,7 @@ import { ShieldCheck, Search, X, SlidersHorizontal, ArrowRight, Loader2 } from "
 import PortalLayout from "../components/landing/PortalLayout"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
-import { getApprovedArtworks } from "../api/useArtworks"
+import { getAllArtworks } from "../api/useArtworks"
 import { useLang } from "../store/LangContext"
 import { globalT } from "../i18n/global"
 
@@ -93,7 +93,7 @@ function CatalogueContent() {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    getApprovedArtworks().then((result) => {
+    getAllArtworks({ status: 'approved', limit: 1000 }).then((result) => {
       const list = Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : []
       setAllArtworks(list)
       setLoading(false)

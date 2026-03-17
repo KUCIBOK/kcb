@@ -176,7 +176,7 @@ const serverError = (res, err) => {
  */
 function parsePagination(req) {
   const page  = Math.max(1, parseInt(req.query.page  ?? '1',  10));
-  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit ?? '20', 10)));
+  const limit = Math.min(1000, Math.max(1, parseInt(req.query.limit ?? '20', 10)));
   const from  = (page - 1) * limit;
   const to    = from + limit - 1;
   return { page, limit, from, to };
@@ -830,7 +830,8 @@ async function routeArtworks(req, res) {
 
     const { data, error, count } = await query;
     if (error) return fail(res, error.message);
-    return ok(res, data, 200, { page, limit, total: count });
+    const normalized = (data ?? []).map(a => ({ ...a, _id: a.id }));
+    return ok(res, normalized, 200, { page, limit, total: count });
   }
 
   if (req.method === 'POST') {

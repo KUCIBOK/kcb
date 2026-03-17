@@ -34,7 +34,7 @@ export default function GlobalCatalogueSection() {
       // Prefer certified artworks (have kucibok_id), then take 4
       const certified = list.filter(a => a.kucibok_id)
       const pick      = certified.length >= 4 ? certified : list
-      setArtworks(pick.slice(0, 4))
+      setArtworks(pick.slice(0, 4).map(a => ({ ...a, _id: a._id ?? a.id })))
       setLoading(false)
     })
   }, [])
