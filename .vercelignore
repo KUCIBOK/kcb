@@ -1,0 +1,5 @@
+scripts/
+docs/
+supabase/
+*.md
+.env*
