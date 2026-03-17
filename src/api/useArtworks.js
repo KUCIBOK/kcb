@@ -255,8 +255,8 @@ export async function submitArtwork(data) {
  */
 export async function updateArtwork(id, payload) {
   try {
-    const { supabase }          = await import('../lib/supabase');
-    const { uploadArtworkImage } = await import('../lib/storage');
+    const { supabase }                        = await import('../lib/supabase');
+    const { uploadArtworkImage, uploadFile }  = await import('../lib/storage');
     const { data: sessionData } = await supabase.auth.getSession();
     const token  = sessionData.session?.access_token ?? '';
     const userId = sessionData.session?.user?.id;
@@ -265,7 +265,9 @@ export async function updateArtwork(id, payload) {
     for (const [key, value] of payload.entries()) fields[key] = value;
 
     if (fields.image instanceof File && userId) {
-      const upload = await uploadArtworkImage(userId, fields.image);
+      // Utilise un path stable basé sur l'id de l'œuvre pour écraser l'ancienne image
+      const ext = fields.image.name.split('.').pop()?.toLowerCase() ?? 'jpg';
+      const upload = await uploadFile({ bucket: 'artworks', path: `${userId}/${id}.${ext}`, file: fields.image });
       if (upload.error) return { error: upload.error };
       fields.image = upload.url;
     }

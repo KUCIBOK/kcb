@@ -61,16 +61,7 @@ export async function SignUpUser(charge) {
   try {
     const { email, password, role, name, image, ...rest } = charge;
 
-    // Upload de la photo de profil artiste vers Supabase Storage (M1)
-    let imageUrl = null;
-    if (role === 'artist' && image instanceof File) {
-      // ID temporaire basé sur l'email pour le path de stockage pré-inscription
-      const tempId = btoa(email).replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
-      const uploadResult = await uploadProfileImage(tempId, image);
-      if (uploadResult.error) return { error: uploadResult.error };
-      imageUrl = uploadResult.url;
-    }
-
+    // Inscription Supabase d'abord — l'image est uploadée APRÈS auth pour avoir un vrai userId
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -78,7 +69,6 @@ export async function SignUpUser(charge) {
         data: {
           role: role ?? 'collector',
           name: name ?? '',
-          ...(imageUrl ? { imageUrl } : {}),
           ...rest,
         },
       },
@@ -91,8 +81,22 @@ export async function SignUpUser(charge) {
       return { error: error.message };
     }
 
+    // Upload de la photo de profil avec le vrai userId Supabase
+    let imageUrl = null;
+    const userId = data.user?.id;
+    if (role === 'artist' && image instanceof File && userId) {
+      const uploadResult = await uploadProfileImage(userId, image);
+      // En cas d'échec upload, on ne bloque pas l'inscription — l'image peut être ajoutée plus tard
+      if (!uploadResult.error) {
+        imageUrl = uploadResult.url;
+        // Mettre à jour les metadata avec l'URL de l'image
+        await supabase.auth.updateUser({ data: { imageUrl } });
+      }
+    }
+
     return {
       user: toKcbUser(data.user),
+      imageUrl,
       message: 'Inscription réussie. Vérifiez votre adresse email pour continuer.',
     };
   } catch (err) {
