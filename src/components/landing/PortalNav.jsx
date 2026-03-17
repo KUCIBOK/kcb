@@ -25,9 +25,9 @@ export default function PortalNav({ portal }) {
           { label: t.testimonials, id: "testimonials" },
         ]
       : [
-          { label: t.catalogue, id: "catalogue" },
+          { label: t.catalogue, to: "/global/catalogue" },
           { label: t.logistics, id: "logistics" },
-          { label: t.sourcing,  id: "sourcing" },
+          { label: t.sourcing,  to: "/global/sourcing" },
           { label: t.pricing,   id: "pricing" },
         ]
 
@@ -53,12 +53,21 @@ export default function PortalNav({ portal }) {
         <ul className="hidden lg:flex items-center gap-9 list-none">
           {links.map((link, i) => (
             <li key={i}>
-              <button
-                onClick={() => scrollTo(link.id)}
-                className="text-xs font-medium tracking-[0.06em] uppercase text-kcb-pierre transition-colors hover:text-white"
-              >
-                {link.label}
-              </button>
+              {link.to ? (
+                <Link
+                  to={link.to}
+                  className="text-xs font-medium tracking-[0.06em] uppercase text-kcb-pierre transition-colors hover:text-white no-underline"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <button
+                  onClick={() => scrollTo(link.id)}
+                  className="text-xs font-medium tracking-[0.06em] uppercase text-kcb-pierre transition-colors hover:text-white"
+                >
+                  {link.label}
+                </button>
+              )}
             </li>
           ))}
 
@@ -101,13 +110,24 @@ export default function PortalNav({ portal }) {
       {open && (
         <div className="lg:hidden border-t border-white/[0.03] mt-4 pt-4 pb-6 px-[clamp(24px,5vw,80px)] flex flex-col gap-4">
           {links.map((link, i) => (
-            <button
-              key={i}
-              onClick={() => scrollTo(link.id)}
-              className="text-left text-sm text-kcb-pierre hover:text-white transition-colors"
-            >
-              {link.label}
-            </button>
+            link.to ? (
+              <Link
+                key={i}
+                to={link.to}
+                onClick={() => setOpen(false)}
+                className="text-left text-sm text-kcb-pierre hover:text-white transition-colors no-underline"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <button
+                key={i}
+                onClick={() => scrollTo(link.id)}
+                className="text-left text-sm text-kcb-pierre hover:text-white transition-colors"
+              >
+                {link.label}
+              </button>
+            )
           ))}
           <div className="flex flex-col gap-2 pt-3 border-t border-white/[0.03]">
             <Link

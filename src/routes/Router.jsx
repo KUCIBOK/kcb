@@ -51,7 +51,9 @@ const TrackingPage = lazy(() => import("../pages/TrackingPage"));
 const AfricaLanding = lazy(() => import("../pages/AfricaLanding"));
 const GatewayPage = lazy(() => import("../pages/GatewayPage"));
 const Marketplace = lazy(() => import("../pages/Marketplace"));
-const GlobalPage = lazy(() => import("../pages/GlobalPage"))
+const GlobalPage          = lazy(() => import("../pages/GlobalPage"))
+const GlobalCataloguePage = lazy(() => import("../pages/GlobalCataloguePage"))
+const GlobalSourcingPage  = lazy(() => import("../pages/GlobalSourcingPage"))
 const VerifyArtwork = lazy(() => import("../pages/VerifyArtwork"));
 const CataloguePro = lazy(() => import("../pages/CataloguePro"));
 // Protected Routes
@@ -262,6 +264,16 @@ export function Router() {
           <Route path="/global" element={
             <Suspense fallback={<PageLoader />}>
               <GlobalPage />
+            </Suspense>
+          } />
+          <Route path="/global/catalogue" element={
+            <Suspense fallback={<PageLoader />}>
+              <GlobalCataloguePage />
+            </Suspense>
+          } />
+          <Route path="/global/sourcing" element={
+            <Suspense fallback={<PageLoader />}>
+              <GlobalSourcingPage />
             </Suspense>
           } />
           <Route path="/privacy-policy" element={
