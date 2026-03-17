@@ -24,8 +24,8 @@ export default function Artwork() {
             const data = await getArtworkById(id);
             if (data?._id) {
                 setArtwork(prev => ({ ...data, loading: false }));
-                if (data?.artistId) {
-                    const artistData = await getArtistById(data.artistId);
+                if (data?.artist_id) {
+                    const artistData = await getArtistById(data.artist_id);
                     if (artistData?._id) {
                         setArtwork(prev => ({ ...prev, artist: artistData }));
                     }

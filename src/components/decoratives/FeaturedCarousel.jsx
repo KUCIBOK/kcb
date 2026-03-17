@@ -97,9 +97,9 @@ import { Link } from "react-router-dom";
 function ArtistInfo({artwork}){
   const [artist, setArtist] = useState({})
   useEffect(() => {
-    if(artwork?.artistId){
+    if(artwork?.artist_id){
       const getArtist = async () => {
-        const artistData = await getArtistById(artwork?.artistId);
+        const artistData = await getArtistById(artwork?.artist_id);
         if(artistData?._id){
             setArtist(prev => ({...artistData}))
         }

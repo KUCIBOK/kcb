@@ -26,12 +26,12 @@ export function Synthesis(){
     ?.filter(
         (artwork) =>
             artwork.sold &&
-            artwork.soldPrice &&
-            artwork.soldAt &&
-            new Date(artwork.soldAt).getMonth() === currentMonth &&
-            new Date(artwork.soldAt).getFullYear() === currentYear
+            artwork.sold_price &&
+            artwork.sold_at &&
+            new Date(artwork.sold_at).getMonth() === currentMonth &&
+            new Date(artwork.sold_at).getFullYear() === currentYear
     )
-    .reduce((sum, artwork) => sum + Number(artwork.soldPrice || 0), 0);
+    .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0);
 
     const deliveredArtworks = myArtworks?.filter(item => item?.isDelivered == "delivered")?.length
     const soldArtworksNumber = myArtworks?.filter(item => item?.sold == true)?.length
@@ -42,12 +42,12 @@ export function Synthesis(){
             ?.filter(
                 (artwork) =>
                     artwork.sold &&
-                    artwork.soldPrice &&
-                    artwork.soldAt &&
-                    new Date(artwork.soldAt).getMonth() === month &&
-                    new Date(artwork.soldAt).getFullYear() === currentYear
+                    artwork.sold_price &&
+                    artwork.sold_at &&
+                    new Date(artwork.sold_at).getMonth() === month &&
+                    new Date(artwork.sold_at).getFullYear() === currentYear
             )
-            .reduce((sum, artwork) => sum + Number(artwork.soldPrice || 0), 0) || 0;
+            .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0) || 0;
     });
 
     // Préparation des labels pour les mois
@@ -94,7 +94,7 @@ export function Synthesis(){
     ChartJS.register(ArcElement);
 
     const soldCount = myArtworks?.filter(a => a.sold)?.length || 0;
-    const forSaleCount = myArtworks?.filter(a => a.status == "approved" && a.forSale)?.length || 0;
+    const forSaleCount = myArtworks?.filter(a => a.status == "approved" && a.for_sale)?.length || 0;
     const pendingCount = myArtworks?.filter(a => a.status == "pending")?.length || 0;
 
     const pieData = {

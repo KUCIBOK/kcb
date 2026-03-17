@@ -162,9 +162,9 @@ export function Synthesis({setTab, setToggle}){
                     {artists
                         ?.map(artist => {
                             const sales = artworks?.filter(
-                                artwork => artwork.artistId === artist.id && artwork.sold
+                                artwork => artwork.artist_id === artist.id && artwork.sold
                             ) || [];
-                            const totalSales = sales.reduce((sum, a) => sum + Number(a.soldPrice || 0), 0);
+                            const totalSales = sales.reduce((sum, a) => sum + Number(a.sold_price || 0), 0);
                             return { ...artist, salesCount: sales.length, totalSales };
                         })
                         .sort((a, b) => b.totalSales - a.totalSales)

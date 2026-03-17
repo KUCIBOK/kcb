@@ -213,7 +213,7 @@ export function ArtistNumerisationTab() {
                 {myArtworks?.map((artwork) => (
                   <option key={artwork._id} value={artwork._id}>
                     {artwork.title}
-                    {artwork.kuciobkId ? ` — ${artwork.kuciobkId}` : ""}
+                    {artwork.kucibok_id ? ` — ${artwork.kucibok_id}` : ""}
                   </option>
                 ))}
               </select>

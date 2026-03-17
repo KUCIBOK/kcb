@@ -41,14 +41,14 @@ export function ArtistCertificationTab() {
 
   // ── KPIs ──────────────────────────────────────────────────────────────────
   const total = artworks.length
-  const certified = useMemo(() => artworks.filter((a) => !!a.kuciobkId).length, [artworks])
+  const certified = useMemo(() => artworks.filter((a) => !!a.kucibok_id).length, [artworks])
   const pendingCert = useMemo(() => artworks.filter((a) => a.status === "pending").length, [artworks])
-  const uncertified = useMemo(() => artworks.filter((a) => !a.kuciobkId).length, [artworks])
+  const uncertified = useMemo(() => artworks.filter((a) => !a.kucibok_id).length, [artworks])
 
   // ── Filtrage ──────────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
-    if (filter === "certified") return artworks.filter((a) => !!a.kuciobkId)
-    if (filter === "uncertified") return artworks.filter((a) => !a.kuciobkId)
+    if (filter === "certified") return artworks.filter((a) => !!a.kucibok_id)
+    if (filter === "uncertified") return artworks.filter((a) => !a.kucibok_id)
     return artworks
   }, [artworks, filter])
 
@@ -175,14 +175,14 @@ export function ArtistCertificationTab() {
 
                 {/* KCB ID */}
                 <div className="sm:col-span-4">
-                  {artwork.kuciobkId ? (
+                  {artwork.kucibok_id ? (
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4 text-green-400 shrink-0" />
                       <Link
-                        to={`/verify/${artwork.kuciobkId}`}
+                        to={`/verify/${artwork.kucibok_id}`}
                         className="text-green-400 hover:text-green-300 text-xs font-mono font-medium flex items-center gap-1 transition-colors"
                       >
-                        {artwork.kuciobkId}
+                        {artwork.kucibok_id}
                         <ExternalLink className="w-3 h-3" />
                       </Link>
                     </div>

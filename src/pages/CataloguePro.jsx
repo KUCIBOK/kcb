@@ -240,10 +240,10 @@ export default function CataloguePro() {
                       </div>
                     )}
                     {/* Badge Standard Kucibok */}
-                    {artwork.kuciobkId && (
+                    {artwork.kucibok_id && (
                       <div className="absolute top-2 left-2 flex items-center gap-1 bg-indigo-950/90 border border-indigo-700/40 rounded-full px-2 py-0.5">
                         <ShieldCheck className="w-3 h-3 text-indigo-400" />
-                        <span className="text-[10px] text-indigo-300 font-mono">{artwork.kuciobkId}</span>
+                        <span className="text-[10px] text-indigo-300 font-mono">{artwork.kucibok_id}</span>
                       </div>
                     )}
                     {/* Badge disponibilité */}

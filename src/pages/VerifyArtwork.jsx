@@ -65,7 +65,7 @@ export default function VerifyArtwork() {
               {/* Identifiant */}
               <div className="px-6 py-4 bg-kcb-noir border-b border-white/[0.06] text-center">
                 <span className="font-jetbrains text-kcb-or font-bold text-lg tracking-widest">
-                  {artwork.kuciobkId}
+                  {artwork.kucibok_id}
                 </span>
               </div>
 

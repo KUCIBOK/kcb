@@ -12,7 +12,7 @@ const PAGE_SIZE = 12
 
 /** Sort comparator functions keyed by sort option value. */
 const SORT_FNS = {
-  recent:    (a, b) => new Date(b.createdAt ?? 0) - new Date(a.createdAt ?? 0),
+  recent:    (a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0),
   price_asc: (a, b) => (Number(a.price) || 0) - (Number(b.price) || 0),
   price_desc:(a, b) => (Number(b.price) || 0) - (Number(a.price) || 0),
 }
@@ -48,7 +48,7 @@ function ArtworkCard({ artwork }) {
           </div>
         )}
 
-        {artwork.kuciobkId && (
+        {artwork.kucibok_id && (
           <div
             className="absolute top-2 right-2 bg-kcb-or/90 backdrop-blur-sm rounded-full p-1"
             title="Certifié Standard Kucibok"
@@ -67,7 +67,7 @@ function ArtworkCard({ artwork }) {
         </p>
 
         <div className="mt-2 flex items-center justify-between gap-2">
-          {artwork.forSale && artwork.price ? (
+          {artwork.for_sale && artwork.price ? (
             <p className="text-kcb-or text-xs font-semibold">
               {Number(artwork.price).toLocaleString("fr-FR")}{" "}
               {artwork.currency || "XOF"}
@@ -76,7 +76,7 @@ function ArtworkCard({ artwork }) {
             <p className="text-kcb-pierre/60 text-xs">Non disponible</p>
           )}
 
-          {artwork.kuciobkId && (
+          {artwork.kucibok_id && (
             <span className="flex items-center gap-1 text-kcb-or text-[10px] font-medium">
               <ShieldCheck className="w-3 h-3" /> KCB
             </span>
@@ -128,8 +128,8 @@ export default function Marketplace() {
         if (!matchTitle && !matchArtist) return false
       }
       if (category !== "Tous" && a.category !== category) return false
-      if (forSaleOnly && !a.forSale) return false
-      if (certifiedOnly && !a.kuciobkId) return false
+      if (forSaleOnly && !a.for_sale) return false
+      if (certifiedOnly && !a.kucibok_id) return false
       return true
     })
     .sort(SORT_FNS[sort])

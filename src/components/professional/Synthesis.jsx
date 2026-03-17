@@ -32,12 +32,12 @@ export function Synthesis(){
         ?.filter(
             (artwork) =>
                 artwork.sold &&
-                artwork.soldPrice &&
-                artwork.soldAt &&
-                new Date(artwork.soldAt).getMonth() === currentMonth &&
-                new Date(artwork.soldAt).getFullYear() === currentYear
+                artwork.sold_price &&
+                artwork.sold_at &&
+                new Date(artwork.sold_at).getMonth() === currentMonth &&
+                new Date(artwork.sold_at).getFullYear() === currentYear
         )
-        .reduce((sum, artwork) => sum + Number(artwork.soldPrice || 0), 0);
+        .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0);
 
     const deliveredArtworks = myArtworks?.filter(item => item?.isDelivered == "delivered")?.length
     const soldArtworksNumber = myArtworks?.filter(item => item?.sold == true)?.length
@@ -48,12 +48,12 @@ export function Synthesis(){
             ?.filter(
                 (artwork) =>
                     artwork.sold &&
-                    artwork.soldPrice &&
-                    artwork.soldAt &&
-                    new Date(artwork.soldAt).getMonth() === month &&
-                    new Date(artwork.soldAt).getFullYear() === currentYear
+                    artwork.sold_price &&
+                    artwork.sold_at &&
+                    new Date(artwork.sold_at).getMonth() === month &&
+                    new Date(artwork.sold_at).getFullYear() === currentYear
             )
-            .reduce((sum, artwork) => sum + Number(artwork.soldPrice || 0), 0) || 0;
+            .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0) || 0;
     });
 
     const monthLabels = [
@@ -103,9 +103,9 @@ export function Synthesis(){
     const artistsData = myArtists
         ?.map(artist => {
             const sales = myArtworks?.filter(
-                artwork => artwork.artistId === artist.id && artwork.sold
+                artwork => artwork.artist_id === artist.id && artwork.sold
             ) || [];
-            const totalSales = sales.reduce((sum, a) => sum + Number(a.soldPrice || 0), 0);
+            const totalSales = sales.reduce((sum, a) => sum + Number(a.sold_price || 0), 0);
             return { name: artist.name, salesCount: sales.length, totalSales };
         })
         .sort((a, b) => b.totalSales - a.totalSales)
@@ -187,12 +187,12 @@ export function Synthesis(){
 
     // ===== ROI PAR ARTWORK =====
     const artworksWithROI = myArtworks
-        ?.filter(a => a.sold && a.estimatedPrice && a.soldPrice)
+        ?.filter(a => a.sold && a.estimated_price && a.sold_price)
         .map(a => ({
             title: a.title || "Sans titre",
-            estimatedPrice: Number(a.estimatedPrice || 0),
-            soldPrice: Number(a.soldPrice || 0),
-            roi: ((Number(a.soldPrice || 0) - Number(a.estimatedPrice || 0)) / Number(a.estimatedPrice || 1)) * 100
+            estimatedPrice: Number(a.estimated_price || 0),
+            soldPrice: Number(a.sold_price || 0),
+            roi: ((Number(a.sold_price || 0) - Number(a.estimated_price || 0)) / Number(a.estimated_price || 1)) * 100
         }))
         .sort((a, b) => b.roi - a.roi)
         .slice(0, 10) || [];
@@ -205,14 +205,14 @@ export function Synthesis(){
     });
 
     // ===== STATISTIQUES =====
-    const totalRevenue = myArtworks?.reduce((sum, a) => sum + (a.sold ? Number(a.soldPrice || 0) : 0), 0) || 0;
+    const totalRevenue = myArtworks?.reduce((sum, a) => sum + (a.sold ? Number(a.sold_price || 0) : 0), 0) || 0;
     const averagePricePerArtwork = soldArtworksNumber > 0 ? totalRevenue / soldArtworksNumber : 0;
     const bestROIArtwork = artworksWithROI[0];
     const worstROIArtwork = artworksWithROI[artworksWithROI.length - 1];
     const conversionRate = myArtworks?.length > 0 ? (soldArtworksNumber / myArtworks.length * 100) : 0;
 
     const soldCount = myArtworks?.filter(a => a.sold)?.length || 0;
-    const forSaleCount = myArtworks?.filter(a => a.status == "approved" && a.forSale)?.length || 0;
+    const forSaleCount = myArtworks?.filter(a => a.status == "approved" && a.for_sale)?.length || 0;
     const pendingCount = myArtworks?.filter(a => a.status == "pending")?.length || 0;
 
     const pieData = {
