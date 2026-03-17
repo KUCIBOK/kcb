@@ -67,7 +67,7 @@ export default function IntegratedToolsSection() {
         </div>
         <div className="flex justify-center">
           <Link
-            to="/sign-up"
+            to="/sign-up?role=artist"
             className="px-6 py-2 rounded-full bg-indigo-kcb text-white font-semibold shadow hover:bg-indigo-kcb/80 transition"
           >
             Accéder à mes outils

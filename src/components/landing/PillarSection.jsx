@@ -17,11 +17,11 @@ export default function PillarSection({ pillars, portal = "africa" }) {
   return (
     <section className={`bg-kcb-ardoise-cool border-t border-b ${borderColor} pt-20`}>
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
-        <div className="grid grid-cols-1 lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-3">
           {pillars.map((p, i) => (
             <RevealOnScroll key={i} delay={i * 0.1}>
               <div
-                className={`py-12 px-10 lg:border-r border-white/[0.03] last:border-r-0 transition-colors ${hoverBg}`}
+                className={`py-10 px-6 md:px-8 lg:px-10 md:border-r border-b md:border-b-0 border-white/[0.03] last:border-r-0 last:border-b-0 transition-colors ${hoverBg}`}
               >
                 <div className="font-jetbrains text-[10px] text-[var(--accent)] tracking-[0.2em] mb-3">
                   {p.num}

@@ -18,7 +18,7 @@ export default function HeroSection() {
           </p>
           <div className="flex gap-3 justify-center md:justify-start">
             <Link
-              to="/sign-up"
+              to="/sign-up?role=artist"
               className="bg-indigo-kcb text-white px-5 py-2 rounded-full font-semibold shadow hover:bg-indigo-kcb/80 transition"
             >
               Démarrez en tant qu'artiste

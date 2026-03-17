@@ -156,32 +156,36 @@ export function Synthesis(){
         </div>
 
         {/* Actions rapides */}
-        <div className="rounded-xl border p-4 my-4">
-            <h3 className="flex gap-2 items-center my-2"> <Clock className="w-6 h-6" /> Actions rapides</h3>
-            <div className="grid grid-cols-2 gap-4">
-                <Link to="submit-artwork" className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer">
+        <div className="rounded-xl border border-white/[0.06] p-4 my-4">
+            <h3 className="flex gap-2 items-center mb-3 text-sm font-semibold text-white">
+                <Clock className="w-4 h-4 text-kcb-or" /> Actions rapides
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+                <Link to="submit-artwork" className="rounded-lg border border-white/[0.06] p-3 flex flex-col items-center gap-2 hover:bg-gray-900 text-xs text-kcb-sable text-center transition">
                     <Image className="w-4 h-4" />
-                    Ajouter une oeuvre
+                    Ajouter une œuvre
                 </Link>
                 <CreateCollection />
             </div>
         </div>
 
         {/* Graphiques et liste */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm">
-            <h3 className="text-base font-semibold text-white mb-2">Chiffre d'affaires mensuel</h3>
-            <Bar data={barData} options={barOptions} height={220} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+          <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm overflow-hidden">
+            <h3 className="text-sm font-semibold text-white mb-3">Chiffre d'affaires mensuel</h3>
+            <div className="w-full overflow-x-auto">
+              <Bar data={barData} options={barOptions} height={200} />
+            </div>
           </div>
-          <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm">
+          <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm overflow-hidden">
             <ArtworksList title="Mes œuvres" artworks={myArtworks?.slice(0, 5) || []} />
           </div>
         </div>
 
         {/* Pie chart */}
         <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm">
-          <h3 className="text-base font-semibold text-white mb-2">Répartition des œuvres</h3>
-          <div className="h-56 flex items-center justify-center">
+          <h3 className="text-sm font-semibold text-white mb-3">Répartition des œuvres</h3>
+          <div className="h-48 md:h-56 flex items-center justify-center">
             <Pie data={pieData} options={pieOptions} />
           </div>
         </div>

@@ -56,8 +56,8 @@ export const globalT = {
       title: "Choose Your Access Level",
       subtitle: "From browsing to institutional sourcing. Every plan includes access to the certified catalogue.",
       plans: [
-        { name: "Explorer", desc: "Browse and connect with artists", price: "Free", period: "No commitment", features: ["Browse certified artworks", "View artist profiles", "Verify KCB certificates", "Request information"], cta: { label: "Get Started", to: "/sign-up" } },
-        { name: "Collector", desc: "Full access with priority logistics", price: "49", priceSuffix: " EUR", period: "per month", features: ["Everything in Explorer", "Purchase certified artworks", "Priority logistics booking", "Dedicated account manager", "Provenance reports"], featured: true, cta: { label: "Start Collecting", to: "/sign-up" } },
+        { name: "Explorer", desc: "Browse and connect with artists", price: "Free", period: "No commitment", features: ["Browse certified artworks", "View artist profiles", "Verify KCB certificates", "Request information"], cta: { label: "Get Started", to: "/sign-up?role=collector" } },
+        { name: "Collector", desc: "Full access with priority logistics", price: "49", priceSuffix: " EUR", period: "per month", features: ["Everything in Explorer", "Purchase certified artworks", "Priority logistics booking", "Dedicated account manager", "Provenance reports"], featured: true, cta: { label: "Start Collecting", to: "/sign-up?role=collector" } },
         { name: "Institution", desc: "Galleries, museums, corporate", price: "Custom", period: "Annual contract", features: ["Everything in Collector", "B2B sourcing access", "Exhibition logistics", "Volume discounts", "API integration"], cta: { label: "Contact Sales", to: "/contact" } },
       ],
     },
@@ -164,8 +164,8 @@ export const globalT = {
       title: "Choisissez Votre Niveau d'Accès",
       subtitle: "De la navigation à l'acquisition institutionnelle. Chaque plan inclut l'accès au catalogue certifié.",
       plans: [
-        { name: "Explorer", desc: "Parcourez et connectez-vous avec les artistes", price: "Gratuit", period: "Sans engagement", features: ["Parcourir les œuvres certifiées", "Voir les profils d'artistes", "Vérifier les certificats KCB", "Demander des informations"], cta: { label: "Commencer", to: "/sign-up" } },
-        { name: "Collector", desc: "Accès complet avec logistique prioritaire", price: "49", priceSuffix: " EUR", period: "par mois", features: ["Tout dans Explorer", "Acheter des œuvres certifiées", "Réservation logistique prioritaire", "Gestionnaire de compte dédié", "Rapports de provenance"], featured: true, cta: { label: "Commencer à Collecter", to: "/sign-up" } },
+        { name: "Explorer", desc: "Parcourez et connectez-vous avec les artistes", price: "Gratuit", period: "Sans engagement", features: ["Parcourir les œuvres certifiées", "Voir les profils d'artistes", "Vérifier les certificats KCB", "Demander des informations"], cta: { label: "Commencer", to: "/sign-up?role=collector" } },
+        { name: "Collector", desc: "Accès complet avec logistique prioritaire", price: "49", priceSuffix: " EUR", period: "par mois", features: ["Tout dans Explorer", "Acheter des œuvres certifiées", "Réservation logistique prioritaire", "Gestionnaire de compte dédié", "Rapports de provenance"], featured: true, cta: { label: "Commencer à Collecter", to: "/sign-up?role=collector" } },
         { name: "Institution", desc: "Galeries, musées, entreprises", price: "Sur devis", period: "Contrat annuel", features: ["Tout dans Collector", "Accès sourcing B2B", "Logistique d'exposition", "Remises sur volume", "Intégration API"], cta: { label: "Contacter les Ventes", to: "/contact" } },
       ],
     },

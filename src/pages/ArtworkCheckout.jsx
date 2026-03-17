@@ -80,9 +80,9 @@ export default function ArtworkCheckout(){
                 )}
                 {!artwork?.loading ? (
                     <RevealOnScroll>
-                    <div className="flex flex-col md:flex-row gap-8">
+                    <div className="flex flex-col md:flex-row gap-6">
                         {/* Résumé */}
-                        <div className="flex-1 bg-kcb-noir-deep border border-white/[0.06] rounded-[4px] p-6 flex flex-col gap-6 shadow-md">
+                        <div className="flex-1 bg-kcb-noir-deep border border-white/[0.06] rounded-[4px] p-4 md:p-6 flex flex-col gap-4 md:gap-6 shadow-md">
                             <h2 className="font-playfair text-xl text-white font-semibold mb-2">Résumé de la commande</h2>
                             <div className="flex gap-4 items-center">
                                 <img src={artwork?.image} alt={artwork?.title} className="rounded-[4px] w-24 h-24 object-cover border border-white/[0.06]" />
@@ -106,7 +106,7 @@ export default function ArtworkCheckout(){
                             </div>
                         </div>
                         {/* Paiement */}
-                        <div className="w-full md:w-96 bg-kcb-noir-deep border border-white/[0.06] rounded-[4px] p-6 flex flex-col gap-6 shadow-md">
+                        <div className="w-full md:w-80 lg:w-96 bg-kcb-noir-deep border border-white/[0.06] rounded-[4px] p-4 md:p-6 flex flex-col gap-4 md:gap-6 shadow-md">
                             <h3 className="flex items-center gap-2 text-white text-base font-semibold mb-2">
                                 <Lock className="w-4 h-4"/> Paiement sécurisé
                             </h3>

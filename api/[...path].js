@@ -2118,6 +2118,12 @@ async function routeProfile(req, res, id) {
   if (req.method === 'PUT') {
     const role = user.user_metadata?.role;
 
+    // telephone vit dans public.users, pas dans artists/profiles
+    if (req.body?.telephone !== undefined) {
+      await supabaseAdmin
+        .from('users').update({ telephone: req.body.telephone }).eq('id', id);
+    }
+
     if (role === 'artist') {
       const ALLOWED = ['name', 'username', 'image', 'country', 'biography', 'portfolio',
                        'facebook', 'twitter', 'instagram'];

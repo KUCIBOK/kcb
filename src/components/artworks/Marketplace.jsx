@@ -7,7 +7,7 @@ export const Marketplace = memo(({ artworks }) => {
     return (
         <div className="w-full">
             {artworks?.length >= 1 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                     {artworks.map((item, index) => (
                         <RevealOnScroll key={item._id || index}>
                             <ArtworkCard artwork={item} />

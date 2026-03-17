@@ -260,10 +260,14 @@ export async function updateUser(id, payload) {
  */
 export async function updateProfile(id, payload) {
   try {
-    // Extraire les champs du FormData
+    // Extraire les champs du FormData ou d'un objet plain
     const fields = {};
-    for (const [key, value] of payload.entries()) {
-      fields[key] = value;
+    if (payload instanceof FormData) {
+      for (const [key, value] of payload.entries()) {
+        fields[key] = value;
+      }
+    } else {
+      Object.assign(fields, payload);
     }
 
     // Si une image File est présente, l'uploader vers Supabase Storage

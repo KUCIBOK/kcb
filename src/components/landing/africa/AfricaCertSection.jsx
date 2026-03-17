@@ -66,7 +66,7 @@ export default function AfricaCertSection() {
 
               {/* CTA */}
               <Link
-                to="/sign-up"
+                to="/sign-up?role=artist"
                 className="inline-flex items-center gap-2 font-jetbrains text-[11px] tracking-[0.15em] uppercase px-7 py-3.5 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
                 style={{
                   background: "var(--accent)",

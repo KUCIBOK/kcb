@@ -28,7 +28,7 @@ function AfricaContent() {
         }
         subtitle={t.hero.subtitle}
         actions={[
-          { text: t.hero.cta1, to: "/sign-up", primary: true },
+          { text: t.hero.cta1, to: "/sign-up?role=artist", primary: true },
           { text: t.hero.cta2, onClick: () => document.getElementById("dashboard")?.scrollIntoView({ behavior: "smooth" }) },
         ]}
       >

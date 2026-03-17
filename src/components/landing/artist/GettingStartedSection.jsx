@@ -50,7 +50,7 @@ export default function GettingStartedSection() {
               <h3 className="text-base font-semibold mb-1">{step.title}</h3>
               <p className="text-xs text-white/60 mb-3">{step.desc}</p>
               <Link
-                to="/sign-up"
+                to="/sign-up?role=artist"
                 className="px-4 py-1 rounded-full bg-purple-kcb text-white text-xs font-medium shadow hover:bg-purple-kcb/80 transition"
               >
                 {step.btn}

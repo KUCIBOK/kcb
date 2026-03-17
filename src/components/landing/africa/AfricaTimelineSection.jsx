@@ -24,7 +24,7 @@ export default function AfricaTimelineSection() {
             <p className="text-[15px] leading-[1.8] text-kcb-pierre mb-10">
               {t.desc}
             </p>
-            <Link to="/sign-up" className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline">
+            <Link to="/sign-up?role=artist" className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline">
               {t.cta} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </RevealOnScroll>

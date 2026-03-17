@@ -59,22 +59,23 @@ export default function SignIn () {
 
           <RevealOnScroll>
           <div className="relative w-full max-w-sm mx-auto">
-            <div className="text-center mb-8 mt-8">
+            <div className="text-center mb-10 mt-8">
               <Link to='/'>
-                <img src="/images/kucibok-white-logo.svg" alt="logo kucibok" className="w-12 h-12 object-cover mx-auto" />
+                <img src="/images/kucibok-white-logo.svg" alt="logo kucibok" className="w-10 h-10 object-contain mx-auto" />
               </Link>
-              <h2 className="font-playfair text-xl font-semibold text-white mb-1 mt-4">Connexion</h2>
-              <p className="text-xs text-kcb-pierre">La marketplace d'art africain</p>
+              <h1 className="font-playfair text-xl font-semibold text-white mb-1 mt-4">Connexion</h1>
+              <p className="text-xs text-kcb-pierre">Infrastructure de l'art africain</p>
             </div>
             {formState.error && (
               <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
                 {formState.error}
               </div>
             )}
-            <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise shadow-sm">
-              <div className="p-5">
+            <div className="border border-white/[0.06] bg-kcb-ardoise relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-kcb-or" />
+              <div className="p-8">
                 <button
-                  className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 rounded-md mb-4 font-medium py-3 px-4 text-sm text-gray-800 transition border border-gray-200"
+                  className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 py-3 px-4 font-medium text-sm text-gray-800 transition border border-gray-200 mb-3"
                   onClick={handleGoogleLogin}
                   type="button"
                   disabled={formState.loading}
@@ -116,7 +117,7 @@ export default function SignIn () {
                         id="password"
                         minLength={8}
                         required
-                        className="w-full border border-white/[0.08] bg-kcb-noir rounded-[4px] px-3 py-1.5 pr-10 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or focus:ring-offset-2 focus:ring-offset-kcb-noir focus:border-kcb-or transition-all duration-200"
+                        className="w-full border border-white/[0.08] bg-kcb-noir px-3 py-3 pr-10 text-sm text-white placeholder-kcb-pierre/50 focus:outline-none focus:ring-1 focus:ring-kcb-or focus:border-kcb-or transition-all duration-200"
                         placeholder="Votre mot de passe"
                       />
                       <button
@@ -141,7 +142,7 @@ export default function SignIn () {
                   </Button>
                 </form>
               </div>
-              <div className="flex items-center justify-center border-t border-white/[0.06] p-4 rounded-b-xl">
+              <div className="flex items-center justify-center border-t border-white/[0.04] p-5">
                 <p className="text-xs text-kcb-pierre">
                   Pas de compte ?{' '}
                   <Link to="/sign-up" className="font-semibold text-kcb-or hover:underline">Inscription</Link>

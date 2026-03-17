@@ -1,204 +1,176 @@
-import { Camera } from "lucide-react";
-import { DataLoader } from "../loaders/PageLoader";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import { Camera, Instagram, Twitter, Facebook, Globe, Loader2 } from "lucide-react";
+
+const INPUT = "w-full border border-white/[0.08] bg-kcb-noir px-3 py-3 text-sm text-white placeholder-kcb-pierre/50 focus:outline-none focus:ring-1 focus:ring-kcb-or focus:border-kcb-or transition-all duration-200";
+const LABEL = "block text-xs font-medium text-kcb-sable mb-1.5";
 
 export const Step4Artist = ({ formState, setFormState, handleSignUp }) => {
-  const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormState({ ...formState, show: reader.result, image : file });
-            };
-            reader.readAsDataURL(file);
-        }
-  }
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] bg-kcb-noir-deep px-4">
-      <div className="w-full max-w-sm mx-auto">
-        {formState?.error && (
-          <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
-            {formState.error}
-          </div>
-        )}
-        <div className="bg-kcb-ardoise rounded-xl border border-white/[0.06] shadow-sm p-6">
-          <p className="text-center text-xl font-bold text-white mb-2">Profil Artiste</p>
-          <p className="text-xs text-center text-kcb-pierre mb-6">Parlez-nous un peu plus de vous</p>
+  const set = (key, val) => setFormState(p => ({ ...p, [key]: val }));
+  const setSocial = (key, val) => setFormState(p => ({ ...p, socials: { ...p.socials, [key]: val } }));
 
-          <form onSubmit={handleSignUp} className="space-y-4" method="post" encType="multipart/form-data">
-            {formState?.image ? (
-                <img src={formState?.show} alt="Profile" className="w-28 h-28 object-cover rounded-full mb-4 mx-auto border-4 border-white/[0.06] shadow" />
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setFormState(p => ({ ...p, show: reader.result, image: file }));
+    reader.readAsDataURL(file);
+  };
+
+  const canSubmit = formState.acceptTerms && formState.acceptPrivacy && !formState.loading;
+
+  return (
+    <div className="bg-kcb-ardoise border border-white/[0.06] p-8 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-0.5 bg-kcb-or" />
+
+      {formState.error && (
+        <div className="mb-6 text-red-300 bg-red-900/20 border border-red-900/40 p-3 text-xs text-center">
+          {formState.error}
+        </div>
+      )}
+
+      <p className="text-base font-semibold text-white mb-1">Profil Artiste</p>
+      <p className="text-xs text-kcb-pierre mb-8">Votre identité sur Kucibok Bridge.</p>
+
+      <form onSubmit={handleSignUp} className="space-y-5" method="post" encType="multipart/form-data">
+
+        {/* Photo de profil */}
+        <div className="flex flex-col items-center gap-3">
+          <button
+            type="button"
+            onClick={() => document.getElementById('artist-profile-img').click()}
+            className="relative group w-24 h-24 rounded-full overflow-hidden border-2 border-white/[0.08] hover:border-kcb-or/50 transition-all duration-200"
+          >
+            {formState.show ? (
+              <img src={formState.show} alt="Profil" className="w-full h-full object-cover" />
             ) : (
-                <div className="w-28 h-28 rounded-full bg-kcb-ardoise mb-4 flex justify-center items-center mx-auto border-4 border-white/[0.06]">
-                <Camera className="w-10 h-10 text-kcb-pierre" />
-                </div>
-            )}
-            <div className="mx-auto text-center">
-                <button type="button" onClick={() => document.getElementById('profile-image').click()} className="border border-white/[0.06] bg-kcb-noir w-full rounded-md text-xs text-white font-medium px-3 py-1 mb-2 hover:bg-white/[0.03] transition">
-                {!formState?.image ? "Mettre une photo (obligatoire)" : "Modifier la photo"}
-                </button>
-                <input
-                id="profile-image"
-                className="hidden"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                required
-                />
-            </div>
-            <div>
-              <label htmlFor="name" className="text-xs font-medium text-kcb-pierre">Nom complet</label>
-              <input
-                onChange={e => setFormState({ ...formState, name: e.target.value })}
-                value={formState?.name}
-                type="text"
-                name="name"
-                id="name"
-                required
-                className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 mt-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                minLength={6}
-                placeholder="Entrez votre nom complet"
-              />
-            </div>
-            <div>
-              <label htmlFor="username" className="text-xs font-medium text-kcb-pierre">Pseudo</label>
-              <input
-                onChange={e => setFormState({ ...formState, username: e.target.value })}
-                value={formState?.username}
-                type="text"
-                name="username"
-                id="username"
-                required
-                className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 mt-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                minLength={6}
-                placeholder="Entrez votre pseudo"
-              />
-            </div>
-            <div>
-              <label htmlFor="telephone" className="text-xs font-medium text-kcb-pierre">Téléphone</label>
-              <input
-                onChange={e => setFormState({ ...formState, telephone: e.target.value })}
-                value={formState?.telephone}
-                type="tel"
-                name="telephone"
-                id="telephone"
-                required
-                className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 mt-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                minLength={13}
-                maxLength={18}
-                placeholder="Votre numéro de téléphone"
-              />
-            </div>
-            <div>
-              <label htmlFor="country" className="text-xs font-medium text-kcb-pierre">Pays</label>
-              <select
-                name="country"
-                onChange={e => setFormState({ ...formState, country: e.target.value })}
-                value={formState.country}
-                id="country"
-                className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 mt-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                required
-              >
-                {formState?.countries?.map((country, index) => (
-                  <option key={index} value={country.name}>{country.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="biography" className="text-xs font-medium text-kcb-pierre">Biographie</label>
-              <ReactQuill
-                theme="snow"
-                value={formState.biography}
-                onChange={value => setFormState({ ...formState, biography: value })}
-                className="border bg-white text-black border-background rounded-md my-2"
-                placeholder="Parlez-nous de vous et de votre art"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-medium text-kcb-pierre">Liens vers vos réseaux sociaux (facultatif)</label>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  name="facebook"
-                  id="facebook"
-                  placeholder="Facebook"
-                  value={formState.socials.facebook}
-                  onChange={e => setFormState({ ...formState, socials: { ...formState.socials, facebook: e.target.value } })}
-                  className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                />
-                <input
-                  type="text"
-                  name="twitter"
-                  id="twitter"
-                  placeholder="Twitter"
-                  value={formState.socials.twitter}
-                  onChange={e => setFormState({ ...formState, socials: { ...formState.socials, twitter: e.target.value } })}
-                  className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                />
-                <input
-                  type="text"
-                  name="instagram"
-                  id="instagram"
-                  placeholder="Instagram"
-                  value={formState.socials.instagram}
-                  onChange={e => setFormState({ ...formState, socials: { ...formState.socials, instagram: e.target.value } })}
-                  className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                />
+              <div className="w-full h-full bg-kcb-noir flex items-center justify-center">
+                <Camera className="w-8 h-8 text-kcb-pierre/50" />
               </div>
+            )}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <Camera className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <label htmlFor="portfolio" className="text-xs font-medium text-kcb-pierre">Lien vers votre portfolio (facultatif)</label>
-              <input
-                onChange={e => setFormState({ ...formState, portfolio: e.target.value })}
-                value={formState?.portfolio}
-                type="url"
-                name="portfolio"
-                id="portfolio"
-                className="w-full border border-white/[0.06] bg-kcb-noir rounded-md px-3 py-2 mt-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
-                minLength={6}
-                placeholder="https://votreportfolio.com"
-              />
-            </div>
-            <div className="flex flex-col gap-2 mt-4">
-              <label className="flex items-center text-xs text-kcb-pierre">
-                <input
-                  type="checkbox"
-                  checked={formState?.acceptTerms}
-                  onChange={e => setFormState({ ...formState, acceptTerms: e.target.checked })}
-                  required
-                  className="mr-2 accent-kcb-or"
-                />
-                J'accepte les <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="underline text-kcb-or ml-1">Conditions d'utilisation</a>
-              </label>
-              <label className="flex items-center text-xs text-kcb-pierre">
-                <input
-                  type="checkbox"
-                  checked={formState?.acceptPrivacy}
-                  onChange={e => setFormState({ ...formState, acceptPrivacy: e.target.checked })}
-                  required
-                  className="mr-2 accent-kcb-or"
-                />
-                J'accepte la <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline text-kcb-or ml-1">Politique de confidentialité</a>
-              </label>
-            </div>
-            <button
-              disabled={!formState?.acceptTerms || !formState?.acceptPrivacy || formState?.loading}
-              type="submit"
-              className="w-full py-2 rounded-md bg-kcb-or text-white font-semibold text-sm hover:bg-kcb-bronze transition mt-2"
-            >
-              {formState?.loading ? <DataLoader /> : "Terminer"}
-            </button>
-          </form>
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setFormState({ ...formState, step: 2 })}
-              className="text-xs text-kcb-pierre hover:underline w-full"
-            >
-              Retour
-            </button>
+          </button>
+          <p className="text-[11px] text-kcb-pierre">
+            {formState.image ? "Photo sélectionnée ✓" : "Photo obligatoire — cliquez pour choisir"}
+          </p>
+          <input id="artist-profile-img" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+        </div>
+
+        {/* Nom + pseudo */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor="name" className={LABEL}>Nom complet <span className="text-kcb-or">*</span></label>
+            <input id="name" name="name" type="text" required minLength={2}
+              placeholder="Votre nom" value={formState.name}
+              onChange={e => set("name", e.target.value)} className={INPUT} />
+          </div>
+          <div>
+            <label htmlFor="username" className={LABEL}>Pseudo <span className="text-kcb-or">*</span></label>
+            <input id="username" name="username" type="text" required minLength={3}
+              placeholder="@pseudo" value={formState.username}
+              onChange={e => set("username", e.target.value)} className={INPUT} />
           </div>
         </div>
+
+        {/* Téléphone + Pays */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor="telephone" className={LABEL}>Téléphone <span className="text-kcb-or">*</span></label>
+            <input id="telephone" name="telephone" type="tel" required
+              placeholder="+221 70 000 00 00" value={formState.telephone}
+              onChange={e => set("telephone", e.target.value)} className={INPUT} />
+          </div>
+          <div>
+            <label htmlFor="country" className={LABEL}>Pays <span className="text-kcb-or">*</span></label>
+            <select id="country" name="country" required value={formState.country}
+              onChange={e => set("country", e.target.value)}
+              className={`${INPUT} cursor-pointer`}>
+              {formState.countries?.map((c, i) => (
+                <option key={i} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Biographie */}
+        <div>
+          <label htmlFor="biography" className={LABEL}>
+            Biographie <span className="text-kcb-pierre/50">(facultatif)</span>
+          </label>
+          <textarea id="biography" name="biography" rows={4}
+            placeholder="Parlez de votre démarche artistique, vos influences, vos médiums..."
+            value={formState.biography}
+            onChange={e => set("biography", e.target.value)}
+            className={`${INPUT} resize-none`}
+          />
+        </div>
+
+        {/* Réseaux sociaux */}
+        <div>
+          <label className={LABEL}>Réseaux sociaux <span className="text-kcb-pierre/50">(facultatif)</span></label>
+          <div className="space-y-2">
+            {[
+              { key: "instagram", Icon: Instagram, placeholder: "instagram.com/votre-compte" },
+              { key: "twitter",   Icon: Twitter,   placeholder: "x.com/votre-compte" },
+              { key: "facebook",  Icon: Facebook,  placeholder: "facebook.com/votre-page" },
+            ].map(({ key, Icon, placeholder }) => (
+              <div key={key} className="relative">
+                <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-kcb-pierre/40" />
+                <input type="url" placeholder={placeholder}
+                  value={formState.socials[key]}
+                  onChange={e => setSocial(key, e.target.value)}
+                  className={`${INPUT} pl-9`} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Portfolio */}
+        <div>
+          <label htmlFor="portfolio" className={LABEL}>
+            Portfolio <span className="text-kcb-pierre/50">(facultatif)</span>
+          </label>
+          <div className="relative">
+            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-kcb-pierre/40" />
+            <input id="portfolio" name="portfolio" type="url"
+              placeholder="https://votreportfolio.com"
+              value={formState.portfolio}
+              onChange={e => set("portfolio", e.target.value)}
+              className={`${INPUT} pl-9`} />
+          </div>
+        </div>
+
+        {/* CGU */}
+        <div className="space-y-2 pt-2">
+          {[
+            { key: "acceptTerms", label: "J'accepte les", link: "/terms-and-conditions", linkLabel: "Conditions d'utilisation" },
+            { key: "acceptPrivacy", label: "J'accepte la", link: "/privacy-policy", linkLabel: "Politique de confidentialité" },
+          ].map(({ key, label, link, linkLabel }) => (
+            <label key={key} className="flex items-center gap-2.5 cursor-pointer group">
+              <input type="checkbox" required
+                checked={formState[key] || false}
+                onChange={e => set(key, e.target.checked)}
+                className="w-4 h-4 accent-kcb-or shrink-0" />
+              <span className="text-xs text-kcb-pierre group-hover:text-kcb-sable transition">
+                {label}{" "}
+                <a href={link} target="_blank" rel="noopener noreferrer"
+                  className="text-kcb-or underline">{linkLabel}</a>
+              </span>
+            </label>
+          ))}
+        </div>
+
+        <button type="submit" disabled={!canSubmit}
+          className="w-full py-3 flex items-center justify-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase transition-all duration-200 hover:-translate-y-px disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 mt-2">
+          {formState.loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Inscription...</> : "Créer mon compte"}
+        </button>
+      </form>
+
+      <div className="mt-6 pt-5 border-t border-white/[0.04]">
+        <button onClick={() => setFormState(p => ({ ...p, step: 2 }))}
+          className="text-xs text-kcb-pierre hover:text-white transition w-full text-center">
+          ← Retour
+        </button>
       </div>
     </div>
   );

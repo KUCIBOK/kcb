@@ -83,7 +83,7 @@ export default function PasseportArtistiqueSection() {
               {/* CTA */}
               <div className="text-center">
                 <Link
-                  to="/sign-up"
+                  to="/sign-up?role=artist"
                   className="inline-block bg-gradient-to-r from-indigo-kcb to-purple-kcb text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                 >
                   Obtenir mon Passeport Artistique

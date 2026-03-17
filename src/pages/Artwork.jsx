@@ -76,10 +76,10 @@ export default function Artwork() {
                     <>
                     <RevealOnScroll>
                     <section className="w-full">
-                        <div className="flex flex-col md:flex-row gap-10">
+                        <div className="flex flex-col md:flex-row gap-6 md:gap-10">
                             {/* IMAGE + SHARE */}
                             <div className="md:w-7/12 w-full flex flex-col items-center md:items-start">
-                                <div className="relative w-full max-w-lg aspect-square rounded-[4px] overflow-hidden border border-white/[0.06] bg-kcb-noir shadow-lg">
+                                <div className="relative w-full max-w-full md:max-w-lg aspect-square rounded-[4px] overflow-hidden border border-white/[0.06] bg-kcb-noir shadow-lg">
                                     <img
                                         src={artwork?.image}
                                         alt={artwork?.title}
@@ -104,32 +104,32 @@ export default function Artwork() {
                             {/* INFOS */}
                             <div className="flex-1 flex flex-col gap-6 justify-between">
                                 <div>
-                                    <div className="flex items-center gap-4 mb-4">
+                                    <div className="flex items-start gap-3 mb-4">
                                         {artwork?.artist?.image && (
-                                            <Link to={`/artist/${artwork.artist?._id}`}>
-                                                <img src={artwork.artist.image} alt={artwork.artist.name} className="w-12 h-12 rounded-full object-cover border-2 border-kcb-or/30 shadow" />
+                                            <Link to={`/artist/${artwork.artist?._id}`} className="shrink-0">
+                                                <img src={artwork.artist.image} alt={artwork.artist.name} className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-kcb-or/30 shadow" />
                                             </Link>
                                         )}
-                                        <div className="flex flex-col">
-                                            <div className="flex justify-between items-center">
-                                                <h1 className="font-playfair text-3xl md:text-4xl font-bold text-white mb-1 leading-tight tracking-tight">{artwork?.title}</h1>
-                                                <button onClick={launchDescriptionSpeech} className="py-2 px-4 rounded-[4px] bg-white text-black">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-start justify-between gap-2">
+                                                <h1 className="font-playfair text-2xl md:text-4xl font-bold text-white mb-1 leading-tight tracking-tight">{artwork?.title}</h1>
+                                                <button onClick={launchDescriptionSpeech} className="shrink-0 p-2 rounded-[4px] bg-white/10 hover:bg-white/20 text-white transition">
                                                     <Volume2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                             {artwork?.artist?.name && (
-                                                <span className="text-kcb-pierre text-sm flex items-center gap-1">par <span className="text-white font-semibold">{artwork.artist.name}</span> <span className="inline-block bg-green-600/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full ml-1">Artiste vérifié</span></span>
+                                                <span className="text-kcb-pierre text-sm flex flex-wrap items-center gap-1">par <span className="text-white font-semibold">{artwork.artist.name}</span> <span className="inline-block bg-green-600/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full">Artiste vérifié</span></span>
                                             )}
                                         </div>
                                     </div>
-                                    <div className="border border-kcb-or/20 rounded-[4px] p-6 bg-kcb-ardoise flex flex-col gap-3 shadow-xl mt-2">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="font-playfair text-2xl text-white font-semibold">{artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {artwork?.currency}</span>
+                                    <div className="border border-kcb-or/20 rounded-[4px] p-4 md:p-6 bg-kcb-ardoise flex flex-col gap-3 shadow-xl mt-2">
+                                        <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+                                            <span className="font-playfair text-xl md:text-2xl text-white font-semibold">{artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {artwork?.currency}</span>
                                             <Link
                                                 to={`/artwork-checkout/${artwork?._id}`}
-                                                className="rounded-[4px] bg-kcb-or text-sm hover:bg-kcb-bronze transition text-kcb-noir font-semibold px-5 py-2 flex items-center gap-2 shadow focus:outline-none focus:ring-2 focus:ring-kcb-or uppercase tracking-[0.05em]"
+                                                className="rounded-[4px] bg-kcb-or text-sm hover:bg-kcb-bronze transition text-kcb-noir font-semibold px-4 py-2 flex items-center gap-2 shadow focus:outline-none focus:ring-2 focus:ring-kcb-or uppercase tracking-[0.05em]"
                                             >
-                                                <ShoppingCart className="w-5 h-5" /> Acheter
+                                                <ShoppingCart className="w-4 h-4" /> Acheter
                                             </Link>
                                         </div>
                                         <div className="flex items-center gap-2 mt-1">

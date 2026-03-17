@@ -165,6 +165,19 @@ export default function Collector() {
     return (
         <>
         <div className="min-h-screen flex flex-col lg:flex-row bg-kcb-noir">
+          {/* Sticky top bar — mobile only */}
+          <header className="lg:hidden sticky top-0 z-10 flex items-center justify-between px-4 h-14 bg-kcb-ardoise border-b border-white/[0.06]">
+            <div className="flex items-center gap-3">
+              <button onClick={() => setToggle(true)} className="text-kcb-pierre hover:text-white p-1">
+                <Menu className="w-5 h-5" />
+              </button>
+              <span className="text-white text-sm font-medium truncate">{getCurrentPageInfo().page}</span>
+            </div>
+            <Link to="/explore">
+              <ShoppingBag className="w-5 h-5 text-kcb-or" />
+            </Link>
+          </header>
+
           {/* Sidebar */}
           <DashboardSidebar
             menuStructure={menuStructure}
@@ -183,21 +196,12 @@ export default function Collector() {
             pricingPath="/collector/pricing"
           />
           {/* Main content */}
-          <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">
-            {/* Breadcrumb */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 text-sm text-kcb-pierre">
-                <span>{getCurrentPageInfo().category}</span>
-                <ChevronRight className="w-4 h-4" />
-                <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
-              </div>
-            </div>
-
-            <div className="lg:hidden flex justify-end mb-4">
-              <button onClick={() => setToggle(!toggle)} className="text-kcb-pierre hover:text-white">
-                <Menu className="w-6 h-6" />
-                <span className="sr-only">Toggle menu</span>
-              </button>
+          <main className="flex-1 px-4 md:px-8 py-6 overflow-y-auto min-w-0">
+            {/* Breadcrumb — desktop only */}
+            <div className="hidden lg:flex items-center gap-2 text-sm text-kcb-pierre mb-6">
+              <span>{getCurrentPageInfo().category}</span>
+              <ChevronRight className="w-4 h-4" />
+              <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
             </div>
             {renderTab()}
           </main>

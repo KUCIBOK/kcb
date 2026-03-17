@@ -12,7 +12,7 @@ export default function CallToActionSection() {
           africains qui façonnent l'avenir de l'art NFT.
         </p>
         <Link
-          to="/sign-up"
+          to="/sign-up?role=artist"
           className="p-2 rounded-full bg-purple-kcb text-white font-semibold shadow hover:bg-purple-kcb/80 transition text-sm"
         >
           Commencez votre parcours d'artiste

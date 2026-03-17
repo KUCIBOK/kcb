@@ -175,11 +175,9 @@ export default function Explore() {
       </RevealOnScroll>
 
       {/* ── CONTENT ── */}
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:w-1/4 w-full">
-          <Filters state={state} setState={setState} forSale={forSale} />
-        </div>
-        <div className="flex-1">
+      <div className="flex flex-col md:flex-row gap-6 items-start">
+        <Filters state={state} setState={setState} forSale={forSale} />
+        <div className="flex-1 min-w-0">
           {state.loading ? (
             <div className="flex items-center justify-center h-40">
               <DataLoader />

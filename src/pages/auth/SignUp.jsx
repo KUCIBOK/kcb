@@ -1,333 +1,225 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Step1 } from "../../components/auth/Step1";
-import { Step2 } from "../../components/auth/Step2";
-import { Step3 } from "../../components/auth/Step3";
-import { Step4Artist } from "../../components/auth/Step4Artist";
-import { Step4Collector } from "../../components/auth/Step4Collector";
-import { Step4Professional } from "../../components/auth/Step4Professional";
-import { SignUpUser, loginWithGoogle } from "../../api/useAuth";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Step1 }            from "../../components/auth/Step1";
+import { Step2 }            from "../../components/auth/Step2";
+import { Step3 }            from "../../components/auth/Step3";
+import { Step4Essential }   from "../../components/auth/Step4Essential";
+import { Step5Artist }      from "../../components/auth/Step5Artist";
+import { Step5Collector }   from "../../components/auth/Step5Collector";
+import { Step5Professional } from "../../components/auth/Step5Professional";
+import { SignUpUser, loginWithGoogle, updateProfile } from "../../api/useAuth";
 import { Helmet } from "react-helmet";
-import RevealOnScroll from "../../components/landing/RevealOnScroll";
+import { Check } from "lucide-react";
+
+// 5 étapes — step 4 = identité essentielle, step 5 = enrichissement skippable
+const STEP_LABELS = ["Méthode", "Compte", "Rôle", "Identité", "Profil"];
+
+const DEFAULT_COUNTRIES = [
+  { name: "Sénégal", code: "SN" }, { name: "France", code: "FR" },
+  { name: "United States", code: "US" }, { name: "United Kingdom", code: "GB" },
+  { name: "Canada", code: "CA" }, { name: "Germany", code: "DE" },
+  { name: "Spain", code: "ES" }, { name: "Italy", code: "IT" },
+  { name: "Belgium", code: "BE" }, { name: "Switzerland", code: "CH" },
+  { name: "Netherlands", code: "NL" }, { name: "Nigeria", code: "NG" },
+  { name: "Ghana", code: "GH" }, { name: "Côte d'Ivoire", code: "CI" },
+  { name: "Mali", code: "ML" }, { name: "Burkina Faso", code: "BF" },
+  { name: "Niger", code: "NE" }, { name: "Togo", code: "TG" },
+  { name: "Benin", code: "BJ" }, { name: "Cameroon", code: "CM" },
+  { name: "South Africa", code: "ZA" }, { name: "Morocco", code: "MA" },
+  { name: "Tunisia", code: "TN" }, { name: "Egypt", code: "EG" },
+  { name: "Gabon", code: "GA" }, { name: "Congo", code: "CG" },
+  { name: "DR Congo", code: "CD" }, { name: "Mauritania", code: "MR" },
+];
 
 export default function SignUp() {
-  // Default countries list as fallback
-  const defaultCountries = [
-    { name: "Sénégal", code: "SN", dial_code: "+221" },
-    { name: "France", code: "FR", dial_code: "+33" },
-    { name: "United States", code: "US", dial_code: "+1" },
-    { name: "United Kingdom", code: "GB", dial_code: "+44" },
-    { name: "Canada", code: "CA", dial_code: "+1" },
-    { name: "Germany", code: "DE", dial_code: "+49" },
-    { name: "Spain", code: "ES", dial_code: "+34" },
-    { name: "Italy", code: "IT", dial_code: "+39" },
-    { name: "Belgium", code: "BE", dial_code: "+32" },
-    { name: "Switzerland", code: "CH", dial_code: "+41" },
-    { name: "Netherlands", code: "NL", dial_code: "+31" },
-    { name: "Nigeria", code: "NG", dial_code: "+234" },
-    { name: "Ghana", code: "GH", dial_code: "+233" },
-    { name: "Côte d'Ivoire", code: "CI", dial_code: "+225" },
-    { name: "Mali", code: "ML", dial_code: "+223" },
-    { name: "Burkina Faso", code: "BF", dial_code: "+226" },
-    { name: "Niger", code: "NE", dial_code: "+227" },
-    { name: "Togo", code: "TG", dial_code: "+228" },
-    { name: "Benin", code: "BJ", dial_code: "+229" },
-    { name: "Cameroon", code: "CM", dial_code: "+237" },
-    { name: "South Africa", code: "ZA", dial_code: "+27" },
-    { name: "Morocco", code: "MA", dial_code: "+212" },
-    { name: "Tunisia", code: "TN", dial_code: "+216" },
-    { name: "Egypt", code: "EG", dial_code: "+20" },
-    { name: "Gabon", code: "GA", dial_code: "+241" },
-    { name: "Congo", code: "CG", dial_code: "+242" },
-    { name: "Democratic Republic of Congo", code: "CD", dial_code: "+243" },
-    { name: "Mauritania", code: "MR", dial_code: "+222" },
-    { name: "Liberia", code: "LR", dial_code: "+231" },
-    { name: "Sierra Leone", code: "SL", dial_code: "+232" },
-  ];
-
   const [formState, setFormState] = useState({
-    email: "",
-    password: "",
-    role: "",
-    name: "",
-    username: "",
-    country: "Andorra",
-    telephone: "",
-    // Artist
-    biography: "",
-    portfolio: "",
-    image: "",
-    socials: {
-      facebook: "",
-      twitter: "",
-      instagram: "",
-    },
-
-    // Collector
-    interests: "",
-
-    //Professional
-    institution: "",
-    qualifications: "",
-
-    show: "",
-    loading: false,
-    error: null,
-    confirmPassword: "",
-    step: 0,
-    countries: [],
-    connectMethod: "",
-    credentials: {},
-    acceptedTerms: false,
-    acceptedPrivacy: false,
+    email: "", password: "", confirmPassword: "",
+    role: "", name: "", username: "", country: "Sénégal",
+    telephone: "", biography: "", portfolio: "", image: "", show: "",
+    socials: { facebook: "", twitter: "", instagram: "" },
+    interests: "", institution: "", qualifications: "",
+    loading: false, error: null,
+    step: 0, countries: [], connectMethod: "",
+    acceptTerms: false, acceptPrivacy: false,
+    // id créé après Step4 — utilisé pour enrichissement Step5
+    createdUserId: null,
   });
 
-  const steps = [
-    "Connect Wallet",
-    formState.connectMethod === "email" ? "Create Account" : "",
-    "Choose Role",
-    "Complete Profile",
-  ];
+  const navigate    = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const navigate = useNavigate();
-
-  /** Inscription Google via Supabase OAuth — redirige vers /auth/callback. */
-  const handleGoogleSignup = async () => {
-    setFormState(prev => ({ ...prev, loading: true, error: null }));
-    const result = await loginWithGoogle();
-    if (result?.error) {
-      setFormState(prev => ({ ...prev, loading: false, error: result.error }));
-    }
-    // Supabase gère la redirection OAuth — onAuthStateChange prend le relais
-  };
-
+  // Pré-sélectionner le rôle depuis l'URL (?role=artist|collector|professional)
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch("/data/countries.json");
-        if (!response.ok) throw new Error("Failed to fetch countries");
-        const data = await response.json();
-        setFormState({ ...formState, countries: data });
-      } catch {
-        setFormState({ ...formState, countries: defaultCountries });
-      }
-    };
-    fetchCountries();
+    const roleParam = searchParams.get("role");
+    if (["artist", "collector", "professional"].includes(roleParam)) {
+      setFormState(p => ({ ...p, role: roleParam }));
+    }
   }, []);
 
+  // Chargement des pays
+  useEffect(() => {
+    fetch("/data/countries.json")
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => setFormState(p => ({ ...p, countries: data })))
+      .catch(() => setFormState(p => ({ ...p, countries: DEFAULT_COUNTRIES })));
+  }, []);
+
+  const handleGoogleSignup = async () => {
+    setFormState(p => ({ ...p, loading: true, error: null }));
+    const result = await loginWithGoogle();
+    if (result?.error) setFormState(p => ({ ...p, loading: false, error: result.error }));
+  };
+
+  /** Step 4 — Crée le compte avec les essentiels uniquement, puis passe à Step 5 */
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setFormState({ ...formState, error: "", loading: true });
-
+    setFormState(p => ({ ...p, error: "", loading: true }));
     try {
       const charge = {
-        email: formState.email,
-        password: formState.password,
-        role: formState.role,
-        name: formState.name,
-        username: formState.username,
-        country: formState.country,
-        telephone: formState.telephone,
-        // Artist
-        biography: formState.biography,
-        portfolio: formState.portfolio,
+        email: formState.email, password: formState.password,
+        role: formState.role,   name: formState.name,
+        country: formState.country, institution: formState.institution,
         image: formState.image,
-        facebook: formState.socials.facebook,
-        twitter: formState.socials.twitter,
-        instagram: formState.socials.instagram,
-
-        // Collector
-        interests: formState.interests,
-
-        //Professional
-        institution: formState.institution,
-        qualifications: formState.qualifications,
       };
-      if (charge?.role == "artist" && !charge.image) {
-        setFormState({
-          ...formState,
-          error: "Vous devez mettre une photo de profil.",
-          loading: false,
-        });
-        window.scrollTo(0, 0);
+      if (charge.role === "artist" && !charge.image) {
+        setFormState(p => ({ ...p, error: "Photo de profil obligatoire pour les artistes.", loading: false }));
         return;
       }
       const data = await SignUpUser(charge);
-
-      if (data?.user?._id) {
-        setFormState({...formState, loading : false, error : data.message || "Inscription réussie. Vérifiez votre adresse email pour continuer."});
-        window.scrollTo(0, 0);
-        setTimeout(() => {
-        navigate("/check-email", { state : { email: formState.email } });
-        }, 5000);
-      } else if (data?.error === "L'utilisateur existe déjà. Essayez de vous connecter.") {
-        setFormState({
-          ...formState,
-          error: data.error,
+      if (data?.user?._id || data?.user?.id) {
+        // Compte créé — on passe à l'étape 5 (enrichissement)
+        setFormState(p => ({
+          ...p,
           loading: false,
-        });
-        window.scrollTo(0, 0);
+          error: null,
+          step: 4,
+          createdUserId: data.user._id || data.user.id,
+        }));
       } else if (data?.error) {
-        setFormState({
-          ...formState,
-          error: data.error,
-          loading: false,
-        });
-        window.scrollTo(0, 0);
+        setFormState(p => ({ ...p, error: data.error, loading: false }));
       } else {
-        setFormState({
-          ...formState,
-          error: "Erreur inconnue",
-          loading: false,
-        });
-        window.scrollTo(0, 0);
+        setFormState(p => ({ ...p, error: "Erreur inconnue.", loading: false }));
       }
     } catch (err) {
-      setFormState({
-        ...formState,
-        error:
-          err?.response?.data?.message || "Erreur serveur, veuillez réessayer.",
-        loading: false,
-      });
-      window.scrollTo(0, 0);
+      setFormState(p => ({ ...p, error: err?.response?.data?.message || "Erreur serveur.", loading: false }));
     }
   };
 
-  const renderStepContent = () => {
+  /** Step 5 — Sauvegarde l'enrichissement puis redirige */
+  const handleEnrich = async () => {
+    setFormState(p => ({ ...p, loading: true }));
+    try {
+      if (formState.createdUserId) {
+        await updateProfile(formState.createdUserId, {
+          username:      formState.username,
+          telephone:     formState.telephone,
+          biography:     formState.biography,
+          portfolio:     formState.portfolio,
+          interests:     formState.interests,
+          qualifications: formState.qualifications,
+          facebook:      formState.socials.facebook,
+          twitter:       formState.socials.twitter,
+          instagram:     formState.socials.instagram,
+        });
+      }
+    } catch {
+      // Enrichissement non bloquant — on continue même en cas d'erreur
+    }
+    setFormState(p => ({ ...p, loading: false }));
+    navigate("/check-email", { state: { email: formState.email } });
+  };
+
+  /** Step 5 — Passer l'enrichissement directement */
+  const handleSkip = () => {
+    navigate("/check-email", { state: { email: formState.email } });
+  };
+
+  const renderStep = () => {
     switch (formState.step) {
-      case 0:
-        return <Step1 formState={formState} setFormState={setFormState} onGoogleSignup={handleGoogleSignup} />;
-      case 1:
-        return <Step2 formState={formState} setFormState={setFormState} />;
-      case 2:
-        return <Step3 formState={formState} setFormState={setFormState} />;
-      case 3:
-        switch (formState.role) {
-          case "artist":
-            return (
-              <Step4Artist
-                formState={formState}
-                handleSignUp={handleSignUp}
-                setFormState={setFormState}
-              />
-            );
-          case "collector":
-            return (
-              <Step4Collector
-                formState={formState}
-                handleSignUp={handleSignUp}
-                setFormState={setFormState}
-              />
-            );
-          case "professional":
-            return (
-              <Step4Professional
-                formState={formState}
-                handleSignUp={handleSignUp}
-                setFormState={setFormState}
-              />
-            );
-          default:
-            return null;
-        }
-      default:
+      case 0: return <Step1 formState={formState} setFormState={setFormState} onGoogleSignup={handleGoogleSignup} />;
+      case 1: return <Step2 formState={formState} setFormState={setFormState} />;
+      case 2: return <Step3 formState={formState} setFormState={setFormState} roleFromUrl={searchParams.get("role")} />;
+      case 3: return <Step4Essential formState={formState} setFormState={setFormState} handleSignUp={handleSignUp} />;
+      case 4:
+        if (formState.role === "artist")       return <Step5Artist       formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
+        if (formState.role === "collector")    return <Step5Collector    formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
+        if (formState.role === "professional") return <Step5Professional formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
         return null;
+      default: return null;
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>{`Sign up | Kucibok`}</title>
-        <meta
-          name="description"
-          content={"Inscrivrez-vous à votre compte Kucibok"}
-        />
-        <meta property="og:title" content={"Inscription Kucibok"} />
-        <meta
-          property="og:description"
-          content={"Inscrivez-vous à votre compte Kucibok"}
-        />
-        <meta property="og:image" content={"/images/kucibok-black.png"} />
-        <meta property="og:url" content={`https://kucibok.com/sign-up`} />
+        <title>Inscription — Kucibok | Rejoindre la plateforme d'art africain</title>
+        <meta name="description" content="Créez votre compte Kucibok — artiste, collectionneur ou professionnel de l'art africain." />
       </Helmet>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-kcb-noir-deep px-4">
-        <RevealOnScroll>
-        <div className="w-full max-w-md mx-auto py-8">
-          <div className="text-center mb-8">
+
+      <div className="relative flex min-h-screen flex-col items-center justify-center bg-kcb-noir-deep px-4 py-12 overflow-hidden">
+        {/* Atmosphere */}
+        <div className="pointer-events-none absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-kcb-or/[0.04] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-kcb-bronze/[0.04] blur-3xl" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-kcb-or/[0.02] rotate-45" />
+
+        <div className="relative w-full max-w-md mx-auto">
+          {/* Header */}
+          <div className="text-center mb-10">
             <Link to="/">
-              <img
-                src="/images/kucibok-white-logo.svg"
-                alt="logo kucibok"
-                className="w-12 h-12 object-cover mx-auto"
-              />
+              <img src="/images/kucibok-white-logo.svg" alt="Kucibok" className="w-10 h-10 object-contain mx-auto" />
             </Link>
-            <h2 className="font-playfair text-xl font-semibold text-white mb-1 mt-4">
-              Créer un compte
-            </h2>
+            <h1 className="font-playfair text-xl font-semibold text-white mt-4 mb-1">
+              {formState.step === 4 ? "Votre compte est créé ✓" : "Créer un compte"}
+            </h1>
             <p className="text-xs text-kcb-pierre">
-              Rejoignez la marketplace d'art digital d'Afrique
+              {formState.step === 4
+                ? "Enrichissez votre profil pour maximiser votre visibilité"
+                : "Rejoignez l'infrastructure de l'art africain"}
             </p>
           </div>
-          {/* Connected step indicator */}
-          {(() => {
-            const stepLabels = ["Méthode", "Compte", "Rôle", "Profil"];
-            return (
-              <div className="flex items-center justify-center mb-8">
-                {stepLabels.map((label, idx) => (
-                  <div key={idx} className="flex items-center">
-                    <div className="flex flex-col items-center">
-                      <span
-                        className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold transition-colors ${
-                          formState.step === idx
-                            ? "bg-kcb-or text-kcb-noir"
-                            : formState.step > idx
-                            ? "bg-kcb-or/20 text-kcb-or"
-                            : "bg-kcb-ardoise text-kcb-pierre"
-                        }`}
-                      >
-                        {formState.step > idx ? "\u2713" : idx + 1}
-                      </span>
-                      <span
-                        className={`mt-1.5 text-[10px] font-medium ${
-                          formState.step === idx
-                            ? "text-kcb-or"
-                            : formState.step > idx
-                            ? "text-kcb-or/60"
-                            : "text-kcb-pierre"
-                        }`}
-                      >
-                        {label}
-                      </span>
-                    </div>
-                    {idx < stepLabels.length - 1 && (
-                      <div
-                        className={`w-8 h-px mx-1 mb-5 ${
-                          formState.step > idx ? "bg-kcb-or/40" : "bg-white/[0.08]"
-                        }`}
-                      />
-                    )}
-                  </div>
-                ))}
+
+          {/* Stepper */}
+          <div className="flex items-center justify-center mb-8">
+            {STEP_LABELS.map((label, idx) => (
+              <div key={idx} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <span className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold transition-all duration-300 ${
+                    formState.step === idx
+                      ? "bg-kcb-or text-kcb-noir shadow-[0_0_12px_rgba(196,155,70,0.4)]"
+                      : formState.step > idx
+                      ? "bg-kcb-or/20 text-kcb-or border border-kcb-or/30"
+                      : "bg-white/[0.05] text-kcb-pierre border border-white/[0.08]"
+                  }`}>
+                    {formState.step > idx ? <Check className="w-3 h-3" /> : idx + 1}
+                  </span>
+                  <span className={`mt-1.5 text-[9px] font-medium tracking-wide ${
+                    formState.step === idx ? "text-kcb-or" : formState.step > idx ? "text-kcb-or/50" : "text-kcb-pierre/40"
+                  }`}>
+                    {label}
+                  </span>
+                </div>
+                {idx < STEP_LABELS.length - 1 && (
+                  <div className={`w-8 h-px mx-1.5 mb-5 transition-all duration-500 ${
+                    formState.step > idx ? "bg-kcb-or/40" : "bg-white/[0.06]"
+                  }`} />
+                )}
               </div>
-            );
-          })()}
-          {renderStepContent()}
-          {formState.step !== 0 && formState.step < steps.length - 1 && (
-            <div className="text-center mt-6">
-              <p className="text-xs text-kcb-pierre">
-                Déjà inscrit ?{" "}
-                <Link
-                  to="/sign-in"
-                  className="font-semibold text-kcb-or hover:underline"
-                >
-                  Connexion
-                </Link>
-              </p>
-            </div>
+            ))}
+          </div>
+
+          {/* Step content */}
+          {renderStep()}
+
+          {/* Bottom link */}
+          {formState.step > 0 && formState.step < 3 && (
+            <p className="text-center text-xs text-kcb-pierre mt-6">
+              Déjà inscrit ?{" "}
+              <Link to="/sign-in" className="font-semibold text-kcb-or hover:underline">
+                Connexion
+              </Link>
+            </p>
           )}
         </div>
-        </RevealOnScroll>
       </div>
     </>
   );

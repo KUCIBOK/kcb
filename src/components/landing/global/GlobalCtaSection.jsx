@@ -28,7 +28,7 @@ export default function GlobalCtaSection() {
         </RevealOnScroll>
         <RevealOnScroll delay={0.2}>
           <div className="flex justify-center gap-4 flex-wrap">
-            <Link to="/sign-up" className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline">
+            <Link to="/sign-up?role=collector" className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline">
               {t.primary} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link to="/contact" className="inline-flex items-center gap-2 bg-transparent text-[var(--accent)] font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 border border-[var(--accent)] transition-all hover:bg-[var(--accent)] hover:text-kcb-noir-deep no-underline">

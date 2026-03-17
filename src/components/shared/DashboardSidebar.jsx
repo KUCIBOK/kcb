@@ -56,12 +56,23 @@ export default function DashboardSidebar({
     : menuStructure;
 
   return (
+    <>
+      {/* Backdrop mobile */}
+      {toggle && (
+        <div
+          className="fixed inset-0 bg-black/60 z-20 lg:hidden"
+          onClick={() => setToggle(false)}
+        />
+      )}
     <aside
-      className={`transition-all duration-200 lg:w-60 w-full bg-card border-r border-gray-800/60 flex-shrink-0 z-30 overflow-y-auto ${
-        toggle
-          ? "fixed top-0 left-0 h-screen"
-          : "hidden lg:block lg:h-screen"
-      }`}
+      className={`
+        fixed top-0 left-0 h-screen w-72 max-w-[85vw] z-30
+        flex-shrink-0 overflow-y-auto
+        bg-kcb-ardoise border-r border-gray-800/60
+        transition-transform duration-300 ease-in-out
+        ${toggle ? "translate-x-0" : "-translate-x-full"}
+        lg:relative lg:translate-x-0 lg:w-60 lg:h-screen lg:block
+      `}
     >
       <div className="flex flex-col h-full px-4 py-6">
         {/* Header : logo + fermeture mobile */}
@@ -217,5 +228,6 @@ export default function DashboardSidebar({
         </button>
       </div>
     </aside>
+    </>
   );
 }
