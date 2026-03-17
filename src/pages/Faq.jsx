@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Palette, Users, ShieldCheck, ShoppingBag, ArrowRight } from "lucide-react"
@@ -55,6 +56,15 @@ export default function Faq() {
   const [currentTab, setCurrentTab] = useState("general")
 
   return (
+    <>
+    <Helmet>
+      <title>FAQ — Kucibok | Questions fréquentes sur l'art africain certifié</title>
+      <meta name="description" content="Toutes les réponses à vos questions sur Kucibok Bridge : certification d'œuvres, traçabilité, inscription artiste, livraison transfrontalière et paiements." />
+      <meta property="og:title" content="FAQ Kucibok — Certification et marché de l'art africain" />
+      <meta property="og:description" content="Questions fréquentes sur la certification, traçabilité, inscription et paiements sur Kucibok Bridge." />
+      <meta property="og:url" content="https://kucibok.com/faq" />
+      <link rel="canonical" href="https://kucibok.com/faq" />
+    </Helmet>
     <PortalLayout portal="africa">
       {/* ── HERO ── */}
       <section className="pt-40 pb-20 text-center relative">
@@ -219,5 +229,6 @@ export default function Faq() {
         </div>
       </section>
     </PortalLayout>
+    </>
   )
 }

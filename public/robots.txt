@@ -1,32 +1,42 @@
-# robots.txt for Kucibok.io
+# robots.txt — Kucibok.com
 
 User-agent: *
-# Bloquer les espaces privés
+
+# Espaces privés
 Disallow: /dashboard/
-Disallow: /login/
 Disallow: /admin/
 Disallow: /api/
 Disallow: /profile/
-Disallow: /cart/
 Disallow: /checkout/
-Disallow: /account/
-Disallow: /settings/
-Disallow: /uploads/
-Disallow: /backend/
+Disallow: /auth/
+
+# Pages de paiement et callbacks
+Disallow: /payment/
+Disallow: /paydunya/
+Disallow: /subscription/checkout
+
+# Fichiers techniques
 Disallow: /src/
-Disallow: /public/
 Disallow: /node_modules/
-Disallow: /*?*   # Bloque les URLs avec paramètres (optionnel, à adapter selon ton routing)
-
-# Autoriser les pages publiques
-Allow: /
-
-# Bloquer les fichiers sensibles
-Disallow: /*.env
-Disallow: /*.json$
-Disallow: /*.md$
+Disallow: /*.env$
 Disallow: /*.log$
-Disallow: /*.git
+Disallow: /*.git$
 
-# Sitemap (à adapter si tu en as un)
+# Pages publiques autorisées
+Allow: /
+Allow: /explore
+Allow: /artists
+Allow: /africa
+Allow: /global
+Allow: /blog
+Allow: /about
+Allow: /contact
+Allow: /faq
+Allow: /artist
+Allow: /collector
+Allow: /professional
+Allow: /sign-up
+Allow: /sign-in
+Allow: /verify/
+
 Sitemap: https://kucibok.com/sitemap.xml

@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"
 import { useEffect } from "react"
 import { BlogPostsList } from "../components/blog/BlogPostsList"
 import { useBlog } from "../store/BlogContext"
@@ -10,6 +11,15 @@ export default function Blog() {
         window.scrollTo(0, 0);
     }, []);
     return (
+        <>
+        <Helmet>
+          <title>Blog — Kucibok | Art africain, certification et marché</title>
+          <meta name="description" content="Actualités, analyses et perspectives sur le marché de l'art africain, la certification des œuvres et la valorisation des artistes africains contemporains." />
+          <meta property="og:title" content="Blog Kucibok — Art africain et certification" />
+          <meta property="og:description" content="Actualités et analyses sur le marché de l'art africain, la traçabilité et la valorisation des œuvres." />
+          <meta property="og:url" content="https://kucibok.com/blog" />
+          <link rel="canonical" href="https://kucibok.com/blog" />
+        </Helmet>
         <div className="min-h-screen bg-kcb-noir-deep pb-16">
             <section className="py-14">
                 <div className="max-w-3xl mx-auto px-4 text-center">
@@ -39,5 +49,6 @@ export default function Blog() {
                 </RevealOnScroll>
             </div>
         </div>
+        </>
     );
 }

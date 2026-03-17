@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"
 import { useEffect, useState } from "react"
 import { useArtworks } from "../store/ArtworkContext"
 import { Search } from "lucide-react"
@@ -126,6 +127,15 @@ export default function Explore() {
   }, [])
 
   return (
+    <>
+    <Helmet>
+      <title>Explorer les œuvres — Kucibok | Art africain certifié</title>
+      <meta name="description" content="Explorez et achetez des œuvres d'art africain certifiées et traçables. Peintures, sculptures, photographies d'artistes africains contemporains vérifiés." />
+      <meta property="og:title" content="Explorer les œuvres d'art africain — Kucibok" />
+      <meta property="og:description" content="Marketplace d'art africain certifié. Découvrez 1000+ œuvres d'artistes africains contemporains vérifiés." />
+      <meta property="og:url" content="https://kucibok.com/explore" />
+      <link rel="canonical" href="https://kucibok.com/explore" />
+    </Helmet>
     <div className="mx-auto px-4 md:px-6 flex-grow pb-16 mt-8">
       {/* ── HEADER ── */}
       <div className="text-center mb-14">
@@ -215,5 +225,6 @@ export default function Explore() {
         </div>
       )}
     </div>
+    </>
   )
 }

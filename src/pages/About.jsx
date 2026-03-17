@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"
 import { Link } from "react-router-dom"
 import { ShieldCheck, Globe, Lightbulb, Heart, ArrowRight, Check } from "lucide-react"
 import PortalLayout from "../components/landing/PortalLayout"
@@ -61,6 +62,15 @@ const VISION_POINTS = [
  */
 export default function About() {
   return (
+    <>
+    <Helmet>
+      <title>À propos — Kucibok Bridge | Infrastructure de l'art africain</title>
+      <meta name="description" content="Découvrez Kucibok Bridge — notre mission, nos valeurs et notre vision pour structurer et valoriser le marché de l'art africain à l'échelle mondiale." />
+      <meta property="og:title" content="À propos de Kucibok — Infrastructure de l'art africain" />
+      <meta property="og:description" content="Notre mission : structurer, certifier et faire circuler l'art africain en toute confiance." />
+      <meta property="og:url" content="https://kucibok.com/about" />
+      <link rel="canonical" href="https://kucibok.com/about" />
+    </Helmet>
     <PortalLayout portal="africa">
       {/* ── HERO — Mission ── */}
       <section className="pt-40 pb-24 text-center relative">
@@ -259,5 +269,6 @@ export default function About() {
         </div>
       </section>
     </PortalLayout>
+    </>
   )
 }

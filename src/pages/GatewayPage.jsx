@@ -1,9 +1,18 @@
+import { Helmet } from "react-helmet"
 import Gateway from "../components/landing/Gateway"
 
-/**
- * Gateway page — split-screen entry point.
- * Standalone route at `/`, renders the Gateway component.
- */
 export default function GatewayPage() {
-  return <Gateway />
+  return (
+    <>
+      <Helmet>
+        <title>Kucibok Bridge — Infrastructure de l'art africain</title>
+        <meta name="description" content="Kucibok Bridge — Infrastructure SaaS de référence pour la certification, traçabilité et circulation sécurisée de l'art africain entre l'Afrique et le monde." />
+        <meta property="og:title" content="Kucibok Bridge — Infrastructure de l'art africain" />
+        <meta property="og:description" content="Kucibok Bridge — Infrastructure SaaS de référence pour la certification, traçabilité et circulation sécurisée de l'art africain." />
+        <meta property="og:url" content="https://kucibok.com/" />
+        <link rel="canonical" href="https://kucibok.com/" />
+      </Helmet>
+      <Gateway />
+    </>
+  )
 }

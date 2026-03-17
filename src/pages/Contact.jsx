@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"
 import { useState, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { Clock, Mail, MapPin, Phone, ArrowRight, CheckCircle2, HelpCircle } from "lucide-react"
@@ -100,6 +101,15 @@ export default function Contact() {
   }, [])
 
   return (
+    <>
+    <Helmet>
+      <title>Contact — Kucibok | Partenariats et support</title>
+      <meta name="description" content="Contactez Kucibok Bridge pour des partenariats, demandes de certification ou support technique. Infrastructure de l'art africain à votre service." />
+      <meta property="og:title" content="Contactez Kucibok — Infrastructure de l'art africain" />
+      <meta property="og:description" content="Partenariats, certification d'œuvres, support — contactez l'équipe Kucibok Bridge." />
+      <meta property="og:url" content="https://kucibok.com/contact" />
+      <link rel="canonical" href="https://kucibok.com/contact" />
+    </Helmet>
     <PortalLayout portal="africa">
       {/* ── HERO ── */}
       <section className="pt-40 pb-20 text-center relative">
@@ -348,5 +358,6 @@ export default function Contact() {
         </div>
       </section>
     </PortalLayout>
+    </>
   )
 }

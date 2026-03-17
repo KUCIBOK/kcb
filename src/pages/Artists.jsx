@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import { useArtist } from "../store/ArtistContext";
 import { Search } from "lucide-react";
@@ -34,6 +35,15 @@ export default function Artists() {
     }, [artists, search]);
 
     return (
+        <>
+        <Helmet>
+          <title>Artistes africains — Kucibok | Découvrez les créateurs certifiés</title>
+          <meta name="description" content="Découvrez les artistes africains contemporains certifiés sur Kucibok Bridge. Peintures, sculptures, photographies — explorez leurs œuvres et leur univers." />
+          <meta property="og:title" content="Artistes africains contemporains — Kucibok" />
+          <meta property="og:description" content="192 artistes africains contemporains certifiés. Explorez leurs œuvres et collections sur Kucibok Bridge." />
+          <meta property="og:url" content="https://kucibok.com/artists" />
+          <link rel="canonical" href="https://kucibok.com/artists" />
+        </Helmet>
         <div className="mx-auto px-4 md:px-6 flex-grow pb-16 mt-8">
             <div className="text-center mb-14">
                 <RevealOnScroll>
@@ -72,5 +82,6 @@ export default function Artists() {
                 )}
             </div>
         </div>
+        </>
     );
 }
