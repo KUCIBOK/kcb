@@ -180,7 +180,7 @@ async function sendResetEmail(email) {
     return;
   }
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://kucibok.com/forgot-password-form',
+    redirectTo: 'https://kucibok.com/auth/reset-password',
   });
   if (error) console.warn(`  ⚠ Reset email failed for ${email}: ${error.message}`);
 }
