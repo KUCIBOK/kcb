@@ -27,14 +27,25 @@ export default function GlobalCatalogueSection() {
   const [loading, setLoading]   = useState(true)
 
   useEffect(() => {
-    getApprovedArtworks().then((result) => {
+    getApprovedArtworks({ limit: 200 }).then((result) => {
       const list = Array.isArray(result?.data) ? result.data
                  : Array.isArray(result)        ? result
                  : []
-      // Prefer certified artworks (have kucibok_id), then take 4
-      const certified = list.filter(a => a.kucibok_id)
-      const pick      = certified.length >= 4 ? certified : list
-      setArtworks(pick.slice(0, 4).map(a => ({ ...a, _id: a._id ?? a.id })))
+      // Prefer certified artworks with image, shuffle randomly, take 4 unique
+      const withImage = list.filter(a => a.image)
+      const certified = withImage.filter(a => a.kucibok_id)
+      const pool = certified.length >= 4 ? certified : withImage
+      // Deduplicate by title
+      const seen = new Set()
+      const unique = pool.filter(a => {
+        const key = (a.title || '').toLowerCase().trim()
+        if (seen.has(key)) return false
+        seen.add(key)
+        return true
+      })
+      // Shuffle and pick 4
+      const shuffled = unique.sort(() => Math.random() - 0.5)
+      setArtworks(shuffled.slice(0, 4).map(a => ({ ...a, _id: a._id ?? a.id })))
       setLoading(false)
     })
   }, [])
