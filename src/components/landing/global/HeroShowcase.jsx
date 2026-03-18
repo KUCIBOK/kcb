@@ -1,21 +1,56 @@
+import { useEffect, useState } from "react"
+import { getApprovedArtworks } from "../../../api/useArtworks"
+
 /**
  * Artwork showcase frame with floating stat cards for Global hero.
+ * Loads a random certified artwork from DB on each mount.
  */
 export default function HeroShowcase() {
+  const [artwork, setArtwork] = useState(null)
+
+  useEffect(() => {
+    getApprovedArtworks({ limit: 100 }).then((result) => {
+      const list = Array.isArray(result?.data) ? result.data
+                 : Array.isArray(result) ? result : []
+      // Prefer certified (kucibok_id) + has image
+      const certified = list.filter(a => a.kucibok_id && a.image)
+      const pool = certified.length > 0 ? certified : list.filter(a => a.image)
+      if (pool.length > 0) {
+        setArtwork(pool[Math.floor(Math.random() * pool.length)])
+      }
+    })
+  }, [])
+
   return (
     <div className="relative flex flex-col items-center -mb-40 z-10">
       {/* Frame */}
       <div className="w-[320px] h-[400px] sm:w-[240px] sm:h-[300px] relative border border-kcb-silver/12 bg-kcb-ardoise-cool overflow-hidden">
-        {/* Abstract background */}
-        <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 30% 40%, rgba(168,176,188,0.08) 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(107,114,128,0.06) 0%, transparent 50%)" }} />
-        <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(45deg, transparent 0px, transparent 40px, rgba(168,176,188,0.02) 40px, rgba(168,176,188,0.02) 41px)" }} />
+        {/* Artwork image or abstract fallback */}
+        {artwork?.image ? (
+          <img
+            src={artwork.image}
+            alt={artwork.title}
+            className="absolute inset-0 w-full h-full object-cover opacity-80"
+          />
+        ) : (
+          <>
+            <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 30% 40%, rgba(168,176,188,0.08) 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(107,114,128,0.06) 0%, transparent 50%)" }} />
+            <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(45deg, transparent 0px, transparent 40px, rgba(168,176,188,0.02) 40px, rgba(168,176,188,0.02) 41px)" }} />
+          </>
+        )}
 
         {/* Info overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-7" style={{ background: "linear-gradient(to top, rgba(5,5,5,0.95) 0%, transparent 100%)" }}>
           <span className="inline-block bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-[9px] tracking-[0.1em] uppercase px-2 py-0.5 mb-2.5">Certified</span>
-          <div className="font-playfair font-semibold text-lg text-white mb-1">Memoires du Sahel</div>
-          <div className="text-xs text-kcb-sable">Ousmane Ndiaye</div>
-          <div className="font-jetbrains text-[10px] text-kcb-silver mt-2 tracking-[0.06em]">KCB-20260087</div>
+          <div className="font-playfair font-semibold text-lg text-white mb-1 line-clamp-2">
+            {artwork?.title ?? "—"}
+          </div>
+          <div className="text-xs text-kcb-sable">
+            {artwork?.artist ?? "—"}
+          </div>
+          {artwork?.kucibok_id && (
+            <div className="font-jetbrains text-[10px] text-kcb-silver mt-2 tracking-[0.06em]">{artwork.kucibok_id}</div>
+          )}
         </div>
       </div>
 

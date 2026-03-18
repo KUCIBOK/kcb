@@ -9,17 +9,16 @@ import SectionLabel from "../components/landing/SectionLabel";
 
 export default function Artists() {
     const { artists } = useArtist();
-    const DEFAULT_IMG = 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg'
-    // Sort: most artworks first, deduplicated by _id
+    // Deduplicate by _id then shuffle randomly (different order each refresh)
     const seen = new Set()
     const sortedArtists = [...(artists ?? [])]
-      .sort((a, b) => (b.artworkCount ?? 0) - (a.artworkCount ?? 0))
       .filter(item => {
         const key = item._id ?? item.id
         if (seen.has(key)) return false
         seen.add(key)
         return true
       })
+      .sort(() => Math.random() - 0.5)
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [filtered, setFiltered] = useState([]);
