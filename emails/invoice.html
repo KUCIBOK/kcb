@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Facture {{invoice_number}} — Kucibok Bridge</title>
+  <style>
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+    img { -ms-interpolation-mode: bicubic; border: 0; display: block; }
+    @media only screen and (max-width: 600px) {
+      .email-container { width: 100% !important; }
+      .mobile-padding { padding: 32px 20px !important; }
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #050505 !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#050505;font-family:'DM Sans',Arial,sans-serif;">
+
+  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color:#050505;">
+    <tr>
+      <td align="center" style="padding:40px 20px;">
+        <table class="email-container" role="presentation" cellpadding="0" cellspacing="0" width="600" style="max-width:600px;width:100%;">
+
+          <!-- GOLD TOP BAR -->
+          <tr>
+            <td style="background-color:#C9A84C;height:3px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- HEADER -->
+          <tr>
+            <td style="background-color:#050505;padding:24px 40px;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td>
+                    <span style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;letter-spacing:0.05em;color:#FFFFFF;">Kuci<strong style="color:#C9A84C;font-weight:700;">bok</strong></span>
+                    <span style="display:block;font-family:Arial,sans-serif;font-size:9px;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;color:#8C9BAD;margin-top:3px;">BRIDGE</span>
+                  </td>
+                  <td align="right" style="vertical-align:middle;">
+                    <span style="font-family:Arial,sans-serif;font-size:9px;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;color:#8C9BAD;">kucibok.com</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- INVOICE HEADER -->
+          <tr>
+            <td class="mobile-padding" style="background-color:#0D0F14;padding:40px 40px 32px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td style="vertical-align:top;">
+                    <p style="margin:0 0 4px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C9A84C;">Facture</p>
+                    <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#FFFFFF;">{{invoice_number}}</p>
+                  </td>
+                  <td style="vertical-align:top;text-align:right;">
+                    <p style="margin:0 0 4px;font-family:Arial,sans-serif;font-size:11px;color:#8C9BAD;">Date d'émission</p>
+                    <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#FFFFFF;">{{invoice_date}}</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- BILLING INFO -->
+          <tr>
+            <td class="mobile-padding" style="background-color:#0D0F14;padding:0 40px 32px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td style="width:50%;vertical-align:top;padding-right:16px;border-right:1px solid rgba(255,255,255,0.06);">
+                    <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#8C9BAD;">Émetteur</p>
+                    <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#A8B0BC;line-height:1.5;">Kucibok Bridge<br>kucibok.com<br>support@kucibok.com</p>
+                  </td>
+                  <td style="width:50%;vertical-align:top;padding-left:16px;">
+                    <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#8C9BAD;">Facturation à</p>
+                    <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#A8B0BC;line-height:1.5;">{{client_name}}<br>{{client_email}}<br>{{client_address}}</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- DIVIDER -->
+          <tr>
+            <td style="background-color:#0D0F14;padding:0 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                <tr><td style="border-top:1px solid rgba(255,255,255,0.06);font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- LINE ITEMS TABLE -->
+          <tr>
+            <td class="mobile-padding" style="background-color:#0D0F14;padding:24px 40px 32px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                <!-- Table header -->
+                <tr>
+                  <td style="padding:10px 0;border-bottom:1px solid rgba(201,168,76,0.3);">
+                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#C9A84C;">Description</td>
+                        <td style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#C9A84C;text-align:right;width:120px;">Montant</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Line item 1 -->
+                <tr>
+                  <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="font-family:Arial,sans-serif;font-size:13px;color:#FFFFFF;">{{item_1_description}}</td>
+                        <td style="font-family:Arial,sans-serif;font-size:13px;color:#A8B0BC;text-align:right;width:120px;">{{item_1_amount}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Line item 2 -->
+                <tr>
+                  <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="font-family:Arial,sans-serif;font-size:13px;color:#FFFFFF;">{{item_2_description}}</td>
+                        <td style="font-family:Arial,sans-serif;font-size:13px;color:#A8B0BC;text-align:right;width:120px;">{{item_2_amount}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Subtotal -->
+                <tr>
+                  <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="font-family:Arial,sans-serif;font-size:12px;color:#8C9BAD;">Sous-total HT</td>
+                        <td style="font-family:Arial,sans-serif;font-size:12px;color:#8C9BAD;text-align:right;width:120px;">{{subtotal}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- TVA -->
+                <tr>
+                  <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="font-family:Arial,sans-serif;font-size:12px;color:#8C9BAD;">TVA ({{tva_rate}}%)</td>
+                        <td style="font-family:Arial,sans-serif;font-size:12px;color:#8C9BAD;text-align:right;width:120px;">{{tva_amount}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- TOTAL -->
+                <tr>
+                  <td style="padding:16px 0;background-color:rgba(201,168,76,0.06);border-top:1px solid rgba(201,168,76,0.3);">
+                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#FFFFFF;padding:0 0 0 0;">Total TTC</td>
+                        <td style="text-align:right;width:120px;">
+                          <span style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:#C9A84C;">{{total_ttc}}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- THANK YOU -->
+          <tr>
+            <td style="background-color:#0D0F14;padding:0 40px 40px;text-align:center;">
+              <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:16px;font-style:italic;color:#8C9BAD;">Merci pour votre confiance.</p>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td style="background-color:#0D0F14;padding:0 40px 56px;text-align:center;">
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                <tr>
+                  <td style="background-color:#C9A84C;">
+                    <a href="{{invoice_pdf_url}}" style="display:inline-block;padding:14px 40px;color:#050505;font-family:Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;">Télécharger la facture PDF</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color:#050505;padding:0 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                <tr><td style="border-top:1px solid rgba(255,255,255,0.06);font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#050505;padding:32px 40px 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="center" style="padding-bottom:20px;">
+                    <span style="font-family:Georgia,'Times New Roman',serif;font-size:16px;font-weight:400;color:#FFFFFF;">Kuci<strong style="color:#C9A84C;">bok</strong></span>
+                    <span style="display:block;font-family:Arial,sans-serif;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#8C9BAD;margin-top:2px;">BRIDGE</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:20px;">
+                    <a href="https://kucibok.com/cgu" style="font-family:Arial,sans-serif;font-size:11px;color:#8C9BAD;text-decoration:none;margin:0 10px;">CGU</a>
+                    <span style="color:rgba(255,255,255,0.15);">·</span>
+                    <a href="https://kucibok.com/confidentialite" style="font-family:Arial,sans-serif;font-size:11px;color:#8C9BAD;text-decoration:none;margin:0 10px;">Confidentialité</a>
+                    <span style="color:rgba(255,255,255,0.15);">·</span>
+                    <a href="mailto:support@kucibok.com" style="font-family:Arial,sans-serif;font-size:11px;color:#8C9BAD;text-decoration:none;margin:0 10px;">Contact</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:10px;">
+                    <span style="font-family:Arial,sans-serif;font-size:11px;color:rgba(140,155,173,0.6);">Kucibok Bridge — Infrastructure SaaS pour l'art africain</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <span style="font-family:Arial,sans-serif;font-size:10px;color:rgba(140,155,173,0.4);">Ce message a été généré automatiquement. Ne pas répondre directement.</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#C9A84C;height:2px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
