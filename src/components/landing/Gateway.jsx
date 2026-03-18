@@ -31,9 +31,9 @@ export default function Gateway() {
           style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(201,168,76,0.06), transparent 70%)" }}
         />
 
-        <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          {/* Kuzi — full animated character */}
-          <div className="mb-4 md:mb-8 flex-shrink-0 w-[160px] sm:w-[220px] md:w-[300px] lg:w-[320px]">
+        <div className="relative z-[2] text-center max-w-[420px] w-full flex flex-col items-center">
+          {/* Visual — fixed height, same as Global side */}
+          <div className="h-[170px] sm:h-[220px] md:h-[280px] lg:h-[300px] w-full mb-4 md:mb-6 flex-shrink-0">
             <GatewayKuzi hover={hover === "africa"} />
           </div>
           <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-or mb-2 md:mb-5">
@@ -73,9 +73,12 @@ export default function Gateway() {
           style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(168,176,188,0.05), transparent 70%)" }}
         />
 
-        <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          <div className="w-[220px] sm:w-[320px] md:w-[420px] lg:w-[460px] relative mb-4 md:mb-8" style={{ aspectRatio: "2/1" }}>
-            <GatewayMapSvg />
+        <div className="relative z-[2] text-center max-w-[420px] w-full flex flex-col items-center">
+          {/* Visual — same fixed height as Africa side */}
+          <div className="h-[170px] sm:h-[220px] md:h-[280px] lg:h-[300px] w-full mb-4 md:mb-6 flex-shrink-0 flex items-center justify-center">
+            <div className="h-full w-full max-w-[460px]" style={{ aspectRatio: "2/1", maxHeight: "100%" }}>
+              <GatewayMapSvg />
+            </div>
           </div>
           <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-silver mb-2 md:mb-5">
             Global Portal

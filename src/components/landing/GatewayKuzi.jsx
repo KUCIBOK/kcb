@@ -1,13 +1,14 @@
 /**
  * Kuzi mascot — fully static, hover scale only.
+ * Renders h-full w-auto so parent controls the height.
  */
 export default function GatewayKuzi({ hover }) {
   return (
-    <div className="relative w-full select-none">
+    <div className="h-full w-full flex items-end justify-center select-none">
       <img
         src="/images/KuziNew.png"
         alt="Kuzi"
-        className="w-full h-auto"
+        className="h-full w-auto max-w-none"
         draggable={false}
         style={{
           filter:     "drop-shadow(0 16px 40px rgba(0,0,0,0.4))",
