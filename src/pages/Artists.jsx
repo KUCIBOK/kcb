@@ -9,12 +9,17 @@ import SectionLabel from "../components/landing/SectionLabel";
 
 export default function Artists() {
     const { artists } = useArtist();
-    const artistsWithImage = artists?.filter(item => item?.image && item?.image != 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg')
-    const artistWithPlus3Image = artistsWithImage?.filter(item => item?.artworkCount >= 3);
-    const artistWithMinus3Image = artistsWithImage?.filter(item => item?.artworkCount < 3 && item?.artworkCount > 0);
-    const artistsWithMinus3WithoutImage = artistsWithImage.filter(item => item?.artworkCount > 0 && (!item?.image || item?.image === 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg'));
-    const artistsWithoutImageWithoutArtworks = artists?.filter(item => item?.artworkCount == 0 || !item?.image || item?.image === 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg')
-    const sortedArtists = [...artistWithPlus3Image, ...artistWithMinus3Image, ...artistsWithMinus3WithoutImage, ...artistsWithoutImageWithoutArtworks];
+    const DEFAULT_IMG = 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg'
+    // Sort: most artworks first, deduplicated by _id
+    const seen = new Set()
+    const sortedArtists = [...(artists ?? [])]
+      .sort((a, b) => (b.artworkCount ?? 0) - (a.artworkCount ?? 0))
+      .filter(item => {
+        const key = item._id ?? item.id
+        if (seen.has(key)) return false
+        seen.add(key)
+        return true
+      })
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [filtered, setFiltered] = useState([]);

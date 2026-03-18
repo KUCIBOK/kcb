@@ -94,7 +94,7 @@ export async function getArtworkById(id) {
  * @returns {Promise<object>}
  */
 export async function getForSaleArtworks() {
-  return fetchArtworks({ for_sale: true });
+  return fetchArtworks({ for_sale: true, status: 'approved', limit: 1000 });
 }
 
 /**

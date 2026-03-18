@@ -30,7 +30,7 @@ export const ArtworksContextProvider = ({children}) => {
                     forSale.sort(() => Math.random() - 0.5)
                     setState(prev => ({
                         ...prev,
-                        forSale : forSale?.reverse().filter(item => item?.status == "approved" && item?.for_sale && item?.sold == false),
+                        forSale : forSale?.reverse().filter(item => item?.status === "approved" && item?.for_sale && !item?.sold),
                     }))
                 }
             } catch (error) {

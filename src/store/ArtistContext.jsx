@@ -17,7 +17,7 @@ export const ArtistContextProvider = memo(({children}) => {
     const {makeToast} = useToast()
     useEffect(() => {
         const fetchArtists = async () => {
-            const artists = await getAllArtists()
+            const artists = await getAllArtists({ limit: 1000 })
             if(artists?.length >= 1){
                 setState(prev => ({
                     ...prev,
