@@ -805,7 +805,7 @@ async function routeArtworks(req, res) {
 
     let query = supabaseAdmin
       .from('artworks')
-      .select('*', { count: 'exact' })
+      .select('*, artists!artist_id(name)', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(from, to);
 
@@ -830,7 +830,11 @@ async function routeArtworks(req, res) {
 
     const { data, error, count } = await query;
     if (error) return fail(res, error.message);
-    const normalized = (data ?? []).map(a => ({ ...a, _id: a.id }));
+    const normalized = (data ?? []).map(a => ({
+      ...a,
+      _id: a.id,
+      artist: a.artists?.name ?? a.artist ?? null,
+    }));
     return ok(res, normalized, 200, { page, limit, total: count });
   }
 
@@ -912,7 +916,7 @@ async function routeArtworkById(req, res, id) {
 
     // Incrémenter les visites en arrière-plan (non bloquant)
     (async () => { try { await supabaseAdmin.rpc('increment_artwork_visited', { artwork_id: id }); } catch {} })();
-    return ok(res, data);
+    return ok(res, { ...data, _id: data.id, artist: data.artists?.name ?? data.artist ?? null });
   }
 
   if (req.method === 'PUT') {

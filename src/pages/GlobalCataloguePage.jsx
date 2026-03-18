@@ -5,6 +5,7 @@ import PortalLayout from "../components/landing/PortalLayout"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
 import { getAllArtworks } from "../api/useArtworks"
+import { getAllArtists } from "../api/useArtists"
 import { useLang } from "../store/LangContext"
 import { globalT } from "../i18n/global"
 
@@ -83,6 +84,7 @@ function CatalogueContent() {
   const t = globalT[lang]
 
   const [allArtworks, setAllArtworks] = useState([])
+  const [allArtists, setAllArtists]   = useState([])
   const [loading, setLoading]         = useState(true)
   const [search, setSearch]           = useState("")
   const [category, setCategory]       = useState("All")
@@ -90,12 +92,18 @@ function CatalogueContent() {
   const [certifiedOnly, setCertified] = useState(false)
   const [sort, setSort]               = useState("recent")
   const [visible, setVisible]         = useState(PAGE_SIZE)
+  const [activeTab, setActiveTab]     = useState("artworks")
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    getAllArtworks({ status: 'approved', limit: 1000 }).then((result) => {
-      const list = Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : []
-      setAllArtworks(list)
+    Promise.all([
+      getAllArtworks({ status: 'approved', limit: 1000 }),
+      getAllArtists({ limit: 500 }),
+    ]).then(([artRes, artisRes]) => {
+      const artList   = Array.isArray(artRes?.data)   ? artRes.data   : Array.isArray(artRes)   ? artRes   : []
+      const artistList = Array.isArray(artisRes?.data) ? artisRes.data : Array.isArray(artisRes) ? artisRes : []
+      setAllArtworks(artList)
+      setAllArtists(artistList)
       setLoading(false)
     })
   }, [])
@@ -156,19 +164,38 @@ function CatalogueContent() {
                 <span className="text-kcb-pierre ml-2 text-xs uppercase tracking-widest">{lang === "en" ? "certified KCB" : "certifiées KCB"}</span>
               </div>
               <div>
-                <span className="text-[var(--accent)] font-bold text-2xl font-playfair">
-                  {new Set(allArtworks.map(a => a.artist).filter(Boolean)).size}
-                </span>
+                <span className="text-[var(--accent)] font-bold text-2xl font-playfair">{allArtists.length}</span>
                 <span className="text-kcb-pierre ml-2 text-xs uppercase tracking-widest">{lang === "en" ? "artists" : "artistes"}</span>
               </div>
             </div>
           </RevealOnScroll>
         )}
+
+        {/* Tabs */}
+        {!loading && (
+          <div className="flex gap-0 mt-10 border-b border-white/[0.06]">
+            {["artworks", "artists"].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-6 py-3 text-xs font-medium uppercase tracking-[0.08em] transition-all border-b-2 -mb-px ${
+                  activeTab === tab
+                    ? "border-[var(--accent)] text-white"
+                    : "border-transparent text-kcb-pierre hover:text-white"
+                }`}
+              >
+                {tab === "artworks"
+                  ? (lang === "en" ? `Artworks (${allArtworks.length})` : `Œuvres (${allArtworks.length})`)
+                  : (lang === "en" ? `Artists (${allArtists.length})` : `Artistes (${allArtists.length})`)}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)] py-10">
-        {/* Filter bar */}
-        <div className="bg-kcb-ardoise border border-white/[0.05] p-4 mb-10 flex flex-wrap gap-3 items-center">
+        {/* Filter bar — visible uniquement sur onglet artworks */}
+        <div className={`bg-kcb-ardoise border border-white/[0.05] p-4 mb-10 flex flex-wrap gap-3 items-center ${activeTab === "artists" ? "hidden" : ""}`}>
           {/* Search */}
           <div className="relative flex-1 min-w-52">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kcb-pierre" />
@@ -245,6 +272,31 @@ function CatalogueContent() {
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <Loader2 className="w-10 h-10 text-[var(--accent)] animate-spin" />
             <p className="text-kcb-pierre text-sm">{lang === "en" ? "Loading collection…" : "Chargement de la collection…"}</p>
+          </div>
+        ) : activeTab === "artists" ? (
+          /* ── ARTISTS GRID ── */
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0.5">
+            {allArtists.map((artist) => (
+              <Link
+                key={artist.id}
+                to={`/artist/${artist.id}`}
+                className="group block bg-kcb-noir border border-white/[0.05] hover:border-[var(--accent)]/40 transition-all duration-300 hover:-translate-y-0.5 no-underline p-5"
+              >
+                <div className="w-14 h-14 rounded-full overflow-hidden bg-kcb-ardoise mb-4 border border-white/[0.06]">
+                  {artist.image ? (
+                    <img src={artist.image} alt={artist.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center font-playfair text-xl text-kcb-pierre/50">
+                      {artist.name?.[0]?.toUpperCase() ?? "?"}
+                    </div>
+                  )}
+                </div>
+                <p className="font-playfair font-semibold text-white text-sm leading-snug truncate mb-0.5">
+                  {artist.name}
+                </p>
+                <p className="text-kcb-pierre text-xs truncate">{artist.country ?? artist.location ?? ""}</p>
+              </Link>
+            ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 gap-4 text-center">
