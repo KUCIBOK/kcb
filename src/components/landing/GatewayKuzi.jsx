@@ -108,8 +108,7 @@ export default function GatewayKuzi({ hover }) {
                 background:      "#5C2A0A",
                 borderRadius:    "0 0 50% 50% / 0 0 100% 100%",
                 transformOrigin: "50% 0%",
-                transform:       `scaleY(${blink ? 1 : 0})`,
-                transition:      `transform ${blink ? "0.18s" : "0.2s"} ease-in-out`,
+                transform:       `scaleY(1)`,
               }}
             />
 
@@ -126,8 +125,7 @@ export default function GatewayKuzi({ hover }) {
                 background:      "#5C2A0A",
                 borderRadius:    "0 0 50% 50% / 0 0 100% 100%",
                 transformOrigin: "50% 0%",
-                transform:       `scaleY(${blink ? 1 : 0})`,
-                transition:      `transform ${blink ? "0.18s" : "0.2s"} ease-in-out`,
+                transform:       `scaleY(1)`,
               }}
             />
 
