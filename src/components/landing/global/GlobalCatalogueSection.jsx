@@ -58,7 +58,7 @@ export default function GlobalCatalogueSection() {
           </RevealOnScroll>
           <RevealOnScroll>
             <Link
-              to="/global/catalogue"
+              to="/explore"
               className="inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase transition-colors hover:text-[var(--accent)] no-underline"
             >
               {t.linkLabel} <ArrowRight className="w-3.5 h-3.5" />
@@ -74,7 +74,7 @@ export default function GlobalCatalogueSection() {
                 <div className="relative h-full bg-kcb-noir animate-pulse" />
               ) : (
                 <Link
-                  to={item.fallback ? "/global/catalogue" : `/artwork/${item._id}`}
+                  to={item.fallback ? "/explore" : `/artwork/${item.id ?? item._id}`}
                   className="block relative overflow-hidden cursor-pointer bg-kcb-noir h-full group no-underline"
                 >
                   {/* Image or pattern background */}

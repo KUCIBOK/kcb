@@ -28,7 +28,7 @@ function GlobalContent() {
         }
         subtitle={t.hero.subtitle}
         actions={[
-          { text: t.hero.cta1, to: "/global/catalogue", primary: true },
+          { text: t.hero.cta1, to: "/explore", primary: true },
           { text: t.hero.cta2, to: "/global/sourcing" },
         ]}
       >

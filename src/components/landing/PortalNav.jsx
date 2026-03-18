@@ -25,7 +25,7 @@ export default function PortalNav({ portal }) {
           { label: t.testimonials, id: "testimonials" },
         ]
       : [
-          { label: t.catalogue, to: "/global/catalogue" },
+          { label: t.catalogue, to: "/explore" },
           { label: t.logistics, id: "logistics" },
           { label: t.sourcing,  to: "/global/sourcing" },
           { label: t.pricing,   id: "pricing" },
