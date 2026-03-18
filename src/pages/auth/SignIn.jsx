@@ -73,7 +73,7 @@ export default function SignIn () {
             )}
             <div className="border border-white/[0.06] bg-kcb-ardoise relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-0.5 bg-kcb-or" />
-              <div className="p-8">
+              <div className="p-5 md:p-8">
                 <button
                   className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 py-3 px-4 font-medium text-sm text-gray-800 transition border border-gray-200 mb-3"
                   onClick={handleGoogleLogin}

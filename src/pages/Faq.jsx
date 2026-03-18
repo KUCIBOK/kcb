@@ -67,8 +67,8 @@ export default function Faq() {
     </Helmet>
     <PortalLayout portal="africa">
       {/* ── HERO ── */}
-      <section className="pt-40 pb-20 text-center relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
+      <section className="pt-20 md:pt-40 pb-10 md:pb-20 text-center relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
 
         <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
           <RevealOnScroll>
@@ -91,9 +91,9 @@ export default function Faq() {
       <GeoLine />
 
       {/* ── HOW IT WORKS ── */}
-      <section className="py-36 bg-kcb-noir-deep">
+      <section className="py-16 md:py-36 bg-kcb-noir-deep">
         <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
-          <div className="mb-20">
+          <div className="mb-10 md:mb-20">
             <RevealOnScroll>
               <SectionLabel text="Comment ca marche" />
               <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-3">
@@ -108,7 +108,7 @@ export default function Faq() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0.5">
             {STEPS.map((step, i) => (
               <RevealOnScroll key={i} delay={Math.min(i, 3) * 0.1}>
-                <div className="bg-kcb-noir p-9 relative overflow-hidden group transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 h-full flex flex-col">
+                <div className="bg-kcb-noir p-5 md:p-9 relative overflow-hidden group transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 h-full flex flex-col">
                   {/* Top accent line on hover */}
                   <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
 
@@ -167,7 +167,7 @@ export default function Faq() {
       <GeoLine />
 
       {/* ── FAQ TABS + ACCORDIONS ── */}
-      <section className="py-36 bg-kcb-noir-deep">
+      <section className="py-16 md:py-36 bg-kcb-noir-deep">
         <div className="max-w-[900px] mx-auto px-[clamp(24px,5vw,80px)]">
           <RevealOnScroll>
             <div className="text-center mb-16">
@@ -195,8 +195,8 @@ export default function Faq() {
       <GeoLine />
 
       {/* ── CTA ── */}
-      <section className="py-40 text-center relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-kcb-or/[0.03] pointer-events-none" />
+      <section className="py-20 md:py-40 text-center relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[500px] md:h-[500px] border border-kcb-or/[0.03] pointer-events-none" />
 
         <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
           <RevealOnScroll>

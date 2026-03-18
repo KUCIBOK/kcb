@@ -112,8 +112,8 @@ export default function Contact() {
     </Helmet>
     <PortalLayout portal="africa">
       {/* ── HERO ── */}
-      <section className="pt-40 pb-20 text-center relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
+      <section className="pt-20 md:pt-40 pb-10 md:pb-20 text-center relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
 
         <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
           <RevealOnScroll>
@@ -137,14 +137,14 @@ export default function Contact() {
       <GeoLine />
 
       {/* ── MAIN CONTENT ── */}
-      <section className="py-36 bg-kcb-noir-deep">
+      <section className="py-16 md:py-36 bg-kcb-noir-deep">
         <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
           <div className="grid lg:grid-cols-5 gap-10">
             {/* ── LEFT COLUMN — Info + FAQ ── */}
             <div className="lg:col-span-2 space-y-8">
               {/* Contact info */}
               <RevealOnScroll>
-                <div className="bg-kcb-noir border border-white/[0.06] p-9 relative overflow-hidden group">
+                <div className="bg-kcb-noir border border-white/[0.06] p-5 md:p-9 relative overflow-hidden group">
                   <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
                   <h2 className="font-playfair font-semibold text-lg text-white mb-7">
                     Nos coordonnees
@@ -171,7 +171,7 @@ export default function Contact() {
 
               {/* FAQ Preview */}
               <RevealOnScroll delay={0.1}>
-                <div className="bg-kcb-noir border border-white/[0.06] p-9 relative overflow-hidden group">
+                <div className="bg-kcb-noir border border-white/[0.06] p-5 md:p-9 relative overflow-hidden group">
                   <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
                   <div className="flex items-center justify-between mb-7">
                     <h2 className="font-playfair font-semibold text-lg text-white">
@@ -234,7 +234,7 @@ export default function Contact() {
             {/* ── RIGHT COLUMN — Form ── */}
             <div className="lg:col-span-3">
               <RevealOnScroll>
-                <div className="bg-kcb-noir border border-white/[0.06] p-9 lg:p-12 lg:sticky lg:top-24 relative overflow-hidden">
+                <div className="bg-kcb-noir border border-white/[0.06] p-5 md:p-9 lg:p-12 lg:sticky lg:top-24 relative overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--accent)]" />
                   <SectionLabel text="Formulaire" />
                   <h2 className="font-playfair font-bold text-[clamp(24px,2.5vw,32px)] text-white mt-4 mb-2">

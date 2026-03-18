@@ -87,9 +87,9 @@ export default function ArtistDetails () {
             </Link>
         </div>
         {/* Modern minimal cover/fallback */}
-        <div className="w-full md:px-8 px-4 mx-auto mb-0 md:max-w-7xl">
+        <div className="w-full md:px-8 px-2 mx-auto mb-0 md:max-w-7xl">
             {state?.artworks?.length > 0 ? (
-                <div className="grid grid-cols-3 h-[30vh]">
+                <div className="grid grid-cols-3 h-[25vh] md:h-[30vh]">
                     {state?.artworks?.slice(0, 3)?.map((artwork) => (
                         <div key={artwork.id} className="overflow-hidden">
                             <img
@@ -106,9 +106,9 @@ export default function ArtistDetails () {
         </div>
 
         {/* Modern minimal artist card and tabs */}
-        <div className="flex flex-col md:px-8 px-4 lg:flex-row gap-8 w-full mx-auto -mt-20 z-10 relative mb-20 md:max-w-7xl">
+        <div className="flex flex-col md:px-8 px-2 lg:flex-row gap-6 md:gap-8 w-full mx-auto -mt-14 md:-mt-20 z-10 relative mb-12 md:mb-20 md:max-w-7xl">
             <RevealOnScroll>
-            <div className="flex flex-col items-center max-h-fit bg-kcb-ardoise border border-white/[0.06] rounded-[4px] shadow-xl px-8 py-10 w-full lg:w-3/9">
+            <div className="flex flex-col items-center max-h-fit bg-kcb-ardoise border border-white/[0.06] rounded-[4px] shadow-xl px-5 md:px-8 py-7 md:py-10 w-full lg:w-3/9">
                 <div className="relative mb-3">
                     {state.artist?.image ? (
                         <img src={state.artist.image} alt={state.artist.name} className="rounded-full w-32 h-32 object-cover border-4 border-kcb-noir-deep shadow-lg" />

@@ -49,7 +49,7 @@ export default function Artists() {
           <link rel="canonical" href="https://kucibok.com/artists" />
         </Helmet>
         <div className="mx-auto px-4 md:px-6 flex-grow pb-16 mt-8">
-            <div className="text-center mb-14">
+            <div className="text-center mb-8 md:mb-14">
                 <RevealOnScroll>
                     <SectionLabel text="Artistes" />
                 </RevealOnScroll>

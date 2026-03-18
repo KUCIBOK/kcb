@@ -21,7 +21,7 @@ export default function Blog() {
           <link rel="canonical" href="https://kucibok.com/blog" />
         </Helmet>
         <div className="min-h-screen bg-kcb-noir-deep pb-16">
-            <section className="py-14">
+            <section className="py-8 md:py-14">
                 <div className="max-w-3xl mx-auto px-4 text-center">
                     <RevealOnScroll>
                         <SectionLabel text="Blog" />
