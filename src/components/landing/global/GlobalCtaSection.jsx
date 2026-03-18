@@ -12,7 +12,7 @@ export default function GlobalCtaSection() {
   const t = globalT[lang].cta
 
   return (
-    <section className="py-40 text-center relative">
+    <section className="py-20 md:py-40 text-center relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-kcb-silver/[0.03] pointer-events-none" />
 
       <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">

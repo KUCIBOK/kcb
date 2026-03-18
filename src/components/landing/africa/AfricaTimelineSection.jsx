@@ -13,9 +13,9 @@ export default function AfricaTimelineSection() {
   const t = africaT[lang].timeline
 
   return (
-    <section id="timeline" className="py-36">
-      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-center">
+    <section id="timeline" className="py-16 md:py-36">
+      <div className="max-w-[1280px] mx-auto px-[clamp(16px,5vw,80px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 lg:gap-32 items-center">
           <RevealOnScroll>
             <SectionLabel text={t.label} />
             <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-6">
@@ -34,7 +34,7 @@ export default function AfricaTimelineSection() {
               {t.steps.map((step, i) => (
                 <div
                   key={i}
-                  className="py-6 px-7 flex items-start gap-6 border-l border-kcb-or/[0.08] transition-all hover:border-l-[var(--accent)] hover:bg-kcb-or/[0.02]"
+                  className="py-4 md:py-6 px-4 md:px-7 flex items-start gap-4 md:gap-6 border-l border-kcb-or/[0.08] transition-all hover:border-l-[var(--accent)] hover:bg-kcb-or/[0.02]"
                 >
                   <div className="font-jetbrains text-[10px] text-[var(--accent)] tracking-[0.15em] w-14 shrink-0 pt-0.5">
                     {step.num}

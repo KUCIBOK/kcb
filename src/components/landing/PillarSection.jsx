@@ -15,7 +15,7 @@ export default function PillarSection({ pillars, portal = "africa" }) {
     : "hover:bg-kcb-or/[0.02]"
 
   return (
-    <section className={`bg-kcb-ardoise-cool border-t border-b ${borderColor} pt-20`}>
+    <section className={`bg-kcb-ardoise-cool border-t border-b ${borderColor} pt-10 md:pt-20`}>
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <div className="grid grid-cols-1 md:grid-cols-3">
           {pillars.map((p, i) => (

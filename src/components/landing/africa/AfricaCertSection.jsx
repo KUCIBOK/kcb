@@ -18,7 +18,7 @@ export default function AfricaCertSection() {
   const t = africaT[lang].cert
 
   return (
-    <section className="py-36 bg-kcb-noir-deep">
+    <section className="py-16 md:py-36 bg-kcb-noir-deep">
       <style>{`
         @keyframes kcb-cert-scan {
           0%   { top: 0%;   opacity: 0.6; }
@@ -31,8 +31,8 @@ export default function AfricaCertSection() {
         }
       `}</style>
 
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 lg:gap-24 items-center">
 
           {/* ── Left column — text ─────────────────────────────────────── */}
           <RevealOnScroll>
@@ -86,7 +86,7 @@ export default function AfricaCertSection() {
               style={{ animation: "kcb-float-1 4s ease-in-out infinite" }}
             >
               <div
-                className="relative overflow-hidden border border-kcb-or/20 p-8"
+                className="relative overflow-hidden border border-kcb-or/20 p-5 md:p-8"
                 style={{
                   background: "linear-gradient(145deg, #0a0d14 0%, #0f1218 100%)",
                   boxShadow:
@@ -220,7 +220,7 @@ export default function AfricaCertSection() {
                 />
 
                 {/* Fields grid */}
-                <div className="relative z-10 grid grid-cols-2 gap-x-6 gap-y-4 mb-6">
+                <div className="relative z-10 grid grid-cols-2 gap-x-3 md:gap-x-6 gap-y-3 md:gap-y-4 mb-6">
                   {CERT_FIELDS.map((field) => (
                     <div key={field.label}>
                       <p

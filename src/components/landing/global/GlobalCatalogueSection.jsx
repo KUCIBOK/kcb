@@ -77,7 +77,7 @@ export default function GlobalCatalogueSection() {
           </RevealOnScroll>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1.4fr_1fr_1fr] gap-0.5" style={{ gridAutoRows: "340px" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1.4fr_1fr_1fr] gap-0.5" style={{ gridAutoRows: "clamp(220px, 35vw, 340px)" }}>
           {items.map((item, i) => (
             <RevealOnScroll key={item._id} delay={i * 0.1}>
               {item.skeleton ? (

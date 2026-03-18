@@ -15,9 +15,9 @@ const SERVICES = [
  */
 export default function AfricaServicesSection() {
   return (
-    <section id="services" className="py-36 bg-kcb-noir-deep">
-      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
-        <div className="flex justify-between items-end mb-20 flex-wrap gap-6">
+    <section id="services" className="py-16 md:py-36 bg-kcb-noir-deep">
+      <div className="max-w-[1280px] mx-auto px-[clamp(16px,5vw,80px)]">
+        <div className="flex justify-between items-end mb-10 md:mb-20 flex-wrap gap-6">
           <RevealOnScroll>
             <SectionLabel text="Services inclus" />
             <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6">
@@ -28,7 +28,7 @@ export default function AfricaServicesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
           {SERVICES.map((s, i) => (
             <RevealOnScroll key={i} delay={Math.min(i, 3) * 0.1}>
-              <div className="bg-kcb-noir p-9 lg:p-12 relative overflow-hidden group transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1">
+              <div className="bg-kcb-noir p-5 md:p-9 lg:p-12 relative overflow-hidden group transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1">
                 {/* Top accent line on hover */}
                 <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
                 <div className="w-10 h-10 border border-kcb-or/15 flex items-center justify-center mb-7 text-[var(--accent)]">

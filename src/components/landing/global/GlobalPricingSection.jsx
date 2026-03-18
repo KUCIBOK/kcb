@@ -13,7 +13,7 @@ export default function GlobalPricingSection() {
   const t = globalT[lang].pricing
 
   return (
-    <section id="pricing" className="py-36 bg-kcb-ivoire text-kcb-noir">
+    <section id="pricing" className="py-16 md:py-36 bg-kcb-ivoire text-kcb-noir">
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <RevealOnScroll>
           <div className="text-center mb-20">
@@ -33,7 +33,7 @@ export default function GlobalPricingSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px max-w-[920px] mx-auto">
           {t.plans.map((plan, i) => (
             <RevealOnScroll key={i} delay={i * 0.1}>
-              <div className={`p-8 lg:p-11 flex flex-col h-full relative ${plan.featured ? "bg-kcb-steel text-white" : "bg-white"}`}>
+              <div className={`p-6 md:p-8 lg:p-11 flex flex-col h-full relative ${plan.featured ? "bg-kcb-steel text-white" : "bg-white"}`}>
                 {plan.featured && <div className="absolute top-0 left-0 right-0 h-0.5 bg-kcb-silver" />}
                 <div className="font-playfair font-semibold text-xl mb-1.5">{plan.name}</div>
                 <div className={`text-xs mb-7 ${plan.featured ? "text-kcb-sable" : "text-kcb-pierre"}`}>{plan.desc}</div>

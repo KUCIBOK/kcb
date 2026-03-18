@@ -11,7 +11,7 @@ export default function AfricaTestimonialsSection() {
   const t = africaT[lang].testimonials
 
   return (
-    <section id="testimonials" className="py-36 bg-kcb-ivoire text-kcb-noir">
+    <section id="testimonials" className="py-16 md:py-36 bg-kcb-ivoire text-kcb-noir">
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <RevealOnScroll>
           <div className="mb-20">
@@ -28,9 +28,9 @@ export default function AfricaTestimonialsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-0.5">
           {/* Featured — first item, spans full height on left */}
           <RevealOnScroll delay={0}>
-            <div className="bg-white p-10 lg:p-14 flex flex-col justify-center h-full">
-              <span className="block font-playfair text-6xl text-kcb-or leading-[0.6] mb-5 not-italic">&ldquo;</span>
-              <blockquote className="font-playfair italic text-2xl leading-snug text-kcb-noir mb-8">
+            <div className="bg-white p-6 md:p-10 lg:p-14 flex flex-col justify-center h-full">
+              <span className="block font-playfair text-5xl md:text-6xl text-kcb-or leading-[0.6] mb-4 md:mb-5 not-italic">&ldquo;</span>
+              <blockquote className="font-playfair italic text-lg md:text-2xl leading-snug text-kcb-noir mb-6 md:mb-8">
                 {t.items[0].quote}
               </blockquote>
               <div className="font-semibold text-[13px]">{t.items[0].author}</div>
@@ -42,7 +42,7 @@ export default function AfricaTestimonialsSection() {
           <div className="flex flex-col gap-0.5">
             {t.items.slice(1).map((item, i) => (
               <RevealOnScroll key={item.author} delay={(i + 1) * 0.1}>
-                <div className="bg-white p-8 flex flex-col justify-center h-full">
+                <div className="bg-white p-5 md:p-8 flex flex-col justify-center h-full">
                   <span className="block font-playfair text-4xl text-kcb-or leading-[0.6] mb-3 not-italic">&ldquo;</span>
                   <blockquote className="font-playfair italic text-[15px] leading-snug text-kcb-noir mb-5">
                     {item.quote}

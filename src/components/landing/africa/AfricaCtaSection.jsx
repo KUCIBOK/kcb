@@ -12,7 +12,7 @@ export default function AfricaCtaSection() {
   const t = africaT[lang].cta
 
   return (
-    <section className="py-40 text-center relative">
+    <section className="py-20 md:py-40 text-center relative">
       {/* Decorative border */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-kcb-or/[0.03] pointer-events-none" />
 

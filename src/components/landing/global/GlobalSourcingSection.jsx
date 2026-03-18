@@ -13,9 +13,9 @@ export default function GlobalSourcingSection() {
   const t = globalT[lang].sourcing
 
   return (
-    <section className="py-36 bg-kcb-steel">
-      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+    <section className="py-16 md:py-36 bg-kcb-steel">
+      <div className="max-w-[1280px] mx-auto px-[clamp(16px,5vw,80px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 lg:gap-24 items-center">
           <RevealOnScroll>
             <SectionLabel text={t.label} />
             <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-6">

@@ -279,8 +279,8 @@ export default function AfricaFeatureSection() {
   const VIEWS = [<ViewInventaire key={0} />, <ViewPortefeuille key={1} />, <ViewPaiement key={2} />]
 
   return (
-    <section className="py-32 bg-kcb-noir">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-16 md:py-32 bg-kcb-noir">
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
 
         {/* Header */}
         <RevealOnScroll className="mb-12">
@@ -321,7 +321,7 @@ export default function AfricaFeatureSection() {
             </div>
 
             {/* Body */}
-            <div className="flex" style={{ minHeight: "320px" }}>
+            <div className="flex" style={{ minHeight: "260px" }}>
               {/* Sidebar — hidden on mobile */}
               <div className="hidden sm:block flex-shrink-0 border-r border-kcb-silver/[0.06] pt-5" style={{ width: "160px", background: "#0b0e14" }}>
                 {NAV_LABELS.map((label, i) => {
@@ -370,7 +370,7 @@ export default function AfricaFeatureSection() {
               <button
                 key={f.num}
                 onClick={() => goTo(i)}
-                className="text-left bg-kcb-noir p-8 h-full relative overflow-hidden focus:outline-none group transition-colors duration-300"
+                className="text-left bg-kcb-noir p-4 md:p-8 h-full relative overflow-hidden focus:outline-none group transition-colors duration-300"
                 style={{ borderTop: isActive ? "2px solid var(--accent)" : "2px solid transparent" }}
               >
                 {/* Progress bar */}
