@@ -33,7 +33,7 @@ export default function Gateway() {
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
           {/* Kuzi — full animated character */}
-          <div className="mb-4 md:mb-8 flex-shrink-0 w-[140px] sm:w-[200px] md:w-[280px]">
+          <div className="mb-4 md:mb-8 flex-shrink-0 w-[160px] sm:w-[220px] md:w-[300px] lg:w-[320px]">
             <GatewayKuzi hover={hover === "africa"} />
           </div>
           <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-or mb-2 md:mb-5">
@@ -74,7 +74,7 @@ export default function Gateway() {
         />
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          <div className="w-[140px] h-[140px] sm:w-[200px] sm:h-[200px] md:w-[280px] md:h-[280px] relative mb-4 md:mb-8">
+          <div className="w-[220px] sm:w-[320px] md:w-[420px] lg:w-[460px] relative mb-4 md:mb-8" style={{ aspectRatio: "2/1" }}>
             <GatewayMapSvg />
           </div>
           <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-silver mb-2 md:mb-5">
