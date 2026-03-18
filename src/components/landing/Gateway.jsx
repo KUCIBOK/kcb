@@ -31,13 +31,12 @@ export default function Gateway() {
         />
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          {/* Kuzi — float + eyelid blink overlay */}
+          {/* Kuzi — blink only, no float */}
           <div
             className="relative mb-4 md:mb-8 flex-shrink-0 w-[140px] sm:w-[200px] md:w-[280px]"
-            style={{ animation: "kuzi-float 3.5s ease-in-out infinite" }}
           >
             <img
-              src="/images/Kuzi.webp"
+              src="/images/KuziNew.png"
               alt="Kuzi"
               className="w-full h-auto transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{
@@ -45,15 +44,31 @@ export default function Gateway() {
                 transform: hover === "africa" ? "scale(1.05)" : "scale(1)",
               }}
             />
+            {/* Left eyelid */}
             <div
               className="absolute pointer-events-none"
               style={{
-                left: "43%",
-                top: "35%",
-                width: "13%",
-                height: "4.5%",
-                background: "#2C2424",
-                borderRadius: "50% 50% 45% 45% / 100% 100% 0% 0%",
+                left: "29%",
+                top: "40%",
+                width: "14%",
+                height: "5%",
+                background: "#5C2A0A",
+                borderRadius: "0 0 50% 50% / 0 0 100% 100%",
+                transformOrigin: "50% 0%",
+                transform: "scaleY(0)",
+                animation: "kuzi-eyelid 5s ease-in-out infinite",
+              }}
+            />
+            {/* Right eyelid */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: "53%",
+                top: "40%",
+                width: "14%",
+                height: "5%",
+                background: "#5C2A0A",
+                borderRadius: "0 0 50% 50% / 0 0 100% 100%",
                 transformOrigin: "50% 0%",
                 transform: "scaleY(0)",
                 animation: "kuzi-eyelid 5s ease-in-out infinite",
