@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { ArrowRight } from "lucide-react"
 import GatewayMapSvg from "./svg/GatewayMapSvg"
+import GatewayKuzi from "./GatewayKuzi"
 
 /**
  * Split-screen gateway — entry point to Africa and Global portals.
@@ -31,49 +32,9 @@ export default function Gateway() {
         />
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          {/* Kuzi — blink only, no float */}
-          <div
-            className="relative mb-4 md:mb-8 flex-shrink-0 w-[140px] sm:w-[200px] md:w-[280px]"
-          >
-            <img
-              src="/images/KuziNew.png"
-              alt="Kuzi"
-              className="w-full h-auto transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{
-                filter: "drop-shadow(0 16px 40px rgba(0,0,0,0.4))",
-                transform: hover === "africa" ? "scale(1.05)" : "scale(1)",
-              }}
-            />
-            {/* Left eyelid */}
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                left: "29%",
-                top: "40%",
-                width: "14%",
-                height: "5%",
-                background: "#5C2A0A",
-                borderRadius: "0 0 50% 50% / 0 0 100% 100%",
-                transformOrigin: "50% 0%",
-                transform: "scaleY(0)",
-                animation: "kuzi-eyelid 5s ease-in-out infinite",
-              }}
-            />
-            {/* Right eyelid */}
-            <div
-              className="absolute pointer-events-none"
-              style={{
-                left: "53%",
-                top: "40%",
-                width: "14%",
-                height: "5%",
-                background: "#5C2A0A",
-                borderRadius: "0 0 50% 50% / 0 0 100% 100%",
-                transformOrigin: "50% 0%",
-                transform: "scaleY(0)",
-                animation: "kuzi-eyelid 5s ease-in-out infinite",
-              }}
-            />
+          {/* Kuzi — full animated character */}
+          <div className="mb-4 md:mb-8 flex-shrink-0 w-[140px] sm:w-[200px] md:w-[280px]">
+            <GatewayKuzi hover={hover === "africa"} />
           </div>
           <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-or mb-2 md:mb-5">
             Portail Afrique

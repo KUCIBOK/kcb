@@ -542,6 +542,34 @@ td {
   92%, 93%                      { transform: scaleY(1); opacity: 1; }
 }
 
+/* ── GatewayKuzi animations ────────────────────────────── */
+/* Continuous subtle breathing bob */
+@keyframes kuzi-breathe {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-2px); }
+}
+/* Continuous slow sway (simulates necklace physics) */
+@keyframes kuzi-sway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  25%      { transform: rotate(-0.5deg); }
+  50%      { transform: rotate(1.5deg);  }
+  75%      { transform: rotate(0.5deg);  }
+}
+/* Energy bounce — 2 quick jumps */
+@keyframes kuzi-bounce {
+  0%   { transform: translateY(0);     }
+  20%  { transform: translateY(-10px); }
+  40%  { transform: translateY(0);     }
+  60%  { transform: translateY(-6px);  }
+  80%  { transform: translateY(0);     }
+  100% { transform: translateY(0);     }
+}
+/* Eye shine pulse in energy/welcome phases */
+@keyframes kuzi-shine {
+  0%   { opacity: 0.4; transform: scale(1);    }
+  100% { opacity: 0.9; transform: scale(1.4);  }
+}
+
 /* Float animations — Global hero stats */
 @keyframes kcb-float-1 {
   0%, 100% { transform: translateY(0); }
