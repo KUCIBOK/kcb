@@ -16,7 +16,7 @@ export default function Gateway() {
     <div className="fixed inset-0 z-[200] flex flex-col md:flex-row font-dm-sans">
       {/* Africa side */}
       <div
-        className="flex-1 flex flex-col justify-center items-center px-6 md:px-12 py-10 relative overflow-hidden cursor-pointer transition-[flex] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:flex-[1.15] bg-kcb-noir-deep"
+        className="flex-1 flex flex-col justify-center items-center px-5 md:px-12 py-6 md:py-10 relative overflow-hidden cursor-pointer transition-[flex] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:flex-[1.15] bg-kcb-noir-deep"
         onClick={() => navigate("/africa")}
         onMouseEnter={() => setHover("africa")}
         onMouseLeave={() => setHover(null)}
@@ -33,8 +33,8 @@ export default function Gateway() {
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
           {/* Kuzi — float + eyelid blink overlay */}
           <div
-            className="relative mb-8 flex-shrink-0"
-            style={{ width: "280px", animation: "kuzi-float 3.5s ease-in-out infinite" }}
+            className="relative mb-4 md:mb-8 flex-shrink-0 w-[140px] sm:w-[200px] md:w-[280px]"
+            style={{ animation: "kuzi-float 3.5s ease-in-out infinite" }}
           >
             <img
               src="/images/Kuzi.webp"
@@ -60,22 +60,22 @@ export default function Gateway() {
               }}
             />
           </div>
-          <div className="font-jetbrains text-[10px] tracking-[0.3em] uppercase text-kcb-or mb-5">
+          <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-or mb-2 md:mb-5">
             Portail Afrique
           </div>
-          <h2 className="font-playfair font-bold text-[clamp(26px,3vw,40px)] leading-[1.1] mb-4">
+          <h2 className="font-playfair font-bold text-[clamp(18px,3.5vw,40px)] leading-[1.1] mb-2 md:mb-4">
             Votre art merite<br />un standard <em className="italic text-kcb-or">mondial</em>
           </h2>
-          <p className="text-[13px] font-light leading-[1.7] text-kcb-pierre mb-9 max-w-[340px]">
+          <p className="hidden sm:block text-[12px] md:text-[13px] font-light leading-[1.7] text-kcb-pierre mb-5 md:mb-9 max-w-[340px]">
             Certification gratuite, logistique specialisee, visibilite internationale. Pour les artistes d'Afrique de l'Ouest.
           </p>
           <button
-            className="inline-flex items-center gap-2.5 bg-kcb-or text-kcb-noir font-semibold text-xs tracking-[0.1em] uppercase px-[52px] py-4 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_8px_40px_rgba(201,168,76,0.25)] hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 bg-kcb-or text-kcb-noir font-semibold text-xs tracking-[0.1em] uppercase px-7 md:px-[52px] py-3 md:py-4 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_8px_40px_rgba(201,168,76,0.25)] hover:-translate-y-0.5"
             onClick={(e) => { e.stopPropagation(); navigate("/africa") }}
           >
             Entrer <ArrowRight className="w-3.5 h-3.5" />
           </button>
-          <div className="font-jetbrains text-[9px] tracking-[0.15em] uppercase text-kcb-bronze mt-4">
+          <div className="font-jetbrains text-[9px] tracking-[0.15em] uppercase text-kcb-bronze mt-2 md:mt-4">
             Acces gratuit
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function Gateway() {
 
       {/* Global side */}
       <div
-        className="flex-1 flex flex-col justify-center items-center px-6 md:px-12 py-10 relative overflow-hidden cursor-pointer transition-[flex] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:flex-[1.15] bg-kcb-steel"
+        className="flex-1 flex flex-col justify-center items-center px-5 md:px-12 py-6 md:py-10 relative overflow-hidden cursor-pointer transition-[flex] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:flex-[1.15] bg-kcb-steel"
         onClick={() => navigate("/global")}
         onMouseEnter={() => setHover("global")}
         onMouseLeave={() => setHover(null)}
@@ -98,31 +98,31 @@ export default function Gateway() {
         />
 
         <div className="relative z-[2] text-center max-w-[420px] flex flex-col items-center">
-          <div className="w-[300px] h-[300px] md:w-[300px] md:h-[300px] sm:w-[220px] sm:h-[220px] relative mb-8">
+          <div className="w-[140px] h-[140px] sm:w-[200px] sm:h-[200px] md:w-[280px] md:h-[280px] relative mb-4 md:mb-8">
             <GatewayMapSvg />
           </div>
-          <div className="font-jetbrains text-[10px] tracking-[0.3em] uppercase text-kcb-silver mb-5">
+          <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-silver mb-2 md:mb-5">
             Global Portal
           </div>
-          <h2 className="font-playfair font-bold text-[clamp(26px,3vw,40px)] leading-[1.1] mb-4">
+          <h2 className="font-playfair font-bold text-[clamp(18px,3.5vw,40px)] leading-[1.1] mb-2 md:mb-4">
             The Standard for<br />African Art <em className="italic text-kcb-silver-light">Circulation</em>
           </h2>
-          <p className="text-[13px] font-light leading-[1.7] text-kcb-pierre mb-9 max-w-[340px]">
+          <p className="hidden sm:block text-[12px] md:text-[13px] font-light leading-[1.7] text-kcb-pierre mb-5 md:mb-9 max-w-[340px]">
             Curated catalogue, certified artworks, door-to-door logistics. For collectors and institutions worldwide.
           </p>
           <button
-            className="inline-flex items-center gap-2.5 bg-kcb-silver text-kcb-noir-deep font-semibold text-xs tracking-[0.1em] uppercase px-[52px] py-4 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_8px_40px_rgba(168,176,188,0.2)] hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 bg-kcb-silver text-kcb-noir-deep font-semibold text-xs tracking-[0.1em] uppercase px-7 md:px-[52px] py-3 md:py-4 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_8px_40px_rgba(168,176,188,0.2)] hover:-translate-y-0.5"
             onClick={(e) => { e.stopPropagation(); navigate("/global") }}
           >
             Enter <ArrowRight className="w-3.5 h-3.5" />
           </button>
-          <div className="font-jetbrains text-[9px] tracking-[0.15em] uppercase text-kcb-silver-dark mt-4">
+          <div className="font-jetbrains text-[9px] tracking-[0.15em] uppercase text-kcb-silver-dark mt-2 md:mt-4">
             Premium access
           </div>
         </div>
       </div>
 
-      {/* Center divider with logo */}
+      {/* Center divider with logo — desktop only */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none hidden md:block">
         <div
           className="w-20 h-20 rounded-full border border-white/[0.08] flex items-center justify-center p-4 transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]"
@@ -143,10 +143,13 @@ export default function Gateway() {
         </div>
       </div>
 
+      {/* Horizontal divider line — mobile only */}
+      <div className="absolute left-0 right-0 md:hidden z-10 pointer-events-none" style={{ top: "50%", height: "1px", background: "rgba(255,255,255,0.06)" }} />
+
       {/* Top logo */}
-      <div className="absolute top-9 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
-        <img src="/images/kucibok-white-logo.svg" alt="Kucibok" className="h-9" />
-        <span className="font-playfair font-bold text-xl text-white tracking-[0.06em] uppercase">
+      <div className="absolute top-5 md:top-9 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 md:gap-3">
+        <img src="/images/kucibok-white-logo.svg" alt="Kucibok" className="h-6 md:h-9" />
+        <span className="font-playfair font-bold text-base md:text-xl text-white tracking-[0.06em] uppercase">
           Kuci<span className="text-kcb-or">bok</span>
         </span>
       </div>
