@@ -1058,7 +1058,12 @@ async function routeArtists(req, res) {
       .range(from, to);
 
     if (error) return fail(res, error.message);
-    return ok(res, data, 200, { page, limit, total: count });
+    const normalizedArtists = (data ?? []).map(a => ({
+      ...a,
+      _id: a.id,
+      artworkCount: a.artwork_count ?? 0,
+    }));
+    return ok(res, normalizedArtists, 200, { page, limit, total: count });
   }
 
   if (req.method === 'POST') {
