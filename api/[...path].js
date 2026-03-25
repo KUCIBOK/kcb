@@ -321,11 +321,29 @@ export default async function handler(req, res) {
     // ── /api/blog ────────────────────────────────────────────────────────────
     if (s0 === 'blog') return await routeBlog(req, res);
 
-    // ── /api/categories ──────────────────────────────────────────────────────
-    if (s0 === 'categories') return await routeCategories(req, res);
+    // ── /api/categories (+ alias /api/category) ──────────────────────────────
+    if (s0 === 'categories' || s0 === 'category') return await routeCategories(req, res);
 
-    // ── /api/plans ───────────────────────────────────────────────────────────
-    if (s0 === 'plans') return await routePlans(req, res);
+    // ── /api/plans (+ alias /api/plan) ───────────────────────────────────────
+    if (s0 === 'plans' || s0 === 'plan') return await routePlans(req, res);
+
+    // ── /api/visitor/visit-time ───────────────────────────────────────────────
+    if (s0 === 'visitor' && s1 === 'visit-time') return await routeVisitorVisitTime(req, res);
+
+    // ── /api/visitor ──────────────────────────────────────────────────────────
+    if (s0 === 'visitor') return await routeVisitor(req, res);
+
+    // ── /api/numerisation/:id/status ─────────────────────────────────────────
+    if (s0 === 'numerisation' && s1 && s2 === 'status') return await routeNumerisationStatus(req, res, s1);
+
+    // ── /api/numerisation/my ─────────────────────────────────────────────────
+    if (s0 === 'numerisation' && s1 === 'my') return await routeNumerisationMy(req, res);
+
+    // ── /api/numerisation/:id ────────────────────────────────────────────────
+    if (s0 === 'numerisation' && s1) return await routeNumerisationById(req, res, s1);
+
+    // ── /api/numerisation ────────────────────────────────────────────────────
+    if (s0 === 'numerisation') return await routeNumerisation(req, res);
 
     // ── /api/delivery/:id ────────────────────────────────────────────────────
     if (s0 === 'delivery' && s1) return await routeDeliveryById(req, res, s1);
@@ -1715,6 +1733,153 @@ async function routeGalleriesImport(req, res) {
   const { data, error } = await supabaseAdmin.from('galleries').insert(rows).select();
   if (error) return fail(res, error.message);
   return ok(res, { imported: data?.length ?? 0, galleries: data }, 201);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VISITOR TRACKING
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * POST /api/visitor — Enregistre un visiteur.
+ * GET  /api/visitor — Liste tous les visiteurs (admin).
+ */
+async function routeVisitor(req, res) {
+  if (req.method === 'POST') {
+    const { ipAddress, userAgent, pageVisited, sessionId } = req.body ?? {};
+    const { data, error } = await supabaseAdmin
+      .from('visitors')
+      .insert({ ip: ipAddress ?? null, user_agent: userAgent ?? null, page: pageVisited ?? null })
+      .select()
+      .single();
+    if (error) return fail(res, error.message);
+    // Normalize id → _id for legacy frontend compatibility
+    return ok(res, { ...data, _id: data.id, sessionId: sessionId ?? data.id }, 201);
+  }
+
+  if (req.method === 'GET') {
+    const authResult = await requireAuth(req);
+    if (authResult.error) return fail(res, authResult.error, authResult.status);
+    const adminCheck = await requireAdmin(authResult.user);
+    if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+    const { data, error } = await supabaseAdmin
+      .from('visitors')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(5000);
+    if (error) return fail(res, error.message);
+    // Normalize for frontend
+    return ok(res, (data ?? []).map(v => ({ ...v, _id: v.id, createdAt: v.created_at, visitTime: 0 })));
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * PUT /api/visitor/visit-time — Met à jour la durée de visite (no-op, table sans colonne dédiée).
+ */
+async function routeVisitorVisitTime(req, res) {
+  if (req.method !== 'PUT') return fail(res, 'Méthode non autorisée', 405);
+  return ok(res, { updated: true });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NUMERISATION REQUESTS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * POST /api/numerisation — Crée une demande de numérisation.
+ * GET  /api/numerisation — Liste toutes les demandes (admin).
+ */
+async function routeNumerisation(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  if (req.method === 'POST') {
+    const { artwork_id, notes } = req.body ?? {};
+    const { data, error } = await supabaseAdmin
+      .from('numerisation_requests')
+      .insert({ user_id: authResult.user.id, artwork_id: artwork_id ?? null, notes: notes ?? null, status: 'pending' })
+      .select()
+      .single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  if (req.method === 'GET') {
+    const adminCheck = await requireAdmin(authResult.user);
+    if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+    const { data, error } = await supabaseAdmin
+      .from('numerisation_requests')
+      .select('*, artworks(title, image), users(name)')
+      .order('created_at', { ascending: false });
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(n => ({ ...n, _id: n.id })));
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/** GET /api/numerisation/my — Mes demandes de numérisation. */
+async function routeNumerisationMy(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { data, error } = await supabaseAdmin
+    .from('numerisation_requests')
+    .select('*, artworks(title, image)')
+    .eq('user_id', authResult.user.id)
+    .order('created_at', { ascending: false });
+  if (error) return fail(res, error.message);
+  return ok(res, (data ?? []).map(n => ({ ...n, _id: n.id })));
+}
+
+/** GET/PUT/DELETE /api/numerisation/:id */
+async function routeNumerisationById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin.from('numerisation_requests').select('*').eq('id', id).single();
+    if (error || !data) return fail(res, 'Demande introuvable', 404);
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'PUT') {
+    const { notes } = req.body ?? {};
+    const { data, error } = await supabaseAdmin
+      .from('numerisation_requests').update({ notes }).eq('id', id).select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE') {
+    const adminCheck = await requireAdmin(authResult.user);
+    if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+    const { error } = await supabaseAdmin.from('numerisation_requests').delete().eq('id', id);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/** PUT /api/numerisation/:id/status — Change le statut (admin). */
+async function routeNumerisationStatus(req, res, id) {
+  if (req.method !== 'PUT') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const { status } = req.body ?? {};
+  if (!status) return fail(res, 'status requis');
+
+  const { data, error } = await supabaseAdmin
+    .from('numerisation_requests').update({ status }).eq('id', id).select().single();
+  if (error) return fail(res, error.message);
+  return ok(res, { ...data, _id: data.id });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

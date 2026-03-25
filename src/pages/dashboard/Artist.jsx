@@ -31,6 +31,7 @@ import { InsuranceTab } from "../../components/insurance/InsuranceTab";
 import SupportTicketUser from "../../components/support/SupportTicketUser";
 import ArtistSales from "../../components/artist/ArtistSales";
 import ArtistNotifications from "../../components/artist/ArtistNotifications";
+import { ArtistCertificationTab } from "../../components/artist/ArtistCertificationTab";
 
 export default function Artist() {
   const { user, artistProfile, loading } = useAuth();
@@ -53,6 +54,7 @@ export default function Artist() {
       icon: <Package className="w-4 h-4" />,
       items: [
         { name: "Mes Œuvres", icon: <Image className="w-4 h-4" />, index: 1 },
+        { name: "Certifications KCB", icon: <Shield className="w-4 h-4" />, index: 9 },
         { name: "Mes Ventes", icon: <DollarSign className="w-4 h-4" />, index: 5 }
       ]
     },
@@ -125,6 +127,8 @@ export default function Artist() {
         return <SupportTicketUser />;
       case 8:
         return <Profile />;
+      case 9:
+        return <ArtistCertificationTab />;
       default:
         return null;
     }
