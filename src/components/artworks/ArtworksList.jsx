@@ -5,6 +5,7 @@ import { ApproveAction } from "./ApproveAction";
 import { DownloadAction } from "./DownloadAction";
 import { UpdateEtherscan } from "./UpdateEtherscan";
 import { UpdateArtworkAction } from "./UpdateArtworkAction";
+import { GenerateCertificateAction } from "./GenerateCertificateAction";
 import { DataTable, Badge, StatusBadge } from "../ui";
 
 export const ArtworksList = ({artworks, user}) => {
@@ -96,9 +97,9 @@ export const ArtworksList = ({artworks, user}) => {
         {
             header: 'Certificat',
             accessor: 'certificatePath',
-            render: (value) => value
-                ? <a href={value} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">Voir</a>
-                : <span className="text-gray-500 italic text-xs">À venir</span>
+            render: (value, row) => (
+                <GenerateCertificateAction artwork={row} user={user} />
+            )
         },
         {
             header: 'Actions',

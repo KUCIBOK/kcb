@@ -43,6 +43,7 @@ import { CampainTab } from "../../components/admin/CampainTab";
 import GalleriesTab from "../../components/admin/GalleriesTab";
 import SupportTicketTab from "../../components/admin/SupportTicketTab";
 import LogidooDashboard from "../../components/admin/LogidooDashboard";
+import { AdminArtistsTab } from "../../components/admin/AdminArtistsTab";
 export default function Admin() {
   const { pending, approved, rejected } = useArtworks();
   const { numerisations } = useNumerisation();
@@ -75,6 +76,7 @@ export default function Admin() {
       icon: <Users className="w-4 h-4" />,
       items: [
         { name: "Utilisateurs", icon: <Users className="w-4 h-4" />, index: 4 },
+        { name: "Artistes", icon: <Palette className="w-4 h-4" />, index: 17 },
         { name: "Portefeuille clients", icon: <ContactRound className="w-4 h-4" />, index: 7 },
         { name: "Galeries scrapées", icon: <GalleryHorizontalEnd className="w-4 h-4" />, index: 16 }
       ]
@@ -182,6 +184,8 @@ export default function Admin() {
         return <CampainTab />;
       case 16:
         return <GalleriesTab />;
+      case 17:
+        return <AdminArtistsTab />;
       default:
         return (
           <div className="text-center text-muted-foreground">
