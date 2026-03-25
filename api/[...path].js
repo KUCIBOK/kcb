@@ -357,6 +357,12 @@ export default async function handler(req, res) {
     // ── /api/profile/:id ─────────────────────────────────────────────────────
     if (s0 === 'profile' && s1) return await routeProfile(req, res, s1);
 
+    // ── /api/galleries/import ────────────────────────────────────────────────
+    if (s0 === 'galleries' && s1 === 'import') return await routeGalleriesImport(req, res);
+
+    // ── /api/galleries ───────────────────────────────────────────────────────
+    if (s0 === 'galleries') return await routeGalleries(req, res);
+
     return fail(res, 'Route introuvable', 404);
   } catch (err) {
     return serverError(res, err);
@@ -1631,6 +1637,84 @@ async function routeLog(req, res) {
   }
 
   return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GALLERIES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET /api/galleries — Liste toutes les galeries (admin uniquement).
+ * POST /api/galleries — Crée une galerie.
+ */
+async function routeGalleries(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  if (req.method === 'GET') {
+    const { page, limit, from, to } = parsePagination(req);
+    const search = req.query?.search ?? '';
+
+    let query = supabaseAdmin
+      .from('galleries')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (search) {
+      query = query.ilike('name', `%${search}%`);
+    }
+
+    const { data, error, count } = await query;
+    if (error) return fail(res, error.message);
+    return ok(res, { galleries: data ?? [], total: count ?? 0, filtered: data?.length ?? 0 }, 200, { page, limit, total: count });
+  }
+
+  if (req.method === 'POST') {
+    const { name, email, description, location, website, image } = req.body ?? {};
+    if (!name) return fail(res, 'name requis');
+
+    const { data, error } = await supabaseAdmin
+      .from('galleries')
+      .insert({ name, description, location, website, image })
+      .select()
+      .single();
+
+    if (error) return fail(res, error.message);
+    return ok(res, data, 201);
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * POST /api/galleries/import — Import CSV de galeries scrapées (admin uniquement).
+ * Accepte un corps JSON { galleries: [{ name, email, ... }] } ou multipart (futur).
+ */
+async function routeGalleriesImport(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const galleries = req.body?.galleries;
+  if (!Array.isArray(galleries) || !galleries.length) return fail(res, 'galleries[] requis');
+
+  const rows = galleries.map(g => ({
+    name: g.name ?? '',
+    description: g.description ?? null,
+    location: g.location ?? null,
+    website: g.website ?? null,
+    image: g.image ?? null,
+  }));
+
+  const { data, error } = await supabaseAdmin.from('galleries').insert(rows).select();
+  if (error) return fail(res, error.message);
+  return ok(res, { imported: data?.length ?? 0, galleries: data }, 201);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
