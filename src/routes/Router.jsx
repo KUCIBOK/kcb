@@ -47,6 +47,7 @@ const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("../pages/TermsAndConditions"));
 const SalesConditions = lazy(() => import("../pages/SalesConditions"));
 const EthicChart = lazy(() => import("../pages/EthicChart"));
+const Unsubscribe = lazy(() => import("../pages/Unsubscribe"));
 const TrackingPage = lazy(() => import("../pages/TrackingPage"));
 const AfricaLanding = lazy(() => import("../pages/AfricaLanding"));
 const GatewayPage = lazy(() => import("../pages/GatewayPage"));
@@ -276,6 +277,11 @@ export function Router() {
               <GlobalSourcingPage />
             </Suspense>
           } />
+          <Route path="/unsubscribe" element={
+            <Suspense fallback={<PageLoader />}>
+              <Unsubscribe />
+            </Suspense>
+          } />
           <Route path="/privacy-policy" element={
             <Suspense fallback={<PageLoader />}>
               <PrivacyPolicy />
@@ -401,6 +407,12 @@ export function Router() {
             <Route path="/forgot-password" element={
                 <Suspense fallback={<PageLoader />}>
                   <ForgotPasswordForm />
+                </Suspense>
+              }
+            />
+            <Route path="/reset-password" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ResetPasswordForm />
                 </Suspense>
               }
             />

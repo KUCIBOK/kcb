@@ -18,6 +18,7 @@
  *   POST /api/auth/reset-password
  *   POST /api/auth/change-password
  *   POST /api/auth/google-callback
+ *   POST /api/auth/send-access
  *   GET  /api/artworks
  *   POST /api/artworks
  *   GET  /api/artworks/:id
@@ -56,6 +57,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes }  from 'crypto';
+import { readFileSync } from 'fs';
+import { join }         from 'path';
 
 // ─── Validation des variables d'environnement ────────────────────────────────
 
@@ -458,6 +461,7 @@ async function routeAuth(req, res, action) {
     case 'reset-password':  return await authResetPassword(req, res);
     case 'change-password': return await authChangePassword(req, res);
     case 'google-callback': return await authGoogleCallback(req, res);
+    case 'send-access':     return await authSendAccess(req, res);
     default:                return fail(res, 'Action auth inconnue', 404);
   }
 }
@@ -785,6 +789,92 @@ async function authGoogleCallback(req, res) {
     needs_role_selection: false,
     user: { id: data.user.id, email: data.user.email, role },
   });
+}
+
+/**
+ * POST /api/auth/send-access — Envoie un email d'accès brandé Kucibok à un ou plusieurs
+ * utilisateurs existants. Génère un recovery link Supabase (one-time, sécurisé) et
+ * l'intègre dans le template welcome selon le rôle. Admin uniquement.
+ *
+ * Body (un seul) : { email, first_name, role }
+ * Body (liste)   : { users: [{ email, first_name, role }] }
+ *
+ * @param {import('@vercel/node').VercelRequest}  req
+ * @param {import('@vercel/node').VercelResponse} res
+ */
+async function authSendAccess(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  // Normaliser en liste
+  let users = req.body?.users;
+  if (!users) {
+    const { email, first_name, role } = req.body ?? {};
+    if (!email) return fail(res, 'email requis');
+    users = [{ email, first_name: first_name ?? '', role: role ?? 'collector' }];
+  }
+  if (!Array.isArray(users) || !users.length) return fail(res, 'users doit être un tableau non vide');
+
+  const { Resend } = await import('resend');
+  const resend    = new Resend(process.env.RESEND_API_KEY);
+  const SITE_URL  = (process.env.CORS_ORIGIN ?? 'https://kucibok.com').replace(/\/$/, '');
+  const results   = [];
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  for (const u of users) {
+    const { email, first_name = '', role = 'collector' } = u;
+
+    // Fix 4 — validation format email
+    if (!email || !EMAIL_RE.test(email)) {
+      results.push({ email: email ?? null, status: 'skipped', reason: 'email manquant ou invalide' });
+      continue;
+    }
+
+    try {
+      // 1. Générer le recovery link Supabase (one-time, expire 24h)
+      const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+        type:    'recovery',
+        email,
+        options: { redirectTo: `${SITE_URL}/reset-password` },
+      });
+      if (linkError) { results.push({ email, status: 'error', reason: linkError.message }); continue; }
+
+      // Fix 3 — guard si generateLink ne retourne pas de lien
+      const recoveryLink = linkData?.properties?.action_link;
+      if (!recoveryLink) { results.push({ email, status: 'error', reason: 'Impossible de générer le lien d\'accès (compte inexistant ?)' }); continue; }
+
+      // 2. Sélectionner le template selon le rôle (professional → collector en fallback)
+      const templateName = role === 'artist' ? 'welcome-artist' : 'welcome-collector';
+      let html = readFileSync(join(process.cwd(), 'emails', `${templateName}.html`), 'utf8');
+
+      // Fix 2 — fallback first_name si vide
+      const displayName = first_name?.trim() || 'vous';
+
+      // 3. Injecter les variables
+      html = html
+        .replace(/\{\{first_name\}\}/g,      displayName)
+        .replace(/\{\{dashboard_url\}\}/g,   recoveryLink)
+        .replace(/\{\{catalogue_url\}\}/g,   recoveryLink)
+        .replace(/\{\{unsubscribe_url\}\}/g, `${SITE_URL}/unsubscribe`);
+
+      // 4. Envoyer via Resend
+      const subject = role === 'artist'
+        ? 'Votre espace artiste Kucibok Bridge est prêt'
+        : 'Votre accès Kucibok Bridge est prêt';
+
+      await resend.emails.send({ from: FROM_EMAIL, to: email, subject, html });
+      results.push({ email, status: 'sent' });
+    } catch (err) {
+      results.push({ email, status: 'error', reason: err?.message ?? 'Erreur inconnue' });
+    }
+  }
+
+  return ok(res, { results, total: results.length, sent: results.filter(r => r.status === 'sent').length });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1905,7 +1995,7 @@ async function routeSourcing(req, res) {
 // CAMPAIGNS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const FROM_EMAIL = process.env.ADMIN_EMAIL ?? 'noreply@kucibok.com';
+const FROM_EMAIL = `Kucibok Bridge <${process.env.ADMIN_EMAIL ?? 'noreply@kucibok.com'}>`;
 
 /**
  * POST /api/campaigns/send — Envoie une campagne email via Resend.

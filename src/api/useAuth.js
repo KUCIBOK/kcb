@@ -153,7 +153,7 @@ export async function verifyEmail() {
 export async function forgotPassword({ email }) {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     if (error) return { error: error.message };
     return { ok: true };
