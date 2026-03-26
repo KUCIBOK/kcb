@@ -1,4 +1,5 @@
 import { Clock, Image, Palette, TrendingUp, Truck, BarChart3, TrendingDown, Target, Award, DollarSign, ArrowUp, ArrowDown } from "lucide-react"
+import { fmtMoney } from "../../lib/currency"
 import { useArtist } from "../../store/ArtistContext"
 import { useArtworks } from "../../store/ArtworkContext"
 import { AddArtistAction } from "./AddArtistAction"
@@ -68,7 +69,7 @@ export function Synthesis(){
         labels: monthLabels,
         datasets: [
             {
-                label: "Chiffre d'affaires (CFA)",
+                label: "Chiffre d'affaires (XOF)",
                 data: monthlyRevenue,
                 backgroundColor: "rgba(34,197,94,0.7)",
                 borderRadius: 6,
@@ -266,7 +267,7 @@ export function Synthesis(){
                 <KPICard
                     icon={TrendingUp}
                     label="Ventes mensuels"
-                    value={`${monthlySales?.toLocaleString('fr-FR') || 0} CFA`}
+                    value={fmtMoney(monthlySales || 0, 'XOF', { compact: true })}
                     trend={{ 
                         value: revenueGrowth > 0 ? `+${revenueGrowth}%` : `${revenueGrowth}%`, 
                         direction: revenueGrowth > 0 ? 'up' : 'down' 
@@ -292,7 +293,7 @@ export function Synthesis(){
                         <h6 className="text-gray-400 text-sm">Revenue total</h6>
                         <DollarSign className="w-4 h-4 text-green-400" />
                     </div>
-                    <p className="text-xl font-bold text-white">{(totalRevenue / 1000000).toFixed(2)}M CFA</p>
+                    <p className="text-xl font-bold text-white">{fmtMoney(totalRevenue, 'XOF', { compact: true })}</p>
                     <p className="text-xs text-gray-400 mt-2">Toutes les ventes</p>
                 </div>
 
@@ -301,7 +302,7 @@ export function Synthesis(){
                         <h6 className="text-gray-400 text-sm">Prix moyen</h6>
                         <Target className="w-4 h-4 text-blue-400" />
                     </div>
-                    <p className="text-xl font-bold text-white">{(averagePricePerArtwork / 1000).toFixed(0)}K CFA</p>
+                    <p className="text-xl font-bold text-white">{fmtMoney(averagePricePerArtwork, 'XOF', { compact: true })}</p>
                     <p className="text-xs text-gray-400 mt-2">Par oeuvre vendue</p>
                 </div>
 
@@ -389,7 +390,7 @@ export function Synthesis(){
                             <div key={idx} className="bg-background/50 rounded-lg p-3 flex justify-between items-center">
                                 <div className="flex-1">
                                     <p className="text-sm text-white font-medium truncate">{idx + 1}. {artwork.title}</p>
-                                    <p className="text-xs text-gray-400">Estimé: {(artwork.estimatedPrice / 1000).toFixed(0)}K → Vendu: {(artwork.soldPrice / 1000).toFixed(0)}K CFA</p>
+                                    <p className="text-xs text-gray-400">Estimé: {fmtMoney(artwork.estimatedPrice, 'XOF', { compact: true })} → Vendu: {fmtMoney(artwork.soldPrice, 'XOF', { compact: true })}</p>
                                 </div>
                                 <div className={`text-right ${artwork.roi >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                                     <div className="flex items-center gap-1">
@@ -414,9 +415,9 @@ export function Synthesis(){
                         <div key={idx} className="bg-background/50 rounded-lg p-4 text-center">
                             <p className="text-gray-400 text-sm mb-2">{month}</p>
                             <p className="text-2xl font-bold text-indigo-400">
-                                {(forecastedRevenue[idx] / 1000000).toFixed(2)}M
+                                {fmtMoney(forecastedRevenue[idx], 'XOF', { compact: true })}
                             </p>
-                            <p className="text-xs text-gray-500 mt-2">CFA estimé</p>
+                            <p className="text-xs text-gray-500 mt-2">XOF estimé</p>
                         </div>
                     ))}
                 </div>

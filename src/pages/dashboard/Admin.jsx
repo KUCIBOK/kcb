@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../store/AuthContext";
+import { CURRENCIES } from "../../lib/currency";
 import { ArtworksList } from "../../components/artworks/ArtworksList";
 import { useArtworks } from "../../store/ArtworkContext";
 import {
@@ -50,6 +51,7 @@ export default function Admin() {
   const [toggle, setToggle] = useState(false);
   const { user, loading } = useAuth();
   const [tab, setTab] = useState(0);
+  const [currency, setCurrency] = useState('EUR');
 
   // Menu structure with categories
   const menuStructure = [
@@ -123,7 +125,7 @@ export default function Admin() {
   const renderTab = () => {
     switch (tab) {
       case 0:
-        return <Analytics />;
+        return <Analytics currency={currency} />;
       case 1:
         return (
           <ArtworksList
@@ -222,13 +224,30 @@ export default function Admin() {
         />
         {/* Main content */}
         <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">
-          {/* Breadcrumb */}
-          <div className="mb-6">
+          {/* Breadcrumb + Currency switcher */}
+          <div className="mb-6 flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-kcb-pierre">
               <span>{getCurrentPageInfo().category}</span>
               <ChevronRight className="w-4 h-4" />
               <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
             </div>
+            {tab === 0 && (
+              <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-lg p-1">
+                {CURRENCIES.map((c) => (
+                  <button
+                    key={c.code}
+                    onClick={() => setCurrency(c.code)}
+                    className={`px-3 py-1 rounded text-xs font-medium transition ${
+                      currency === c.code
+                        ? 'bg-kcb-or text-kcb-noir'
+                        : 'text-kcb-pierre hover:text-white'
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="lg:hidden flex justify-end mb-4">

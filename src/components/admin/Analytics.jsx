@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { utils } from '../../api/useAPI';
+import { fmtMoney } from '../../lib/currency';
 import {
   TrendingUp,
   Users,
@@ -18,7 +19,7 @@ import {
   Zap,
 } from 'lucide-react';
 
-export function Analytics() {
+export function Analytics({ currency = 'EUR' }) {
   const [data, setData] = useState(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
@@ -193,28 +194,28 @@ export function Analytics() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="MRR"
-            value={`${data.mrr.toLocaleString('fr-FR')} XOF`}
+            value={fmtMoney(data.mrr, currency)}
             change={`+${data.mrrGrowth}% MoM`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="ARR"
-            value={`${data.arr.toLocaleString('fr-FR')} XOF`}
+            value={fmtMoney(data.arr, currency)}
             change={`+${data.arr_growth}% YoY`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="CAC"
-            value={`${data.cac.toLocaleString('fr-FR')} XOF`}
+            value={fmtMoney(data.cac, currency)}
             change="Coût d'acquisition"
             trend="down"
             color="blue"
           />
           <MetricCard
             label="LTV"
-            value={`${data.ltv.toLocaleString('fr-FR')} XOF`}
+            value={fmtMoney(data.ltv, currency)}
             change={`Ratio LTV:CAC = ${(data.ltv / data.cac).toFixed(1)}x`}
             trend="up"
             color="purple"
@@ -234,7 +235,7 @@ export function Analytics() {
           />
           <MetricCard
             label="Projection 3M"
-            value={`${data.revenue_projection_3m.toLocaleString('fr-FR')} XOF`}
+            value={fmtMoney(data.revenue_projection_3m, currency)}
             change="Revenu estimé"
             color="emerald"
           />
@@ -313,7 +314,7 @@ export function Analytics() {
               {data.top_artists.slice(0, 3).map((artist, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
                   <span className="text-gray-300">{artist.name}</span>
-                  <span className="text-green-300 font-semibold">{(artist.revenue / 1000).toFixed(1)}k XOF</span>
+                  <span className="text-green-300 font-semibold">{fmtMoney(artist.revenue, currency, { compact: true })}</span>
                 </div>
               ))}
             </div>
@@ -326,13 +327,13 @@ export function Analytics() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="GMV"
-            value={`${(data.gmv / 1000).toFixed(0)}k XOF`}
+            value={fmtMoney(data.gmv, currency, { compact: true })}
             change="Volume marchand brut"
             color="green"
           />
           <MetricCard
             label="AOV"
-            value={`${data.aov.toLocaleString('fr-FR')} XOF`}
+            value={fmtMoney(data.aov, currency)}
             change="Valeur moyenne par commande"
             color="blue"
           />
@@ -344,7 +345,7 @@ export function Analytics() {
           />
           <MetricCard
             label="Commission"
-            value={`${(data.commission_revenue / 1000).toFixed(1)}k XOF`}
+            value={fmtMoney(data.commission_revenue, currency, { compact: true })}
             change="Revenu commission"
             color="amber"
           />
@@ -368,7 +369,7 @@ export function Analytics() {
                     <p className="text-white text-sm font-medium">{item.title}</p>
                     <p className="text-gray-400 text-xs">{item.sales} ventes</p>
                   </div>
-                  <span className="text-green-300 font-semibold">{(item.revenue / 1000).toFixed(1)}k XOF</span>
+                  <span className="text-green-300 font-semibold">{fmtMoney(item.revenue, currency, { compact: true })}</span>
                 </div>
               ))}
             </div>
@@ -515,7 +516,7 @@ export function Analytics() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             label="MRR Projection"
-            value={`${data.mrr_projection.toLocaleString('fr-FR')} XOF`}
+            value={fmtMoney(data.mrr_projection, currency)}
             change="Estimé le mois prochain"
             color="green"
           />

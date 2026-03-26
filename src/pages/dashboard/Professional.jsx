@@ -116,8 +116,6 @@ export default function Professional() {
         return <ArtworksList user={user} artworks={myArtworks} />;
       case 2:
         return <ArtistTab />;
-      case 3:
-        return <AuctionTab />;
       case 4:
         return <DeliveryTab />;
       case 5:
