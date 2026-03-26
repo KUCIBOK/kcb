@@ -381,6 +381,12 @@ export default async function handler(req, res) {
     // ── /api/galleries ───────────────────────────────────────────────────────
     if (s0 === 'galleries') return await routeGalleries(req, res);
 
+    // ── /api/clients/* ───────────────────────────────────────────────────────
+    if (s0 === 'clients') return await routeClients(req, res, s1, s2);
+
+    // ── /api/collection ──────────────────────────────────────────────────────
+    if (s0 === 'collection') return await routeCollection(req, res);
+
     return fail(res, 'Route introuvable', 404);
   } catch (err) {
     return serverError(res, err);
@@ -2518,6 +2524,136 @@ async function routeProfile(req, res, id) {
       .from('profiles').insert({ user_id: id, ...updates }).select().single();
     if (error) return fail(res, error.message);
     return ok(res, { ...data, userId: data.user_id, _id: data.id });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CLIENTS (CRM artiste)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET  /api/clients/      — Tous les clients de l'utilisateur authentifié.
+ * GET  /api/clients/all   — Idem (alias).
+ * POST /api/clients/add   — Crée un client.
+ * PUT  /api/clients/update/:id — Met à jour un client.
+ * DELETE /api/clients/delete/:id — Supprime un client.
+ *
+ * @param {import('@vercel/node').VercelRequest}  req
+ * @param {import('@vercel/node').VercelResponse} res
+ * @param {string} [sub]  — s1 : add | all | update | delete
+ * @param {string} [id]   — s2 : UUID du client (update / delete)
+ */
+async function routeClients(req, res, sub, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+
+  // POST /api/clients/add
+  if (req.method === 'POST' && sub === 'add') {
+    const { name, email, telephone, country, notes } = req.body ?? {};
+    if (!name && !email) return fail(res, 'name ou email requis');
+
+    const { data, error } = await supabaseAdmin
+      .from('clients')
+      .insert({ user_id: userId, name: name ?? null, email: email ?? null, telephone: telephone ?? null, country: country ?? null, notes: notes ?? null })
+      .select()
+      .single();
+
+    if (error) return fail(res, error.message);
+    return ok(res, { client: { ...data, _id: data.id } }, 201);
+  }
+
+  // PUT /api/clients/update/:id
+  if (req.method === 'PUT' && sub === 'update' && id) {
+    const { name, email, telephone, country, notes } = req.body ?? {};
+    const updates = {};
+    if (name      !== undefined) updates.name      = name;
+    if (email     !== undefined) updates.email     = email;
+    if (telephone !== undefined) updates.telephone = telephone;
+    if (country   !== undefined) updates.country   = country;
+    if (notes     !== undefined) updates.notes     = notes;
+
+    const { data, error } = await supabaseAdmin
+      .from('clients')
+      .update(updates)
+      .eq('id', id)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) return fail(res, error.message);
+    if (!data)  return fail(res, 'Client introuvable', 404);
+    return ok(res, { client: { ...data, _id: data.id } });
+  }
+
+  // DELETE /api/clients/delete/:id
+  if (req.method === 'DELETE' && sub === 'delete' && id) {
+    const { error } = await supabaseAdmin
+      .from('clients')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', userId);
+
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  // GET /api/clients/ ou /api/clients/all
+  if (req.method === 'GET' && (!sub || sub === 'all')) {
+    const { data, error } = await supabaseAdmin
+      .from('clients')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) return fail(res, error.message);
+    return ok(res, { clients: (data ?? []).map(c => ({ ...c, _id: c.id })) });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COLLECTIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET  /api/collection — Collections de l'utilisateur authentifié.
+ * POST /api/collection — Crée une collection.
+ *
+ * @param {import('@vercel/node').VercelRequest}  req
+ * @param {import('@vercel/node').VercelResponse} res
+ */
+async function routeCollection(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin
+      .from('collections')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(c => ({ ...c, _id: c.id })));
+  }
+
+  if (req.method === 'POST') {
+    const { name, description, image } = req.body ?? {};
+    if (!name) return fail(res, 'name requis');
+
+    const { data, error } = await supabaseAdmin
+      .from('collections')
+      .insert({ user_id: userId, name, description: description ?? null, image: image ?? null })
+      .select()
+      .single();
+
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
   }
 
   return fail(res, 'Méthode non autorisée', 405);

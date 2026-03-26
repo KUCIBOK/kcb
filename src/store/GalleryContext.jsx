@@ -28,9 +28,7 @@ export const GalleryContextProvider = ({ children }) => {
             ? result.filtered
             : result.galleries?.length ?? 0,
       });
-      if (result?.error) {
-        makeToast("Erreur", "warning", result.error);
-      }
+      // Background fetch — errors are silent; only explicit refresh() shows a toast
     };
     if(user?.role == "admin") fetchGalleries();
   }, [user?.role]);

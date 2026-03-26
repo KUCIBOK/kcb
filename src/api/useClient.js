@@ -32,7 +32,8 @@ export async function uploadClientsFromFile(file) {
     const response = await fetch(`${api}/clients/upload`, {
       method: "POST",
       headers: {
-        Authorization: options.headers.Authorization,
+        Authorization: utils.options.headers.Authorization,
+        "kcb-api-key": utils.options.headers["kcb-api-key"],
       },
       body: formData,
     });

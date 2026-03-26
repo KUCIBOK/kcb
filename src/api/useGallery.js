@@ -7,25 +7,28 @@ export async function getAllGalleries() {
       ...utils.options,
       method: "GET",
     });
-    const data = await response.json();
+    const body = await response.json();
 
-    const galleries = Array.isArray(data)
-      ? data
-      : Array.isArray(data?.galleries)
-      ? data.galleries
+    // ok() helper wraps the payload in { data: {...} }
+    const payload = body?.data ?? body;
+
+    const galleries = Array.isArray(payload?.galleries)
+      ? payload.galleries
+      : Array.isArray(payload)
+      ? payload
       : [];
 
     const total =
-      typeof data?.total === "number" ? data.total : galleries.length;
+      typeof payload?.total === "number" ? payload.total : galleries.length;
     const filtered =
-      typeof data?.filtered === "number" ? data.filtered : galleries.length;
+      typeof payload?.filtered === "number" ? payload.filtered : galleries.length;
 
     if (!response.ok) {
       return {
         galleries,
         total,
         filtered,
-        error: data?.message || data?.error,
+        error: body?.error || body?.message,
       };
     }
     return { galleries, total, filtered };
