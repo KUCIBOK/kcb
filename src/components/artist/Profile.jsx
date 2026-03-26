@@ -82,12 +82,15 @@ export const Profile = () => {
       }
       const updatedUser = await updateUser(userPayload);
       const updatedArtist = await updateArtist(formData);
-      if (updatedUser?._id || updatedArtist?._id) {
+      if (updatedUser?._id || updatedArtist?._id || updatedArtist?.userId) {
         setState(prev => ({ ...prev, loading: false, error: "" }));
         toast.success("Profil mis à jour !");
+      } else {
+        const msg = updatedArtist?.error || updatedUser?.error || "Erreur lors de la sauvegarde.";
+        setState(prev => ({ ...prev, loading: false, error: msg }));
       }
     } catch (error) {
-      setState({ ...state, loading: false, error: error?.message || "Erreur lors de la sauvegarde." });
+      setState(prev => ({ ...prev, loading: false, error: error?.message || "Erreur lors de la sauvegarde." }));
     }
   }
 

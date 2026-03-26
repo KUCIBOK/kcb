@@ -1245,12 +1245,11 @@ async function routeArtistById(req, res, id) {
     if (authResult.error) return fail(res, authResult.error, authResult.status);
     const { user } = authResult;
 
-    const { data: existing } = await supabaseAdmin
-      .from('artists').select('user_id').eq('id', id).single();
-    if (!existing) return notFound(res, 'Artiste');
-
     const isAdmin = (await getDbRole(user.id)) === 'admin';
-    if (!isAdmin && existing.user_id !== user.id) return fail(res, 'Accès refusé', 403);
+
+    // Le frontend envoie le user UUID (pas l'artist UUID) — chercher par user_id
+    const { data: existing } = await supabaseAdmin
+      .from('artists').select('id, user_id').eq('user_id', id).single();
 
     const ALLOWED = ['name', 'username', 'image', 'country', 'biography', 'portfolio',
                      'facebook', 'twitter', 'instagram'];
@@ -1258,12 +1257,23 @@ async function routeArtistById(req, res, id) {
     for (const key of ALLOWED) {
       if (req.body?.[key] !== undefined) updates[key] = req.body[key];
     }
+
+    if (!existing) {
+      // Pas encore de profil artiste — créer à la volée (upsert)
+      if (!isAdmin && user.id !== id) return fail(res, 'Accès refusé', 403);
+      const { data, error } = await supabaseAdmin
+        .from('artists').insert({ user_id: id, ...updates }).select().single();
+      if (error) return fail(res, error.message);
+      return ok(res, { ...data, userId: data.user_id, _id: data.id }, 201);
+    }
+
+    if (!isAdmin && existing.user_id !== user.id) return fail(res, 'Accès refusé', 403);
     if (Object.keys(updates).length === 0) return fail(res, 'Aucune modification fournie');
 
     const { data, error } = await supabaseAdmin
-      .from('artists').update(updates).eq('id', id).select().single();
+      .from('artists').update(updates).eq('user_id', id).select().single();
     if (error) return fail(res, error.message);
-    return ok(res, data);
+    return ok(res, { ...data, userId: data.user_id, _id: data.id });
   }
 
   return fail(res, 'Méthode non autorisée', 405);

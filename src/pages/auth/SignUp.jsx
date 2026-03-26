@@ -94,6 +94,7 @@ export default function SignUp() {
           error: null,
           step: 4,
           createdUserId: data.user._id || data.user.id,
+          uploadedImageUrl: data.imageUrl ?? null, // URL Supabase Storage de la photo
         }));
       } else if (data?.error) {
         setFormState(p => ({ ...p, error: data.error, loading: false }));
@@ -111,6 +112,11 @@ export default function SignUp() {
     try {
       if (formState.createdUserId) {
         await updateProfile(formState.createdUserId, {
+          // Essentiels Step 4 — indispensables pour créer le row artists
+          name:          formState.name,
+          country:       formState.country,
+          ...(formState.uploadedImageUrl ? { image: formState.uploadedImageUrl } : {}),
+          // Enrichissement Step 5
           username:      formState.username,
           telephone:     formState.telephone,
           biography:     formState.biography,
