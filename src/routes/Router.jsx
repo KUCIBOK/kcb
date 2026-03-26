@@ -1,6 +1,6 @@
 import { memo, lazy, Suspense } from "react";
 import { PageLoader } from "../components/loaders/PageLoader";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Layout } from "../pages/Layout";
 const SignUp = lazy(() => import("../pages/auth/SignUp"));
 const SignIn = lazy(() => import("../pages/auth/SignIn"));
@@ -267,11 +267,7 @@ export function Router() {
               <GlobalPage />
             </Suspense>
           } />
-          <Route path="/global/catalogue" element={
-            <Suspense fallback={<PageLoader />}>
-              <GlobalCataloguePage />
-            </Suspense>
-          } />
+          <Route path="/global/catalogue" element={<Navigate to="/catalogue" replace />} />
           <Route path="/global/sourcing" element={
             <Suspense fallback={<PageLoader />}>
               <GlobalSourcingPage />

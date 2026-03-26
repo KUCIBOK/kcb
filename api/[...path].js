@@ -360,6 +360,9 @@ export default async function handler(req, res) {
     // ── /api/payments/paydunya-callback ──────────────────────────────────────
     if (s0 === 'payments' && s1 === 'paydunya-callback') return await routePaydunyaCallback(req, res);
 
+    // ── /api/transactions/* ──────────────────────────────────────────────────
+    if (s0 === 'transactions') return await routeTransactions(req, res, s1);
+
     // ── /api/subscription ────────────────────────────────────────────────────
     if (s0 === 'subscription') return await routeSubscription(req, res);
 
@@ -2527,6 +2530,83 @@ async function routeProfile(req, res, id) {
   }
 
   return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TRANSACTIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const KCB_COMMISSION_RATE = 0.10; // 10 % de commission Kucibok
+
+/**
+ * GET /api/transactions/artist — Revenus de l'artiste connecté.
+ *   Retourne les transactions où seller_id = user.id + solde à percevoir.
+ *
+ * GET /api/transactions/buyer — Achats du collectionneur connecté.
+ *
+ * @param {import('@vercel/node').VercelRequest}  req
+ * @param {import('@vercel/node').VercelResponse} res
+ * @param {string} [sub] — 'artist' | 'buyer'
+ */
+async function routeTransactions(req, res, sub) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+
+  // ── /api/transactions/artist ────────────────────────────────────────────
+  if (sub === 'artist') {
+    const { data, error } = await supabaseAdmin
+      .from('transactions')
+      .select('*, artworks(title, image, kucibok_id), buyer:buyer_id(name, email)')
+      .eq('seller_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) return fail(res, error.message);
+
+    const txs = (data ?? []).map((t) => {
+      const commission = Math.round((t.amount ?? 0) * KCB_COMMISSION_RATE);
+      return {
+        ...t,
+        _id: t.id,
+        commission,
+        net_amount: (t.amount ?? 0) - commission,
+        payout_status: t.payout_status ?? 'pending',
+      };
+    });
+
+    const completed = txs.filter((t) => t.status === 'completed');
+    const totalRevenue    = completed.reduce((s, t) => s + (t.net_amount ?? 0), 0);
+    const pendingRevenue  = txs.filter((t) => t.status === 'pending').reduce((s, t) => s + (t.net_amount ?? 0), 0);
+    const totalCommission = completed.reduce((s, t) => s + (t.commission ?? 0), 0);
+
+    return ok(res, {
+      transactions: txs,
+      stats: {
+        totalRevenue,
+        pendingRevenue,
+        totalCommission,
+        completedSales: completed.length,
+        pendingSales:   txs.filter((t) => t.status === 'pending').length,
+        currency: txs[0]?.currency ?? 'XOF',
+      },
+    });
+  }
+
+  // ── /api/transactions/buyer ─────────────────────────────────────────────
+  if (sub === 'buyer') {
+    const { data, error } = await supabaseAdmin
+      .from('transactions')
+      .select('*, artworks(title, image, kucibok_id), seller:seller_id(name)')
+      .eq('buyer_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map((t) => ({ ...t, _id: t.id })));
+  }
+
+  return fail(res, 'Sub-route invalide. Utilisez /transactions/artist ou /transactions/buyer', 400);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

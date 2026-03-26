@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../store/AuthContext";
 import { ArtworksList } from "../../components/artworks/ArtworksList";
 import { useArtworks } from "../../store/ArtworkContext";
-import { Activity, BarChart4, ChartLine, Clock, CreditCard, Menu, Shield, ShoppingBag, TrendingUp, User, Users, Truck, Scan, Frame, Palette, ChevronRight, LayoutDashboard, Package, Settings } from "lucide-react";
+import { Activity, BarChart4, ChartLine, Clock, CreditCard, Menu, Shield, ShieldCheck, ShoppingBag, TrendingUp, User, Users, Truck, Scan, Frame, Palette, ChevronRight, LayoutDashboard, Package, Settings } from "lucide-react";
 import DashboardSidebar from "../../components/shared/DashboardSidebar";
 import { Profile } from "../../components/collector/Profile";
 import { Link } from "react-router-dom";
@@ -12,6 +12,7 @@ import { NumerisationTab } from "../../components/numerisation/NumerisationTab";
 import { ArtistTab } from "../../components/professional/ArtistTab";
 import { InsuranceTab } from "../../components/insurance/InsuranceTab";
 import CollectorAbonnement from "../../components/collector/CollectorAbonnement";
+import { CollectorCertificatesTab } from "../../components/collector/CollectorCertificatesTab";
 
 export default function Collector() {
     const {buyed, myArtworks} = useArtworks()
@@ -35,7 +36,8 @@ export default function Collector() {
             items: [
                 { name: "Mes achats", icon: <ShoppingBag className="w-4 h-4" />, index: 1 },
                 { name: "Ma collection", icon: <Frame className="w-4 h-4" />, index: 4 },
-                { name: "Mes artistes", icon: <Palette className="w-4 h-4" />, index: 5 }
+                { name: "Mes artistes", icon: <Palette className="w-4 h-4" />, index: 5 },
+                { name: "Mes certificats KCB", icon: <ShieldCheck className="w-4 h-4" />, index: 14 }
             ]
         },
         {
@@ -144,6 +146,8 @@ export default function Collector() {
               return <Profile/>
             case 13 :
               return <CollectorAbonnement/>
+            case 14:
+              return <CollectorCertificatesTab />
             default:
                 return (
                     <ComingSoon

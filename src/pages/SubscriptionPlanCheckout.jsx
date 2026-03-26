@@ -10,7 +10,17 @@ import { usePayment } from "../hooks/usePayment"
 import PaymentMethodSelector from "../components/PaymentMethodSelector"
 import { toast } from "sonner"
 
-const TVA_RATE = 0.20; // 20% — à synchroniser avec le backend si modifié
+/**
+ * Taux de TVA selon la devise / région :
+ *   XOF  — Afrique de l'Ouest CEDEAO  → 18 %
+ *   EUR  — Union Européenne (particulier) → 20 %
+ *   USD  — International                → 0 % (hors champ TVA)
+ */
+function getTvaRate(currency) {
+  if (currency === 'XOF') return 0.18;
+  if (currency === 'EUR') return 0.20;
+  return 0; // USD et autres
+}
 
 export default function SubscriptionPlanCheckout(){
     const {id} = useParams()
@@ -107,20 +117,33 @@ export default function SubscriptionPlanCheckout(){
                                     <li className="py-2 text-sm  text-white flex items-center gap-2"> <Check className="text-green-500 w-4 h-4" /> {item} </li>
                                 ))}
                             </ul>
-                            <table className="w-full">
-                                <tr>
-                                    <td>Abonnement {state?.plan?.name} </td>
-                                    <td className="text-end"> {(state?.plan?.price * (1 - TVA_RATE)).toLocaleString('fr-FR').replace(/\s/g, ' ')} <span className="text-xs font-normal text-kcb-pierre">{state?.plan.currency}</span> </td>
-                                </tr>
-                                <tr>
-                                    <td> TVA ({(TVA_RATE * 100).toFixed(0)}%) </td>
-                                    <td className="text-end"> {(state?.plan?.price * TVA_RATE).toLocaleString('fr-FR').replace(/\s/g, ' ')} <span className="text-xs font-normal text-kcb-pierre">{state?.plan.currency}</span> </td>
-                                </tr>
-                                <tr>
-                                    <td> Total mensuel </td>
-                                    <td className="text-end"> {state?.plan?.price.toLocaleString('fr-FR').replace(/\s/g, ' ')} <span className="text-xs font-normal text-kcb-pierre">{state?.plan.currency}</span> </td>
-                                </tr>
-                            </table>
+                            {(() => {
+                                const tvaRate = getTvaRate(state?.plan?.currency);
+                                const ht = tvaRate > 0 ? state?.plan?.price / (1 + tvaRate) : state?.plan?.price;
+                                const tvaAmount = state?.plan?.price - ht;
+                                const fmt = (n) => n.toLocaleString('fr-FR').replace(/\s/g, ' ');
+                                const cur = <span className="text-xs font-normal text-kcb-pierre">{state?.plan?.currency}</span>;
+                                return (
+                                <table className="w-full">
+                                    <tr>
+                                        <td>Abonnement {state?.plan?.name}</td>
+                                        <td className="text-end">{fmt(ht)} {cur}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {tvaRate > 0
+                                                ? `TVA (${(tvaRate * 100).toFixed(0)}%)`
+                                                : 'TVA (0% — hors champ)'}
+                                        </td>
+                                        <td className="text-end">{fmt(tvaAmount)} {cur}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total mensuel</td>
+                                        <td className="text-end">{fmt(state?.plan?.price)} {cur}</td>
+                                    </tr>
+                                </table>
+                                );
+                            })()}
                             <ul className="rounded-[4px] p-2 bg-kcb-ardoise mt-4 list-disc ps-8">
                                 <li>Annulation possible à tout moment</li>
                                 <li>Première facture aujourd'hui</li>
