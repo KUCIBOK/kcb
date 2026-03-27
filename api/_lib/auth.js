@@ -10,7 +10,7 @@
 import { supabaseAdmin } from './supabase.js';
 
 /** Rôles valides de la plateforme. */
-const VALID_ROLES = ['collector', 'artist', 'professional', 'admin'];
+const VALID_ROLES = ['buyer', 'artist', 'curator', 'admin'];
 
 /**
  * Extrait et vérifie le Bearer token depuis le header Authorization.
@@ -49,7 +49,7 @@ export async function requireRole(user, roles) {
     .select('role')
     .eq('id', user.id)
     .single();
-  const userRole = dbUser?.role ?? 'collector';
+  const userRole = dbUser?.role ?? 'buyer';
   if (!roles.includes(userRole)) {
     return { error: `Accès refusé. Rôle requis : ${roles.join(' ou ')}`, status: 403 };
   }
@@ -65,12 +65,12 @@ export async function requireRole(user, roles) {
 export const requireAdmin = (user) => requireRole(user, ['admin']);
 
 /**
- * Vérifie que l'utilisateur est professional ou admin.
+ * Vérifie que l'utilisateur est curator ou admin.
  *
  * @param {object} user - Utilisateur Supabase
  * @returns {Promise<{ ok: true } | { error: string, status: number }>}
  */
-export const requirePro = (user) => requireRole(user, ['professional', 'admin']);
+export const requireCurator = (user) => requireRole(user, ['curator', 'admin']);
 
 /**
  * Vérifie la clé API interne (kcb-api-key header).

@@ -219,8 +219,11 @@ async function requireRole(user, roles) {
     .eq('id', user.id)
     .single();
 
-  const userRole = dbUser?.role ?? user.user_metadata?.role ?? 'buyer';
-  if (error || !roles.includes(userRole)) {
+  if (error || !dbUser) {
+    return { error: 'Impossible de vérifier le rôle', status: 403 };
+  }
+  const userRole = dbUser.role ?? 'buyer';
+  if (!roles.includes(userRole)) {
     return { error: `Accès refusé. Rôle requis : ${roles.join(' ou ')}`, status: 403 };
   }
   return { ok: true, role: userRole };
@@ -748,6 +751,7 @@ async function authSignup(req, res) {
 
   if (!email || !password) return fail(res, 'Email et mot de passe requis');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(res, 'Format email invalide');
+  if (password.length < 8) return fail(res, 'Mot de passe requis (min. 8 caractères)');
   if (!['artist', 'curator'].includes(role)) {
     return fail(res, 'Rôle invalide. Valeurs acceptées : artist, curator');
   }
@@ -1020,10 +1024,13 @@ async function authCreateBuyer(req, res) {
   if (!email) return fail(res, 'Email requis');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(res, 'Format email invalide');
 
-  // Vérifier si l'email est déjà enregistré
-  const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-  const existing = existingUsers?.users?.find(u => u.email === email);
-  if (existing) {
+  // Vérifier si l'email est déjà enregistré (query ciblée, pas listUsers)
+  const { data: existingUser } = await supabaseAdmin
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  if (existingUser) {
     return fail(res, 'Un compte avec cet email existe déjà. Veuillez vous connecter.', 409);
   }
 
@@ -1112,7 +1119,7 @@ async function authSendAccess(req, res) {
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   for (const u of users) {
-    const { email, first_name = '', role = 'collector' } = u;
+    const { email, first_name = '', role = 'buyer' } = u;
 
     // Fix 4 — validation format email
     if (!email || !EMAIL_RE.test(email)) {
@@ -1134,7 +1141,7 @@ async function authSendAccess(req, res) {
       if (!recoveryLink) { results.push({ email, status: 'error', reason: 'Impossible de générer le lien d\'accès (compte inexistant ?)' }); continue; }
 
       // 2. Sélectionner le template selon le rôle (professional → collector en fallback)
-      const templateName = role === 'artist' ? 'welcome-artist' : 'welcome-collector';
+      const templateName = role === 'artist' ? 'welcome-artist' : 'welcome-buyer';
       let html = readFileSync(join(process.cwd(), 'emails', `${templateName}.html`), 'utf8');
 
       // Fix 2 — fallback first_name si vide
@@ -1287,6 +1294,16 @@ async function routeArtworkById(req, res, id) {
       .single();
 
     if (error || !data) return notFound(res, 'Œuvre');
+
+    // Non-approved artworks are only visible to admin or the owner
+    if (data.status !== 'approved') {
+      const authResult = await requireAuth(req).catch(() => ({}));
+      const callerId = authResult?.user?.id;
+      const callerRole = callerId ? await getDbRole(callerId) : null;
+      if (callerRole !== 'admin' && callerId !== data.user_id) {
+        return notFound(res, 'Œuvre');
+      }
+    }
 
     // Incrémenter les visites en arrière-plan (non bloquant)
     (async () => { try { await supabaseAdmin.rpc('increment_artwork_visited', { artwork_id: id }); } catch {} })();
@@ -1953,7 +1970,8 @@ async function routeGalleries(req, res) {
       .range(from, to);
 
     if (search) {
-      query = query.ilike('name', `%${search}%`);
+      const safeSearch = search.replace(/%/g, '\\%').replace(/_/g, '\\_');
+      query = query.ilike('name', `%${safeSearch}%`);
     }
 
     const { data, error, count } = await query;
@@ -3138,9 +3156,18 @@ async function routeBlogComment(req, res, postId, commentId) {
     const { content } = req.body ?? {};
     if (!content) return fail(res, 'Contenu du commentaire requis');
 
+    // Sanitize HTML to prevent stored XSS
+    const safeContent = (content ?? '')
+      .replace(/<script[\s>][\s\S]*?<\/script>/gi, '')
+      .replace(/<iframe[\s>][\s\S]*?<\/iframe>/gi, '')
+      .replace(/<object[\s>][\s\S]*?<\/object>/gi, '')
+      .replace(/<embed[\s>][\s\S]*?>/gi, '')
+      .replace(/<link[\s>][\s\S]*?>/gi, '')
+      .replace(/\son\w+\s*=/gi, ' data-removed=');
+
     const { data, error } = await supabaseAdmin
       .from('blog_comments')
-      .insert({ post_id: postId, user_id: userId, content })
+      .insert({ post_id: postId, user_id: userId, content: safeContent })
       .select('*, users(name, image)')
       .single();
 
@@ -3191,14 +3218,20 @@ async function routeTransactionById(req, res, id) {
  * GET /api/transaction/fail/:id — Marque une transaction comme échouée et retourne les détails.
  */
 async function routeTransactionStatus(req, res, id, status) {
-  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
 
-  const { data, error } = await supabaseAdmin
+  let query = supabaseAdmin
     .from('transactions')
     .update({ status })
-    .eq('id', id)
+    .eq('id', id);
+
+  if (role !== 'admin') query = query.or(`buyer_id.eq.${userId},seller_id.eq.${userId}`);
+
+  const { data, error } = await query
     .select('*, artworks(title, image, kucibok_id)')
     .single();
 
@@ -3217,30 +3250,41 @@ async function routeSubscriptionById(req, res, id) {
   if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
 
-  const { data, error } = await supabaseAdmin
+  let query = supabaseAdmin
     .from('subscriptions')
     .select('*, plans(*)')
-    .eq('id', id)
-    .single();
+    .eq('id', id);
+
+  if (role !== 'admin') query = query.eq('user_id', userId);
+
+  const { data, error } = await query.single();
 
   if (error || !data) return notFound(res, 'Abonnement');
   return ok(res, { ...data, _id: data.id });
 }
 
 /**
- * GET /api/subscription/fail/:id — Met à jour le statut d'un abonnement.
- * GET /api/subscription/activate/:id — Active un abonnement.
+ * POST /api/subscription/fail/:id — Met à jour le statut d'un abonnement.
+ * POST /api/subscription/activate/:id — Active un abonnement.
  */
 async function routeSubscriptionStatus(req, res, id, status) {
-  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
 
-  const { data, error } = await supabaseAdmin
+  let query = supabaseAdmin
     .from('subscriptions')
     .update({ status })
-    .eq('id', id)
+    .eq('id', id);
+
+  if (role !== 'admin') query = query.eq('user_id', userId);
+
+  const { data, error } = await query
     .select('*, plans(*)')
     .single();
 
@@ -3498,7 +3542,7 @@ async function routeCrmSync(req, res) {
     const { data: existing } = await supabaseAdmin.from('crm_clients').select('id').eq('user_id', authResult.user.id).eq('email', tx.buyer?.email).maybeSingle();
     if (existing) continue;
     await supabaseAdmin.from('crm_clients').insert({
-      user_id: authResult.user.id, name: tx.buyer?.name, email: tx.buyer?.email, source: 'transaction', type: 'collector',
+      user_id: authResult.user.id, name: tx.buyer?.name, email: tx.buyer?.email, source: 'transaction', type: 'buyer',
     });
     synced++;
   }

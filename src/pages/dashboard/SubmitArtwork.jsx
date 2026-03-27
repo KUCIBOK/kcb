@@ -1,65 +1,65 @@
-import { memo, useState } from "react";
-import { useAuth } from "../../store/AuthContext";
-import { Step1 } from "../../components/artworks/submit/Step1";
-import { Step2 } from "../../components/artworks/submit/Step2";
-import { Step3 } from "../../components/artworks/submit/Step3";
-import { Step4 } from "../../components/artworks/submit/Step4";
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { memo, useState } from 'react'
+import { useAuth } from '../../store/AuthContext'
+import { Step1 } from '../../components/artworks/submit/Step1'
+import { Step2 } from '../../components/artworks/submit/Step2'
+import { Step3 } from '../../components/artworks/submit/Step3'
+import { Step4 } from '../../components/artworks/submit/Step4'
+import { Link } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
 
 export default function SubmitArtwork() {
-  const { user, artistProfile, professionalProfile } = useAuth();
-  const steps = ["Détails", "Télécharger", "Prix", "Soumettre"];
+  const { user, artistProfile, curatorProfile } = useAuth()
+  const steps = ['Détails', 'Télécharger', 'Prix', 'Soumettre']
   const [formState, setFormState] = useState({
-    title: "",
-    description: "",
+    title: '',
+    description: '',
     image: null,
     tags: [],
-    price: "",
+    price: '',
     forSale: true,
-    auctionStatus: "not_for_auction",
-    currency: "XOF",
-    category: "",
-    categoryId: "",
-    artist: user?.role == "artist" ? user.name : "",
-    artistId: artistProfile?._id || "",
+    auctionStatus: 'not_for_auction',
+    currency: 'XOF',
+    category: '',
+    categoryId: '',
+    artist: user?.role == 'artist' ? user.name : '',
+    artistId: artistProfile?._id || '',
     userId: user?._id,
     forBid: false,
-    height: "",
-    width: "",
-    weight: "",
-    medium: "",
-    condition: "",
-    provenance: "",
-    availabilityStatus: "available",
+    height: '',
+    width: '',
+    weight: '',
+    medium: '',
+    condition: '',
+    provenance: '',
+    availabilityStatus: 'available',
 
-    tag: "",
+    tag: '',
     step: 0,
     loading: false,
-    show: "",
-    error: "",
-  });
+    show: '',
+    error: '',
+  })
   const renderStep = () => {
     switch (formState.step) {
       case 0:
-        return <Step1 formState={formState} setFormState={setFormState} />;
+        return <Step1 formState={formState} setFormState={setFormState} />
       case 1:
-        return <Step2 formState={formState} setFormState={setFormState} />;
+        return <Step2 formState={formState} setFormState={setFormState} />
       case 2:
-        return <Step3 formState={formState} setFormState={setFormState} />;
+        return <Step3 formState={formState} setFormState={setFormState} />
       case 3:
         return (
           <Step4
             formState={formState}
-            profile={artistProfile || professionalProfile}
+            profile={artistProfile || curatorProfile}
             setFormState={setFormState}
             user={user}
           />
-        );
+        )
       default:
-        return <Step1 formState={formState} setFormState={setFormState} />;
+        return <Step1 formState={formState} setFormState={setFormState} />
     }
-  };
+  }
   return (
     <div className="px-2 sm:px-0 py-8 md:max-w-2xl mx-auto">
       <div className="flex items-center mb-6">
@@ -80,9 +80,7 @@ export default function SubmitArtwork() {
         </p>
       </div>
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 shadow-lg">
-        <p className="text-white text-xl font-serif font-semibold mb-1">
-          Détails de l'œuvre
-        </p>
+        <p className="text-white text-xl font-serif font-semibold mb-1">Détails de l'œuvre</p>
         <p className="text-kcb-pierre text-sm mb-4">
           Remplissez les champs pour soumettre votre œuvre
         </p>
@@ -92,17 +90,17 @@ export default function SubmitArtwork() {
               <div
                 className={`rounded-full mx-auto flex justify-center items-center w-7 h-7 font-medium text-sm transition-all duration-200 ${
                   formState.step === index
-                    ? "bg-kcb-or text-white scale-110 shadow"
+                    ? 'bg-kcb-or text-white scale-110 shadow'
                     : formState.step > index
-                    ? "bg-green-600 text-white"
-                    : "bg-kcb-ardoise text-kcb-pierre"
+                      ? 'bg-green-600 text-white'
+                      : 'bg-kcb-ardoise text-kcb-pierre'
                 }`}
               >
                 {index + 1}
               </div>
               <span
                 className={`text-[11px] font-medium ${
-                  formState.step === index ? "text-kcb-or" : "text-kcb-pierre"
+                  formState.step === index ? 'text-kcb-or' : 'text-kcb-pierre'
                 }`}
               >
                 {step}
@@ -113,5 +111,5 @@ export default function SubmitArtwork() {
         <div className="mt-8">{renderStep()}</div>
       </div>
     </div>
-  );
+  )
 }

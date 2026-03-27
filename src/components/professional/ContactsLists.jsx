@@ -1,96 +1,117 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
-  Users, Mail, Tag, Plus, Search, Filter, Upload, Download,
-  Edit2, Trash2, UserPlus, List, Calendar, CheckCircle, XCircle, Clock, RefreshCw
-} from "lucide-react";
+  Users,
+  Mail,
+  Tag,
+  Plus,
+  Search,
+  Filter,
+  Upload,
+  Download,
+  Edit2,
+  Trash2,
+  UserPlus,
+  List,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Clock,
+  RefreshCw,
+} from 'lucide-react'
 import {
-  getContacts, createContact, updateContact, deleteContact, importContacts,
-  getLists, createList, getContactStats, syncFromCRM, bulkSyncFromCRM
-} from "../../api/useContacts";
-import { KPICard, Button, Badge, toast, ConfirmDialog, Modal, Input, Select } from "../ui";
+  getContacts,
+  createContact,
+  updateContact,
+  deleteContact,
+  importContacts,
+  getLists,
+  createList,
+  getContactStats,
+  syncFromCRM,
+  bulkSyncFromCRM,
+} from '../../api/useContacts'
+import { KPICard, Button, Badge, toast, ConfirmDialog, Modal, Input, Select } from '../ui'
 
 export function ContactsLists() {
-  const [activeTab, setActiveTab] = useState('contacts'); // 'contacts' or 'lists'
-  const [contacts, setContacts] = useState([]);
-  const [lists, setLists] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-  const [selectedType, setSelectedType] = useState('all');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showListModal, setShowListModal] = useState(false);
-  const [showCRMSyncModal, setShowCRMSyncModal] = useState(false);
-  const [editingContact, setEditingContact] = useState(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState(null);
-
-  useEffect(() => {
-    loadData();
-  }, [activeTab, selectedStatus, selectedType]);
+  const [activeTab, setActiveTab] = useState('contacts') // 'contacts' or 'lists'
+  const [contacts, setContacts] = useState([])
+  const [lists, setLists] = useState([])
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedStatus, setSelectedStatus] = useState('all')
+  const [selectedType, setSelectedType] = useState('all')
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showListModal, setShowListModal] = useState(false)
+  const [showCRMSyncModal, setShowCRMSyncModal] = useState(false)
+  const [editingContact, setEditingContact] = useState(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [contactToDelete, setContactToDelete] = useState(null)
 
   const loadData = async () => {
-    setLoading(true);
-    
+    setLoading(true)
+
     if (activeTab === 'contacts') {
-      const filters = {};
-      if (selectedStatus !== 'all') filters.status = selectedStatus;
-      if (selectedType !== 'all') filters.type = selectedType;
-      if (searchQuery) filters.search = searchQuery;
+      const filters = {}
+      if (selectedStatus !== 'all') filters.status = selectedStatus
+      if (selectedType !== 'all') filters.type = selectedType
+      if (searchQuery) filters.search = searchQuery
 
-      const [contactsData, statsData] = await Promise.all([
-        getContacts(filters),
-        getContactStats()
-      ]);
+      const [contactsData, statsData] = await Promise.all([getContacts(filters), getContactStats()])
 
-      if (!contactsData.error) setContacts(contactsData.contacts || []);
-      if (!statsData.error) setStats(statsData);
+      if (!contactsData.error) setContacts(contactsData.contacts || [])
+      if (!statsData.error) setStats(statsData)
     } else {
-      const listsData = await getLists();
-      if (!listsData.error) setLists(listsData);
+      const listsData = await getLists()
+      if (!listsData.error) setLists(listsData)
     }
 
-    setLoading(false);
-  };
+    setLoading(false)
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    loadData()
+  }, [activeTab, selectedStatus, selectedType])
 
   const handleAddContact = async (contactData) => {
-    const result = await createContact(contactData);
+    const result = await createContact(contactData)
     if (!result.error) {
-      toast.success('✓ Contact ajouté avec succès');
-      setShowAddModal(false);
-      loadData();
+      toast.success('✓ Contact ajouté avec succès')
+      setShowAddModal(false)
+      loadData()
     } else {
-      toast.error('× Erreur lors de l\'ajout du contact');
+      toast.error("× Erreur lors de l'ajout du contact")
     }
-  };
+  }
 
   const handleDeleteContact = async (id) => {
-    setContactToDelete(id);
-    setShowDeleteConfirm(true);
-  };
+    setContactToDelete(id)
+    setShowDeleteConfirm(true)
+  }
 
   const confirmDeleteContact = async () => {
-    const result = await deleteContact(contactToDelete);
+    const result = await deleteContact(contactToDelete)
     if (!result.error) {
-      toast.success('✓ Contact supprimé');
-      loadData();
+      toast.success('✓ Contact supprimé')
+      loadData()
     } else {
-      toast.error('× Erreur lors de la suppression');
+      toast.error('× Erreur lors de la suppression')
     }
-    setShowDeleteConfirm(false);
-    setContactToDelete(null);
-  };
+    setShowDeleteConfirm(false)
+    setContactToDelete(null)
+  }
 
   const handleCreateList = async (listData) => {
-    const result = await createList(listData);
+    const result = await createList(listData)
     if (!result.error) {
-      toast.success('✓ Liste créée avec succès');
-      setShowListModal(false);
-      loadData();
+      toast.success('✓ Liste créée avec succès')
+      setShowListModal(false)
+      loadData()
     } else {
-      toast.error('× Erreur lors de la création de la liste');
+      toast.error('× Erreur lors de la création de la liste')
     }
-  };
+  }
 
   return (
     <div className="p-8">
@@ -258,10 +279,7 @@ export function ContactsLists() {
             onDelete={handleDeleteContact}
           />
         ) : (
-          <ListsGrid
-            lists={lists}
-            loading={loading}
-          />
+          <ListsGrid lists={lists} loading={loading} />
         )}
 
         {/* Add Contact Modal */}
@@ -275,10 +293,7 @@ export function ContactsLists() {
 
         {/* Create List Modal */}
         {showListModal && (
-          <CreateListModal
-            onClose={() => setShowListModal(false)}
-            onSave={handleCreateList}
-          />
+          <CreateListModal onClose={() => setShowListModal(false)} onSave={handleCreateList} />
         )}
 
         {/* CRM Sync Modal */}
@@ -289,9 +304,21 @@ export function ContactsLists() {
             lists={lists}
           />
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <ConfirmDialog
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={confirmDeleteContact}
+          title="Supprimer le contact"
+          message="Êtes-vous sûr de vouloir supprimer ce contact? Cette action est irréversible."
+          confirmText="Supprimer"
+          cancelText="Annuler"
+          variant="danger"
+        />
       </div>
     </div>
-  );
+  )
 }
 
 // Stat Card Component
@@ -299,7 +326,9 @@ function StatCard({ icon, label, value, color }) {
   return (
     <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4">
       <div className="flex items-center gap-3">
-        <div className={`w-12 h-12 ${color} rounded-[4px] flex items-center justify-center text-white`}>
+        <div
+          className={`w-12 h-12 ${color} rounded-[4px] flex items-center justify-center text-white`}
+        >
           {icon}
         </div>
         <div>
@@ -308,13 +337,13 @@ function StatCard({ icon, label, value, color }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // Contacts Table Component
 function ContactsTable({ contacts, loading, onEdit, onDelete }) {
   if (loading) {
-    return <div className="text-center py-12 text-kcb-pierre">Chargement...</div>;
+    return <div className="text-center py-12 text-kcb-pierre">Chargement...</div>
   }
 
   if (contacts.length === 0) {
@@ -324,7 +353,7 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
         <p className="text-kcb-pierre mb-2">Aucun contact</p>
         <p className="text-kcb-pierre text-sm">Ajoutez votre premier contact pour commencer</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -345,7 +374,9 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
             <tr key={contact._id} className="hover:bg-kcb-ardoise/50 transition">
               <td className="px-4 py-3">
                 <div>
-                  <p className="text-white font-medium">{contact.firstName} {contact.lastName}</p>
+                  <p className="text-white font-medium">
+                    {contact.firstName} {contact.lastName}
+                  </p>
                   <p className="text-kcb-pierre text-sm">{contact.email}</p>
                   {contact.company && <p className="text-kcb-pierre text-xs">{contact.company}</p>}
                 </div>
@@ -361,7 +392,10 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1">
                   {contact.tags?.slice(0, 2).map((tag, idx) => (
-                    <span key={idx} className="px-2 py-1 bg-kcb-ardoise text-kcb-sable text-xs rounded">
+                    <span
+                      key={idx}
+                      className="px-2 py-1 bg-kcb-ardoise text-kcb-sable text-xs rounded"
+                    >
                       {tag}
                     </span>
                   ))}
@@ -374,7 +408,8 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
               </td>
               <td className="px-4 py-3">
                 <div className="text-sm text-kcb-pierre">
-                  {contact.stats?.emailsOpened || 0} opens / {contact.stats?.emailsClicked || 0} clicks
+                  {contact.stats?.emailsOpened || 0} opens / {contact.stats?.emailsClicked || 0}{' '}
+                  clicks
                 </div>
               </td>
               <td className="px-4 py-3 text-right">
@@ -398,7 +433,7 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
         </tbody>
       </table>
     </div>
-  );
+  )
 }
 
 // Status Badge
@@ -407,20 +442,18 @@ function StatusBadge({ status }) {
     active: 'bg-green-900/50 text-green-300',
     unsubscribed: 'bg-orange-900/50 text-orange-300',
     bounced: 'bg-red-900/50 text-red-300',
-    spam: 'bg-red-900/50 text-red-300'
-  };
+    spam: 'bg-red-900/50 text-red-300',
+  }
 
   return (
-    <span className={`px-2 py-1 text-xs rounded ${colors[status] || colors.active}`}>
-      {status}
-    </span>
-  );
+    <span className={`px-2 py-1 text-xs rounded ${colors[status] || colors.active}`}>{status}</span>
+  )
 }
 
 // Lists Grid Component
 function ListsGrid({ lists, loading }) {
   if (loading) {
-    return <div className="text-center py-12 text-kcb-pierre">Chargement...</div>;
+    return <div className="text-center py-12 text-kcb-pierre">Chargement...</div>
   }
 
   if (lists.length === 0) {
@@ -428,22 +461,36 @@ function ListsGrid({ lists, loading }) {
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-12 text-center">
         <List className="w-16 h-16 text-kcb-pierre mx-auto mb-4" />
         <p className="text-kcb-pierre mb-2">Aucune liste</p>
-        <p className="text-kcb-pierre text-sm">Créez votre première liste pour organiser vos contacts</p>
+        <p className="text-kcb-pierre text-sm">
+          Créez votre première liste pour organiser vos contacts
+        </p>
       </div>
-    );
+    )
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {lists.map((list) => (
-        <div key={list._id} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 hover:border-kcb-or transition">
+        <div
+          key={list._id}
+          className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 hover:border-kcb-or transition"
+        >
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-[4px] flex items-center justify-center ${
-                list.type === 'event' ? 'bg-orange-500' : 
-                list.type === 'dynamic' ? 'bg-kcb-bronze' : 'bg-kcb-or'
-              }`}>
-                {list.type === 'event' ? <Calendar className="w-5 h-5 text-white" /> : <List className="w-5 h-5 text-white" />}
+              <div
+                className={`w-10 h-10 rounded-[4px] flex items-center justify-center ${
+                  list.type === 'event'
+                    ? 'bg-orange-500'
+                    : list.type === 'dynamic'
+                      ? 'bg-kcb-bronze'
+                      : 'bg-kcb-or'
+                }`}
+              >
+                {list.type === 'event' ? (
+                  <Calendar className="w-5 h-5 text-white" />
+                ) : (
+                  <List className="w-5 h-5 text-white" />
+                )}
               </div>
               <div>
                 <h3 className="text-white font-semibold">{list.name}</h3>
@@ -458,7 +505,8 @@ function ListsGrid({ lists, loading }) {
 
           <div className="flex items-center justify-between text-sm">
             <div className="text-kcb-pierre">
-              <span className="text-white font-medium">{list.stats?.totalContacts || 0}</span> contacts
+              <span className="text-white font-medium">{list.stats?.totalContacts || 0}</span>{' '}
+              contacts
             </div>
             {list.type === 'event' && list.event?.date && (
               <div className="text-kcb-pierre">
@@ -472,10 +520,10 @@ function ListsGrid({ lists, loading }) {
             <div className="mt-4 pt-4 border-t border-white/[0.06]">
               <div className="flex gap-4 text-sm">
                 <div className="text-green-400">
-                  ✓ {list.rsvps.filter(r => r.status === 'confirmed').length} confirmés
+                  ✓ {list.rsvps.filter((r) => r.status === 'confirmed').length} confirmés
                 </div>
                 <div className="text-orange-400">
-                  ? {list.rsvps.filter(r => r.status === 'pending').length} en attente
+                  ? {list.rsvps.filter((r) => r.status === 'pending').length} en attente
                 </div>
               </div>
             </div>
@@ -483,7 +531,7 @@ function ListsGrid({ lists, loading }) {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // Add Contact Modal (simplified)
@@ -494,44 +542,39 @@ function AddContactModal({ onClose, onSave, lists }) {
     email: '',
     phone: '',
     company: '',
-    type: 'collector',
+    type: 'buyer',
     tags: [],
-    lists: []
-  });
+    lists: [],
+  })
 
   const typeOptions = [
-    { value: 'collector', label: 'Collectionneur' },
+    { value: 'buyer', label: 'Acheteur' },
     { value: 'gallery', label: 'Galerie' },
     { value: 'artist', label: 'Artiste' },
     { value: 'press', label: 'Presse' },
-    { value: 'other', label: 'Autre' }
-  ];
+    { value: 'other', label: 'Autre' },
+  ]
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
-  };
+    e.preventDefault()
+    onSave(formData)
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Nouveau Contact"
-      size="sm"
-    >
+    <Modal isOpen={true} onClose={onClose} title="Nouveau Contact" size="sm">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Prénom"
             value={formData.firstName}
-            onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
             placeholder="Prénom"
             required
           />
           <Input
             label="Nom"
             value={formData.lastName}
-            onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
             placeholder="Nom"
             required
           />
@@ -541,7 +584,7 @@ function AddContactModal({ onClose, onSave, lists }) {
           label="Email"
           type="email"
           value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           placeholder="email@example.com"
           required
         />
@@ -550,14 +593,14 @@ function AddContactModal({ onClose, onSave, lists }) {
           label="Téléphone"
           type="tel"
           value={formData.phone}
-          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
           placeholder="+33 1 23 45 67 89"
         />
 
         <Input
           label="Entreprise"
           value={formData.company}
-          onChange={(e) => setFormData({...formData, company: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, company: e.target.value })}
           placeholder="Nom de l'entreprise"
         />
 
@@ -565,28 +608,20 @@ function AddContactModal({ onClose, onSave, lists }) {
           label="Type"
           options={typeOptions}
           value={formData.type}
-          onChange={(value) => setFormData({...formData, type: value})}
+          onChange={(value) => setFormData({ ...formData, type: value })}
         />
 
         <div className="flex gap-2 pt-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onClose}
-            className="flex-1"
-          >
+          <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
             Annuler
           </Button>
-          <Button
-            type="submit"
-            className="flex-1"
-          >
+          <Button type="submit" className="flex-1">
             Ajouter
           </Button>
         </div>
       </form>
     </Modal>
-  );
+  )
 }
 
 // Create List Modal (simplified)
@@ -594,32 +629,27 @@ function CreateListModal({ onClose, onSave }) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    type: 'static'
-  });
+    type: 'static',
+  })
 
   const typeOptions = [
     { value: 'static', label: 'Liste statique' },
     { value: 'dynamic', label: 'Liste dynamique' },
-    { value: 'event', label: 'Liste événement' }
-  ];
+    { value: 'event', label: 'Liste événement' },
+  ]
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
-  };
+    e.preventDefault()
+    onSave(formData)
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Nouvelle Liste"
-      size="sm"
-    >
+    <Modal isOpen={true} onClose={onClose} title="Nouvelle Liste" size="sm">
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Nom de la liste"
           value={formData.name}
-          onChange={(e) => setFormData({...formData, name: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           placeholder="Nom de la liste"
           required
         />
@@ -628,7 +658,7 @@ function CreateListModal({ onClose, onSave }) {
           <label className="block text-sm font-medium text-kcb-sable mb-2">Description</label>
           <textarea
             value={formData.description}
-            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm focus:ring-2 focus:ring-kcb-or focus:outline-none"
             rows={3}
             placeholder="Description de la liste"
@@ -639,59 +669,51 @@ function CreateListModal({ onClose, onSave }) {
           label="Type"
           options={typeOptions}
           value={formData.type}
-          onChange={(value) => setFormData({...formData, type: value})}
+          onChange={(value) => setFormData({ ...formData, type: value })}
         />
 
         <div className="flex gap-2 pt-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onClose}
-            className="flex-1"
-          >
+          <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
             Annuler
           </Button>
-          <Button
-            type="submit"
-            className="flex-1"
-          >
+          <Button type="submit" className="flex-1">
             Créer
           </Button>
         </div>
       </form>
     </Modal>
-  );
+  )
 }
 
 // CRM Sync Modal
 function CRMSyncModal({ onClose, onSync, lists }) {
-  const [loading, setLoading] = useState(false);
-  const [selectedList, setSelectedList] = useState('');
-  const [syncResults, setSyncResults] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const [selectedList, setSelectedList] = useState('')
+  const [syncResults, setSyncResults] = useState(null)
 
   const handleSync = async () => {
-    setLoading(true);
-    
+    setLoading(true)
+
     // Note: This is a placeholder - you'll need to get CRM contacts first
     // For now, show instructions
     setSyncResults({
       message: 'Synchronisation CRM configurée',
-      info: 'Cette fonctionnalité synchronisera automatiquement vos clients CRM vers vos contacts marketing'
-    });
-    
-    setLoading(false);
-    
+      info: 'Cette fonctionnalité synchronisera automatiquement vos clients CRM vers vos contacts marketing',
+    })
+
+    setLoading(false)
+
     // In real implementation:
     // const crmContacts = await getCRMContacts();
     // const result = await bulkSyncFromCRM(crmContacts.map(c => c._id), selectedList, ['crm']);
     // setSyncResults(result);
-  };
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 w-full max-w-md">
         <h3 className="text-xl font-bold text-white mb-4">Synchroniser depuis CRM Galerie</h3>
-        
+
         {!syncResults ? (
           <div className="space-y-4">
             <div className="bg-kcb-bronze/10 border border-kcb-bronze/30 rounded-[4px] p-4">
@@ -708,15 +730,19 @@ function CRMSyncModal({ onClose, onSync, lists }) {
             </div>
 
             <div>
-              <label className="block text-sm text-kcb-pierre mb-2">Ajouter à la liste (optionnel)</label>
+              <label className="block text-sm text-kcb-pierre mb-2">
+                Ajouter à la liste (optionnel)
+              </label>
               <select
                 value={selectedList}
                 onChange={(e) => setSelectedList(e.target.value)}
                 className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded text-white"
               >
                 <option value="">Aucune liste</option>
-                {lists.map(list => (
-                  <option key={list._id} value={list._id}>{list.name}</option>
+                {lists.map((list) => (
+                  <option key={list._id} value={list._id}>
+                    {list.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -742,7 +768,7 @@ function CRMSyncModal({ onClose, onSync, lists }) {
             <div className="bg-green-900/20 border border-green-700 rounded-[4px] p-4">
               <p className="text-green-300 font-medium mb-2">✓ {syncResults.message}</p>
               <p className="text-kcb-pierre text-sm">{syncResults.info}</p>
-              
+
               {syncResults.created !== undefined && (
                 <div className="mt-3 space-y-1 text-sm">
                   <p className="text-kcb-sable">• Créés: {syncResults.created}</p>
@@ -753,7 +779,10 @@ function CRMSyncModal({ onClose, onSync, lists }) {
             </div>
 
             <button
-              onClick={() => { onClose(); onSync(); }}
+              onClick={() => {
+                onClose()
+                onSync()
+              }}
               className="w-full px-4 py-2 bg-kcb-pierre hover:bg-kcb-ardoise rounded text-white transition"
             >
               Fermer
@@ -761,20 +790,8 @@ function CRMSyncModal({ onClose, onSync, lists }) {
           </div>
         )}
       </div>
-
-      {/* Delete Confirmation Dialog */}
-      <ConfirmDialog
-        isOpen={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
-        onConfirm={confirmDeleteContact}
-        title="Supprimer le contact"
-        message="Êtes-vous sûr de vouloir supprimer ce contact? Cette action est irréversible."
-        confirmText="Supprimer"
-        cancelText="Annuler"
-        variant="danger"
-      />
     </div>
-  );
+  )
 }
 
-export default ContactsLists;
+export default ContactsLists

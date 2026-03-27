@@ -1,7 +1,7 @@
-import { LogOut, User, X } from "lucide-react"
-import { memo, useState } from "react"
-import { Link } from "react-router-dom"
-import { useAuth } from "../../store/AuthContext"
+import { LogOut, User, X } from 'lucide-react'
+import { memo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../store/AuthContext'
 
 /**
  * User menu dropdown — aligned with KCB design system.
@@ -9,16 +9,21 @@ import { useAuth } from "../../store/AuthContext"
 export const UserLinks = memo(() => {
   const { user, artistProfile, buyerProfile, curatorProfile, logout } = useAuth()
   const [show, setShow] = useState(false)
-  const dashboard = user?.role === "artist" ? "artist" : user?.role === "curator" ? "curator" : user?.role === "collector" ? "collector" : user?.role === "admin" ? "admin" : "collector"
-  const profileImg = artistProfile?.image || buyerProfile?.image || curatorProfile?.image || "/images/profile/girafe.png"
+  const dashboardPath = user?.role === 'buyer' ? '/account' : `/dashboard/${user?.role ?? 'buyer'}`
+  const profileImg =
+    artistProfile?.image ||
+    buyerProfile?.image ||
+    curatorProfile?.image ||
+    '/images/profile/girafe.png'
 
   return (
     <>
-      <button
-        onClick={() => setShow(!show)}
-        aria-label="Ouvrir le menu utilisateur"
-      >
-        <img src={profileImg} alt={user?.name} className="object-cover rounded-full w-9 h-9 border border-white/[0.08]" />
+      <button onClick={() => setShow(!show)} aria-label="Ouvrir le menu utilisateur">
+        <img
+          src={profileImg}
+          alt={user?.name}
+          className="object-cover rounded-full w-9 h-9 border border-white/[0.08]"
+        />
       </button>
       {show && (
         <div className="fixed z-[200] bg-black/60 w-screen h-screen left-0 top-0 flex justify-end">
@@ -31,7 +36,11 @@ export const UserLinks = memo(() => {
               <X className="w-5 h-5 text-kcb-pierre" />
             </button>
             <div className="flex flex-col items-center gap-3 mt-8 mb-6">
-              <img className="w-16 h-16 rounded-full object-cover border-2 border-kcb-or/30" src={profileImg} alt="profile" />
+              <img
+                className="w-16 h-16 rounded-full object-cover border-2 border-kcb-or/30"
+                src={profileImg}
+                alt="profile"
+              />
               <div className="text-center">
                 <p className="font-playfair font-bold text-lg text-white">{user?.name}</p>
                 <p className="text-xs text-kcb-pierre">{user?.email}</p>
@@ -39,7 +48,7 @@ export const UserLinks = memo(() => {
             </div>
             <div className="flex flex-col gap-2 mt-2">
               <Link
-                to={`/dashboard/${dashboard}`}
+                to={dashboardPath}
                 className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/90 no-underline transition-colors hover:bg-white/[0.03]"
                 onClick={() => setShow(false)}
               >
@@ -47,7 +56,10 @@ export const UserLinks = memo(() => {
               </Link>
               <button
                 className="flex items-center gap-2 px-4 py-2.5 text-sm text-kcb-pierre border border-white/[0.05] transition-colors hover:bg-white/[0.03]"
-                onClick={() => { setShow(false); logout() }}
+                onClick={() => {
+                  setShow(false)
+                  logout()
+                }}
               >
                 <LogOut className="w-4 h-4" /> Deconnexion
               </button>
