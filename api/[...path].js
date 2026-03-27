@@ -301,6 +301,9 @@ export default async function handler(req, res) {
     const apiKeyCheck = requireApiKey(req);
     if (!apiKeyCheck.ok) return fail(res, apiKeyCheck.error, apiKeyCheck.status);
 
+    // ── /api/contact ──────────────────────────────────────────────────────────
+    if (s0 === 'contact' && req.method === 'POST') return await routeContact(req, res);
+
     // ── /api/report-error ────────────────────────────────────────────────────
     if (s0 === 'report-error') return await routeReportError(req, res);
 
@@ -592,6 +595,44 @@ async function routeReportError(req, res) {
   });
 
   return ok(res, { reported: true });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONTACT FORM
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * POST /api/contact — Public contact form submission.
+ * Sends an email to the admin via Resend.
+ */
+async function routeContact(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const { name, email, subject, message } = req.body ?? {};
+  if (!name || !email || !message) return fail(res, 'Nom, email et message requis');
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+
+  const { Resend } = await import('resend');
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from:    `Kucibok Contact <${process.env.ADMIN_EMAIL ?? 'noreply@kucibok.com'}>`,
+    to:      process.env.ADMIN_EMAIL,
+    replyTo: email,
+    subject: `[Contact] ${esc(subject || 'Message depuis kucibok.com')}`,
+    html: `
+      <h2>Nouveau message — Formulaire de contact</h2>
+      <p><strong>Nom :</strong> ${esc(name)}</p>
+      <p><strong>Email :</strong> ${esc(email)}</p>
+      <p><strong>Sujet :</strong> ${esc(subject)}</p>
+      <hr/>
+      <p>${esc(message).replace(/\n/g, '<br/>')}</p>
+      <p><em>${new Date().toISOString()}</em></p>
+    `,
+  });
+
+  return ok(res, { sent: true });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
