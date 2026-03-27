@@ -12,16 +12,16 @@ import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
  * - warning: Yellow
  * - danger: Red
  * - info: Blue
- * - primary: Indigo
+ * - primary: KCB gold (kcb-or)
  */
 
 const variants = {
-  default: 'bg-gray-700 text-gray-300 border-gray-600',
+  default: 'bg-white/[0.06] text-kcb-sable border-white/[0.08]',
   success: 'bg-green-900/20 text-green-400 border-green-700',
   warning: 'bg-yellow-900/20 text-yellow-400 border-yellow-700',
   danger: 'bg-red-900/20 text-red-400 border-red-700',
   info: 'bg-blue-900/20 text-blue-400 border-blue-700',
-  primary: 'bg-indigo-900/20 text-indigo-400 border-indigo-700'
+  primary: 'bg-kcb-or/10 text-kcb-or border-kcb-or/30'
 };
 
 const sizes = {
@@ -47,7 +47,7 @@ export function Badge({
   return (
     <span className={`${baseStyles} ${variantStyles} ${sizeStyles} ${className}`}>
       {dot && (
-        <span className={`w-1.5 h-1.5 rounded-full ${variant === 'success' ? 'bg-green-400' : variant === 'warning' ? 'bg-yellow-400' : variant === 'danger' ? 'bg-red-400' : 'bg-gray-400'}`} />
+        <span className={`w-1.5 h-1.5 rounded-full ${variant === 'success' ? 'bg-green-400' : variant === 'warning' ? 'bg-yellow-400' : variant === 'danger' ? 'bg-red-400' : 'bg-kcb-pierre'}`} />
       )}
       {Icon && <Icon className="w-3.5 h-3.5" />}
       {children}

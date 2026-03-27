@@ -5,12 +5,11 @@ import { Loader2 } from 'lucide-react';
  * Design System - Button Component
  * 
  * Variants:
- * - primary: Main actions (indigo) — dashboard legacy
- * - secondary: Secondary actions (gray) — dashboard legacy
+ * - primary: Main actions (kcb-or gold)
+ * - secondary: Secondary actions (kcb-ardoise)
  * - danger: Destructive actions (red)
  * - ghost: Minimal actions
  * - outline: Border only
- * - kcb: KCB gold primary (bg-kcb-or)
  * - kcb_outline: KCB gold outline
  * - kcb_ghost: KCB ghost (subtle hover)
  * 
@@ -22,13 +21,12 @@ import { Loader2 } from 'lucide-react';
  */
 
 const variants = {
-  primary: 'bg-indigo-600 hover:bg-indigo-500 text-white border border-transparent shadow-sm',
-  secondary: 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600',
+  primary: 'bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir border border-transparent shadow-sm font-semibold',
+  secondary: 'bg-kcb-ardoise hover:bg-white/[0.08] text-white border border-white/[0.08]',
   danger: 'bg-red-600 hover:bg-red-500 text-white border border-transparent shadow-sm',
-  ghost: 'bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white border border-transparent',
-  outline: 'bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-600',
+  ghost: 'bg-transparent hover:bg-white/[0.03] text-kcb-sable hover:text-white border border-transparent',
+  outline: 'bg-transparent hover:bg-white/[0.03] text-kcb-sable hover:text-white border border-white/[0.08] hover:border-white/[0.12]',
   success: 'bg-green-600 hover:bg-green-500 text-white border border-transparent shadow-sm',
-  kcb: 'bg-kcb-or hover:bg-kcb-bronze text-kcb-noir border border-transparent font-semibold tracking-[0.05em] uppercase text-sm',
   kcb_outline: 'bg-transparent hover:bg-kcb-or/10 text-kcb-or border border-kcb-or',
   kcb_ghost: 'bg-transparent hover:bg-white/[0.03] text-kcb-sable border border-transparent',
 };
@@ -54,7 +52,7 @@ export function Button({
   type = 'button',
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-kcb-or focus:ring-offset-2 focus:ring-offset-kcb-noir disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'inline-flex items-center justify-center gap-2 rounded-[4px] font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-kcb-or focus:ring-offset-2 focus:ring-offset-kcb-noir disabled:opacity-50 disabled:cursor-not-allowed';
   
   const widthStyles = fullWidth ? 'w-full' : '';
   

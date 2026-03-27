@@ -33,7 +33,7 @@ export function Progress({
   };
 
   const variants = {
-    primary: 'bg-indigo-600',
+    primary: 'bg-kcb-or',
     success: 'bg-green-600',
     warning: 'bg-yellow-600',
     danger: 'bg-red-600',
@@ -44,11 +44,11 @@ export function Progress({
     <div className={className}>
       {showLabel && (
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-gray-300">Progress</span>
+          <span className="text-sm text-kcb-sable">Progress</span>
           <span className="text-sm font-medium text-white">{percentage.toFixed(0)}%</span>
         </div>
       )}
-      <div className={`w-full bg-gray-800 rounded-full overflow-hidden ${sizes[size]}`}>
+      <div className={`w-full bg-white/[0.06] rounded-full overflow-hidden ${sizes[size]}`}>
         <div
           className={`${sizes[size]} ${variants[variant]} transition-all duration-300 ease-out ${
             animated ? 'animate-pulse' : ''
@@ -76,7 +76,7 @@ export function CircularProgress({
   const offset = circumference - (percentage / 100) * circumference;
 
   const variants = {
-    primary: 'stroke-indigo-600',
+    primary: 'stroke-kcb-or',
     success: 'stroke-green-600',
     warning: 'stroke-yellow-600',
     danger: 'stroke-red-600',
@@ -91,7 +91,7 @@ export function CircularProgress({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          className="stroke-gray-800"
+          className="stroke-white/[0.06]"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -144,8 +144,8 @@ export function StepProgress({
                       isCompleted
                         ? 'bg-green-600 border-green-600'
                         : isCurrent
-                        ? 'bg-indigo-600 border-indigo-600'
-                        : 'bg-gray-800 border-gray-700'
+                        ? 'bg-kcb-or border-kcb-or'
+                        : 'bg-kcb-ardoise border-white/[0.08]'
                     }
                   `}
                 >
@@ -154,7 +154,7 @@ export function StepProgress({
                   ) : (
                     <span
                       className={`text-sm font-semibold ${
-                        isCurrent || isCompleted ? 'text-white' : 'text-gray-500'
+                        isCurrent || isCompleted ? 'text-white' : 'text-kcb-pierre'
                       }`}
                     >
                       {index + 1}
@@ -164,13 +164,13 @@ export function StepProgress({
                 <div className="mt-2 text-center">
                   <p
                     className={`text-xs font-medium ${
-                      isCurrent || isCompleted ? 'text-white' : 'text-gray-500'
+                      isCurrent || isCompleted ? 'text-white' : 'text-kcb-pierre'
                     }`}
                   >
                     {step.label}
                   </p>
                   {step.description && (
-                    <p className="text-xs text-gray-500 mt-1">{step.description}</p>
+                    <p className="text-xs text-kcb-pierre mt-1">{step.description}</p>
                   )}
                 </div>
               </div>
@@ -180,7 +180,7 @@ export function StepProgress({
                 <div className="flex-1 mx-2 mb-8">
                   <div
                     className={`h-0.5 transition-all duration-200 ${
-                      isCompleted ? 'bg-green-600' : 'bg-gray-700'
+                      isCompleted ? 'bg-green-600' : 'bg-white/[0.08]'
                     }`}
                   />
                 </div>
@@ -201,10 +201,10 @@ export function Skeleton({
   variant = 'default'
 }) {
   const variants = {
-    default: 'bg-gray-800',
-    light: 'bg-gray-700',
-    text: 'bg-gray-800 rounded',
-    circle: 'bg-gray-800 rounded-full'
+    default: 'bg-white/[0.06]',
+    light: 'bg-white/[0.08]',
+    text: 'bg-white/[0.06] rounded-[4px]',
+    circle: 'bg-white/[0.06] rounded-full'
   };
 
   return (

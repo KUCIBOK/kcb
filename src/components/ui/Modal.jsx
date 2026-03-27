@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useId } from 'react';
 import { X } from 'lucide-react';
 import { Button } from './Button';
 
@@ -36,6 +36,10 @@ export function Modal({
   showCloseButton = true,
   className = ''
 }) {
+  const titleId = useId();
+  const dialogRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
   // Handle ESC key
   useEffect(() => {
     if (!isOpen || !closeOnEsc) return;
@@ -60,6 +64,45 @@ export function Modal({
     };
   }, [isOpen]);
 
+  // Focus trap and restore focus on close
+  useEffect(() => {
+    if (!isOpen) return;
+    previousFocusRef.current = document.activeElement;
+    const dialog = dialogRef.current;
+    if (dialog) {
+      const focusable = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length) focusable[0].focus();
+    }
+    return () => {
+      previousFocusRef.current?.focus();
+    };
+  }, [isOpen]);
+
+  // Trap Tab key inside modal
+  useEffect(() => {
+    if (!isOpen) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleTab = (e) => {
+      if (e.key !== 'Tab') return;
+      const focusable = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', handleTab);
+    return () => dialog.removeEventListener('keydown', handleTab);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -74,19 +117,23 @@ export function Modal({
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className={`relative bg-card border border-gray-800 rounded-lg shadow-xl w-full ${sizes[size]} ${className}`}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? titleId : undefined}
+          className={`relative bg-kcb-ardoise border border-white/[0.06] rounded-[4px] shadow-xl w-full ${sizes[size]} ${className}`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
               {title && (
-                <h3 className="text-lg font-semibold text-white">{title}</h3>
+                <h3 id={titleId} className="text-lg font-semibold text-white">{title}</h3>
               )}
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="text-gray-400 hover:text-white transition p-1 rounded-lg hover:bg-gray-800"
+                  className="text-kcb-pierre hover:text-white transition p-1 rounded-[4px] hover:bg-white/[0.06]"
                   aria-label="Close"
                 >
                   <X className="w-5 h-5" />
@@ -102,7 +149,7 @@ export function Modal({
 
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-4 border-t border-gray-800 flex items-center justify-end gap-3">
+            <div className="px-6 py-4 border-t border-white/[0.06] flex items-center justify-end gap-3">
               {footer}
             </div>
           )}
@@ -153,7 +200,7 @@ export function ConfirmDialog({
         </>
       }
     >
-      <p className="text-gray-300">{message}</p>
+      <p className="text-kcb-sable">{message}</p>
     </Modal>
   );
 }

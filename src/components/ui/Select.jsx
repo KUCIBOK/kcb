@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 
 /**
@@ -33,7 +33,11 @@ export function Select({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const selectRef = useRef(null);
+  const listboxRef = useRef(null);
+  const labelId = useId();
+  const listboxId = useId();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -88,7 +92,7 @@ export function Select({
   };
 
   // Border colors based on state
-  let borderStyles = 'border-gray-700 focus-within:border-indigo-500';
+  let borderStyles = 'border-white/[0.08] focus-within:border-kcb-or';
   if (error) {
     borderStyles = 'border-red-500';
   } else if (success) {
@@ -98,7 +102,7 @@ export function Select({
   return (
     <div className={`${fullWidth ? 'w-full' : ''} ${className}`} ref={selectRef}>
       {label && (
-        <label className="block text-sm font-medium text-gray-300 mb-2">
+        <label id={labelId} className="block text-sm font-medium text-kcb-sable mb-2">
           {label}
           {required && <span className="text-red-400 ml-1">*</span>}
         </label>
@@ -109,21 +113,36 @@ export function Select({
         <button
           type="button"
           onClick={() => !disabled && setIsOpen(!isOpen)}
+          onKeyDown={(e) => {
+            if (disabled) return;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              if (!isOpen) setIsOpen(true);
+              setFocusedIndex(0);
+            } else if (e.key === 'Escape' && isOpen) {
+              setIsOpen(false);
+            }
+          }}
           disabled={disabled}
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls={listboxId}
+          aria-labelledby={label ? labelId : undefined}
           className={`
             w-full flex items-center justify-between
-            px-4 py-2.5 rounded-lg
-            bg-gray-800 border ${borderStyles}
-            text-gray-300 text-sm
+            px-4 py-2.5 rounded-[4px]
+            bg-kcb-noir border ${borderStyles}
+            text-kcb-sable text-sm
             transition-all duration-200
-            hover:bg-gray-750
-            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
+            hover:bg-white/[0.03]
+            focus:outline-none focus:ring-2 focus:ring-kcb-or focus:ring-offset-2 focus:ring-offset-kcb-noir
             disabled:opacity-50 disabled:cursor-not-allowed
-            ${isOpen ? 'ring-2 ring-indigo-500' : ''}
+            ${isOpen ? 'ring-2 ring-kcb-or' : ''}
           `}
           {...props}
         >
-          <span className={value ? 'text-white' : 'text-gray-500'}>
+          <span className={value ? 'text-white' : 'text-kcb-sable'}>
             {getSelectedLabel()}
           </span>
           <ChevronDown
@@ -135,16 +154,35 @@ export function Select({
 
         {/* Dropdown */}
         {isOpen && (
-          <div className="absolute z-50 w-full mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-h-60 overflow-hidden">
+          <div
+            ref={listboxRef}
+            id={listboxId}
+            role="listbox"
+            aria-labelledby={label ? labelId : undefined}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setFocusedIndex((prev) => Math.min(prev + 1, filteredOptions.length - 1));
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setFocusedIndex((prev) => Math.max(prev - 1, 0));
+              } else if (e.key === 'Enter' && focusedIndex >= 0) {
+                e.preventDefault();
+                handleSelect(filteredOptions[focusedIndex].value);
+              } else if (e.key === 'Escape') {
+                setIsOpen(false);
+              }
+            }}
+            className="absolute z-50 w-full mt-2 bg-kcb-ardoise border border-white/[0.08] rounded-[4px] shadow-xl max-h-60 overflow-hidden">
             {/* Search input */}
             {searchable && (
-              <div className="p-2 border-b border-gray-700">
+              <div className="p-2 border-b border-white/[0.06]">
                 <input
                   type="text"
                   placeholder="Rechercher..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 bg-kcb-noir-deep border border-white/[0.08] rounded-[4px] text-sm text-white focus:outline-none focus:border-kcb-or"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -153,7 +191,7 @@ export function Select({
             {/* Options list */}
             <div className="overflow-y-auto max-h-48">
               {filteredOptions.length === 0 ? (
-                <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                <div className="px-4 py-3 text-sm text-kcb-pierre text-center">
                   Aucune option trouvée
                 </div>
               ) : (
@@ -161,20 +199,23 @@ export function Select({
                   <button
                     key={option.value}
                     type="button"
+                    role="option"
+                    aria-selected={isSelected(option.value)}
                     onClick={() => handleSelect(option.value)}
                     className={`
                       w-full flex items-center justify-between px-4 py-2.5
                       text-sm text-left transition-colors
                       ${
                         isSelected(option.value)
-                          ? 'bg-indigo-900/40 text-white'
-                          : 'text-gray-300 hover:bg-gray-700'
+                          ? 'bg-kcb-or/10 text-white'
+                          : 'text-kcb-sable hover:bg-white/[0.06]'
                       }
+                      ${filteredOptions.indexOf(option) === focusedIndex ? 'bg-white/[0.06]' : ''}
                     `}
                   >
                     <span>{option.label}</span>
                     {isSelected(option.value) && (
-                      <Check className="w-4 h-4 text-indigo-400" />
+                      <Check className="w-4 h-4 text-kcb-or" />
                     )}
                   </button>
                 ))
