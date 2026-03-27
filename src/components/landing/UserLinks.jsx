@@ -7,10 +7,10 @@ import { useAuth } from "../../store/AuthContext"
  * User menu dropdown — aligned with KCB design system.
  */
 export const UserLinks = memo(() => {
-  const { user, artistProfile, collectorProfile, professionalProfile, logout } = useAuth()
+  const { user, artistProfile, buyerProfile, curatorProfile, logout } = useAuth()
   const [show, setShow] = useState(false)
-  const dashboard = user?.role === "artist" ? "artist" : user?.role === "collector" ? "collector" : user?.role === "professional" ? "professional" : user?.role === "admin" ? "admin" : null
-  const profileImg = artistProfile?.image || collectorProfile?.image || professionalProfile?.image || "/images/profile/girafe.png"
+  const dashboard = user?.role === "artist" ? "artist" : user?.role === "curator" ? "curator" : user?.role === "collector" ? "collector" : user?.role === "admin" ? "admin" : "collector"
+  const profileImg = artistProfile?.image || buyerProfile?.image || curatorProfile?.image || "/images/profile/girafe.png"
 
   return (
     <>

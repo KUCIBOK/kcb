@@ -1,6 +1,7 @@
 export const globalT = {
   en: {
     nav: {
+      home: "Home",
       catalogue: "Catalogue",
       logistics: "Logistics",
       sourcing: "Sourcing",
@@ -56,8 +57,8 @@ export const globalT = {
       title: "Choose Your Access Level",
       subtitle: "From browsing to institutional sourcing. Every plan includes access to the certified catalogue.",
       plans: [
-        { name: "Explorer", desc: "Browse and connect with artists", price: "Free", period: "No commitment", features: ["Browse certified artworks", "View artist profiles", "Verify KCB certificates", "Request information"], cta: { label: "Get Started", to: "/sign-up?role=collector" } },
-        { name: "Collector", desc: "Full access with priority logistics", price: "49", priceSuffix: " EUR", period: "per month", features: ["Everything in Explorer", "Purchase certified artworks", "Priority logistics booking", "Dedicated account manager", "Provenance reports"], featured: true, cta: { label: "Start Collecting", to: "/sign-up?role=collector" } },
+        { name: "Explorer", desc: "Browse and connect with artists", price: "Free", period: "No commitment", features: ["Browse certified artworks", "View artist profiles", "Verify KCB certificates", "Request information"], cta: { label: "Get Started", to: "/sign-up" } },
+        { name: "Collector", desc: "Full access with priority logistics", price: "49", priceSuffix: " EUR", period: "per month", features: ["Everything in Explorer", "Purchase certified artworks", "Priority logistics booking", "Dedicated account manager", "Provenance reports"], featured: true, cta: { label: "Start Collecting", to: "/sign-up" } },
         { name: "Institution", desc: "Galleries, museums, corporate", price: "Custom", period: "Annual contract", features: ["Everything in Collector", "B2B sourcing access", "Exhibition logistics", "Volume discounts", "API integration"], cta: { label: "Contact Sales", to: "/contact" } },
       ],
     },
@@ -97,8 +98,8 @@ export const globalT = {
     footer: {
       description: "The standard for African art certification and cross-border circulation. Curated catalogue, certified provenance, door-to-door logistics.",
       columns: [
-        { title: "Platform", links: [{ label: "Catalogue", hash: "catalogue" }, { label: "Logistics", hash: "logistics" }, { label: "Sourcing", hash: "sourcing" }, { label: "Pricing", hash: "pricing" }] },
-        { title: "Resources", links: [{ label: "Explore", to: "/explore" }, { label: "Blog", to: "/blog" }, { label: "FAQ", to: "/faq" }, { label: "Contact", to: "/contact" }] },
+        { title: "Platform", links: [{ label: "Home", to: "/global" }, { label: "Catalogue", to: "/global/catalogue" }, { label: "Sourcing", to: "/global/sourcing" }, { label: "Artists", to: "/global/artists" }] },
+        { title: "Resources", links: [{ label: "Blog", to: "/global/blog" }, { label: "FAQ", to: "/global/faq" }, { label: "Contact", to: "/global/contact" }, { label: "About", to: "/global/about" }] },
         { title: "Legal", links: [{ label: "Privacy Policy", to: "/privacy-policy" }, { label: "Terms", to: "/terms-and-conditions" }, { label: "Sales Conditions", to: "/sales-conditions" }, { label: "Ethics Charter", to: "/ethic-chart" }] },
       ],
       copyright: "Kucibok — Certified African Art",
@@ -109,6 +110,7 @@ export const globalT = {
 
   fr: {
     nav: {
+      home: "Accueil",
       catalogue: "Catalogue",
       logistics: "Logistique",
       sourcing: "Sourcing",
@@ -164,8 +166,8 @@ export const globalT = {
       title: "Choisissez Votre Niveau d'Accès",
       subtitle: "De la navigation à l'acquisition institutionnelle. Chaque plan inclut l'accès au catalogue certifié.",
       plans: [
-        { name: "Explorer", desc: "Parcourez et connectez-vous avec les artistes", price: "Gratuit", period: "Sans engagement", features: ["Parcourir les œuvres certifiées", "Voir les profils d'artistes", "Vérifier les certificats KCB", "Demander des informations"], cta: { label: "Commencer", to: "/sign-up?role=collector" } },
-        { name: "Collector", desc: "Accès complet avec logistique prioritaire", price: "49", priceSuffix: " EUR", period: "par mois", features: ["Tout dans Explorer", "Acheter des œuvres certifiées", "Réservation logistique prioritaire", "Gestionnaire de compte dédié", "Rapports de provenance"], featured: true, cta: { label: "Commencer à Collecter", to: "/sign-up?role=collector" } },
+        { name: "Explorer", desc: "Parcourez et connectez-vous avec les artistes", price: "Gratuit", period: "Sans engagement", features: ["Parcourir les œuvres certifiées", "Voir les profils d'artistes", "Vérifier les certificats KCB", "Demander des informations"], cta: { label: "Commencer", to: "/sign-up" } },
+        { name: "Collector", desc: "Accès complet avec logistique prioritaire", price: "49", priceSuffix: " EUR", period: "par mois", features: ["Tout dans Explorer", "Acheter des œuvres certifiées", "Réservation logistique prioritaire", "Gestionnaire de compte dédié", "Rapports de provenance"], featured: true, cta: { label: "Commencer à Collecter", to: "/sign-up" } },
         { name: "Institution", desc: "Galeries, musées, entreprises", price: "Sur devis", period: "Contrat annuel", features: ["Tout dans Collector", "Accès sourcing B2B", "Logistique d'exposition", "Remises sur volume", "Intégration API"], cta: { label: "Contacter les Ventes", to: "/contact" } },
       ],
     },
@@ -205,8 +207,8 @@ export const globalT = {
     footer: {
       description: "Le standard pour la certification et la circulation transfrontalière de l'art africain. Catalogue sélectionné, provenance certifiée, logistique porte-à-porte.",
       columns: [
-        { title: "Plateforme", links: [{ label: "Catalogue", hash: "catalogue" }, { label: "Logistique", hash: "logistics" }, { label: "Sourcing", hash: "sourcing" }, { label: "Tarifs", hash: "pricing" }] },
-        { title: "Ressources", links: [{ label: "Explorer", to: "/explore" }, { label: "Blog", to: "/blog" }, { label: "FAQ", to: "/faq" }, { label: "Contact", to: "/contact" }] },
+        { title: "Plateforme", links: [{ label: "Accueil", to: "/global" }, { label: "Catalogue", to: "/global/catalogue" }, { label: "Sourcing", to: "/global/sourcing" }, { label: "Artistes", to: "/global/artists" }] },
+        { title: "Ressources", links: [{ label: "Blog", to: "/global/blog" }, { label: "FAQ", to: "/global/faq" }, { label: "Contact", to: "/global/contact" }, { label: "À propos", to: "/global/about" }] },
         { title: "Légal", links: [{ label: "Confidentialité", to: "/privacy-policy" }, { label: "CGU", to: "/terms-and-conditions" }, { label: "CGV", to: "/sales-conditions" }, { label: "Charte éthique", to: "/ethic-chart" }] },
       ],
       copyright: "Kucibok — Art Africain Certifié",

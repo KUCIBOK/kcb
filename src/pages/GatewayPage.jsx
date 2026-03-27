@@ -10,6 +10,9 @@ export default function GatewayPage() {
         <meta property="og:title" content="Kucibok Bridge — Infrastructure de l'art africain" />
         <meta property="og:description" content="Kucibok Bridge — Infrastructure SaaS de référence pour la certification, traçabilité et circulation sécurisée de l'art africain." />
         <meta property="og:url" content="https://kucibok.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://kucibok.com/images/og-cover.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://kucibok.com/" />
       </Helmet>
       <Gateway />

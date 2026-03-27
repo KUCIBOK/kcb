@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"
 import PortalLayout from "../components/landing/PortalLayout"
 import PortalHero from "../components/landing/PortalHero"
 import PillarSection from "../components/landing/PillarSection"
@@ -57,8 +58,20 @@ function AfricaContent() {
  */
 export default function AfricaLanding() {
   return (
-    <PortalLayout portal="africa">
-      <AfricaContent />
-    </PortalLayout>
+    <>
+      <Helmet>
+        <title>Kucibok Africa — Plateforme de l'art africain certifié</title>
+        <meta name="description" content="Découvrez, certifiez et vendez des œuvres d'art africain sur la plateforme Kucibok Africa. Certification Standard KCB, logistique transfrontalière, numérisation haute résolution." />
+        <meta property="og:title" content="Kucibok Africa — Plateforme de l'art africain certifié" />
+        <meta property="og:description" content="Découvrez, certifiez et vendez des œuvres d'art africain sur la plateforme Kucibok Africa." />
+        <meta property="og:url" content="https://kucibok.com/africa" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://kucibok.com/africa" />
+      </Helmet>
+      <PortalLayout portal="africa">
+        <AfricaContent />
+      </PortalLayout>
+    </>
   )
 }

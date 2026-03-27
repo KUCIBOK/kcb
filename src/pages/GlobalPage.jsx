@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"
 import PortalLayout from "../components/landing/PortalLayout"
 import PortalHero from "../components/landing/PortalHero"
 import PillarSection from "../components/landing/PillarSection"
@@ -28,7 +29,7 @@ function GlobalContent() {
         }
         subtitle={t.hero.subtitle}
         actions={[
-          { text: t.hero.cta1, to: "/explore", primary: true },
+          { text: t.hero.cta1, to: "/global/catalogue", primary: true },
           { text: t.hero.cta2, to: "/global/sourcing" },
         ]}
       >
@@ -55,8 +56,20 @@ function GlobalContent() {
  */
 export default function GlobalPage() {
   return (
-    <PortalLayout portal="global">
-      <GlobalContent />
-    </PortalLayout>
+    <>
+      <Helmet>
+        <title>Kucibok Global — Premium African Art for International Collectors</title>
+        <meta name="description" content="Kucibok Global — Access certified African art with international logistics, provenance tracking, and B2B sourcing for galleries and collectors worldwide." />
+        <meta property="og:title" content="Kucibok Global — Premium African Art for International Collectors" />
+        <meta property="og:description" content="Access certified African art with international logistics, provenance tracking, and B2B sourcing." />
+        <meta property="og:url" content="https://kucibok.com/global" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://kucibok.com/global" />
+      </Helmet>
+      <PortalLayout portal="global">
+        <GlobalContent />
+      </PortalLayout>
+    </>
   )
 }

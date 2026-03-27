@@ -69,7 +69,7 @@ export default function GlobalCatalogueSection() {
           </RevealOnScroll>
           <RevealOnScroll>
             <Link
-              to="/explore"
+              to="/global/catalogue"
               className="inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase transition-colors hover:text-[var(--accent)] no-underline"
             >
               {t.linkLabel} <ArrowRight className="w-3.5 h-3.5" />
@@ -85,7 +85,7 @@ export default function GlobalCatalogueSection() {
                 <div className="relative h-full bg-kcb-noir animate-pulse" />
               ) : (
                 <Link
-                  to={item.fallback ? "/explore" : `/artwork/${item.id ?? item._id}`}
+                  to={item.fallback ? "/global/catalogue" : `/artwork/${item.id ?? item._id}`}
                   className="block relative overflow-hidden cursor-pointer bg-kcb-noir h-full group no-underline"
                 >
                   {/* Image or pattern background */}
@@ -109,7 +109,7 @@ export default function GlobalCatalogueSection() {
                   >
                     <div className="flex items-start justify-between gap-2 mb-2.5">
                       <span className="inline-block bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-[9px] tracking-[0.1em] uppercase px-2 py-0.5">
-                        {item.fallback ? "Certified" : "Certified"}
+                        {"Certified"}
                       </span>
                       {item.kucibok_id && (
                         <ShieldCheck className="w-4 h-4 text-[var(--accent)] shrink-0" />

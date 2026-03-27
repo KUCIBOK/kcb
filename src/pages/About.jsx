@@ -1,7 +1,6 @@
 import { Helmet } from "react-helmet"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { ShieldCheck, Globe, Lightbulb, Heart, ArrowRight, Check } from "lucide-react"
-import PortalLayout from "../components/landing/PortalLayout"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
 import GeoLine from "../components/landing/GeoLine"
@@ -61,6 +60,8 @@ const VISION_POINTS = [
  * @returns {JSX.Element}
  */
 export default function About() {
+  const { pathname } = useLocation();
+  const portal = pathname.startsWith("/global") ? "/global" : "/africa";
   return (
     <>
     <Helmet>
@@ -68,10 +69,10 @@ export default function About() {
       <meta name="description" content="Découvrez Kucibok Bridge — notre mission, nos valeurs et notre vision pour structurer et valoriser le marché de l'art africain à l'échelle mondiale." />
       <meta property="og:title" content="À propos de Kucibok — Infrastructure de l'art africain" />
       <meta property="og:description" content="Notre mission : structurer, certifier et faire circuler l'art africain en toute confiance." />
-      <meta property="og:url" content="https://kucibok.com/about" />
-      <link rel="canonical" href="https://kucibok.com/about" />
+      <meta property="og:url" content={`https://kucibok.com${portal}/about`} />
+      <link rel="canonical" href={`https://kucibok.com${portal}/about`} />
     </Helmet>
-    <PortalLayout portal="africa">
+    <main className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans" style={{ "--accent": "#C9A84C", "--accent-dark": "#8B6914" }}>
       {/* ── HERO — Mission ── */}
       <section className="pt-20 md:pt-40 pb-12 md:pb-24 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
@@ -259,7 +260,7 @@ export default function About() {
                 Creer un compte <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <Link
-                to="/artists"
+                to={`${portal}/artists`}
                 className="inline-flex items-center gap-2 bg-transparent text-[var(--accent)] font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 border border-[var(--accent)] transition-all hover:bg-[var(--accent)] hover:text-kcb-noir no-underline"
               >
                 Voir les artistes
@@ -268,7 +269,7 @@ export default function About() {
           </RevealOnScroll>
         </div>
       </section>
-    </PortalLayout>
+    </main>
     </>
   )
 }
