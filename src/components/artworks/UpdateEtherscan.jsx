@@ -23,7 +23,7 @@ export function UpdateEtherscan({artwork}){
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 32 32"
-                        className="w-5 h-5 text-zinc-400 hover:text-green-500 transition"
+                        className="w-5 h-5 text-kcb-pierre hover:text-green-500 transition"
                         fill="none"
                     >
                         <g>
@@ -89,7 +89,7 @@ function EtherscanModal({ artwork, closeModal }) {
             size="sm"
         >
             <div className="mb-4">
-                <p className="text-xs text-gray-400">Œuvre : <span className="font-medium text-white">{artwork?.title}</span></p>
+                <p className="text-xs text-kcb-pierre">Œuvre : <span className="font-medium text-white">{artwork?.title}</span></p>
             </div>
             <form onSubmit={handleSubmit} method="post" className="space-y-4">
                 <Input

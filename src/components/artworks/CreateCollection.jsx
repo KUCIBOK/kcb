@@ -13,7 +13,7 @@ export function CreateCollection(){
     const [state, setState] = useState(false)
     return (
         <>
-        <button onClick={() => {setState(true); }} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer">
+        <button onClick={() => {setState(true); }} className="rounded-[4px] border p-4 grid place-items-center gap-2 hover:bg-kcb-ardoise cursor-pointer">
             <FolderClosed className="w-4 h-4 mx-auto" /> Ajouter une collection
         </button>
         {state && <AddCollectionModal closeModal={() => setState(false)} />}
@@ -115,7 +115,7 @@ function AddCollectionModal({closeModal}){
     return (
         <>
         <div className={`fixed bg-stone-950/80 z-90 h-screen w-screen top-0 left-0 animate-fade-in flex items-center justify-center`}>
-            <div className="fixed z-100 bg-gray-900 border border-gray-700 rounded-xl p-6 w-9/10 lg:w-3/7 h-7/9 animate-scale-up overflow-auto">
+            <div className="fixed z-100 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 w-9/10 lg:w-3/7 h-7/9 animate-scale-up overflow-auto">
                 <div className="flex justify-between items-start">
                     <div>
                         <p className="font-playfair  text-lg text-center font-semi-bold tracking-tight text-white"> Ajouter une collection d'oeuvres </p>
@@ -140,10 +140,10 @@ function AddCollectionModal({closeModal}){
                                 placeholder="Décrivez le thème et l'intention artistique de votre collection..."
                             />
                         </div>
-                        {user?.role == "professional" || user?.role == "collector" && (
+                        {user?.role == "curator" || user?.role == "buyer" && (
                             <div className="grid mt-4">
                                 <label htmlFor="artist" className="text-sm text-white font-semibold">Artiste</label>
-                                <select onChange={(e) => setState({...state, artist : e.target.value, artistId : myArtists.find(item => item?.name == e.target.value)?._id, artworks : state.artworks.map(item => ({...item, artist : e.target.value, artistId : myArtists.find(item => item?.name == e.target.value)?._id}))})} name="artist" id="artist" className="rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-1.5" required>
+                                <select onChange={(e) => setState({...state, artist : e.target.value, artistId : myArtists.find(item => item?.name == e.target.value)?._id, artworks : state.artworks.map(item => ({...item, artist : e.target.value, artistId : myArtists.find(item => item?.name == e.target.value)?._id}))})} name="artist" id="artist" className="rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5" required>
                                     <option>Vos artistes</option>
                                     {myArtists?.length > 0 ? myArtists?.map((artist, index) => (
                                         <option key={index} value={artist?.name}> {artist?.name} </option>
@@ -156,25 +156,25 @@ function AddCollectionModal({closeModal}){
                         <div className="flex flex-col mt-4">
                             <label htmlFor="tags" className="text-sm text-white font-semibold">Mots-clés</label>
                             <div className="flex gap-1">
-                                <input onChange={(e) => setState({...state, tag : e.target.value})} value={state.tag} type="text" className="w-full rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-2" placeholder="Ajoutez des mots-clés" minLength={3} maxLength={12}/>
+                                <input onChange={(e) => setState({...state, tag : e.target.value})} value={state.tag} type="text" className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-2" placeholder="Ajoutez des mots-clés" minLength={3} maxLength={12}/>
                                 <button onClick={() => {
                                     if(state.tag.length > 3 && state.tags.length < 5){
                                         setState({...state, tags : [...state.tags, state.tag], tag : ""})
                                     }
-                                }}  type="button" className="bg-gray-300/20 text-white shadow-lg px-4 rounded-lg">
+                                }}  type="button" className="bg-gray-300/20 text-white shadow-lg px-4 rounded-[4px]">
                                     <Plus className="w-4 h-4"/>
                                 </button>
                             </div>
                             <div className="flex flex-wrap">
                                 {state.tags.map((tag, index) => (
-                                    <span key={index} className="bg-card flex animate-slide-left items-center gap-2 text-white rounded-full px-3 py-1 text-sm font-semibold mt-2 mr-2">{tag} <span onClick={() => setState({...state, tags : state.tags.filter(item => !(item == tag))})} className="text-xs cursor-pointer">x</span> </span>
+                                    <span key={index} className="bg-kcb-ardoise flex animate-slide-left items-center gap-2 text-white rounded-full px-3 py-1 text-sm font-semibold mt-2 mr-2">{tag} <span onClick={() => setState({...state, tags : state.tags.filter(item => !(item == tag))})} className="text-xs cursor-pointer">x</span> </span>
                                 ))}
                             </div>
                         </div>
                         <div className="mt-4">
                             <div className="flex justify-between items-center my-4">
                                 <p className="sm:text-xs md:text-md font-serif font-semibold text-white">Oeuvres de la collection {state?.artworks?.length} </p>
-                                <button type="button" onClick={() => {setState({...state, artworks : [...state?.artworks, artworkModel]})}} className="rounded-lg p-2 bg-purple-700/30 text-white text-xs flex items-center gap-2">
+                                <button type="button" onClick={() => {setState({...state, artworks : [...state?.artworks, artworkModel]})}} className="rounded-[4px] p-2 bg-purple-700/30 text-white text-xs flex items-center gap-2">
                                     <Plus className="w-4 h-4 text-white" />
                                     Ajouter une oeuvre
                                 </button>
@@ -213,7 +213,7 @@ function ArtworkShortList({state, setState}){
                 <ArtworkShortListItem setFormState={setState} formState={state} artwork={artwork} index={index} />
            </div>
         )) : 
-        <div className="flex flex-col border rounded-lg py-6">
+        <div className="flex flex-col border rounded-[4px] py-6">
             <Image className="w-10 h-10 mx-auto" />
             <p className="font-serif text-white text-lg mx-auto">Aucune oeuvre ajoutée</p>
             <p className="mx-auto text-center text-xs">Commencez par ajouter des oeuvres à votre collection</p>
@@ -263,7 +263,7 @@ function ArtworkShortListItem({setFormState, formState, artwork, index}){
     };
     return (
         <>
-        <form className="rounded-lg bg-card my-4 shadow-lg">
+        <form className="rounded-[4px] bg-kcb-ardoise my-4 shadow-lg">
             <div>
                 {state?.image ? <><img src={state.show} alt={state.title} className="h-1/2 w-full rounded-t-lg h-80 object-cover" /></>
                 :
@@ -271,7 +271,7 @@ function ArtworkShortListItem({setFormState, formState, artwork, index}){
                     <div className="flex flex-col">
                         <Upload className="w-8 h-8 text-white mx-auto" />
                         <p className="text-sm mx-auto">Cliquez pour ajouter une image</p>
-                        <input className="bg-gray-900 w-1/2 text-sm mx-auto rounded-md border border-gray-700 px-3 py-1.5 cursor-pointer text-white font-medium"
+                        <input className="bg-kcb-ardoise w-1/2 text-sm mx-auto rounded-md border border-white/[0.06] px-3 py-1.5 cursor-pointer text-white font-medium"
                             id="artwork-image" 
                             type="file" 
                             accept="image/*" 
@@ -285,16 +285,16 @@ function ArtworkShortListItem({setFormState, formState, artwork, index}){
             <div className="p-4">
                 <div className="flex flex-col gap-1">
                     <label className="text-white text-sm font-semibold" htmlFor="title">Titre*</label>
-                    <input onChange={(e) => setState({...state, title : e.target.value})} value={state.title} type="text" className="py-1 5 px-4 border rounded-md bg-background" minLength={5} required placeholder="Titre de l'oeuvre"/>
+                    <input onChange={(e) => setState({...state, title : e.target.value})} value={state.title} type="text" className="py-1 5 px-4 border rounded-md bg-kcb-noir" minLength={5} required placeholder="Titre de l'oeuvre"/>
                 </div>
                 <div className="flex flex-col gap-1 mt-2">
                     <label className="text-white text-sm font-semibold" htmlFor="description">Description*</label>
-                    <textarea onChange={(e) => setState({...state, description : e.target.value})} className="py-1 5 px-4 border rounded-md bg-background" minLength={5} required placeholder="Description de l'oeuvre"/>
+                    <textarea onChange={(e) => setState({...state, description : e.target.value})} className="py-1 5 px-4 border rounded-md bg-kcb-noir" minLength={5} required placeholder="Description de l'oeuvre"/>
                 </div>
                 <div className="flex flex-col mt-4">
                     <label htmlFor="category" className="text-sm text-white font-semibold">Catégorie</label>
                     <select required
-                    onChange={(e) => setState({...state, category : e.target.value, categoryId : categories.find(item => item.title == e.target.value)._id})} value={formState.category} name="category" id="category" className="rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-1.5">
+                    onChange={(e) => setState({...state, category : e.target.value, categoryId : categories.find(item => item.title == e.target.value)._id})} value={formState.category} name="category" id="category" className="rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5">
                         <option>Catégorie</option>
                         {categories.map((category, index) => (
                             <option key={index} value={category.title}> {category.title} </option>
@@ -312,26 +312,26 @@ function ArtworkShortListItem({setFormState, formState, artwork, index}){
                 <div>
                     <label htmlFor="mensurations">Mensurations</label>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                        <input className="w-full rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-1.5" min={10} max={500} onChange={(e) => setState({...state, height : e.target.value}) } name="height" type="number" placeholder="Taille de l'oeuvre en cm" />
-                        <input className="w-full rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-1.5" min={10} max={500} onChange={(e) => setState({...state, width : e.target.value}) } name="width" type="number" placeholder="Largeur de l'oeuvre cm" />
-                        <input className="w-full rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-1.5" min={1} max={1000} onChange={(e) => setState({...state, weight : e.target.value}) } name="weight" type="number" placeholder="Poids de l'oeuvre en kg" />
+                        <input className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5" min={10} max={500} onChange={(e) => setState({...state, height : e.target.value}) } name="height" type="number" placeholder="Taille de l'oeuvre en cm" />
+                        <input className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5" min={10} max={500} onChange={(e) => setState({...state, width : e.target.value}) } name="width" type="number" placeholder="Largeur de l'oeuvre cm" />
+                        <input className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5" min={1} max={1000} onChange={(e) => setState({...state, weight : e.target.value}) } name="weight" type="number" placeholder="Poids de l'oeuvre en kg" />
                     </div>
                 </div>
 
                 <div className="grid">
                     <label htmlFor="price" className="text-sm text-white font-semibold">Prix</label>
-                    <input onChange={(e) => setState({...state, price : e.target.value})} value={state.price} type="number" min={1} className="rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-1.5" placeholder="Entrez le prix de l'oeuvre"  required/>
+                    <input onChange={(e) => setState({...state, price : e.target.value})} value={state.price} type="number" min={1} className="rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5" placeholder="Entrez le prix de l'oeuvre"  required/>
                 </div>
                 
                 <div className="flex flex-col mt-4">
                     <label htmlFor="tags" className="text-sm text-white font-semibold">Mots-clés*</label>
                     <div className="flex gap-1">
-                        <input onChange={(e) => setState({...state, tag : e.target.value})} value={state.tag} type="text" className="w-full rounded-md bg-gray-900 mt-1 border border-gray-700 px-3 py-1.5" placeholder="Ajoutez des mots-clés" minLength={3} maxLength={12}/>
+                        <input onChange={(e) => setState({...state, tag : e.target.value})} value={state.tag} type="text" className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5" placeholder="Ajoutez des mots-clés" minLength={3} maxLength={12}/>
                         <button onClick={() => {
                             if(state.tag.length >= 3 && state.tags.length < 5){
                                 setState({...state, tags : [...state.tags, state.tag], tag : ""})
                             }
-                        }}  type="button" className="bg-indigo-kcb text-white px-3 rounded-lg">
+                        }}  type="button" className="bg-kcb-or text-white px-3 rounded-[4px]">
                             <Plus className="w-4 h-4"/>
                         </button>
                     </div>

@@ -8,11 +8,11 @@ export function SeeAction({ delivery }) {
         <>
         <button
             onClick={() => setModal(true)}
-            className="p-2 rounded-md border border-gray-200 bg-white shadow-sm hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="p-2 rounded-md border border-white/[0.06] bg-kcb-ardoise shadow-sm hover:bg-kcb-ardoise transition-colors focus:outline-none focus:ring-2 focus:ring-kcb-or"
             aria-label="Voir la livraison"
             title="Voir la livraison"
         >
-            <Eye className="w-4 h-4 text-blue-500" />
+            <Eye className="w-4 h-4 text-kcb-or" />
         </button>
         {modal && <SeeModal delivery={delivery} closeModal={() => setModal(false)} />}
         </>
@@ -29,47 +29,47 @@ function SeeModal({delivery, closeModal}){
         >
             <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Adresse:</span>
+                    <span className="text-kcb-pierre">Adresse:</span>
                     <span className="text-white font-medium">{delivery.deliveryAddress}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Date:</span>
+                    <span className="text-kcb-pierre">Date:</span>
                     <span className="text-white">{delivery.deliveryDate}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Collecte:</span>
+                    <span className="text-kcb-pierre">Collecte:</span>
                     <span className="text-white">{delivery.collectDate}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Frais:</span>
+                    <span className="text-kcb-pierre">Frais:</span>
                     <span className="text-white">{delivery.price?.toLocaleString('fr-FR')?.replace(/\s/g, '\u2007') || "À venir"} {delivery.currency || "FCFA"}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Client:</span>
+                    <span className="text-kcb-pierre">Client:</span>
                     <span className="text-white">{delivery.recipientName}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Téléphone:</span>
+                    <span className="text-kcb-pierre">Téléphone:</span>
                     <span className="text-white">{delivery.recipientPhone}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Priorité:</span>
+                    <span className="text-kcb-pierre">Priorité:</span>
                     <span className="text-white">{delivery.deliveryPriority}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Instructions:</span>
+                    <span className="text-kcb-pierre">Instructions:</span>
                     <span className="text-white">{delivery.specialInstructions || "Aucune"}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Taille:</span>
+                    <span className="text-kcb-pierre">Taille:</span>
                     <span className="text-white">{delivery.packageSize == "small" ? "Petit" : delivery.packageSize == "medium" ? "Moyen" : delivery.packageSize == "large" ? "Grand" : "Très grand"}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Poids:</span>
+                    <span className="text-kcb-pierre">Poids:</span>
                     <span className="text-white">{delivery.packageWeight}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Statut:</span>
+                    <span className="text-kcb-pierre">Statut:</span>
                     <span className={`px-2 py-1 rounded text-xs font-semibold ${delivery.status === 'delivered' ? 'bg-green-600 text-white' : 'bg-yellow-600 text-white'}`}>
                         {delivery.status}
                     </span>

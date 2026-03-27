@@ -34,17 +34,17 @@ export const CountdownTimer = ({ endTime }) => {
   return (
     <div className="flex items-center space-x-1">
       {timeLeft.days > 0 && (
-        <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
+        <span className="bg-kcb-ardoise/80 text-white text-xs px-1.5 py-0.5 rounded">
           {timeLeft.days}j
         </span>
       )}
-      <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
+      <span className="bg-kcb-ardoise/80 text-white text-xs px-1.5 py-0.5 rounded">
         {String(timeLeft.hours).padStart(2, "0")}h
       </span>
-      <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
+      <span className="bg-kcb-ardoise/80 text-white text-xs px-1.5 py-0.5 rounded">
         {String(timeLeft.minutes).padStart(2, "0")}m
       </span>
-      <span className="bg-gray-700/80 text-white text-xs px-1.5 py-0.5 rounded">
+      <span className="bg-kcb-ardoise/80 text-white text-xs px-1.5 py-0.5 rounded">
         {String(timeLeft.seconds).padStart(2, "0")}s
       </span>
     </div>

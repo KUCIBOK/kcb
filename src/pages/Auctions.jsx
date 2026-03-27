@@ -61,13 +61,13 @@ export default function Auctions() {
         <h1 className="font-serif text-4xl md:text-5xl mb-2 text-white">
           Enchères en cours
         </h1>
-        <p className="text-gray-400 text-lg mt-2">
+        <p className="text-kcb-pierre text-lg mt-2">
           Découvrez des œuvres uniques et participez aux enchères
         </p>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 bg-red-900/20 border border-red-800 text-red-300 rounded-lg px-4 py-3 mb-8 max-w-lg mx-auto text-sm">
+        <div className="flex items-center gap-2 bg-red-900/20 border border-red-800 text-red-300 rounded-[4px] px-4 py-3 mb-8 max-w-lg mx-auto text-sm">
           <AlertCircle className="w-4 h-4 shrink-0" />
           {error}
         </div>
@@ -75,16 +75,16 @@ export default function Auctions() {
 
       {!error && auctions.length === 0 ? (
         <div className="text-center py-12">
-          <div className="bg-gray-800/50 rounded-xl p-8 max-w-md mx-auto">
+          <div className="bg-kcb-ardoise/50 rounded-[4px] p-8 max-w-md mx-auto">
             <h3 className="text-xl font-medium text-white mb-2">
               Aucune enchère en cours
             </h3>
-            <p className="text-gray-400 mb-4">
+            <p className="text-kcb-pierre mb-4">
               Il n'y a actuellement aucune enchère active. Revenez plus tard !
             </p>
             <Link
-              to="/explore"
-              className="inline-block px-4 py-2 bg-gradient rounded-md text-white hover:opacity-90 transition"
+              to="/africa/catalogue"
+              className="inline-block px-4 py-2 bg-gradient rounded-[4px] text-white hover:opacity-90 transition"
             >
               Explorer les œuvres
             </Link>
@@ -100,11 +100,11 @@ export default function Auctions() {
             return (
               <div
                 key={auction._id}
-                className="bg-gray-800/50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-700/50"
+                className="bg-kcb-ardoise/50 rounded-[4px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-white/[0.06]"
               >
-                <div className="aspect-square bg-gray-700 relative">
+                <div className="aspect-square bg-kcb-noir relative">
                   {/* Placeholder pour l'image de l'œuvre - à remplacer par l'image réelle */}
-                  <div className="w-full h-full flex items-center justify-center text-gray-500">
+                  <div className="w-full h-full flex items-center justify-center text-kcb-pierre">
                     {artworkImage ? (
                       <img
                         src={artworkImage}
@@ -143,20 +143,20 @@ export default function Auctions() {
                     <div className="text-2xl font-bold text-white">
                       {auction.currentPrice?.toLocaleString('fr-FR')} FCFA
                     </div>
-                    <div className="text-sm text-gray-400 flex items-center">
+                    <div className="text-sm text-kcb-pierre flex items-center">
                       <Clock className="w-4 h-4 mr-1" />
                       <CountdownTimer endTime={auction.endTime} />
                     </div>
                   </div>
 
-                  <div className="flex items-center text-gray-400 text-sm mb-4">
+                  <div className="flex items-center text-kcb-pierre text-sm mb-4">
                     <User className="w-4 h-4 mr-1" />
                     <span>Vendeur: {sellerName}</span>
                   </div>
 
                   <Link
                     to={`/auction/${auction._id}`}
-                    className="w-full block text-center bg-gradient hover:opacity-90 text-white py-2 px-4 rounded-md transition"
+                    className="w-full block text-center bg-gradient hover:opacity-90 text-white py-2 px-4 rounded-[4px] transition"
                   >
                     Participer
                   </Link>

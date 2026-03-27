@@ -31,7 +31,7 @@ export function PlansListItemActions({ plan }) {
             {(user?.role === "admin") ? ( <>
                 <button 
                     onClick={() => setState({ ...state, updatePlan: true })} 
-                    className="justify-center w-8/10 border rounded-md bg-background text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-gray-700 transition-colors duration-200">
+                    className="justify-center w-8/10 border rounded-md bg-kcb-noir text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-kcb-ardoise transition-colors duration-200">
                      <PenBoxIcon className="w-4 h-4 mr-2 text-white"/> Modifier
                 </button>
                 <button 
@@ -41,7 +41,7 @@ export function PlansListItemActions({ plan }) {
                 </button>
             </>)
             : plan?.price > 0 && 
-                (<Link to={`/subscription-checkout/${plan?._id}`} className="justify-center w-full border rounded-md bg-background text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-gray-700 transition-colors duration-200">
+                (<Link to={`/subscription-checkout/${plan?._id}`} className="justify-center w-full border rounded-md bg-kcb-noir text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-kcb-ardoise transition-colors duration-200">
                     Souscrire
                 </Link>)
             }
@@ -71,8 +71,8 @@ function UpdatePlanModal({closeModal, plan}){
     ];
 
     const roleOptions = [
-        { value: "collector", label: "Collectionneur" },
-        { value: "professional", label: "Professionnel" }
+        { value: "buyer", label: "Acheteur" },
+        { value: "curator", label: "Curateur" }
     ];
 
     const handleUpdatePlan = async (e) => {
@@ -160,7 +160,7 @@ function UpdatePlanModal({closeModal, plan}){
 
                 {/* Features */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Fonctionnalités</label>
+                    <label className="block text-sm font-medium text-kcb-sable mb-2">Fonctionnalités</label>
                     <div className="flex gap-2">
                         <Input
                             value={state?.feature}
@@ -186,7 +186,7 @@ function UpdatePlanModal({closeModal, plan}){
                     </div>
                     <div className="flex gap-2 flex-wrap mt-2">
                         {state?.features?.length > 0 && state?.features.map((feature, index) => (
-                            <div key={index} className="flex items-center gap-2 bg-indigo-600/80 rounded-full px-3 py-1 text-xs">
+                            <div key={index} className="flex items-center gap-2 bg-kcb-or/80 rounded-full px-3 py-1 text-xs">
                                 <span className="text-white">{feature}</span>
                                 <button 
                                     type="button"

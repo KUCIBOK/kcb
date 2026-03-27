@@ -32,23 +32,23 @@ export const Step2 = memo(({formState, setFormState}) => {
         <div className="space-y-6">
             <div>
                 <label htmlFor="image" className="text-sm text-white font-semibold mb-2 block">Image</label>
-                <div className="bg-gray-900 border-2 border-gray-800 border-dashed rounded-xl p-8 text-center transition-all">
+                <div className="bg-kcb-ardoise border-2 border-white/[0.06] border-dashed rounded-[4px] p-8 text-center transition-all">
                     {formState.image ? (
                         <div className="space-y-4 animate-fade-in-up">
                             <img 
                                 src={formState.show} 
                                 alt="Artwork preview" 
-                                className="max-h-[280px] mx-auto rounded-lg object-contain border border-gray-800 shadow"
+                                className="max-h-[280px] mx-auto rounded-[4px] object-contain border border-white/[0.06] shadow"
                             />
-                            <button type="button" className="px-4 py-2 text-sm text-white font-medium rounded-md border border-gray-700 bg-gray-900 hover:bg-gray-800 transition" onClick={() => setFormState({...formState, image : null, show: ''})}>
+                            <button type="button" className="px-4 py-2 text-sm text-white font-medium rounded-[4px] border border-white/[0.06] bg-kcb-ardoise hover:bg-kcb-ardoise transition" onClick={() => setFormState({...formState, image : null, show: ''})}>
                                 Changer l'image
                             </button>
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <div onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => document.getElementById('artwork-image').click()} className="flex flex-col items-center justify-center py-6 cursor-pointer group">
-                                <Image className="w-12 h-12 text-indigo-kcb mb-2 group-hover:scale-110 transition-transform" />
-                                <p className="text-sm text-gray-400 group-hover:text-white transition-colors">
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('artwork-image').click(); } }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => document.getElementById('artwork-image').click()} className="flex flex-col items-center justify-center py-6 cursor-pointer group focus-visible:ring-2 focus-visible:ring-kcb-or rounded-[4px] outline-none">
+                                <Image className="w-12 h-12 text-kcb-or mb-2 group-hover:scale-110 transition-transform" />
+                                <p className="text-sm text-kcb-pierre group-hover:text-white transition-colors">
                                     Glissez-déposez l'image ici, ou <span className="underline">cliquez</span> pour sélectionner un fichier
                                 </p>
                             </div>
@@ -66,14 +66,14 @@ export const Step2 = memo(({formState, setFormState}) => {
             <div className="flex justify-between mt-8">
                 <button
                     onClick={() => setFormState({...formState, step : formState.step - 1})}
-                    className="pp-2 text-sm rounded-lg bg-gray-900 border border-gray-700 text-white font-medium hover:bg-gray-800 transition"
+                    className="p-2 text-sm rounded-[4px] bg-kcb-ardoise border border-white/[0.06] text-white font-medium hover:bg-kcb-ardoise transition"
                     type="button"
                 >
                     Précédent
                 </button>
                 <button
                     onClick={() => { if(formState.image){ setFormState({...formState, step : formState.step + 1}) } }}
-                    className={`pp-2 text-sm rounded-lg bg-indigo-kcb text-white font-semibold transition ${!formState.image ? 'opacity-60 cursor-not-allowed' : 'hover:bg-indigo-800'}`}
+                    className={`p-2 text-sm rounded-[4px] bg-kcb-or text-kcb-noir font-semibold transition ${!formState.image ? 'opacity-60 cursor-not-allowed' : 'hover:bg-kcb-or/90'}`}
                     type="button"
                     disabled={!formState.image}
                 >

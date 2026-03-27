@@ -5,8 +5,8 @@ export default function AuctionArtworkInfo({ artwork }) {
   return (
     <>
       {/* Image */}
-      <div className="bg-gray-800/50 rounded-xl overflow-hidden mb-6">
-        <div className="aspect-square bg-gray-700 relative">
+      <div className="bg-kcb-ardoise/50 rounded-[4px] overflow-hidden mb-6">
+        <div className="aspect-square bg-kcb-ardoise relative">
           <img
             src={artwork.image}
             alt={artwork.title}
@@ -27,29 +27,29 @@ export default function AuctionArtworkInfo({ artwork }) {
           </h1>
           <Link
             to={`/artist/${artwork?.artist?._id || "#"}`}
-            className="flex items-center text-gray-400 hover:text-white transition"
+            className="flex items-center text-kcb-pierre hover:text-white transition"
           >
             <User className="w-4 h-4 mr-1" />
             {artwork?.artist?.name || "Artiste inconnu"}
           </Link>
         </div>
 
-        <div className="bg-gray-800/30 p-4 rounded-lg">
-          <p className="text-gray-300">{artwork.description}</p>
+        <div className="bg-white/[0.04] p-4 rounded-[4px]">
+          <p className="text-kcb-sable">{artwork.description}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center">
-            <Palette className="w-5 h-5 mr-2 text-gray-400" />
+            <Palette className="w-5 h-5 mr-2 text-kcb-pierre" />
             <div>
-              <p className="text-xs text-gray-400">Catégorie</p>
+              <p className="text-xs text-kcb-pierre">Catégorie</p>
               <p className="text-white">{artwork.category}</p>
             </div>
           </div>
           <div className="flex items-center">
-            <Ruler className="w-5 h-5 mr-2 text-gray-400" />
+            <Ruler className="w-5 h-5 mr-2 text-kcb-pierre" />
             <div>
-              <p className="text-xs text-gray-400">Dimensions</p>
+              <p className="text-xs text-kcb-pierre">Dimensions</p>
               <p className="text-white">{artwork.width}</p>
             </div>
           </div>

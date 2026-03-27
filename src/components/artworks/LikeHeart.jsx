@@ -79,7 +79,7 @@ export function LikeHeart({artwork}){
     return (
         <>
         {/* Like button */}
-        <div className="absolute top-3 right-3 flex items-center gap-1 bg-gray-800/70 rounded-full px-2 py-1">
+        <div className="absolute top-3 right-3 flex items-center gap-1 bg-kcb-noir/70 rounded-full px-2 py-1">
             <button
             onClick={handleLike}
             className="p-1 rounded-full hover:scale-110 transition"
@@ -90,7 +90,7 @@ export function LikeHeart({artwork}){
                 }`}
             />
             </button>
-            <span className="text-xs text-gray-300">{state?.likesCount}</span>
+            <span className="text-xs text-kcb-sable">{state?.likesCount}</span>
         </div>
         {state.showModal && <RegisterOrConnect open={state.showModal} onClose={() => setState(prev => ({ ...prev, showModal: false }))} />}
         </>

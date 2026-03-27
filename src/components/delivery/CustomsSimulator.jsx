@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FileText, Calculator, AlertCircle, TrendingUp, DollarSign, Package } from "lucide-react";
+import { useToast } from "../../store/ToastContext";
 
 export function CustomsSimulator() {
+    const { makeToast } = useToast();
     const [formData, setFormData] = useState({
         artworkValue: "",
         artworkCategory: "painting", // painting, sculpture, jewelry, other
@@ -50,7 +52,7 @@ export function CustomsSimulator() {
 
     const calculateCustoms = async () => {
         if (!formData.artworkValue) {
-            alert("Veuillez entrer la valeur de l'œuvre");
+            makeToast("Erreur", "warning", "Veuillez entrer la valeur de l'œuvre");
             return;
         }
 
@@ -103,23 +105,23 @@ export function CustomsSimulator() {
     };
 
     return (
-        <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-6">
+        <div className="bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06] p-6">
             <div className="flex items-center gap-2 mb-6">
-                <div className="bg-orange-600/20 p-2 rounded-lg">
-                    <FileText className="w-5 h-5 text-orange-400" />
+                <div className="bg-kcb-or/10 p-2 rounded-[4px]">
+                    <FileText className="w-5 h-5 text-kcb-or" />
                 </div>
                 <div>
                     <h3 className="text-lg font-semibold text-white">Simulateur de Douane</h3>
-                    <p className="text-xs text-gray-400">Powered by Logidoo</p>
+                    <p className="text-xs text-kcb-pierre">Powered by Logidoo</p>
                 </div>
             </div>
 
             <div className="space-y-4">
                 {/* Artwork Value */}
                 <div>
-                    <label className="block text-xs text-gray-400 mb-1">Valeur déclarée de l'œuvre (XOF)</label>
+                    <label className="block text-xs text-kcb-pierre mb-1">Valeur déclarée de l'œuvre (XOF)</label>
                     <div className="relative">
-                        <DollarSign className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                        <DollarSign className="absolute left-3 top-2.5 w-4 h-4 text-kcb-pierre" />
                         <input
                             type="number"
                             value={formData.artworkValue}
@@ -128,21 +130,21 @@ export function CustomsSimulator() {
                                 setResults(null);
                             }}
                             placeholder="Valeur en XOF"
-                            className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"
+                            className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                         />
                     </div>
                 </div>
 
                 {/* Category */}
                 <div>
-                    <label className="block text-xs text-gray-400 mb-1">Catégorie d'œuvre</label>
+                    <label className="block text-xs text-kcb-pierre mb-1">Catégorie d'œuvre</label>
                     <select
                         value={formData.artworkCategory}
                         onChange={(e) => {
                             setFormData({...formData, artworkCategory: e.target.value});
                             setResults(null);
                         }}
-                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"
+                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                     >
                         {Object.entries(customsRates).map(([key, val]) => (
                             <option key={key} value={key}>
@@ -154,11 +156,11 @@ export function CustomsSimulator() {
 
                 {/* Origin Country */}
                 <div>
-                    <label className="block text-xs text-gray-400 mb-1">Pays d'origine</label>
+                    <label className="block text-xs text-kcb-pierre mb-1">Pays d'origine</label>
                     <select
                         value={formData.originCountry}
                         onChange={(e) => setFormData({...formData, originCountry: e.target.value})}
-                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"
+                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                     >
                         {Object.entries(countries).map(([code, name]) => (
                             <option key={code} value={code}>{name}</option>
@@ -168,14 +170,14 @@ export function CustomsSimulator() {
 
                 {/* Destination Country */}
                 <div>
-                    <label className="block text-xs text-gray-400 mb-1">Pays de destination</label>
+                    <label className="block text-xs text-kcb-pierre mb-1">Pays de destination</label>
                     <select
                         value={formData.destinationCountry}
                         onChange={(e) => {
                             setFormData({...formData, destinationCountry: e.target.value});
                             setResults(null);
                         }}
-                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"
+                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                     >
                         {Object.entries(countries).map(([code, name]) => (
                             <option key={code} value={code}>{name}</option>
@@ -185,9 +187,9 @@ export function CustomsSimulator() {
 
                 {/* Weight */}
                 <div>
-                    <label className="block text-xs text-gray-400 mb-1">Poids (kg)</label>
+                    <label className="block text-xs text-kcb-pierre mb-1">Poids (kg)</label>
                     <div className="relative">
-                        <Package className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                        <Package className="absolute left-3 top-2.5 w-4 h-4 text-kcb-pierre" />
                         <input
                             type="number"
                             min="0.1"
@@ -197,21 +199,21 @@ export function CustomsSimulator() {
                                 setFormData({...formData, weight: e.target.value});
                                 setResults(null);
                             }}
-                            className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"
+                            className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                         />
                     </div>
                 </div>
 
                 {/* Shipping Method */}
                 <div>
-                    <label className="block text-xs text-gray-400 mb-1">Mode de transport</label>
+                    <label className="block text-xs text-kcb-pierre mb-1">Mode de transport</label>
                     <select
                         value={formData.shippingMethod}
                         onChange={(e) => {
                             setFormData({...formData, shippingMethod: e.target.value});
                             setResults(null);
                         }}
-                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"
+                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                     >
                         {Object.entries(shippingMultipliers).map(([key, val]) => (
                             <option key={key} value={key}>
@@ -225,7 +227,7 @@ export function CustomsSimulator() {
                 <button
                     onClick={calculateCustoms}
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg font-medium transition disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] font-medium transition disabled:opacity-50"
                 >
                     <Calculator className="w-4 h-4" />
                     {loading ? "Calcul en cours..." : "Simuler les frais de douane"}
@@ -234,61 +236,61 @@ export function CustomsSimulator() {
 
             {/* Results */}
             {results && (
-                <div className="mt-6 pt-6 border-t border-gray-700 space-y-4">
-                    <div className="bg-orange-900/20 border border-orange-600/50 rounded-lg p-4">
+                <div className="mt-6 pt-6 border-t border-white/[0.06] space-y-4">
+                    <div className="bg-kcb-or/10 border border-kcb-or/30 rounded-[4px] p-4">
                         <div className="flex items-start gap-2 mb-3">
-                            <AlertCircle className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                            <AlertCircle className="w-4 h-4 text-kcb-or mt-0.5 flex-shrink-0" />
                             <div>
-                                <p className="text-orange-400 text-sm font-medium">Simulation de frais de douane</p>
-                                <p className="text-orange-300 text-xs">Ces valeurs sont des estimations basées sur les tarifs Logidoo</p>
+                                <p className="text-kcb-or text-sm font-medium">Simulation de frais de douane</p>
+                                <p className="text-kcb-or/70 text-xs">Ces valeurs sont des estimations basées sur les tarifs Logidoo</p>
                             </div>
                         </div>
                     </div>
 
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-400 text-sm">Valeur déclarée:</span>
+                            <span className="text-kcb-pierre text-sm">Valeur déclarée:</span>
                             <span className="text-white font-medium">{parseFloat(results.artworkValue).toLocaleString('fr-FR')} XOF</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-400 text-sm">Droits de douane:</span>
-                            <span className="text-yellow-400 font-medium">{parseFloat(results.customsDuty).toLocaleString('fr-FR')} XOF</span>
+                            <span className="text-kcb-pierre text-sm">Droits de douane:</span>
+                            <span className="text-kcb-or font-medium">{parseFloat(results.customsDuty).toLocaleString('fr-FR')} XOF</span>
                         </div>
                         {parseFloat(results.vat) > 0 && (
                             <div className="flex justify-between items-center">
-                                <span className="text-gray-400 text-sm">TVA (20%):</span>
-                                <span className="text-blue-400 font-medium">{parseFloat(results.vat).toLocaleString('fr-FR')} XOF</span>
+                                <span className="text-kcb-pierre text-sm">TVA (20%):</span>
+                                <span className="text-kcb-or font-medium">{parseFloat(results.vat).toLocaleString('fr-FR')} XOF</span>
                             </div>
                         )}
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-400 text-sm">Transport ({results.shippingMethod}):</span>
+                            <span className="text-kcb-pierre text-sm">Transport ({results.shippingMethod}):</span>
                             <span className="text-green-400 font-medium">{parseFloat(results.shippingCost).toLocaleString('fr-FR')} XOF</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-400 text-sm">Assurance (2%):</span>
-                            <span className="text-purple-400 font-medium">{parseFloat(results.insuranceCost).toLocaleString('fr-FR')} XOF</span>
+                            <span className="text-kcb-pierre text-sm">Assurance (2%):</span>
+                            <span className="text-kcb-bronze font-medium">{parseFloat(results.insuranceCost).toLocaleString('fr-FR')} XOF</span>
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-700 pt-3 flex justify-between items-center">
+                    <div className="border-t border-white/[0.06] pt-3 flex justify-between items-center">
                         <span className="text-white font-semibold">Coût total estimé:</span>
-                        <span className="text-2xl font-bold text-orange-400">
+                        <span className="text-2xl font-bold text-kcb-or">
                             {parseFloat(results.total).toLocaleString('fr-FR')} XOF
                         </span>
                     </div>
 
-                    <div className="bg-blue-900/20 border border-blue-600/50 rounded-lg p-3">
-                        <p className="text-blue-400 text-xs font-medium mb-2 flex items-center gap-1">
+                    <div className="bg-kcb-or/10 border border-kcb-or/30 rounded-[4px] p-3">
+                        <p className="text-kcb-or text-xs font-medium mb-2 flex items-center gap-1">
                             <TrendingUp className="w-3 h-3" />
                             Délai de livraison
                         </p>
-                        <p className="text-blue-300 text-sm">{results.deliveryTime}</p>
+                        <p className="text-kcb-or/80 text-sm">{results.deliveryTime}</p>
                     </div>
 
                     <div className="space-y-1">
                         {results.notes.map((note, idx) => (
-                            <p key={idx} className="text-gray-400 text-xs flex items-start gap-2">
-                                <span className="text-orange-400 mt-0.5">•</span>
+                            <p key={idx} className="text-kcb-pierre text-xs flex items-start gap-2">
+                                <span className="text-kcb-or mt-0.5">•</span>
                                 {note}
                             </p>
                         ))}

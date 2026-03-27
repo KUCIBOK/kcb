@@ -45,8 +45,8 @@ export default function ArtworkCheckout(){
     }, [id]);
 
     const handlePayment = async () => {
-        if (user?.role !== "collector") {
-            toast.error("Seuls les collectionneurs peuvent acheter des œuvres");
+        if (!user?._id) {
+            toast.error("Vous devez être connecté pour acheter une œuvre");
             return;
         }
 
@@ -119,26 +119,22 @@ export default function ArtworkCheckout(){
                             />
 
                             <button
-                                disabled={user?.role !== "collector" || paymentLoading || artwork?.loading}
+                                disabled={!user?._id || paymentLoading || artwork?.loading}
                                 onClick={handlePayment}
                                 className="rounded-md flex justify-center items-center gap-2 w-full bg-kcb-or hover:bg-kcb-bronze transition shadow py-2 text-kcb-noir font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                {user?.role === "collector" ? (
-                                    (paymentLoading || artwork?.loading) ? <DataLoader/> : (
-                                        <>
-                                            <ShoppingCart className="w-4 h-4" /> 
-                                            Payer {artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {artwork?.currency}
-                                        </>
-                                    )
-                                ) : (
-                                    <Lock className="w-6 h-6 my-2" />
+                                {(paymentLoading || artwork?.loading) ? <DataLoader/> : (
+                                    <>
+                                        <ShoppingCart className="w-4 h-4" />
+                                        Payer {artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {artwork?.currency}
+                                    </>
                                 )}
                             </button>
                             
-                            {(user?.role !== "collector" || !user?._id) && (
-                                <p className="flex items-center text-xs text-kcb-pierre mt-2"> 
-                                    <AlertCircle className="w-4 h-4 mr-2" /> 
-                                    Vous devez être inscrit en tant que collectionneur pour acheter une œuvre.
+                            {!user?._id && (
+                                <p className="flex items-center text-xs text-kcb-pierre mt-2">
+                                    <AlertCircle className="w-4 h-4 mr-2" />
+                                    Vous devez être connecté pour acheter une œuvre.
                                 </p>
                             )}
 

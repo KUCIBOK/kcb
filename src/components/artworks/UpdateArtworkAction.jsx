@@ -92,17 +92,17 @@ function UpdateArtworkModal({ artwork, closeModal }) {
             <img
               src={state?.show}
               alt="Artwork"
-              className="w-20 h-20 object-cover rounded-full mb-3 border border-gray-700"
+              className="w-20 h-20 object-cover rounded-full mb-3 border border-white/[0.06]"
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-indigo-600/20 mb-3 flex justify-center items-center border border-gray-700">
-              <Camera className="w-8 h-8 text-indigo-400" />
+            <div className="w-20 h-20 rounded-full bg-kcb-or/10 mb-3 flex justify-center items-center border border-white/[0.06]">
+              <Camera className="w-8 h-8 text-kcb-or" />
             </div>
           )}
           <button
             type="button"
             onClick={() => document.getElementById('image').click()}
-            className="text-xs font-medium px-3 py-2 border border-gray-700 bg-gray-800 hover:bg-gray-700 rounded transition"
+            className="text-xs font-medium px-3 py-2 border border-white/[0.06] bg-kcb-ardoise hover:bg-kcb-ardoise rounded transition"
           >
             Modifier la photo
           </button>
@@ -160,19 +160,19 @@ function UpdateArtworkModal({ artwork, closeModal }) {
   
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Description</label>
           <ReactQuill
             theme="snow"
             value={state.description}
             onChange={(value) => setState({ ...state, description: value })}
-            className="border border-gray-800 rounded-lg bg-white text-black"
+            className="border border-white/[0.06] rounded-[4px] bg-white text-black"
             placeholder="Parlez-nous de votre œuvre"
           />
         </div>
   
         {/* Mensurations */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Mensurations</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Mensurations</label>
           <div className="grid grid-cols-3 gap-2">
             <Input
               type="number"
@@ -210,7 +210,7 @@ function UpdateArtworkModal({ artwork, closeModal }) {
             onChange={(e) => setState({ ...state, forSale: e.target.checked })}
             className="w-4 h-4 accent-indigo-500"
           />
-          <label htmlFor="forSale" className="text-sm text-gray-300">
+          <label htmlFor="forSale" className="text-sm text-kcb-sable">
             Mettre en vente
           </label>
         </div>

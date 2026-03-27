@@ -32,7 +32,7 @@ export const ArtworksList = ({artworks, user}) => {
             header: 'Aperçu',
             accessor: 'image',
             render: (value, row) => (
-                <div className="h-10 w-10 rounded-md bg-gray-800 flex items-center justify-center overflow-hidden">
+                <div className="h-10 w-10 rounded-[4px] bg-kcb-noir flex items-center justify-center overflow-hidden">
                     <img
                         loading="lazy"
                         src={value}
@@ -52,7 +52,7 @@ export const ArtworksList = ({artworks, user}) => {
             accessor: 'artist',
             sortable: true
         },
-        ...(user?.role !== "collector" ? [
+        ...(user?.role !== "buyer" ? [
             {
                 header: 'Créé',
                 accessor: 'created',
@@ -91,8 +91,8 @@ export const ArtworksList = ({artworks, user}) => {
             header: 'Etherscan',
             accessor: 'etherscan',
             render: (value) => value 
-                ? <a href={value} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">Voir</a>
-                : <span className="text-gray-500 italic text-xs">À venir</span>
+                ? <a href={value} target="_blank" rel="noopener noreferrer" className="text-kcb-or hover:underline">Voir</a>
+                : <span className="text-kcb-pierre italic text-xs">À venir</span>
         },
         {
             header: 'Certificat',
@@ -108,7 +108,7 @@ export const ArtworksList = ({artworks, user}) => {
                 <div className="flex justify-end items-center gap-2">
                     <DownloadAction artwork={row} />
                     <SeeAction user={user} artwork={row} />
-                    {user?.role !== "collector" && <UpdateArtworkAction artwork={row} />}
+                    {user?.role !== "buyer" && <UpdateArtworkAction artwork={row} />}
                     {user?.role === "admin" && <ApproveAction artwork={row} />}
                     {user?.role === "admin" && <UpdateEtherscan artwork={row} />}
                 </div>

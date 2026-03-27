@@ -4,19 +4,19 @@ import { ShieldCheck, ShieldX, Loader2, ExternalLink } from "lucide-react"
 import { verifyArtwork } from "../api/useArtworks"
 
 export default function VerifyArtwork() {
-  const { kuciobkId } = useParams()
+  const { kucibokId } = useParams()
   const [state, setState] = useState("loading") // "loading" | "verified" | "unverified" | "error"
   const [artwork, setArtwork] = useState(null)
   const [errorMsg, setErrorMsg] = useState("")
 
   useEffect(() => {
-    if (!kuciobkId) {
+    if (!kucibokId) {
       setState("error")
       setErrorMsg("Identifiant manquant.")
       return
     }
 
-    verifyArtwork(kuciobkId).then((data) => {
+    verifyArtwork(kucibokId).then((data) => {
       if (data?.error) {
         setState("error")
         setErrorMsg(data.error)
@@ -28,7 +28,7 @@ export default function VerifyArtwork() {
         setArtwork(data)
       }
     })
-  }, [kuciobkId])
+  }, [kucibokId])
 
   return (
     <div className="min-h-screen bg-kcb-noir-deep flex flex-col">
@@ -116,7 +116,7 @@ export default function VerifyArtwork() {
               </div>
               <div className="px-6 py-6 text-center">
                 <p className="text-sm text-kcb-sable">{artwork?.message || "Cette œuvre n'a pas encore été validée par Kucibok."}</p>
-                <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kuciobkId}</p>
+                <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kucibokId}</p>
               </div>
             </div>
           )}
@@ -130,7 +130,7 @@ export default function VerifyArtwork() {
               </div>
               <div className="px-6 py-6 text-center">
                 <p className="text-sm text-kcb-sable">{errorMsg || "Cet identifiant ne correspond à aucune œuvre enregistrée."}</p>
-                <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kuciobkId}</p>
+                <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kucibokId}</p>
               </div>
             </div>
           )}

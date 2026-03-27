@@ -10,7 +10,7 @@ export function PlansTab() {
   const [state, setState] = useState({ addPlan: false });
   return (
     <>
-      <div className="rounded-xl bg-gray-900 p-4 md:p-6 mb-6 shadow-md">
+      <div className="rounded-[4px] bg-kcb-ardoise p-4 md:p-6 mb-6 shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-white">Gestion des plans</h2>
           <button
@@ -40,7 +40,7 @@ function AddPlanModal({ closeModal }) {
         price: "",
         currency: "XOF",
         duration: "monthly",
-        role: "collector",
+        role: "buyer",
         features: [],
         feature: "",
         loading: false
@@ -58,8 +58,8 @@ function AddPlanModal({ closeModal }) {
     ];
 
     const roleOptions = [
-        { value: "collector", label: "Collectionneur" },
-        { value: "professional", label: "Professionnel" }
+        { value: "buyer", label: "Acheteur" },
+        { value: "curator", label: "Curateur" }
     ];
 
     const handleAddPlan = async (e) => {
@@ -151,7 +151,7 @@ function AddPlanModal({ closeModal }) {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Fonctionnalités</label>
+                    <label className="block text-sm font-medium text-kcb-sable mb-2">Fonctionnalités</label>
                     <div className="flex gap-2">
                         <Input
                             value={state?.feature}

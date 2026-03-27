@@ -38,7 +38,7 @@ export const GenerateCertificateAction = memo(({ artwork, user, onGenerated }) =
   }
 
   if (artwork?.status !== 'approved') {
-    return <span className="text-gray-600 text-xs">—</span>
+    return <span className="text-kcb-pierre text-xs">—</span>
   }
 
   if (certUrl) {
@@ -53,7 +53,7 @@ export const GenerateCertificateAction = memo(({ artwork, user, onGenerated }) =
         >
           <Eye className="w-4 h-4" />
         </a>
-        {(user?.role === 'admin' || user?.role === 'artist' || user?.role === 'professional') && (
+        {(user?.role === 'admin' || user?.role === 'artist' || user?.role === 'curator') && (
           <a
             href={certUrl}
             download
@@ -84,5 +84,5 @@ export const GenerateCertificateAction = memo(({ artwork, user, onGenerated }) =
     )
   }
 
-  return <span className="text-gray-600 italic text-xs">En attente</span>
+  return <span className="text-kcb-pierre italic text-xs">En attente</span>
 })

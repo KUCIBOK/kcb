@@ -36,7 +36,7 @@ export const DownloadAction = memo(({ artwork }) => {
       <button
         title="Télécharger"
         onClick={handleDownload}
-        className="p-2 rounded-full bg-gray-900 border border-gray-700 hover:bg-indigo-kcb/80 hover:text-white transition-colors text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+        className="p-2 rounded-full bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-or/80 hover:text-white transition-colors text-kcb-sable focus:outline-none focus:ring-2 focus:ring-kcb-or"
       >
         <Download className="w-5 h-5" />
       </button>

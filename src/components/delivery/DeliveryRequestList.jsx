@@ -31,7 +31,7 @@ export function DeliveryRequestList({deliveries}){
     return (
         <>
         <div className="relative w-full max-w-xl flex items-center mb-6">
-            <span className="border-s border-y rounded-s-md text-white p-2 bg-background">
+            <span className="border-s border-y rounded-s-md text-white p-2 bg-kcb-noir">
             <Search className="h-5 w-5" />
             </span>
             <input
@@ -39,13 +39,13 @@ export function DeliveryRequestList({deliveries}){
             value={state?.search}
             onChange={e => setState({...state, search: e.target.value})}
             placeholder="Rechercher une livraison par destinataire, trackingId ou numéro de téléphone"
-            className="w-full p-2 text-sm rounded-e-md border-y border-e border-border bg-background text-white focus:outline-none"
+            className="w-full p-2 text-sm rounded-e-md border-y border-e border-border bg-kcb-noir text-white focus:outline-none"
             />
         </div>
-        <div className="overflow-auto rounded-md border border-gray-800 bg-gray-900 px-0 py-0">
+        <div className="overflow-auto rounded-md border border-white/[0.06] bg-kcb-ardoise px-0 py-0">
             <table className="w-full text-sm">
                 <thead>
-                    <tr className="bg-gray-900 text-white/80">
+                    <tr className="bg-kcb-ardoise text-white/80">
                         <th className="font-semibold text-left text-xs">Tracking Id</th>
                         <th className="font-semibold text-left text-xs">Priorité</th>
                         <th className="font-semibold text-left text-xs">Destinataire</th>

@@ -8,7 +8,7 @@ import { Helmet } from "react-helmet";
 const AVAILABILITY_LABELS = {
   available: { label: "Disponible", color: "text-green-400 bg-green-900/30 border-green-800/40" },
   on_exhibition: { label: "En exposition", color: "text-yellow-400 bg-yellow-900/30 border-yellow-800/40" },
-  on_request: { label: "Sur demande", color: "text-indigo-400 bg-indigo-900/30 border-indigo-700/40" },
+  on_request: { label: "Sur demande", color: "text-kcb-or bg-kcb-or/10 border-kcb-or/30" },
   unavailable: { label: "Indisponible", color: "text-red-400 bg-red-900/30 border-red-800/40" },
 };
 
@@ -87,19 +87,19 @@ export default function CataloguePro() {
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link to={-1} className="flex items-center gap-2 text-gray-400 hover:text-white text-sm mb-4">
+          <Link to={-1} className="flex items-center gap-2 text-kcb-pierre hover:text-white text-sm mb-4">
             <ArrowLeft className="w-4 h-4" /> Retour
           </Link>
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="font-serif text-3xl font-bold text-white mb-1">Catalogue Certifié</h1>
-              <p className="text-gray-400 text-sm">
+              <p className="text-kcb-pierre text-sm">
                 Œuvres certifiées Standard Kucibok — accès réservé aux professionnels
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <ShieldCheck className="w-6 h-6 text-indigo-400" />
-              <span className="text-xs text-indigo-300 font-medium hidden sm:block">B2B Pro</span>
+              <ShieldCheck className="w-6 h-6 text-kcb-or" />
+              <span className="text-xs text-kcb-or/80 font-medium hidden sm:block">B2B Pro</span>
             </div>
           </div>
         </div>
@@ -108,34 +108,34 @@ export default function CataloguePro() {
         <div className="flex gap-2 mb-6">
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kcb-pierre" />
               <input
                 type="text"
                 value={pending.search}
                 onChange={(e) => setPending({ ...pending, search: e.target.value })}
                 placeholder="Rechercher une œuvre, un artiste…"
-                className="w-full pl-9 pr-4 py-2 rounded-md bg-gray-900 border border-gray-700 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition"
+                className="w-full pl-9 pr-4 py-2 rounded-[4px] bg-kcb-ardoise border border-white/[0.08] text-sm text-white placeholder-kcb-pierre/50 focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white text-sm rounded-md transition"
+              className="px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 text-white text-sm rounded-[4px] transition"
             >
               Rechercher
             </button>
           </form>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-md border text-sm transition ${
+            className={`flex items-center gap-2 px-3 py-2 rounded-[4px] border text-sm transition ${
               activeFiltersCount > 0
-                ? "border-indigo-700 text-indigo-300 bg-indigo-900/20"
-                : "border-gray-700 text-gray-400 hover:text-white hover:border-gray-500"
+                ? "border-kcb-or/30 text-kcb-or bg-kcb-or/10"
+                : "border-white/[0.08] text-kcb-pierre hover:text-white hover:border-white/[0.16]"
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filtres
             {activeFiltersCount > 0 && (
-              <span className="bg-indigo-kcb text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+              <span className="bg-kcb-or text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
                 {activeFiltersCount}
               </span>
             )}
@@ -144,14 +144,14 @@ export default function CataloguePro() {
 
         {/* Panneau filtres */}
         {showFilters && (
-          <div className="mb-6 p-4 rounded-xl border border-gray-800 bg-gray-900/80 animate-fade-in">
+          <div className="mb-6 p-4 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/80 animate-fade-in">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Disponibilité</label>
+                <label className="text-xs text-kcb-pierre font-medium">Disponibilité</label>
                 <select
                   value={pending.availabilityStatus}
                   onChange={(e) => setPending({ ...pending, availabilityStatus: e.target.value })}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.08] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
                 >
                   {AVAILABILITY_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>{o.label}</option>
@@ -159,38 +159,38 @@ export default function CataloguePro() {
                 </select>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Prix min (€)</label>
+                <label className="text-xs text-kcb-pierre font-medium">Prix min (€)</label>
                 <input
                   type="number"
                   min={0}
                   value={pending.priceMin}
                   onChange={(e) => setPending({ ...pending, priceMin: e.target.value })}
                   placeholder="0"
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.08] p-2 text-sm text-white placeholder-kcb-pierre/50 focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Prix max (€)</label>
+                <label className="text-xs text-kcb-pierre font-medium">Prix max (€)</label>
                 <input
                   type="number"
                   min={0}
                   value={pending.priceMax}
                   onChange={(e) => setPending({ ...pending, priceMax: e.target.value })}
                   placeholder="Illimité"
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-kcb transition"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.08] p-2 text-sm text-white placeholder-kcb-pierre/50 focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
                 />
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-4">
               <button
                 onClick={handleResetFilters}
-                className="flex items-center gap-1 text-sm text-gray-400 hover:text-white transition"
+                className="flex items-center gap-1 text-sm text-kcb-pierre hover:text-white transition"
               >
                 <X className="w-4 h-4" /> Réinitialiser
               </button>
               <button
                 onClick={handleApplyFilters}
-                className="px-4 py-2 bg-indigo-kcb hover:bg-indigo-kcb/90 text-white text-sm rounded-md transition"
+                className="px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 text-white text-sm rounded-[4px] transition"
               >
                 Appliquer
               </button>
@@ -200,7 +200,7 @@ export default function CataloguePro() {
 
         {/* Compteur résultats */}
         {!loading && (
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-kcb-pierre mb-4">
             {catalogue.total} œuvre{catalogue.total !== 1 ? "s" : ""} certifiée{catalogue.total !== 1 ? "s" : ""}
           </p>
         )}
@@ -208,10 +208,10 @@ export default function CataloguePro() {
         {/* Grille */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-indigo-kcb animate-spin" />
+            <Loader2 className="w-8 h-8 text-kcb-or animate-spin" />
           </div>
         ) : catalogue.data.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-kcb-pierre">
             <p className="text-lg font-medium text-white mb-2">Aucune œuvre trouvée</p>
             <p className="text-sm">Modifiez vos filtres ou revenez plus tard.</p>
           </div>
@@ -224,10 +224,10 @@ export default function CataloguePro() {
               return (
                 <div
                   key={artwork._id}
-                  className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-indigo-800/60 transition group flex flex-col"
+                  className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden hover:border-kcb-or/30 transition group flex flex-col"
                 >
                   {/* Image */}
-                  <div className="relative aspect-square overflow-hidden bg-gray-800">
+                  <div className="relative aspect-square overflow-hidden bg-kcb-noir">
                     {artwork.image ? (
                       <img
                         src={artwork.image}
@@ -235,15 +235,15 @@ export default function CataloguePro() {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">
+                      <div className="w-full h-full flex items-center justify-center text-kcb-pierre text-xs">
                         Pas d'image
                       </div>
                     )}
                     {/* Badge Standard Kucibok */}
                     {artwork.kucibok_id && (
-                      <div className="absolute top-2 left-2 flex items-center gap-1 bg-indigo-950/90 border border-indigo-700/40 rounded-full px-2 py-0.5">
-                        <ShieldCheck className="w-3 h-3 text-indigo-400" />
-                        <span className="text-[10px] text-indigo-300 font-mono">{artwork.kucibok_id}</span>
+                      <div className="absolute top-2 left-2 flex items-center gap-1 bg-kcb-noir/90 border border-kcb-or/30 rounded-full px-2 py-0.5">
+                        <ShieldCheck className="w-3 h-3 text-kcb-or" />
+                        <span className="text-[10px] text-kcb-or/80 font-mono">{artwork.kucibok_id}</span>
                       </div>
                     )}
                     {/* Badge disponibilité */}
@@ -257,9 +257,9 @@ export default function CataloguePro() {
                   {/* Infos */}
                   <div className="p-4 flex flex-col flex-1">
                     <h3 className="text-white font-semibold text-sm leading-snug line-clamp-1">{artwork.title}</h3>
-                    <p className="text-gray-400 text-xs mt-0.5">{artwork.artist}</p>
+                    <p className="text-kcb-pierre text-xs mt-0.5">{artwork.artist}</p>
                     {artwork.medium && (
-                      <p className="text-gray-500 text-xs mt-0.5 italic">{artwork.medium}</p>
+                      <p className="text-kcb-pierre text-xs mt-0.5 italic">{artwork.medium}</p>
                     )}
                     {artwork.price > 0 && (
                       <p className="text-white text-sm font-medium mt-2">
@@ -271,13 +271,13 @@ export default function CataloguePro() {
                     <div className="flex gap-2 mt-auto pt-3">
                       <Link
                         to={`/artwork/${artwork._id}`}
-                        className="flex-1 text-center text-xs py-1.5 rounded-md border border-gray-700 text-gray-300 hover:border-gray-500 hover:text-white transition"
+                        className="flex-1 text-center text-xs py-1.5 rounded-[4px] border border-white/[0.08] text-kcb-sable hover:border-white/[0.16] hover:text-white transition"
                       >
                         Voir
                       </Link>
                       <button
                         onClick={() => setSelectedArtwork(artwork)}
-                        className="flex-1 text-xs py-1.5 rounded-md bg-indigo-kcb hover:bg-indigo-kcb/90 text-white transition"
+                        className="flex-1 text-xs py-1.5 rounded-[4px] bg-kcb-or hover:bg-kcb-or/90 text-white transition"
                       >
                         Contacter
                       </button>
@@ -295,17 +295,17 @@ export default function CataloguePro() {
             <button
               disabled={filters.page <= 1}
               onClick={() => setFilters({ ...filters, page: filters.page - 1 })}
-              className="px-3 py-1.5 text-sm rounded-md border border-gray-700 text-gray-300 hover:text-white disabled:opacity-40 transition"
+              className="px-3 py-1.5 text-sm rounded-[4px] border border-white/[0.08] text-kcb-sable hover:text-white disabled:opacity-40 transition"
             >
               Précédent
             </button>
-            <span className="px-3 py-1.5 text-sm text-gray-400">
+            <span className="px-3 py-1.5 text-sm text-kcb-pierre">
               {filters.page} / {catalogue.pages}
             </span>
             <button
               disabled={filters.page >= catalogue.pages}
               onClick={() => setFilters({ ...filters, page: filters.page + 1 })}
-              className="px-3 py-1.5 text-sm rounded-md border border-gray-700 text-gray-300 hover:text-white disabled:opacity-40 transition"
+              className="px-3 py-1.5 text-sm rounded-[4px] border border-white/[0.08] text-kcb-sable hover:text-white disabled:opacity-40 transition"
             >
               Suivant
             </button>

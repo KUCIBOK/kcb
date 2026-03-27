@@ -6,7 +6,7 @@ import { ValidateAction } from "./ValidateAction";
 export function DeliveryRequestListItem({ delivery }) {
     const {user} = useAuth();
     return (
-        <tr className="border-b border-gray-800 last:border-0 hover:bg-gray-900/60 transition">
+        <tr className="border-b border-white/[0.06] last:border-0 hover:bg-kcb-ardoise/60 transition">
             <td className="text-white/90 text-xs">{delivery.trackingId || "À venir"}</td>
             <td className="text-white/90 text-xs">{delivery.deliveryPriority}</td>
             <td className="text-white/90 text-xs">{delivery.recipientName}</td>

@@ -29,35 +29,35 @@ function SeeModal({numerisation, closeModal}){
         >
             <div className="space-y-4 text-sm">
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Catégorie:</span>
+                    <span className="text-kcb-pierre">Catégorie:</span>
                     <span className="text-white font-medium">{numerisation.category}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Nombre d'œuvres:</span>
+                    <span className="text-kcb-pierre">Nombre d'œuvres:</span>
                     <span className="text-white">{numerisation.artworkCount}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Adresse:</span>
+                    <span className="text-kcb-pierre">Adresse:</span>
                     <span className="text-white">{numerisation.address}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Téléphone:</span>
+                    <span className="text-kcb-pierre">Téléphone:</span>
                     <span className="text-white">{numerisation.telephone}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Frais:</span>
+                    <span className="text-kcb-pierre">Frais:</span>
                     <span className="text-white">{numerisation.price?.toLocaleString('fr-FR')?.replace(/\s/g, '\u2007') || "À venir"} {numerisation.currency || "FCFA"}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Description:</span>
+                    <span className="text-kcb-pierre">Description:</span>
                     <span className="text-white">{numerisation.description || "Aucune"}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Date:</span>
+                    <span className="text-kcb-pierre">Date:</span>
                     <span className="text-white">{new Date(numerisation.createdAt).toLocaleDateString('fr-Fr')}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-gray-400">Statut:</span>
+                    <span className="text-kcb-pierre">Statut:</span>
                     <span className={`px-2 py-1 rounded text-xs font-semibold ${numerisation.status === 'accepted' ? 'bg-green-600 text-white' : 'bg-yellow-600 text-white'}`}>
                         {numerisation.status}
                     </span>
