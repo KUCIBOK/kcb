@@ -51,15 +51,15 @@ export function UserTableItemActions({user}){
                 {user?.isActive ?
                     <button
                         onClick={() => setState(prev => ({...prev, confirmSuspend: true}))}
-                        className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
+                        className="rounded-full bg-kcb-ardoise p-2 hover:bg-kcb-ardoise transition flex items-center justify-center shadow-none border-none"
                         title="Suspendre"
                     >
-                        {state?.loading ? <DataLoader/> : <Lock className="w-4 h-4 text-purple-kcb" />}
+                        {state?.loading ? <DataLoader/> : <Lock className="w-4 h-4 text-kcb-or" />}
                     </button>
                 :
                     <button
                         onClick={() => setState(prev => ({...prev, confirmSuspend: true}))}
-                        className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
+                        className="rounded-full bg-kcb-ardoise p-2 hover:bg-kcb-ardoise transition flex items-center justify-center shadow-none border-none"
                         title="Réactiver"
                     >
                         {state?.loading ? <DataLoader/> : <LockOpen className="w-4 h-4 text-green-500" />}
@@ -67,7 +67,7 @@ export function UserTableItemActions({user}){
                 }
                 <button
                     onClick={() => setState(prev => ({...prev, confirmDelete: true}))}
-                    className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
+                    className="rounded-full bg-kcb-ardoise p-2 hover:bg-kcb-ardoise transition flex items-center justify-center shadow-none border-none"
                     title="Supprimer"
                 >
                     {state?.loading ? <DataLoader/> : <Trash2 className="w-4 h-4 text-red-500" />}

@@ -107,7 +107,7 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Description</label>
           <textarea
             name="description"
             value={formData.description}
@@ -115,7 +115,7 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }) {
             placeholder="Décrivez votre problème en détail..."
             required
             rows={4}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm resize-none focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+            className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm resize-none focus:ring-2 focus:ring-kcb-or focus:outline-none"
           />
         </div>
 

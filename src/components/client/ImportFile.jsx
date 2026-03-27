@@ -51,7 +51,7 @@ const ImportFile = ({ onUpload }) => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="px-4 py-2 text-sm rounded-md border border-gray-700 text-gray-300 hover:bg-gray-800 transition flex items-center gap-1"
+        className="px-4 py-2 text-sm rounded-md border border-white/[0.06] text-kcb-sable hover:bg-kcb-ardoise transition flex items-center gap-1"
       >
         <Upload className="h-4 w-4" />
         Importer CSV
@@ -66,7 +66,7 @@ const ImportFile = ({ onUpload }) => {
         >
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-kcb-sable mb-2">
                 Fichier CSV/XLSX
               </label>
               <input
@@ -74,22 +74,22 @@ const ImportFile = ({ onUpload }) => {
                 accept=".csv,.xlsx"
                 onChange={(e) => setFile(e.target.files[0])}
                 disabled={isLoading}
-                className="block w-full text-sm text-gray-400
+                className="block w-full text-sm text-kcb-pierre
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-semibold
-                  file:bg-gray-800 file:text-gray-300
-                  hover:file:bg-gray-700
+                  file:bg-kcb-ardoise file:text-kcb-sable
+                  hover:file:bg-kcb-ardoise
                   disabled:opacity-50"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-kcb-pierre">
                 Formats acceptés: .csv, .xlsx
               </p>
             </div>
 
             {isLoading && (
               <div>
-                <p className="text-xs text-gray-400 mb-2">Import en cours...</p>
+                <p className="text-xs text-kcb-pierre mb-2">Import en cours...</p>
                 <Progress value={progress} variant="primary" />
               </div>
             )}

@@ -2,13 +2,13 @@ import { memo } from "react"
 
 export const PageLoader = memo(()=>{
     return (
-        <div className="flex justify-center items-center h-screen w-screen bg-gradient-to-br from-gray-950 via-gray-900 to-amber-950">
+        <div className="flex justify-center items-center h-screen w-screen bg-kcb-noir">
             <div className="relative flex flex-col items-center">
                 <div className="relative w-12 h-12">
-                    <div className="absolute inset-0 rounded-full border-4 border-amber-700 border-t-transparent animate-spin"></div>
-                    <div className="absolute inset-2 rounded-full bg-amber-900 bg-opacity-80 animate-pulse"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-kcb-or border-t-transparent animate-spin"></div>
+                    <div className="absolute inset-2 rounded-full bg-kcb-or/20 animate-pulse"></div>
                 </div>
-                <span className="mt-4 sr-only text-amber-200 text-base font-medium tracking-wide animate-fade-in">
+                <span className="mt-4 sr-only text-kcb-or text-base font-medium tracking-wide animate-fade-in">
                     Chargement...
                 </span>
             </div>
@@ -30,10 +30,10 @@ export const DataLoader = memo(()=>{
         <div className="flex justify-center">
             <div className="relative flex flex-col items-center">
                 <div className="relative w-6 h-6">
-                    <div className="absolute inset-0 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>
-                    <div className="absolute inset-1 rounded-full border border-rose-700 border-b-transparent animate-spin-reverse"></div>
+                    <div className="absolute inset-0 rounded-full border-2 border-kcb-or border-t-transparent animate-spin"></div>
+                    <div className="absolute inset-1 rounded-full border border-kcb-or/40 border-b-transparent animate-spin-reverse"></div>
                 </div>
-                <span className="mt-2 sr-only text-amber-900 text-xs font-normal tracking-wide animate-fade-in">
+                <span className="mt-2 sr-only text-kcb-or text-xs font-normal tracking-wide animate-fade-in">
                     Chargement...
                 </span>
             </div>

@@ -65,14 +65,14 @@ const ClientActions = ({ client, onClientUpdated, onClientDeleted }) => {
       <div className="flex gap-1">
         <button
           onClick={() => setShowEditModal(true)}
-          className="p-1 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 rounded transition"
+          className="p-1 text-kcb-pierre hover:text-kcb-or hover:bg-blue-400/10 rounded transition"
           title="Modifier"
         >
           <Edit className="w-4 h-4" />
         </button>
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="p-1 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded transition"
+          className="p-1 text-kcb-pierre hover:text-red-400 hover:bg-red-400/10 rounded transition"
           title="Supprimer"
         >
           <Trash2 className="w-4 h-4" />

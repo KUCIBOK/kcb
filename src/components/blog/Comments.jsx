@@ -57,20 +57,20 @@ export function Comments({ post, setPostState, postState }) {
                         <CommentItem key={idx} comment={comment} />
                     ))
                 ) : (
-                    <div className="text-center text-gray-500 text-xs py-6">Aucun commentaire. Soyez le premier.</div>
+                    <div className="text-center text-kcb-pierre text-xs py-6">Aucun commentaire. Soyez le premier.</div>
                 )}
             </div>
-            <form onSubmit={handleComment} method="post" className="bg-background border border-gray-800 rounded-lg p-3">
+            <form onSubmit={handleComment} method="post" className="bg-kcb-noir border border-white/[0.06] rounded-[4px] p-3">
                 <ReactQuill
                     theme="bubble"
                     value={state.content}
                     onChange={value => setState(s => ({ ...s, content: value }))}
-                    className="bg-white border border-gray-700 rounded-sm mb-4 text-sm text-black"
+                    className="bg-white border border-white/[0.08] rounded-sm mb-4 text-sm text-black"
                     placeholder="Ajouter un commentaire..."
                 />
                 <div className="flex justify-end">
                     <button
-                        className="rounded px-4 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-800 hover:to-indigo-800 transition focus:outline-none focus:ring-2 focus:ring-purple-700"
+                        className="rounded px-4 py-1.5 text-xs font-semibold text-kcb-noir bg-gradient-to-r from-kcb-or to-kcb-bronze hover:from-kcb-or/90 hover:to-kcb-bronze/90 transition focus:outline-none focus:ring-2 focus:ring-kcb-or"
                         disabled={state.loading || !state.content.trim()}
                         type="submit"
                     >
@@ -94,12 +94,12 @@ function CommentItem({ comment }) {
         getUser();
     }, [comment?.authorId]);
     return (
-        <div className="flex items-start gap-2 p-2 rounded bg-background border border-gray-800">
-            <div className="rounded-full bg-earth/20 flex items-center justify-center w-8 h-8">
-                <User className="w-4 h-4 text-earth" />
+        <div className="flex items-start gap-2 p-2 rounded-[4px] bg-kcb-noir border border-white/[0.06]">
+            <div className="rounded-full bg-kcb-or/10 flex items-center justify-center w-8 h-8">
+                <User className="w-4 h-4 text-kcb-or" />
             </div>
             <div className="flex-1">
-                <div className="text-xs text-gray-400 font-medium mb-0.5">{author?.name || "Utilisateur"}</div>
+                <div className="text-xs text-kcb-pierre font-medium mb-0.5">{author?.name || "Utilisateur"}</div>
                 <div className="text-xs text-white font-normal">
                     <span dangerouslySetInnerHTML={{ __html: comment?.content }} />
                 </div>

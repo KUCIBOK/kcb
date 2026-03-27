@@ -1,17 +1,16 @@
-import PortalLayout from "../components/landing/PortalLayout"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
 import GeoLine from "../components/landing/GeoLine"
 
 /**
  * Privacy Policy page — RGPD compliant.
- * Standalone route using PortalLayout with Africa (gold) theme.
+ * Uses Layout (main Header/Footer) with Africa (gold) accent theme.
  *
  * @returns {JSX.Element}
  */
 export default function PrivacyPolicy() {
   return (
-    <PortalLayout portal="africa">
+    <div className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans" style={{ "--accent": "#C9A84C", "--accent-dark": "#8B6914" }}>
       {/* ── HEADER ── */}
       <section className="pt-40 pb-20 text-center">
         <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
@@ -381,6 +380,6 @@ export default function PrivacyPolicy() {
           </div>
         </div>
       </section>
-    </PortalLayout>
+    </div>
   )
 }

@@ -12,12 +12,12 @@ export function CategoryTab() {
   const [showModal, setShowModal] = useState(false);
   return (
     <section>
-      <div className="rounded-xl bg-gray-900 p-4 md:p-6 mb-6 shadow-md">
+      <div className="rounded-[4px] bg-kcb-ardoise p-4 md:p-6 mb-6 shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-white">Catégories</h2>
           <button
             onClick={() => setShowModal(true)}
-            className="rounded bg-indigo-kcb/90 hover:bg-indigo-kcb px-3 py-2 text-white text-xs md:text-sm font-medium flex items-center gap-2 transition"
+            className="rounded bg-kcb-or/90 hover:bg-kcb-or px-3 py-2 text-white text-xs md:text-sm font-medium flex items-center gap-2 transition"
           >
             <Plus className="w-4 h-4" /> Ajouter
           </button>

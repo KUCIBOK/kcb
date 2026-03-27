@@ -81,7 +81,7 @@ const PayDunyaSuccess = () => {
           <h1 className="text-2xl font-bold text-white mb-2">Erreur de vérification</h1>
           <p className="text-kcb-pierre text-sm mb-6">{status.error}</p>
           <Link
-            to="/explore"
+            to="/africa/catalogue"
             className="inline-flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-white px-6 py-2 rounded-[4px] transition"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -137,7 +137,7 @@ const PayDunyaSuccess = () => {
           </Link>
           
           <Link
-            to="/explore"
+            to="/africa/catalogue"
             className="w-full inline-flex items-center justify-center gap-2 border border-white/[0.06] hover:bg-kcb-ardoise text-white px-6 py-3 rounded-[4px] transition"
           >
             <ArrowLeft className="w-4 h-4" />

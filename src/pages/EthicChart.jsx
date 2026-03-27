@@ -1,11 +1,10 @@
-import PortalLayout from "../components/landing/PortalLayout"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
 import GeoLine from "../components/landing/GeoLine"
 
 export default function EthicChart() {
     return (
-        <PortalLayout portal="africa">
+        <div className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans" style={{ "--accent": "#C9A84C", "--accent-dark": "#8B6914" }}>
             {/* Header */}
             <section className="pt-40 pb-20 text-center px-6">
                 <RevealOnScroll delay={0}>
@@ -390,6 +389,6 @@ export default function EthicChart() {
 
                 </div>
             </section>
-        </PortalLayout>
+        </div>
     )
 }

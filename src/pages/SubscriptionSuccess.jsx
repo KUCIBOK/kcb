@@ -5,9 +5,11 @@ import { activateSubscription, getSubscriptionById } from '../api/useSubscriptio
 import { DataLoader } from '../components/loaders/PageLoader'
 import { toast } from 'sonner'
 import RevealOnScroll from '../components/landing/RevealOnScroll'
+import { useAuth } from '../store/AuthContext'
 
 export default function SubscriptionSuccess() {
   const { subscriptionId } = useParams()
+  const { user } = useAuth()
   const [state, setState] = useState({
     subscription: null,
     plan: null,
@@ -88,7 +90,7 @@ export default function SubscriptionSuccess() {
           <h1 className="text-2xl font-bold text-white mb-2">Erreur d'activation</h1>
           <p className="text-kcb-pierre mb-6">{state.error}</p>
           <Link
-            to="/plans"
+            to="/global#pricing"
             className="inline-flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-6 py-3 rounded-[4px] font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -172,7 +174,7 @@ export default function SubscriptionSuccess() {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
-            to="/dashboard"
+            to={`/dashboard/${user?.role || 'buyer'}`}
             className="flex-1 flex items-center justify-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-6 py-3 rounded-[4px] font-medium transition-colors"
           >
             <Calendar className="w-4 h-4" />
@@ -180,7 +182,7 @@ export default function SubscriptionSuccess() {
           </Link>
           
           <Link
-            to="/plans"
+            to="/global#pricing"
             className="flex-1 flex items-center justify-center gap-2 bg-kcb-ardoise hover:bg-white/[0.03] text-white px-6 py-3 rounded-[4px] font-medium transition-colors"
           >
             <CreditCard className="w-4 h-4" />

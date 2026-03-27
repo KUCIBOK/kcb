@@ -30,7 +30,7 @@ export function UsersTab() {
 
     return (
         <>
-            <div className="rounded-2xl bg-gray-900 shadow-none">
+            <div className="rounded-[4px] bg-kcb-ardoise shadow-none">
                 <div className="flex justify-between items-center mb-5">
                     <h2 className="text-xl font-semibold text-white/90">Gestion des utilisateurs</h2>
                     <button
@@ -41,31 +41,31 @@ export function UsersTab() {
                     </button>
                 </div>
                 <div className="flex md:flex-row flex-col gap-4 w-full">
-                    <div className="w-full rounded-lg p-4 bg-gray-950/80 text-sm flex flex-col gap-1">
+                    <div className="w-full rounded-[4px] p-4 bg-kcb-noir/80 text-sm flex flex-col gap-1">
                         <div className="flex justify-between items-center text-white/70 text-xs">
                             <span>Utilisateurs totaux</span>
-                            <Users className="w-4 h-4 text-gray-400" />
+                            <Users className="w-4 h-4 text-kcb-pierre" />
                         </div>
                         <span className="text-xl font-bold text-white mt-1">{users?.length}</span>
                     </div>
-                    <div className="w-full rounded-lg p-4 bg-gray-950/80 text-sm flex flex-col gap-1">
+                    <div className="w-full rounded-[4px] p-4 bg-kcb-noir/80 text-sm flex flex-col gap-1">
                         <div className="flex justify-between items-center text-white/70 text-xs">
                             <span>Artistes</span>
-                            <Image className="w-4 h-4 text-gray-400" />
+                            <Image className="w-4 h-4 text-kcb-pierre" />
                         </div>
                         <span className="text-xl font-bold text-white mt-1">{artists?.length}</span>
                     </div>
-                    <div className="w-full rounded-lg p-4 bg-gray-950/80 text-sm flex flex-col gap-1">
+                    <div className="w-full rounded-[4px] p-4 bg-kcb-noir/80 text-sm flex flex-col gap-1">
                         <div className="flex justify-between items-center text-white/70 text-xs">
                             <span>Collectionneurs</span>
-                            <User className="w-4 h-4 text-gray-400" />
+                            <User className="w-4 h-4 text-kcb-pierre" />
                         </div>
                         <span className="text-xl font-bold text-white mt-1">{collectors?.length}</span>
                     </div>
-                    <div className="w-full rounded-lg p-4 bg-gray-950/80 text-sm flex flex-col gap-1">
+                    <div className="w-full rounded-[4px] p-4 bg-kcb-noir/80 text-sm flex flex-col gap-1">
                         <div className="flex justify-between items-center text-white/70 text-xs">
                             <span>Professionnels</span>
-                            <Shield className="w-4 h-4 text-gray-400" />
+                            <Shield className="w-4 h-4 text-kcb-pierre" />
                         </div>
                         <span className="text-xl font-bold text-white mt-1">{professionals?.length}</span>
                     </div>
