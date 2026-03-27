@@ -4,12 +4,13 @@ const {api} = utils
 export async function getAllUsers(){
     try {
         const response = await fetch(`${api}/auth`, {...utils.options})
-        const users = await response.json()
-        if(users?.length >0){
+        const json = await response.json()
+        const users = json?.data ?? json
+        if(users?.length > 0){
             return users
         }
         return {
-            error : users?.error || users?.message
+            error : json?.error || json?.message
         }
     } catch (error) {
         return {
