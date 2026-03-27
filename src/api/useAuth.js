@@ -15,13 +15,14 @@ const { api } = utils;
  * @param {import('@supabase/supabase-js').User | null} supabaseUser
  * @returns {object | null}
  */
+// NOTE: duplicated from AuthContext — extract to shared util in Phase 2
 const toKcbUser = (supabaseUser) => {
   if (!supabaseUser) return null;
   return {
     _id: supabaseUser.id,
     id: supabaseUser.id,
     email: supabaseUser.email,
-    role: supabaseUser.user_metadata?.role ?? 'collector',
+    role: supabaseUser.user_metadata?.role ?? 'buyer',
     name: supabaseUser.user_metadata?.name ?? '',
     isEmailVerified: !!supabaseUser.email_confirmed_at,
     ...supabaseUser.user_metadata,
@@ -67,7 +68,7 @@ export async function SignUpUser(charge) {
       password,
       options: {
         data: {
-          role: role ?? 'collector',
+          role: role ?? 'buyer',
           name: name ?? '',
           ...rest,
         },
@@ -222,7 +223,7 @@ export async function getUserById(id) {
     const response = await fetch(`${api}/auth/${id}`, { ...utils.options });
     const body = await response.json();
     const data = body?.data ?? body;
-    if (data?._id) return data;
+    if (data?.id || data?._id) return data;
     return { error: body?.error ?? 'Utilisateur introuvable' };
   } catch (err) {
     return { error: err.message };

@@ -5,8 +5,7 @@ import { Step2 }            from "../../components/auth/Step2";
 import { Step3 }            from "../../components/auth/Step3";
 import { Step4Essential }   from "../../components/auth/Step4Essential";
 import { Step5Artist }      from "../../components/auth/Step5Artist";
-import { Step5Collector }   from "../../components/auth/Step5Collector";
-import { Step5Professional } from "../../components/auth/Step5Professional";
+import { Step5Curator } from "../../components/auth/Step5Curator";
 import { SignUpUser, loginWithGoogle, updateProfile } from "../../api/useAuth";
 import { Helmet } from "react-helmet";
 import { Check } from "lucide-react";
@@ -51,7 +50,7 @@ export default function SignUp() {
   // Pré-sélectionner le rôle depuis l'URL (?role=artist|collector|professional)
   useEffect(() => {
     const roleParam = searchParams.get("role");
-    if (["artist", "collector", "professional"].includes(roleParam)) {
+    if (["artist", "curator"].includes(roleParam)) {
       setFormState(p => ({ ...p, role: roleParam }));
     }
   }, []);
@@ -102,7 +101,7 @@ export default function SignUp() {
         setFormState(p => ({ ...p, error: "Erreur inconnue.", loading: false }));
       }
     } catch (err) {
-      setFormState(p => ({ ...p, error: err?.response?.data?.message || "Erreur serveur.", loading: false }));
+      setFormState(p => ({ ...p, error: err?.message || "Erreur serveur.", loading: false }));
     }
   };
 
@@ -147,9 +146,8 @@ export default function SignUp() {
       case 2: return <Step3 formState={formState} setFormState={setFormState} roleFromUrl={searchParams.get("role")} />;
       case 3: return <Step4Essential formState={formState} setFormState={setFormState} handleSignUp={handleSignUp} />;
       case 4:
-        if (formState.role === "artist")       return <Step5Artist       formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
-        if (formState.role === "collector")    return <Step5Collector    formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
-        if (formState.role === "professional") return <Step5Professional formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
+        if (formState.role === "artist")  return <Step5Artist  formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
+        if (formState.role === "curator") return <Step5Curator formState={formState} setFormState={setFormState} onEnrich={handleEnrich} onSkip={handleSkip} />;
         return null;
       default: return null;
     }
@@ -198,7 +196,7 @@ export default function SignUp() {
                   }`}>
                     {formState.step > idx ? <Check className="w-3 h-3" /> : idx + 1}
                   </span>
-                  <span className={`mt-1.5 text-[9px] font-medium tracking-wide ${
+                  <span className={`mt-1.5 text-[11px] font-medium tracking-wide ${
                     formState.step === idx ? "text-kcb-or" : formState.step > idx ? "text-kcb-or/50" : "text-kcb-pierre/40"
                   }`}>
                     {label}

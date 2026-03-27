@@ -9,8 +9,8 @@ const initialState = {
     users : [],
     admins : [],
     artists : [],
-    collectors : [],
-    professionals : [],
+    buyers : [],
+    curators : [],
 }
 
 // Création du contexte des utilisateurs
@@ -33,8 +33,8 @@ export function UserProvider({children}){
                     users : users.reverse(),
                     admins : users?.filter(item => item?.role == "admin").reverse() || [],
                     artists : users?.filter(item => item?.role == "artist").reverse() || [],
-                    collectors : users?.filter(item => item?.role == "collector").reverse() || [],
-                    professionals : users?.filter(item => item?.role == "professional").reverse() || []
+                    buyers : users?.filter(item => item?.role == "buyer").reverse() || [],
+                    curators : users?.filter(item => item?.role == "curator").reverse() || []
                 }))
                 
             }
@@ -61,8 +61,8 @@ export function UserProvider({children}){
                 }
                 if(user?.role == 'admin') setState(prev => ({...prev, users : [user, ...prev.users], admins : [user, ...prev.admins]}))
                 if(user?.role == 'artist') setState(prev => ({...prev, users : [user, ...prev.users], artists : [user, ...prev.artists]}))
-                if(user?.role == 'collector') setState(prev => ({...prev, users : [user, ...prev.users], collectors : [user, ...prev.collectors]}))
-                if(user?.role == 'professional') setState(prev => ({...prev, users : [user, ...prev.users], professionals : [user, ...prev.professionals]}))
+                if(user?.role == 'buyer') setState(prev => ({...prev, users : [user, ...prev.users], buyers : [user, ...prev.buyers]}))
+                if(user?.role == 'curator') setState(prev => ({...prev, users : [user, ...prev.users], curators : [user, ...prev.curators]}))
                 makeToast('Succès', 'success', 'L\'utilisateur a été ajouté avec succès')
                 await createLog({description : `L'utilisateur ${user?.name} a été ajouté`, userId : admin?._id})
                 return user
@@ -82,8 +82,8 @@ export function UserProvider({children}){
                 }
                 if(user?.role == 'admin') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], admins : [user, ...prev.admins.filter(item => item?._id != user?._id)]}))
                 if(user?.role == 'artist') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], artists : [user, ...prev.artists.filter(item => item?._id != user?._id)]}))
-                if(user?.role == 'collector') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], collectors : [user, ...prev.collectors.filter(item => item?._id != user?._id)]}))
-                if(user?.role == 'professional') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], professionals : [user, ...prev.professionals.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'buyer') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], buyers : [user, ...prev.buyers.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'curator') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], curators : [user, ...prev.curators.filter(item => item?._id != user?._id)]}))
                 makeToast('Succès', 'success', 'L\'utilisateur a été mis à jour avec succès')
                 await createLog({description : `L'utilisateur ${user?.name} a été mis à jour`, userId : admin?._id})
                 return user
@@ -101,10 +101,10 @@ export function UserProvider({children}){
                         error : user?.error || user?.message
                     }
                 }
-                if(user?.role == 'admin') setState({...state, users : [...state.users.filter(item => item?._id != user?._id)], admins : [...state.admins.filter(item => item?._id != user?._id)]})
-                if(user?.role == 'artist') setState({...state, users : [...state.users.filter(item => item?._id != user?._id)], artists : [...state.artists.filter(item => item?._id != user?._id)]})
-                if(user?.role == 'collector') setState({...state, users : [...state.users.filter(item => item?._id != user?._id)], collectors : [...state.collectors.filter(item => item?._id != user?._id)]})
-                if(user?.role == 'professional') setState({...state, users : [...state.users.filter(item => item?._id != user?._id)], professionals : [...state.professionals.filter(item => item?._id != user?._id)]})
+                if(user?.role == 'admin') setState(prev => ({...prev, users : [...prev.users.filter(item => item?._id != user?._id)], admins : [...prev.admins.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'artist') setState(prev => ({...prev, users : [...prev.users.filter(item => item?._id != user?._id)], artists : [...prev.artists.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'buyer') setState(prev => ({...prev, users : [...prev.users.filter(item => item?._id != user?._id)], buyers : [...prev.buyers.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'curator') setState(prev => ({...prev, users : [...prev.users.filter(item => item?._id != user?._id)], curators : [...prev.curators.filter(item => item?._id != user?._id)]}))
                 makeToast('Succès', 'success', 'L\'utilisateur a été supprimé avec succès')
                 await createLog({description : `L'utilisateur ${user?.name} a été supprimé`, userId : admin?._id})
                 return user
@@ -123,12 +123,12 @@ export function UserProvider({children}){
                         error : user?.error || user?.message
                     }
                 }
-                if(user?.role == 'admin') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], admins : [user, ...state.admins.filter(item => item?._id != user?._id)]})
-                if(user?.role == 'artist') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], artists : [user, ...state.artists.filter(item => item?._id != user?._id)]})
-                if(user?.role == 'collector') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], collectors : [user, ...state.collectors.filter(item => item?._id != user?._id)]})
-                if(user?.role == 'professional') setState({...state, users : [user, ...state.users.filter(item => item?._id != user?._id)], professionals : [user, ...state.professionals.filter(item => item?._id != user?._id)]})
+                if(user?.role == 'admin') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], admins : [user, ...prev.admins.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'artist') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], artists : [user, ...prev.artists.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'buyer') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], buyers : [user, ...prev.buyers.filter(item => item?._id != user?._id)]}))
+                if(user?.role == 'curator') setState(prev => ({...prev, users : [user, ...prev.users.filter(item => item?._id != user?._id)], curators : [user, ...prev.curators.filter(item => item?._id != user?._id)]}))
                 makeToast('Succès', 'success', `L'utilisateur a été ${user?.isActive ? "activé" : "suspendu"}`)
-                await createLog({description : `L'utilisateur ${user?.name} a été ${user?.isActive ? "activé" : "suspendu"}}`, userId : admin?._id})
+                await createLog({description : `L'utilisateur ${user?.name} a été ${user?.isActive ? "activé" : "suspendu"}`, userId : admin?._id})
                 return user
             } catch (error) {
                 return {

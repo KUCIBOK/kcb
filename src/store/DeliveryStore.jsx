@@ -77,7 +77,8 @@ export function DeliveryContextProvider({children}){
                     if (updatedDelivery?._id) {
                         setState(prev => ({
                             ...prev,
-                            deliveries: prev.deliveries?.map(d => d._id === id ? updatedDelivery : d)
+                            deliveries: prev.deliveries?.map(d => d._id === id ? updatedDelivery : d),
+                            myDeliveries: prev.myDeliveries?.map(d => d._id === id ? updatedDelivery : d)
                         }));
                         makeToast("Statut de la livraison mis à jour avec succès", "success");
                         return updatedDelivery;

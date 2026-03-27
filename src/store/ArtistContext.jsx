@@ -47,7 +47,7 @@ export const ArtistContextProvider = memo(({children}) => {
         getFeatured()
     }, [])
     useEffect(() => {
-        if(user?.role == "professional" || user?.role == "collector"){
+        if(user?.role == "curator" || user?.role == "buyer"){
             const getMyArtists = async () => {
                 try {
                     const artists = await getManagedArtists(user?._id)

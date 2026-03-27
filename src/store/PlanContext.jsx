@@ -7,8 +7,8 @@ import { useToast } from "./ToastContext";
 
 const initialState = {
     plans: [],
-    collectorPlans : [],
-    professionalPlans : []
+    buyerPlans : [],
+    curatorPlans : []
 }
 
 const PlanContext = createContext(initialState)
@@ -26,11 +26,12 @@ export function PlanProvider({ children }) {
                     setState(prev => ({
                         ...prev,
                         plans: plans,
-                        collectorPlans: plans.filter(plan => plan.role === 'collector'),
-                        professionalPlans: plans.filter(plan => plan.role === 'professional')
+                        buyerPlans: plans.filter(plan => plan.role === 'buyer'),
+                        curatorPlans: plans.filter(plan => plan.role === 'curator')
                     }))
                 }
             } catch (error) {
+                console.error('[PlanContext] fetchPlans failed:', error);
             }
         };
 
@@ -39,8 +40,8 @@ export function PlanProvider({ children }) {
     return (
         <PlanContext.Provider value={{
             plans : state.plans,
-            collectorPlans : state?.collectorPlans,
-            professionalPlans : state?.professionalPlans,
+            buyerPlans : state?.buyerPlans,
+            curatorPlans : state?.curatorPlans,
             addPlan : async (plan) => {
                 try {
                     const newPlan = await createPlan(plan)
@@ -48,14 +49,15 @@ export function PlanProvider({ children }) {
                         setState(prev => ({
                             ...prev,
                             plans: [newPlan, ...prev.plans ],
-                            collectorPlans : newPlan.role === 'collector' ? [newPlan, ...prev.collectorPlans] : prev.collectorPlans,
-                            professionalPlans : newPlan.role === 'professional' ? [newPlan, ...prev.professionalPlans] : prev.professionalPlans
+                            buyerPlans : newPlan.role === 'buyer' ? [newPlan, ...prev.buyerPlans] : prev.buyerPlans,
+                            curatorPlans : newPlan.role === 'curator' ? [newPlan, ...prev.curatorPlans] : prev.curatorPlans
                         }))
                         makeToast('Succès', 'success', 'Le plan a été ajouté avec succès')
                         await createLog({description : `Le plan ${plan?.name} a été ajouté`, userId : user?._id})
                         return newPlan
                     }
                 } catch (error) {
+                    console.error('[PlanContext] addPlan failed:', error);
                 }
             },
             updatePlan : async (id, payload) => {
@@ -65,14 +67,15 @@ export function PlanProvider({ children }) {
                         setState(prev => ({
                             ...prev,
                             plans: prev.plans.map(p => p._id === id ? plan : p),
-                            collectorPlans : plan?.role === 'collector' ? [plan, ...prev.collectorPlans.filter(item => item?._id != plan?._id), ] : prev.collectorPlans,
-                            professionalPlans : plan?.role === 'professional' ? [plan, ...prev.professionalPlans.filter(item => item?._id != plan?._id), ] : prev.professionalPlans
+                            buyerPlans : plan?.role === 'buyer' ? [plan, ...prev.buyerPlans.filter(item => item?._id != plan?._id), ] : prev.buyerPlans,
+                            curatorPlans : plan?.role === 'curator' ? [plan, ...prev.curatorPlans.filter(item => item?._id != plan?._id), ] : prev.curatorPlans
                         }))
                         makeToast('Succès', 'success', 'Le plan a été mis à jour avec succès')
                         await createLog({description : `Le plan ${plan?.name} a été modifié`, userId : user?._id})
                         return plan
                     }
                 } catch (error) {
+                    console.error('[PlanContext] updatePlan failed:', error);
                 }
             },
             deletePlan : async (id) => {
@@ -82,14 +85,15 @@ export function PlanProvider({ children }) {
                         setState(prev => ({
                             ...prev,
                             plans: prev.plans.filter(p => p._id != id),
-                            collectorPlans : prev.collectorPlans.filter(item => item?._id != id),
-                            professionalPlans : prev.professionalPlans.filter(item => item?._id != id)
+                            buyerPlans : prev.buyerPlans.filter(item => item?._id != id),
+                            curatorPlans : prev.curatorPlans.filter(item => item?._id != id)
                         }))
                         makeToast('Succès', 'success', 'Le plan a été supprimé avec succès')
                         await createLog({description : `Le plan ${plan?.name} a été supprimé`, userId : user?._id})
                         return plan
                     }
                 } catch (error) {
+                    console.error('[PlanContext] deletePlan failed:', error);
                 }
             }
         }}>

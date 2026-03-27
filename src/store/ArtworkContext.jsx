@@ -20,7 +20,7 @@ const ArtworksContext = createContext(initialState)
 
 export const ArtworksContextProvider = ({children}) => {
     const [state, setState] = useState(initialState)
-    const {user, artistProfile, professionalProfile} = useAuth()
+    const {user, artistProfile, curatorProfile} = useAuth()
     const {makeToast} = useToast()
     useEffect(() => {
         const getforSaleArtworks = async () => {
@@ -92,16 +92,16 @@ export const ArtworksContextProvider = ({children}) => {
                     }))
                 }
 
-                if(user?.role == 'collector'){
+                if(user?.role == 'buyer'){
                     const buyed = await getOwnerArtworks(user?._id)
                     const myArtworks = await getManagedArtworks()
                     setState(prev => ({
-                        ...prev, 
+                        ...prev,
                         buyed : buyed?.length > 0 ? buyed?.reverse() : [],
                         myArtworks : myArtworks?.length > 0 ? myArtworks?.reverse() : [],
                     }))
                 }
-                if(user?.role == 'professional'){
+                if(user?.role == 'curator'){
                     const myArtworks = await getManagedArtworks()
                     setState(prev => ({
                         ...prev, 
@@ -111,7 +111,7 @@ export const ArtworksContextProvider = ({children}) => {
             }
             getProfileArtworks()
         }
-    }, [user?._id, artistProfile?._id, professionalProfile?._id])
+    }, [user?._id, artistProfile?._id, curatorProfile?._id])
     return (
         <ArtworksContext.Provider value={{
             artworks : state.artworks,
@@ -147,7 +147,7 @@ export const ArtworksContextProvider = ({children}) => {
                         }
 
                         makeToast('Félicitations ', 'success', `L'oeuvre a été ${status == "approved" ? "approuvée" : "rejetée"} avec succès`)
-                        await createLog({description : `L'oeuvre ${artwork?._id} a été approuvée`, userId : user?._id})
+                        await createLog({description : `L'oeuvre ${artwork?._id} a été ${status === "approved" ? "approuvée" : "rejetée"}`, userId : user?._id})
                         return artwork
                     }
                     makeToast('Erreur', 'warning', artwork?.error)

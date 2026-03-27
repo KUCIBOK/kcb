@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 
 const ROLE_DASHBOARDS = {
-  artist:       '/dashboard/artist',
-  collector:    '/dashboard/collector',
-  professional: '/dashboard/professional',
-  admin:        '/dashboard/admin',
+  artist:  '/dashboard/artist',
+  curator: '/dashboard/curator',
+  buyer:   '/account',
+  admin:   '/dashboard/admin',
 };
 
 /**
@@ -63,7 +63,7 @@ export default function OAuthCallback() {
         if (data.needs_role_selection) {
           navigate('/auth/role-selection', { replace: true });
         } else {
-          const role      = data.user?.role ?? 'collector';
+          const role      = data.user?.role ?? 'buyer';
           const dashboard = ROLE_DASHBOARDS[role] ?? '/';
           navigate(dashboard, { replace: true });
         }
@@ -104,7 +104,7 @@ export default function OAuthCallback() {
           gap:            '16px',
           padding:        '24px',
           textAlign:      'center',
-          fontFamily:     'Poppins, sans-serif',
+          fontFamily:     'DM Sans, sans-serif',
         }}
       >
         <p style={{ fontSize: '18px', color: '#f87171' }}>
@@ -118,10 +118,10 @@ export default function OAuthCallback() {
           style={{
             marginTop:    '8px',
             padding:      '10px 24px',
-            background:   '#7072c5',
+            background:   '#C9A84C',
             border:       'none',
             borderRadius: '6px',
-            color:        '#fff',
+            color:        '#0A0A0A',
             cursor:       'pointer',
             fontSize:     '14px',
             fontWeight:   '600',
@@ -144,7 +144,7 @@ export default function OAuthCallback() {
         backgroundColor: '#0f0f0f',
         color:           '#f5f5f5',
         gap:             '16px',
-        fontFamily:      'Poppins, sans-serif',
+        fontFamily:      'DM Sans, sans-serif',
       }}
     >
       <svg
@@ -155,7 +155,7 @@ export default function OAuthCallback() {
       >
         <circle
           cx="20" cy="20" r="16"
-          fill="none" stroke="#7072c5" strokeWidth="3"
+          fill="none" stroke="#C9A84C" strokeWidth="3"
           strokeDasharray="80" strokeDashoffset="20"
           strokeLinecap="round"
         />

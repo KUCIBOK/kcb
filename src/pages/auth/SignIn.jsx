@@ -67,7 +67,7 @@ export default function SignIn () {
               <p className="text-xs text-kcb-pierre">Infrastructure de l'art africain</p>
             </div>
             {formState.error && (
-              <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
+              <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-[4px] p-2 text-xs">
                 {formState.error}
               </div>
             )}

@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Award, Brush, ShoppingBag } from "lucide-react";
+import { Award, Brush } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { useAuth } from "../../store/AuthContext";
 import { DataLoader } from "../../components/loaders/PageLoader";
 import RevealOnScroll from "../../components/landing/RevealOnScroll";
 
 const ROLE_DASHBOARDS = {
-  artist: "/dashboard/artist",
-  collector: "/dashboard/collector",
-  professional: "/dashboard/professional",
-  admin: "/dashboard/admin",
+  artist:  "/dashboard/artist",
+  curator: "/dashboard/curator",
+  buyer:   "/account",
+  admin:   "/dashboard/admin",
 };
 
 export default function GoogleRoleSelection() {
@@ -91,25 +91,9 @@ export default function GoogleRoleSelection() {
                 <span className="text-white text-base font-medium">Artiste</span>
               </div>
               <div
-                onClick={() => setRole("collector")}
+                onClick={() => setRole("curator")}
                 className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
-                  role === "collector"
-                    ? "border-kcb-or bg-kcb-or/10"
-                    : "border-white/[0.06] hover:border-kcb-or/40"
-                }`}
-                style={{ userSelect: "none" }}
-              >
-                <span className="rounded-full bg-kcb-or/10 p-2">
-                  <ShoppingBag className="text-kcb-or/80" />
-                </span>
-                <span className="text-white text-base font-medium">
-                  Collectionneur
-                </span>
-              </div>
-              <div
-                onClick={() => setRole("professional")}
-                className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
-                  role === "professional"
+                  role === "curator"
                     ? "border-kcb-or bg-kcb-or/10"
                     : "border-white/[0.06] hover:border-kcb-or/40"
                 }`}
@@ -119,7 +103,7 @@ export default function GoogleRoleSelection() {
                   <Award className="text-kcb-or/80" />
                 </span>
                 <span className="text-white text-base font-medium">
-                  Professionnel de l'art
+                  Curateur
                 </span>
               </div>
               <button

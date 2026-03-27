@@ -1,4 +1,4 @@
-import { Brush, ShoppingBag, Award, Check, Sparkles } from "lucide-react";
+import { Brush, Award, Check, Sparkles } from "lucide-react";
 
 const ROLES = [
   {
@@ -9,25 +9,17 @@ const ROLES = [
     badge: "Créateur",
   },
   {
-    key: "collector",
-    icon: ShoppingBag,
-    label: "Collectionneur",
-    description: "Découvrez, achetez et gérez votre collection d'art africain certifié.",
-    badge: "Acquéreur",
-  },
-  {
-    key: "professional",
+    key: "curator",
     icon: Award,
-    label: "Professionnel de l'art",
-    description: "Galeries, curateurs, art advisors — accédez aux outils B2B de la plateforme.",
+    label: "Curateur",
+    description: "Galeries, curateurs indépendants, art advisors — accédez aux outils B2B de la plateforme.",
     badge: "Pro",
   },
 ];
 
 const PORTAL_HINT = {
-  artist:       { label: "Portail Africa",  desc: "Rôle Artiste pré-sélectionné" },
-  collector:    { label: "Portail Global",  desc: "Rôle Collectionneur pré-sélectionné" },
-  professional: { label: "Portail Global",  desc: "Rôle Professionnel pré-sélectionné" },
+  artist:  { label: "Portail Africa",  desc: "Rôle Artiste pré-sélectionné" },
+  curator: { label: "Portail Global",  desc: "Rôle Curateur pré-sélectionné" },
 };
 
 export function Step3({ formState, setFormState, roleFromUrl }) {

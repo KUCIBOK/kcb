@@ -17,7 +17,7 @@ const CGU_LINKS = [
 export const Step4Essential = ({ formState, setFormState, handleSignUp }) => {
   const set = (key, val) => setFormState(p => ({ ...p, [key]: val }));
   const isArtist = formState.role === "artist";
-  const isPro    = formState.role === "professional";
+  const isPro    = formState.role === "curator";
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

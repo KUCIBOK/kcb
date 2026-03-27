@@ -17,12 +17,12 @@ export function CollectionProvider({children}){
     const [state, setState] = useState(initialState)
     const {makeToast} = useToast()
     useEffect(() => {
-        // Fonction pour récupérer les collections gérées par l'utilisateur
-        const getMyCollections = async function (){
+        // Single API call — assign result to both myCollections and collections
+        const fetchCollections = async function (){
             try {
                 const collections = await getCollections()
                 if(collections?.length > 0){
-                    setState(prev => ({...prev, myCollections : collections}))
+                    setState(prev => ({...prev, myCollections : collections, collections : collections}))
                 }
             } catch (error) {
                 return {
@@ -30,22 +30,7 @@ export function CollectionProvider({children}){
                 }
             }
         }
-        getMyCollections()
-
-        // Fonction pour récupérer toutes les collections disponibles
-        const getAllCollections = async function(){
-            try {
-                const collections = await getCollections()
-                if(collections?.length > 0){
-                    setState(prev => ({...prev, collections : collections}))
-                }
-            } catch (error) {
-                return {
-                    error : error.message
-                }
-            }
-        }
-        getAllCollections()
+        fetchCollections()
     }, [])
     return (
         <CollectionContext.Provider value={{

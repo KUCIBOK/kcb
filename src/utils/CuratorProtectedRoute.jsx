@@ -2,10 +2,10 @@ import { useAuth } from "../store/AuthContext"
 import {Outlet, Navigate} from 'react-router-dom';
 import { PageLoader } from "../components/loaders/PageLoader";
 
-export function ProfessionalProtectedRoute() {
+export function CuratorProtectedRoute() {
     const {user, loading} = useAuth()
     if(loading) return <PageLoader />
-    if(user?.role  === "professional" || user?.role === "admin"){
+    if(user?.role  === "curator" || user?.role === "admin"){
         return <Outlet/>
     }
     return <Navigate to='/sign-in' />
