@@ -1,8 +1,8 @@
 # KUCIBOK — Technical Specification
 
-**Version** 2.0 — Mars 2026
-**Aligne sur** PRD V2.1
-**Statut** Post-migration M1-M3 — M4 (bascule production) en attente
+**Version** 2.2 — Mars 2026
+**Aligne sur** PRD V2.2
+**Statut** Post-migration M1-M3 — M4 en attente — Audit sécurité + refactor rôles appliqués
 
 ---
 
@@ -31,7 +31,7 @@
 |-----------|-------------|---------------|
 | Runtime | Vercel Functions (Node.js) | Serverless, cout zero idle, scaling automatique |
 | Architecture | Catch-all unique (`api/[...path].js`) | 1 fonction = contourne la limite 12 fonctions du plan Hobby |
-| Base de donnees | Supabase PostgreSQL | ACID, RLS natif, triggers, 34 tables |
+| Base de donnees | Supabase PostgreSQL | ACID, RLS natif, triggers, 36 tables |
 | Auth | Supabase Auth | Email + Google OAuth, sessions gerees, JWT automatique |
 | Storage | Supabase Storage | Buckets : artworks, profiles, blogs, certificates |
 | Emails | Resend SDK | Transactionnel + campagnes |
@@ -46,7 +46,7 @@
 FRONTEND               API                    DATABASE & STORAGE
 ────────               ───                    ──────────────────
 Vercel                 Vercel Functions        Supabase
-(React/Vite build)     (api/[...path].js)      ├── PostgreSQL (34 tables + RLS)
+(React/Vite build)     (api/[...path].js)      ├── PostgreSQL (36 tables + RLS)
 kucibok.com            kucibok.com/api/*       ├── Auth (email + Google OAuth)
                                                └── Storage (4 buckets)
 
@@ -118,16 +118,24 @@ POST /api/payments/paydunya-init       Initier paiement PayDunya
 POST /api/payments/paydunya-callback   Webhook PayDunya
 ```
 
+**Contact & Support**
+```
+POST /api/contact                  Formulaire contact (envoie email via Resend)
+POST /api/report-error             Rapport erreur frontend
+```
+
 **Autres**
 ```
 GET  /api/health                   Healthcheck (statut Supabase)
-POST /api/report-error             Rapport erreur frontend
 GET  /api/blog                     Articles blog
 POST /api/blog                     Creer article
 GET  /api/categories               Categories oeuvres
 GET  /api/plans                    Plans abonnement
 GET  /api/subscription             Abonnements utilisateur
 POST /api/subscription             Souscrire a un plan
+POST /api/subscription/fail/:id    Echec abonnement
+POST /api/subscription/activate/:id Activation abonnement
+POST /api/transaction/fail/:id     Echec transaction
 GET  /api/log                      Logs activite
 POST /api/log                      Creer log
 POST /api/campaigns/send           Envoyer campagne email
@@ -148,7 +156,7 @@ POST /api/certificates/generate    Generer certificat PDF
 
 ## 3. MODELE DE DONNEES
 
-### Schema PostgreSQL — 34 tables
+### Schema PostgreSQL — 36 tables
 
 ```
 TABLES INDEPENDANTES          LIEES A USERS              LIEES A ARTWORKS
@@ -178,7 +186,7 @@ logidoo_alerts                galleries                   auctions
 **users** — Extension de `auth.users` Supabase
 ```sql
 id                  UUID PK -> auth.users(id)
-role                TEXT CHECK (collector | artist | professional | admin)
+role                TEXT CHECK (buyer | artist | curator | admin) DEFAULT 'buyer'
 auth_provider       TEXT (email | google)
 profile_completed   BOOLEAN
 onboarding_completed BOOLEAN
@@ -277,12 +285,13 @@ Chaque table a des policies qui restreignent l'acces :
 ```
 /dashboard/artist            ArtistProtectedRoute
 /dashboard/artist/submit-artwork
-/dashboard/collector         CollectorProtectedRoute
-/dashboard/professional      ProfessionalProtectedRoute
-/dashboard/professional/add-artwork
+/account                     BuyerProtectedRoute (ex-collector)
+/dashboard/curator           CuratorProtectedRoute (ex-professional)
+/dashboard/curator/add-artwork
 /dashboard/admin             AdminProtectedRoute
 /auction, /auction/:id       AdminProtectedRoute (masque)
-/catalogue                   ProfessionalProtectedRoute
+/catalogue                   CuratorProtectedRoute
+/africa/catalogue            Catalogue Africa (public)
 ```
 
 ### Routes auth
@@ -380,18 +389,18 @@ Garder les Context legers (Auth, Toast) en l'etat.
 | Email/Password | Supabase Auth (`signUp`, `signInWithPassword`) |
 | Google OAuth | Supabase Auth (`signInWithOAuth`) -> `/auth/callback` -> `/auth/role-selection` |
 | Sessions | Supabase gere les tokens JWT, refresh automatique |
-| Protected routes | 6 wrappers React (Guest, Auth, Artist, Collector, Professional, Admin) |
+| Protected routes | 6 wrappers React (Guest, Auth, Artist, Buyer, Curator, Admin) |
 
 ### Roles
 
 ```
-collector       Acces basique, achat, collection
-artist          Soumission oeuvres, dashboard artiste
-professional    Catalogue, CRM, sourcing, dashboard pro
+buyer           Acheteur — achat, collection, suivi commandes (defaut)
+artist          Soumission oeuvres, certification, dashboard artiste
+curator         Curateur — catalogue, CRM, sourcing, dashboard pro (ex-professional)
 admin           Acces total, gestion utilisateurs, encheres
 ```
 
-Roles prevus Phase 1 : `gallery_africa`, `curator_global`, `gallery_global`, `expert`
+Roles prevus Phase 1 : `gallery_africa`, `gallery_global`, `expert`
 
 ### Mesures en place
 
@@ -401,6 +410,21 @@ Roles prevus Phase 1 : `gallery_africa`, `curator_global`, `gallery_global`, `ex
 - Supabase `service_role_key` uniquement cote serveur (jamais prefixe `VITE_`)
 - Consentement RGPD avant tracking visiteur (P1-SEC-016)
 - Mode maintenance activable (`VITE_MAINTENANCE_MODE`)
+
+### Correctifs securite appliques (Mars 2026)
+
+| Correctif | Description |
+|-----------|-------------|
+| XSS client | DOMPurify sur `dangerouslySetInnerHTML` (Comments, Step4) |
+| XSS serveur | Strip `<script>`, `<iframe>`, `on*` handlers cote API (blog comments) |
+| IDOR transactions | Verification propriete (buyer_id/seller_id ou admin) |
+| IDOR abonnements | Verification user_id sur lecture et mise a jour |
+| Escalade role | Suppression fallback user_metadata dans requireRole |
+| Oeuvres non-approuvees | Cachees aux non-proprietaires/non-admins |
+| GET → POST | Endpoints mutation (fail/activate) convertis en POST |
+| DoS listUsers | Remplacement listUsers() par requete ciblee |
+| SQL injection | Echappement wildcards ilike (% et _) |
+| Mot de passe | Validation longueur minimum 8 caracteres |
 
 ---
 
@@ -457,7 +481,7 @@ kucibok/
 │   │   ├── artworks/           CRUD oeuvres (Card, List, Submit steps, Filters...)
 │   │   ├── auction/            Encheres (masquees — Phase 3)
 │   │   ├── auth/               Formulaires auth (Steps 1-4, ChangePassword)
-│   │   ├── collector/          Dashboard collectionneur
+│   │   ├── collector/          Dashboard acheteur (buyer)
 │   │   ├── delivery/           Logistique (DeliveryTab, TrackingList, Customs...)
 │   │   ├── landing/            Header, Footer, sections landing
 │   │   ├── professional/       Dashboard pro (CRM, Sourcing, Multi-entite...)
@@ -468,7 +492,7 @@ kucibok/
 │   │   ├── africa/             AfricaFeatures, AfricaPricing, AfricaArtists, AfricaGalleries
 │   │   ├── global/             GlobalServices, GlobalLogistics, GlobalEnterprise
 │   │   ├── auth/               SignIn, SignUp, OAuthCallback, GoogleRoleSelection
-│   │   ├── dashboard/          Admin, Artist, Collector, Professional, SubmitArtwork
+│   │   ├── dashboard/          Admin, Artist, BuyerAccount, Professional (curator), SubmitArtwork
 │   │   └── ...                 Index, Explore, Blog, Contact, Marketplace, etc.
 │   ├── store/                  12 Context providers
 │   ├── hooks/                  usePayment, useLogistics, useSupportTickets
@@ -477,7 +501,7 @@ kucibok/
 │   ├── lib/                    supabase.js, storage.js
 │   ├── config/                 api.js
 │   ├── language/               translation.js (FR/EN)
-│   └── utils/                  6 Protected Routes
+│   └── utils/                  6 Protected Routes (Guest, Auth, Artist, Buyer, Curator, Admin)
 │
 ├── scripts/                    Scripts de migration
 │   ├── migrate_users_auth.js   MongoDB users -> Supabase Auth
@@ -486,9 +510,11 @@ kucibok/
 │   └── migrate_from_backup.js  Migration depuis backup BSON
 │
 ├── supabase/migrations/        Schema SQL
-│   ├── 001_initial_schema.sql  34 tables + triggers + index
+│   ├── 001_initial_schema.sql  36 tables + triggers + index
 │   ├── 002_rls_policies.sql    Row Level Security
-│   └── 003_migration_additions.sql  Ajustements post-migration
+│   ├── 003_migration_additions.sql  Ajustements post-migration
+│   ├── 007_role_refactor.sql   Renommage collector→buyer, professional→curator
+│   └── 008_rls_role_refactor.sql  Correction fonction is_professional() pour curator
 │
 ├── docs/                       Documentation
 ├── public/                     Assets statiques
@@ -508,12 +534,17 @@ kucibok/
 | Item | Risque | Action | Phase |
 |------|--------|--------|-------|
 | 12 Context providers imbriques | Re-renders cascade, performance | Migrer vers React Query | 2 |
-| `socket.io-client` dans package.json | Non utilise (encheres masquees) | Supprimer | 0 |
-| `dotenv` dans package.json | Inutile avec Vite (import.meta.env) | Supprimer | 0 |
-| `pdfkit` dans package.json frontend | Devrait etre cote serveur uniquement | Deplacer vers Functions | 1 |
-| Pas de tests automatises | Regression possible | Ajouter Vitest + Testing Library | 1 |
-| Pas de linting configure | Inconsistance code | ESLint + Prettier | 0 |
-| `setVisitTime` non importe dans App.jsx | Erreur silencieuse a runtime | Corriger import ou supprimer | 0 |
+| ~~`socket.io-client` dans package.json~~ | ~~Non utilise~~ | ~~Supprime~~ | 0 — **Done** |
+| ~~`dotenv` dans package.json~~ | ~~Inutile avec Vite~~ | ~~Supprime~~ | 0 — **Done** |
+| ~~`pdfkit` dans package.json frontend~~ | ~~Deplace cote serveur~~ | ~~Deplace~~ | 0 — **Done** |
+| ~~Pas de tests automatises~~ | ~~Regression possible~~ | ~~Vitest : 12 fichiers, 299 tests~~ | 0 — **Done** |
+| ~~Pas de linting configure~~ | ~~Inconsistance code~~ | ~~ESLint + Prettier~~ | 0 — **Done** |
+| ~~`setVisitTime` non importe~~ | ~~Erreur silencieuse~~ | ~~Corrige~~ | 0 — **Done** |
+| ~~Audit UX/UI (80+ violations)~~ | ~~Design incoherent~~ | ~~Applique (P0-P5)~~ | 0 — **Done** |
+| ~~Audit securite~~ | ~~XSS, IDOR, escalade~~ | ~~10 correctifs appliques~~ | 0 — **Done** |
+| ~~Refactor roles (collector→buyer, professional→curator)~~ | ~~Incoherence roles~~ | ~~Migration 007+008 + code~~ | 0 — **Done** |
+| Rate limiting | Zero protection anti-abus | Upstash Redis ou Cloudflare | 1 |
+| CSRF tokens | Pas de protection CSRF | Middleware a implementer | 1 |
 
 ---
 
@@ -555,4 +586,34 @@ kucibok/
 
 ---
 
-*Kucibok TECH-SPEC V2.0 — Mars 2026 — Confidentiel*
+### ADR-004 : Refactor roles — collector→buyer, professional→curator
+
+**Contexte** : Le modele initial (collector, artist, professional, admin) creait de la confusion. Le terme "collector" ne correspondait pas aux acheteurs ponctuels, et "professional" etait trop generique pour les curateurs.
+
+**Decision** : Renommer `collector` → `buyer` (defaut) et `professional` → `curator`. Migrations SQL 007 (donnees + trigger) + 008 (fonction RLS). Code frontend et backend mis a jour. 4 roles finaux : `buyer`, `artist`, `curator`, `admin`.
+
+**Consequences** :
+- CHECK constraint users.role resserre a 4 valeurs (plus de collector/professional)
+- 6 protected route wrappers (Guest, Auth, Artist, Buyer, Curator, Admin)
+- Dashboard buyer a `/account` (pas `/dashboard/buyer`)
+- Onboarding Step5Curator ajoute au flow d'inscription
+- Fonction RLS `is_professional()` mise a jour pour verifier `curator`
+- Alias `is_curator()` cree pour les futures politiques RLS
+
+### ADR-005 : Audit UX/UI systematique (Mars 2026)
+
+**Contexte** : 80+ violations du design system detectees : couleurs bannies (violet, orange), radius incorrects, accessibilite absente, SEO manquant sur les landing pages.
+
+**Decision** : Corriger les 80+ items en 6 tiers de priorite (P0-P5), organises en 6 branches stacked.
+
+**Consequences** :
+- Design system strictement applique sur tous les composants
+- Accessibilite ARIA ajoutee aux composants UI (Modal, Select, Tabs, Accordion, Card)
+- SEO Helmet ajoute sur Africa/Global landing pages
+- Chart colors alignees sur la palette KCB (plus de violet/bleu/vert vif)
+- Contact form connecte a l'API via Resend
+- Placeholder artwork SVG ajoute
+
+---
+
+*Kucibok TECH_SPEC V2.2 — Mars 2026 — Confidentiel*
