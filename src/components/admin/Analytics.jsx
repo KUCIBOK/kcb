@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { utils } from '../../api/useAPI';
-import { fmtMoney } from '../../lib/currency';
+import { useState, useEffect } from 'react'
+import { utils } from '../../api/useAPI'
+import { fmtMoney } from '../../lib/currency'
+import { SkeletonKPI, SkeletonChart } from '../ui'
 import {
   TrendingUp,
   Users,
@@ -19,11 +20,11 @@ import {
   Zap,
   Check,
   Pause,
-} from 'lucide-react';
+} from 'lucide-react'
 
 export function Analytics({ currency = 'EUR' }) {
-  const [data, setData] = useState(null);
-  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [data, setData] = useState(null)
+  const [autoRefresh, setAutoRefresh] = useState(true)
 
   // Données complètes par défaut
   const defaultData = {
@@ -109,34 +110,65 @@ export function Analytics({ currency = 'EUR' }) {
     upsell_opportunities: 7,
     alerts: [
       { type: 'warning', message: '3 utilisateurs à risque de churn' },
-      { type: 'info', message: '7 opportunités d\'upsell identifiées' },
+      { type: 'info', message: "7 opportunités d'upsell identifiées" },
     ],
-  };
-
-  useEffect(() => {
-    setData(defaultData);
-    loadData();
-    if (autoRefresh) {
-      const interval = setInterval(() => loadData(), 30000);
-      return () => clearInterval(interval);
-    }
-  }, [autoRefresh]);
+  }
 
   const loadData = async () => {
     try {
       const response = await fetch(`${utils.api}/analytics/latest`, {
         headers: utils.options.headers,
-      });
-      const result = await response.json();
+      })
+      const result = await response.json()
       if (result.success && result.data) {
-        setData(result.data);
+        setData(result.data)
       }
-    } catch (err) {
+    } catch (_err) {
       // Fallback to default data
     }
-  };
+  }
 
-  if (!data) return <div className="flex items-center justify-center min-h-[400px]"><div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" /></div>;
+  useEffect(() => {
+    setData(defaultData) // eslint-disable-line react-hooks/set-state-in-effect
+    loadData()
+    if (autoRefresh) {
+      const interval = setInterval(() => loadData(), 30000)
+      return () => clearInterval(interval)
+    }
+  }, [autoRefresh]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!data)
+    return (
+      <div className="space-y-6 pb-10">
+        {/* Header skeleton */}
+        <div className="flex items-center justify-between mb-8 animate-pulse">
+          <div className="space-y-2">
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-64 h-9" />
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-48 h-4" />
+          </div>
+          <div className="flex gap-2">
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-28 h-9" />
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-20 h-9" />
+          </div>
+        </div>
+        {/* KPI grid skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonKPI key={i} />
+          ))}
+        </div>
+        {/* Chart skeleton */}
+        <SkeletonChart height="h-48" />
+        {/* Second KPI grid skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonKPI key={i} />
+          ))}
+        </div>
+        {/* Second chart skeleton */}
+        <SkeletonChart height="h-48" />
+      </div>
+    )
 
   return (
     <div className="space-y-6 pb-10">
@@ -155,7 +187,15 @@ export function Analytics({ currency = 'EUR' }) {
                 : 'bg-kcb-ardoise text-kcb-sable'
             }`}
           >
-            {autoRefresh ? <><Check className="w-4 h-4 inline mr-1" /> Auto-refresh</> : <><Pause className="w-4 h-4 inline mr-1" /> Paused</>}
+            {autoRefresh ? (
+              <>
+                <Check className="w-4 h-4 inline mr-1" /> Auto-refresh
+              </>
+            ) : (
+              <>
+                <Pause className="w-4 h-4 inline mr-1" /> Paused
+              </>
+            )}
           </button>
           <button
             onClick={loadData}
@@ -316,7 +356,9 @@ export function Analytics({ currency = 'EUR' }) {
               {data.top_artists.slice(0, 3).map((artist, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
                   <span className="text-kcb-sable">{artist.name}</span>
-                  <span className="text-green-300 font-semibold">{fmtMoney(artist.revenue, currency, { compact: true })}</span>
+                  <span className="text-green-300 font-semibold">
+                    {fmtMoney(artist.revenue, currency, { compact: true })}
+                  </span>
                 </div>
               ))}
             </div>
@@ -371,7 +413,9 @@ export function Analytics({ currency = 'EUR' }) {
                     <p className="text-white text-sm font-medium">{item.title}</p>
                     <p className="text-kcb-pierre text-xs">{item.sales} ventes</p>
                   </div>
-                  <span className="text-green-300 font-semibold">{fmtMoney(item.revenue, currency, { compact: true })}</span>
+                  <span className="text-green-300 font-semibold">
+                    {fmtMoney(item.revenue, currency, { compact: true })}
+                  </span>
                 </div>
               ))}
             </div>
@@ -562,7 +606,7 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
     </div>
-  );
+  )
 }
 
 function Section({ title, children }) {
@@ -571,7 +615,7 @@ function Section({ title, children }) {
       <h2 className="text-2xl font-bold text-white font-playfair">{title}</h2>
       {children}
     </div>
-  );
+  )
 }
 
 function MetricCard({ label, value, change, trend, color = 'gray' }) {
@@ -585,7 +629,7 @@ function MetricCard({ label, value, change, trend, color = 'gray' }) {
     emerald: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
     orange: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
     red: 'bg-red-500/10 border-red-500/30 text-red-300',
-  };
+  }
 
   return (
     <div className={`border rounded-[4px] p-4 ${colorClasses[color]}`}>
@@ -604,11 +648,11 @@ function MetricCard({ label, value, change, trend, color = 'gray' }) {
       </div>
       {change && <p className="text-xs mt-2 opacity-75">{change}</p>}
     </div>
-  );
+  )
 }
 
 function RevenueBreakdown({ title, data, colors }) {
-  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  const total = Object.values(data).reduce((a, b) => a + b, 0)
   return (
     <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
       <p className="text-white font-semibold mb-3">{title}</p>
@@ -617,7 +661,9 @@ function RevenueBreakdown({ title, data, colors }) {
           <div key={key}>
             <div className="flex justify-between text-sm mb-1">
               <span className="text-kcb-sable capitalize">{key}</span>
-              <span className="text-white font-semibold">{((value / total) * 100).toFixed(0)}%</span>
+              <span className="text-white font-semibold">
+                {((value / total) * 100).toFixed(0)}%
+              </span>
             </div>
             <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
               <div
@@ -629,18 +675,23 @@ function RevenueBreakdown({ title, data, colors }) {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 function FunnelChart({ title, stages }) {
-  const maxValue = Math.max(...stages.map((s) => s.value));
+  const maxValue = Math.max(...stages.map((s) => s.value))
   return (
     <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
       <p className="text-white font-semibold mb-4">{title}</p>
       <div className="space-y-3">
         {stages.map((stage, idx) => {
-          const width = (stage.value / maxValue) * 100;
-          const colorMap = { blue: '#C9A84C', purple: '#8B6914', indigo: '#C9A84C', green: '#10b981' };
+          const width = (stage.value / maxValue) * 100
+          const colorMap = {
+            blue: '#C9A84C',
+            purple: '#8B6914',
+            indigo: '#C9A84C',
+            green: '#10b981',
+          }
           return (
             <div key={idx}>
               <div className="flex justify-between text-sm mb-1">
@@ -654,11 +705,11 @@ function FunnelChart({ title, stages }) {
                 />
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
 
 function ProgressBar({ label, value }) {
@@ -669,21 +720,24 @@ function ProgressBar({ label, value }) {
         <span className="text-white font-semibold">{value}%</span>
       </div>
       <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-kcb-or to-kcb-bronze" style={{ width: `${value}%` }} />
+        <div
+          className="h-full bg-gradient-to-r from-kcb-or to-kcb-bronze"
+          style={{ width: `${value}%` }}
+        />
       </div>
     </div>
-  );
+  )
 }
 
 function VitalCard({ label, value, target, status }) {
-  const statusColor = status === 'good' ? 'text-green-400' : 'text-yellow-400';
+  const statusColor = status === 'good' ? 'text-green-400' : 'text-yellow-400'
   return (
     <div className="bg-kcb-ardoise/50 rounded-[4px] p-3 text-center border border-white/[0.06]">
       <p className="text-kcb-pierre text-xs mb-1">{label}</p>
       <p className={`text-2xl font-bold ${statusColor}`}>{value}</p>
       <p className="text-kcb-pierre text-xs mt-1">{target}</p>
     </div>
-  );
+  )
 }
 
 function ActionButton({ icon, label, badge, onClick }) {
@@ -702,5 +756,5 @@ function ActionButton({ icon, label, badge, onClick }) {
       </div>
       <p className="text-white font-semibold group-hover:text-kcb-or transition">{label}</p>
     </button>
-  );
+  )
 }

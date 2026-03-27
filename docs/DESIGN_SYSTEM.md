@@ -1,5 +1,5 @@
-# KUCIBOK — DESIGN.md
-**Version** 1.0 — Mars 2026
+# KUCIBOK — Design System
+**Version** 1.1 — Mars 2026
 **Statut** ACTIF — Validé Mars 2026
 **Design actif** — Palette noir/ivoire/or (Africa) + noir/argent (Global)
 **Aligne sur** PRD.md · Branding institutionnel premium
@@ -81,6 +81,21 @@ Le logo Kucibok existant (icône + wordmark) est conservé.
 | **Alerte** | `#D4A017` | En attente, en transit |
 | **Erreur** | `#8B1A1A` | Refuse, erreur |
 | **Info** | `#1A3A5C` | Information neutre |
+
+### Couleurs Charts (Chart.js / Dashboards)
+
+Les graphiques doivent utiliser exclusivement les couleurs suivantes :
+
+| Usage | Couleur | Hex |
+|-------|---------|-----|
+| Primaire | Or Kucibok | `#C9A84C` / `rgba(201,168,76,1)` |
+| Secondaire | Bronze | `#8B6914` / `rgba(139,105,20,1)` |
+| Tertiaire | Vert fonce | `#2D6A4F` |
+| Quaternaire | Or sombre | `#D4A017` |
+| Fond zone | Or transparent | `rgba(201,168,76,0.1)` |
+| Grille | Blanc subtil | `rgba(255,255,255,0.06)` |
+
+Interdit dans les charts : `#a855f7` (violet), `#3b82f6` (bleu), `#22c55e` (vert vif), `#f97316` (orange).
 
 ### Ce qu'on supprime
 - Violet #9B59B6 — supprime du design system
@@ -188,17 +203,19 @@ CERTIFIE KUCIBOK
 
 ## 7. DIRECTION UX PAR PORTAIL
 
-### Portail Afrique (africa.kucibok.com)
+### Portail Afrique (`/africa`)
 - Ton : accueillant, protecteur, structurant
 - FR prioritaire
-- Hero : artiste africain en train de creer, fond noir
+- Hero : Kuzi mascotte animee (GIF) + particules fumee
 - Titre principal : "Votre art merite un standard mondial"
 
-### Portail Global (global.kucibok.com)
+### Portail Global (`/global`)
 - Ton : institutionnel, sobre, autorite
 - EN prioritaire
-- Hero : oeuvre africaine premium, fond noir quasi-total
+- Hero : cadre artwork geometrique + stats flottantes
 - Titre principal : "The Standard for African Art Circulation"
+
+> **Note** : Les portails utilisent des routes (`/africa`, `/global`), pas des sous-domaines. Migration vers sous-domaines prevue Phase 3 (voir ADR-003 dans TECH_SPEC.md).
 
 ---
 
@@ -214,7 +231,35 @@ CERTIFIE KUCIBOK
 
 ---
 
-## 9. TOKENS CSS (index.css)
+## 9. ACCESSIBILITE
+
+### Composants UI
+
+| Composant | Requis |
+|-----------|--------|
+| **Modal** | `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, focus trap |
+| **Select** | `aria-expanded`, `aria-haspopup="listbox"`, navigation fleches, `aria-activedescendant` |
+| **Tabs** | `role="tablist/tab/tabpanel"`, navigation fleches, `aria-selected` |
+| **Accordion** | `aria-expanded`, `aria-controls`, `id` sur panneau |
+| **Tooltip** | Declenchement hover + focus (`onFocus`/`onBlur`) |
+| **Card (cliquable)** | `role="button"`, `tabIndex={0}`, `onKeyDown` (Enter/Space), `focus-visible:ring` |
+
+### Contraste minimum
+
+- Texte courant : 4.5:1 minimum
+- Texte large (>18px) et composants UI : 3:1 minimum
+- Placeholder : utiliser `kcb-sable` (#D4C5A9) et non `kcb-pierre` (#3A3A3C) sur fond sombre
+- Sous-titres : eviter l'opacite reduite sur `kcb-pierre` (utiliser `kcb-sable` a la place)
+
+### Navigation clavier
+
+- Tous les elements interactifs doivent avoir `focus-visible:ring-2 focus-visible:ring-kcb-or`
+- Sidebar : boutons de navigation avec styles focus visibles
+- Drag-and-drop : fallback `role="button"` + `tabIndex={0}` + `onKeyDown`
+
+---
+
+## 10. TOKENS CSS (index.css)
 
 ```css
 :root {
@@ -246,7 +291,23 @@ CERTIFIE KUCIBOK
 
 ---
 
-## 11. STRUCTURE LANDING PAGES
+## 11. ANTI-PATTERNS APPLIQUES
+
+L'audit UX/UI de Mars 2026 a identifie et corrige les violations suivantes. Ces regles sont maintenant appliquees dans tout le codebase :
+
+| Violation | Correction appliquee |
+|-----------|---------------------|
+| `bg-purple-*`, `bg-orange-*`, gradients multi-couleurs | Tokens KCB (`bg-kcb-or`, `bg-kcb-ardoise`, `border-kcb-or/30`) |
+| `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-full` | `rounded-[4px]` (badges : `rounded-[2px]`) |
+| `font-serif` (Georgia) | `font-playfair` |
+| Emoji dans l'UI (`✓`, `⏸`) | Icones Lucide (`Check`, `Pause`) |
+| Hex hardcode (`#1f2937`, `#374151`) | Tokens CSS (`var(--kcb-ardoise)`, `text-kcb-pierre`) |
+| `alert()` en production | `toast()` utility |
+| `console.log` | Sentry |
+
+---
+
+## 12. STRUCTURE LANDING PAGES
 
 ### Gateway (route `/`)
 Split-screen plein ecran. Cote gauche: Kuzi + "Portail Afrique" + CTA or. Cote droite: carte corridor + "Global Portal" + CTA silver. Centre: logo Kucibok dans cercle, change couleur au hover. Click navigue vers /africa ou /global.
@@ -285,7 +346,7 @@ Sections dans l'ordre:
 
 ---
 
-## 12. ORDRE DE MIGRATION UI
+## 13. ORDRE DE MIGRATION UI
 
 | Priorite | Page | Impact |
 |----------|------|--------|
@@ -300,4 +361,4 @@ Sections dans l'ordre:
 
 ---
 
-*Kucibok DESIGN.md V1 — Mars 2026 — Confidentiel*
+*Kucibok DESIGN_SYSTEM V1.1 — Mars 2026 — Confidentiel*

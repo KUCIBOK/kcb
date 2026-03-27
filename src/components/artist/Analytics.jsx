@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   DollarSign,
   Eye,
@@ -9,10 +9,10 @@ import {
   BarChart3,
   Check,
   Pause,
-} from 'lucide-react';
+} from 'lucide-react'
 
 export function Analytics({ user, title, artworks, artistProfile }) {
-  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [autoRefresh, setAutoRefresh] = useState(true)
 
   // Données par défaut réalistes
   const stats = {
@@ -24,7 +24,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
     totalRevenue: 15850,
     conversionRate: 3.2,
     growth: 12.5,
-  };
+  }
 
   // Données pour graphiques
   const viewsData = {
@@ -39,7 +39,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
         tension: 0.4,
       },
     ],
-  };
+  }
 
   const favoritesData = {
     labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
@@ -50,7 +50,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
         backgroundColor: 'rgba(201, 168, 76, 0.8)',
       },
     ],
-  };
+  }
 
   const revenueData = {
     labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
@@ -64,30 +64,35 @@ export function Analytics({ user, title, artworks, artistProfile }) {
         tension: 0.4,
       },
     ],
-  };
+  }
 
   useEffect(() => {
     if (autoRefresh) {
       const interval = setInterval(() => {
         // Refresh des données
-      }, 30000);
-      return () => clearInterval(interval);
+      }, 30000)
+      return () => clearInterval(interval)
     }
-  }, [autoRefresh]);
+  }, [autoRefresh])
 
   const formatNumber = (num) => {
     if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'k';
+      return (num / 1000).toFixed(1) + 'k'
     }
-    return num.toString();
-  };
+    return num.toString()
+  }
 
   return (
     <div className="space-y-6">
       {/* En-tête */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Analytique</h1>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-3xl font-bold text-white">Analytique</h1>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              Données de démonstration
+            </span>
+          </div>
           <p className="text-kcb-pierre mt-1">Suivez vos performances en temps réel</p>
         </div>
         <button
@@ -98,7 +103,15 @@ export function Analytics({ user, title, artworks, artistProfile }) {
               : 'bg-kcb-ardoise text-kcb-sable'
           }`}
         >
-          {autoRefresh ? <><Check className="w-4 h-4 inline mr-1" /> Auto-refresh</> : <><Pause className="w-4 h-4 inline mr-1" /> Paused</>}
+          {autoRefresh ? (
+            <>
+              <Check className="w-4 h-4 inline mr-1" /> Auto-refresh
+            </>
+          ) : (
+            <>
+              <Pause className="w-4 h-4 inline mr-1" /> Paused
+            </>
+          )}
         </button>
       </div>
 
@@ -155,7 +168,9 @@ export function Analytics({ user, title, artworks, artistProfile }) {
             ))}
           </div>
           <div className="mt-4 flex justify-between text-sm">
-            <span className="text-kcb-pierre">Total: {viewsData.datasets[0].data.reduce((a, b) => a + b, 0)}</span>
+            <span className="text-kcb-pierre">
+              Total: {viewsData.datasets[0].data.reduce((a, b) => a + b, 0)}
+            </span>
             <span className="text-green-400">+12% vs semaine dernière</span>
           </div>
         </div>
@@ -175,7 +190,9 @@ export function Analytics({ user, title, artworks, artistProfile }) {
             ))}
           </div>
           <div className="mt-4 flex justify-between text-sm">
-            <span className="text-kcb-pierre">Total: {revenueData.datasets[0].data.reduce((a, b) => a + b, 0).toLocaleString()} XOF</span>
+            <span className="text-kcb-pierre">
+              Total: {revenueData.datasets[0].data.reduce((a, b) => a + b, 0).toLocaleString()} XOF
+            </span>
             <span className="text-green-400">+{stats.growth}% vs mois dernier</span>
           </div>
         </div>
@@ -220,24 +237,33 @@ export function Analytics({ user, title, artworks, artistProfile }) {
             { title: 'Portrait de Famille', views: 650, favorites: 32, price: 1800 },
             { title: 'Paysage Senegal', views: 580, favorites: 28, price: 1500 },
           ].map((artwork, idx) => (
-            <div key={idx} className="flex items-center justify-between p-3 bg-kcb-ardoise/50 rounded-[4px]">
+            <div
+              key={idx}
+              className="flex items-center justify-between p-3 bg-kcb-ardoise/50 rounded-[4px]"
+            >
               <div className="flex items-center gap-3">
                 <span className="text-2xl font-bold text-kcb-pierre">#{idx + 1}</span>
                 <div>
                   <p className="text-white font-medium">{artwork.title}</p>
                   <div className="flex gap-3 text-xs text-kcb-pierre">
-                    <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {artwork.views}</span>
-                    <span className="flex items-center gap-1"><Heart className="w-3 h-3" /> {artwork.favorites}</span>
+                    <span className="flex items-center gap-1">
+                      <Eye className="w-3 h-3" /> {artwork.views}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Heart className="w-3 h-3" /> {artwork.favorites}
+                    </span>
                   </div>
                 </div>
               </div>
-              <span className="text-green-400 font-semibold">{artwork.price.toLocaleString()} XOF</span>
+              <span className="text-green-400 font-semibold">
+                {artwork.price.toLocaleString()} XOF
+              </span>
             </div>
           ))}
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function KPICard({ label, value, change, trend, icon, color }) {
@@ -246,7 +272,7 @@ function KPICard({ label, value, change, trend, icon, color }) {
     kcb: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
     red: 'bg-red-500/10 border-red-500/30 text-red-300',
     green: 'bg-green-500/10 border-green-500/30 text-green-300',
-  };
+  }
 
   return (
     <div className={`border rounded-[4px] p-4 ${colorClasses[color]}`}>
@@ -264,5 +290,5 @@ function KPICard({ label, value, change, trend, icon, color }) {
         {change}
       </div>
     </div>
-  );
+  )
 }

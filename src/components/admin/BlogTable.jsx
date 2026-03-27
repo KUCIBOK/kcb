@@ -1,29 +1,45 @@
-import { Fragment, useEffect, useState } from "react";
-import { BlogTableItem } from "./BlogTableItem";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Fragment, useEffect, useState } from 'react'
+import { BlogTableItem } from './BlogTableItem'
+import { ChevronLeft, ChevronRight, FileText } from 'lucide-react'
+import { SkeletonTable, EmptyState } from '../ui'
 
-
-export function BlogTable({ posts }) {
+export function BlogTable({ posts, loading = false }) {
   const [state, setState] = useState({
     set: posts.slice(0, 5),
-    posts: posts
-  });
+    posts: posts,
+  })
   useEffect(() => {
-    setState({ set: posts.slice(0, 5), posts });
-  }, [posts]);
+    setState({ set: posts.slice(0, 5), posts }) // eslint-disable-line react-hooks/set-state-in-effect
+  }, [posts])
 
   const handlePrev = () => {
     if (state.set[0] !== state.posts[0]) {
-      const startIndex = state.posts.indexOf(state.set[0]) - 5;
-      setState({ ...state, set: state.posts.slice(startIndex, startIndex + 5) });
+      const startIndex = state.posts.indexOf(state.set[0]) - 5
+      setState({ ...state, set: state.posts.slice(startIndex, startIndex + 5) })
     }
-  };
+  }
   const handleNext = () => {
-    const lastIndex = state.posts.indexOf(state.set[state.set.length - 1]);
+    const lastIndex = state.posts.indexOf(state.set[state.set.length - 1])
     if (lastIndex < state.posts.length - 1) {
-      setState({ ...state, set: state.posts.slice(lastIndex + 1, lastIndex + 6) });
+      setState({ ...state, set: state.posts.slice(lastIndex + 1, lastIndex + 6) })
     }
-  };
+  }
+
+  // Show skeleton table while initial data is loading
+  if (loading) {
+    return <SkeletonTable rows={4} cols={7} />
+  }
+
+  // Empty state when posts array is empty and not loading
+  if (!posts?.length) {
+    return (
+      <EmptyState
+        icon={FileText}
+        title="Aucun article trouvé"
+        description="Les articles apparaîtront ici une fois publiés ou archivés."
+      />
+    )
+  }
 
   return (
     <div className="w-full">
@@ -56,23 +72,15 @@ export function BlogTable({ posts }) {
               <th className="py-2 px-2 font-medium text-left whitespace-nowrap">Actions</th>
             </tr>
           </thead>
-          {posts?.length >= 1 ? (
-            <tbody>
-              {state.set.map((item, index) => (
-                <Fragment key={index}>
-                  <BlogTableItem post={item} />
-                </Fragment>
-              ))}
-            </tbody>
-          ) : (
-            <tfoot>
-              <tr>
-                <td colSpan={7} className="text-center text-white/40 py-8 text-sm">Aucun article trouvé.</td>
-              </tr>
-            </tfoot>
-          )}
+          <tbody>
+            {state.set.map((item, index) => (
+              <Fragment key={index}>
+                <BlogTableItem post={item} />
+              </Fragment>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>
-  );
+  )
 }

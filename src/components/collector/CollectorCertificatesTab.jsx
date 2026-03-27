@@ -1,8 +1,8 @@
-import { useMemo } from "react";
-import { ShieldCheck, Shield, ExternalLink, FileQuestion, Download } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useArtworks } from "../../store/ArtworkContext";
-import { KPICard } from "../ui";
+import { useMemo } from 'react'
+import { ShieldCheck, Shield, ExternalLink, FileQuestion, Download } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useArtworks } from '../../store/ArtworkContext'
+import { KPICard, SkeletonTable, EmptyState } from '../ui'
 
 function CertBadge({ kucibok_id }) {
   if (kucibok_id) {
@@ -10,13 +10,13 @@ function CertBadge({ kucibok_id }) {
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border bg-green-500/20 text-green-400 border-green-500/30">
         <ShieldCheck className="w-3 h-3" /> Certifiée
       </span>
-    );
+    )
   }
   return (
     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
       <Shield className="w-3 h-3" /> Non certifiée
     </span>
-  );
+  )
 }
 
 /**
@@ -24,17 +24,36 @@ function CertBadge({ kucibok_id }) {
  * Affiche les certificats KCB des œuvres achetées et de la collection personnelle.
  */
 export function CollectorCertificatesTab() {
-  const { buyed, myArtworks } = useArtworks();
+  const { buyed, myArtworks, loading } = useArtworks()
 
   // Fusion achats + collection, déduplication par id
   const allArtworks = useMemo(() => {
-    const map = new Map();
-    [...(buyed ?? []), ...(myArtworks ?? [])].forEach((a) => map.set(a.id ?? a._id, a));
-    return Array.from(map.values());
-  }, [buyed, myArtworks]);
+    const map = new Map()
+    ;[...(buyed ?? []), ...(myArtworks ?? [])].forEach((a) => map.set(a.id ?? a._id, a))
+    return Array.from(map.values())
+  }, [buyed, myArtworks])
 
-  const certified = useMemo(() => allArtworks.filter((a) => !!a.kucibok_id), [allArtworks]);
-  const pending   = useMemo(() => allArtworks.filter((a) => !a.kucibok_id), [allArtworks]);
+  const certified = useMemo(() => allArtworks.filter((a) => !!a.kucibok_id), [allArtworks])
+  const pending = useMemo(() => allArtworks.filter((a) => !a.kucibok_id), [allArtworks])
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="bg-green-900/20 text-green-400 p-2.5 rounded-lg">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-white">Mes Certificats KCB</h2>
+            <p className="text-sm text-kcb-pierre">
+              Certificats d'authenticité des œuvres de votre collection
+            </p>
+          </div>
+        </div>
+        <SkeletonTable rows={5} cols={4} />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -53,18 +72,34 @@ export function CollectorCertificatesTab() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <KPICard label="Œuvres totales"    value={allArtworks.length} icon={<Shield className="w-4 h-4" />} />
-        <KPICard label="Certifiées KCB"    value={certified.length}   icon={<ShieldCheck className="w-4 h-4" />} accent="green" />
-        <KPICard label="En attente"        value={pending.length}     icon={<Shield className="w-4 h-4" />} accent="yellow" />
+        <KPICard
+          label="Œuvres totales"
+          value={allArtworks.length}
+          icon={<Shield className="w-4 h-4" />}
+        />
+        <KPICard
+          label="Certifiées KCB"
+          value={certified.length}
+          icon={<ShieldCheck className="w-4 h-4" />}
+          accent="green"
+        />
+        <KPICard
+          label="En attente"
+          value={pending.length}
+          icon={<Shield className="w-4 h-4" />}
+          accent="yellow"
+        />
       </div>
 
       {/* Liste */}
       {allArtworks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-48 rounded-xl border border-dashed border-white/[0.06] bg-kcb-ardoise/40 gap-3">
-          <FileQuestion className="w-10 h-10 text-kcb-pierre" />
-          <p className="text-kcb-pierre text-sm">Aucune œuvre dans votre collection pour l'instant.</p>
-          <Link to="/africa/catalogue" className="text-kcb-or text-sm hover:underline">Explorer le marketplace</Link>
-        </div>
+        <EmptyState
+          icon={ShieldCheck}
+          title="Aucun certificat"
+          description="Vous n'avez pas encore d'œuvres certifiées dans votre collection. Achetez une œuvre certifiée KCB pour voir vos certificats ici."
+          actionLabel="Explorer le marketplace"
+          onAction={() => window.location.assign('/africa/catalogue')}
+        />
       ) : (
         <div className="space-y-3">
           {allArtworks.map((artwork) => (
@@ -75,7 +110,11 @@ export function CollectorCertificatesTab() {
               {/* Image */}
               <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-kcb-ardoise">
                 {artwork.image ? (
-                  <img src={artwork.image} alt={artwork.title} className="w-full h-full object-cover" />
+                  <img
+                    src={artwork.image}
+                    alt={artwork.title}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-kcb-pierre">
                     <Shield className="w-5 h-5" />
@@ -87,7 +126,7 @@ export function CollectorCertificatesTab() {
               <div className="flex-1 min-w-0">
                 <p className="text-white font-medium truncate">{artwork.title}</p>
                 <p className="text-kcb-pierre text-xs mt-0.5">
-                  {artwork.kucibok_id ?? "Certificat non encore émis"}
+                  {artwork.kucibok_id ?? 'Certificat non encore émis'}
                 </p>
               </div>
 
@@ -126,5 +165,5 @@ export function CollectorCertificatesTab() {
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -22,7 +22,11 @@ describe('Button', () => {
 
   it('est désactivé et ne déclenche pas onClick quand loading=true', () => {
     const handleClick = vi.fn()
-    render(<Button loading onClick={handleClick}>Chargement</Button>)
+    render(
+      <Button loading onClick={handleClick}>
+        Chargement
+      </Button>
+    )
     const btn = screen.getByRole('button')
     expect(btn).toBeDisabled()
     fireEvent.click(btn)
@@ -42,7 +46,7 @@ describe('Button', () => {
 
   it('applique la variante primary par défaut', () => {
     render(<Button>Action</Button>)
-    expect(screen.getByRole('button').className).toContain('bg-indigo-600')
+    expect(screen.getByRole('button').className).toContain('bg-kcb-or')
   })
 
   it('applique la taille lg', () => {

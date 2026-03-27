@@ -1,34 +1,25 @@
-import { useState, useEffect, useCallback } from "react"
-import {
-  Search,
-  Filter,
-  MessageSquare,
-  Loader2,
-  ChevronDown,
-  ChevronUp,
-  Send,
-  Inbox,
-} from "lucide-react"
-import { getMyInquiries } from "../../api/useSourcing"
-import { KPICard } from "../ui"
+import { useState, useEffect, useCallback } from 'react'
+import { Search, Filter, MessageSquare, ChevronDown, ChevronUp, Send, Inbox } from 'lucide-react'
+import { getMyInquiries } from '../../api/useSourcing'
+import { KPICard, SkeletonTable, EmptyState } from '../ui'
 
 /** @type {Record<string, {label: string, className: string}>} */
 const PURPOSE_CONFIG = {
-  purchase:   { label: "Achat",      className: "bg-green-900/40 text-green-300" },
-  exhibition: { label: "Exposition", className: "bg-kcb-bronze/20 text-kcb-sable" },
-  research:   { label: "Recherche",  className: "bg-kcb-or/20 text-kcb-sable" },
-  loan:       { label: "Prêt",       className: "bg-amber-900/40 text-amber-300" },
+  purchase: { label: 'Achat', className: 'bg-green-900/40 text-green-300' },
+  exhibition: { label: 'Exposition', className: 'bg-kcb-bronze/20 text-kcb-sable' },
+  research: { label: 'Recherche', className: 'bg-kcb-or/20 text-kcb-sable' },
+  loan: { label: 'Prêt', className: 'bg-amber-900/40 text-amber-300' },
 }
 
 /** @type {Record<string, {label: string, className: string}>} */
 const STATUS_CONFIG = {
-  pending:    { label: "En attente", className: "bg-yellow-900/40 text-yellow-300" },
-  responded:  { label: "Répondue",   className: "bg-green-900/40 text-green-300" },
-  closed:     { label: "Fermée",     className: "bg-kcb-ardoise text-kcb-pierre" },
+  pending: { label: 'En attente', className: 'bg-yellow-900/40 text-yellow-300' },
+  responded: { label: 'Répondue', className: 'bg-green-900/40 text-green-300' },
+  closed: { label: 'Fermée', className: 'bg-kcb-ardoise text-kcb-pierre' },
 }
 
 /** Valeur sentinel pour "Tous" dans les filtres. */
-const ALL = "all"
+const ALL = 'all'
 
 /**
  * Badge de purpose d'une demande de sourcing.
@@ -37,9 +28,14 @@ const ALL = "all"
  * @returns {JSX.Element}
  */
 function PurposeBadge({ purpose }) {
-  const cfg = PURPOSE_CONFIG[purpose] ?? { label: purpose, className: "bg-kcb-ardoise text-kcb-pierre" }
+  const cfg = PURPOSE_CONFIG[purpose] ?? {
+    label: purpose,
+    className: 'bg-kcb-ardoise text-kcb-pierre',
+  }
   return (
-    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}>
+    <span
+      className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}
+    >
       {cfg.label}
     </span>
   )
@@ -52,9 +48,14 @@ function PurposeBadge({ purpose }) {
  * @returns {JSX.Element}
  */
 function StatusBadge({ status }) {
-  const cfg = STATUS_CONFIG[status] ?? { label: status, className: "bg-kcb-ardoise text-kcb-pierre" }
+  const cfg = STATUS_CONFIG[status] ?? {
+    label: status,
+    className: 'bg-kcb-ardoise text-kcb-pierre',
+  }
   return (
-    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}>
+    <span
+      className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}
+    >
       {cfg.label}
     </span>
   )
@@ -67,11 +68,11 @@ function StatusBadge({ status }) {
  * @returns {string}
  */
 function formatDate(isoDate) {
-  if (!isoDate) return "—"
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+  if (!isoDate) return '—'
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   }).format(new Date(isoDate))
 }
 
@@ -84,14 +85,14 @@ function formatDate(isoDate) {
  */
 function InquiryCard({ inquiry }) {
   const [expanded, setExpanded] = useState(false)
-  const [replyText, setReplyText] = useState("")
+  const [replyText, setReplyText] = useState('')
   const [sent, setSent] = useState(false)
 
   const handleSend = useCallback(() => {
     if (!replyText.trim()) return
     // Simulation — pas d'API de réponse exposée pour l'instant
     setSent(true)
-    setReplyText("")
+    setReplyText('')
   }, [replyText])
 
   return (
@@ -101,18 +102,18 @@ function InquiryCard({ inquiry }) {
         {/* Artwork + requester */}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white truncate">
-            {inquiry.artworkTitle || `Œuvre #${inquiry.artworkId?.slice(-6) ?? "—"}`}
+            {inquiry.artworkTitle || `Œuvre #${inquiry.artworkId?.slice(-6) ?? '—'}`}
           </p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
             <span className="text-xs text-kcb-pierre">
-              {inquiry.buyerName || "Acheteur inconnu"}
+              {inquiry.buyerName || 'Acheteur inconnu'}
             </span>
             {inquiry.organization && (
               <span className="text-xs text-kcb-pierre">· {inquiry.organization}</span>
             )}
             {inquiry.budget != null && (
               <span className="text-xs text-kcb-or font-medium">
-                Budget : {Number(inquiry.budget).toLocaleString("fr-FR")} CFA
+                Budget : {Number(inquiry.budget).toLocaleString('fr-FR')} CFA
               </span>
             )}
           </div>
@@ -132,7 +133,7 @@ function InquiryCard({ inquiry }) {
           <button
             onClick={() => setExpanded((v) => !v)}
             className="flex items-center gap-1 text-xs text-kcb-or hover:text-kcb-or/80 transition-colors ml-2"
-            aria-label={expanded ? "Replier" : "Répondre"}
+            aria-label={expanded ? 'Replier' : 'Répondre'}
           >
             <MessageSquare className="w-3.5 h-3.5" />
             Répondre
@@ -149,15 +150,13 @@ function InquiryCard({ inquiry }) {
       {expanded && (
         <div className="border-t border-white/[0.06] px-4 py-4 space-y-3">
           {sent ? (
-            <p className="text-sm text-green-400 font-medium">
-              Réponse envoyée.
-            </p>
+            <p className="text-sm text-green-400 font-medium">Réponse envoyée.</p>
           ) : (
             <>
               <textarea
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
-                placeholder={`Répondre à ${inquiry.buyerName || "ce demandeur"}…`}
+                placeholder={`Répondre à ${inquiry.buyerName || 'ce demandeur'}…`}
                 rows={3}
                 className="w-full rounded-[4px] border border-white/[0.06] bg-kcb-ardoise text-kcb-sable text-sm placeholder-kcb-pierre px-3 py-2 focus:outline-none focus:border-kcb-or resize-none transition-colors"
               />
@@ -191,7 +190,7 @@ export function SourcingTab() {
   const [inquiries, setInquiries] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState(ALL)
   const [filterPurpose, setFilterPurpose] = useState(ALL)
 
@@ -212,20 +211,23 @@ export function SourcingTab() {
     }
 
     fetchInquiries()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // KPIs
-  const total     = inquiries.length
-  const pending   = inquiries.filter((i) => i.status === "pending").length
-  const responded = inquiries.filter((i) => i.status === "responded").length
-  const closed    = inquiries.filter((i) => i.status === "closed").length
+  const total = inquiries.length
+  const pending = inquiries.filter((i) => i.status === 'pending').length
+  const responded = inquiries.filter((i) => i.status === 'responded').length
+  const closed = inquiries.filter((i) => i.status === 'closed').length
 
   // Filtres appliqués
   const filtered = inquiries.filter((inquiry) => {
-    const matchStatus  = filterStatus  === ALL || inquiry.status  === filterStatus
+    const matchStatus = filterStatus === ALL || inquiry.status === filterStatus
     const matchPurpose = filterPurpose === ALL || inquiry.purpose === filterPurpose
-    const matchSearch  = !search.trim() ||
+    const matchSearch =
+      !search.trim() ||
       inquiry.artworkTitle?.toLowerCase().includes(search.toLowerCase()) ||
       inquiry.buyerName?.toLowerCase().includes(search.toLowerCase()) ||
       inquiry.organization?.toLowerCase().includes(search.toLowerCase())
@@ -325,11 +327,7 @@ export function SourcingTab() {
       </div>
 
       {/* Contenu */}
-      {loading && (
-        <div className="flex items-center justify-center h-48">
-          <Loader2 className="w-8 h-8 text-kcb-or animate-spin" />
-        </div>
-      )}
+      {loading && <SkeletonTable rows={5} cols={4} />}
 
       {!loading && error && (
         <div className="rounded-[4px] border border-red-800 bg-red-900/20 p-4 text-sm text-red-300">
@@ -338,14 +336,15 @@ export function SourcingTab() {
       )}
 
       {!loading && !error && filtered.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-48 text-kcb-pierre space-y-2">
-          <Inbox className="w-10 h-10 opacity-40" />
-          <p className="text-sm">
-            {inquiries.length === 0
-              ? "Aucune demande de sourcing reçue pour l'instant."
-              : "Aucune demande ne correspond à vos filtres."}
-          </p>
-        </div>
+        <EmptyState
+          icon={Inbox}
+          title={inquiries.length === 0 ? 'Aucune demande de sourcing' : 'Aucun résultat'}
+          description={
+            inquiries.length === 0
+              ? "Vous n'avez pas encore reçu de demandes de sourcing."
+              : 'Aucune demande ne correspond à vos filtres.'
+          }
+        />
       )}
 
       {!loading && !error && filtered.length > 0 && (

@@ -1,194 +1,239 @@
-import { Clock, Image, TrendingUp, Truck, Users } from "lucide-react"
-import { useArtist } from "../../store/ArtistContext"
-import { useArtworks } from "../../store/ArtworkContext"
-import { Link } from "react-router-dom"
-import { ArtistTable } from "../artists/ArtistTable"
-import { ArtworksList } from "../artworks/ArtworksList"
-import { Bar, Pie } from "react-chartjs-2";
-import { ArcElement,
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from "chart.js";
-import { CreateCollection } from "../artworks/CreateCollection"
-import { KPICard } from "../ui";
+import { Clock, Image, TrendingUp, Truck, Users } from 'lucide-react'
+import { useArtist } from '../../store/ArtistContext'
+import { useArtworks } from '../../store/ArtworkContext'
+import { Link } from 'react-router-dom'
+import { ArtistTable } from '../artists/ArtistTable'
+import { ArtworksList } from '../artworks/ArtworksList'
+import { Bar, Pie } from 'react-chartjs-2'
+import {
+  ArcElement,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+import { CreateCollection } from '../artworks/CreateCollection'
+import { KPICard, SkeletonKPI, SkeletonChart, EmptyState } from '../ui'
 
-export function Synthesis(){
-    const {myArtworks} = useArtworks()
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+export function Synthesis() {
+  const { myArtworks, loading } = useArtworks()
+  const currentMonth = new Date().getMonth()
+  const currentYear = new Date().getFullYear()
 
-    const monthlySales = myArtworks
+  const monthlySales = myArtworks
     ?.filter(
-        (artwork) =>
+      (artwork) =>
+        artwork.sold &&
+        artwork.sold_price &&
+        artwork.sold_at &&
+        new Date(artwork.sold_at).getMonth() === currentMonth &&
+        new Date(artwork.sold_at).getFullYear() === currentYear
+    )
+    .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0)
+
+  const deliveredArtworks = myArtworks?.filter((item) => item?.isDelivered == 'delivered')?.length
+  const soldArtworksNumber = myArtworks?.filter((item) => item?.sold == true)?.length
+
+  // Calcul du chiffre d'affaires pour chaque mois de l'année courante
+  const monthlyRevenue = Array.from({ length: 12 }, (_, month) => {
+    return (
+      myArtworks
+        ?.filter(
+          (artwork) =>
             artwork.sold &&
             artwork.sold_price &&
             artwork.sold_at &&
-            new Date(artwork.sold_at).getMonth() === currentMonth &&
+            new Date(artwork.sold_at).getMonth() === month &&
             new Date(artwork.sold_at).getFullYear() === currentYear
+        )
+        .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0) || 0
     )
-    .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0);
+  })
 
-    const deliveredArtworks = myArtworks?.filter(item => item?.isDelivered == "delivered")?.length
-    const soldArtworksNumber = myArtworks?.filter(item => item?.sold == true)?.length
+  // Préparation des labels pour les mois
+  const monthLabels = [
+    'Jan',
+    'Fév',
+    'Mar',
+    'Avr',
+    'Mai',
+    'Juin',
+    'Juil',
+    'Aoû',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Déc',
+  ]
 
-    // Calcul du chiffre d'affaires pour chaque mois de l'année courante
-    const monthlyRevenue = Array.from({ length: 12 }, (_, month) => {
-        return myArtworks
-            ?.filter(
-                (artwork) =>
-                    artwork.sold &&
-                    artwork.sold_price &&
-                    artwork.sold_at &&
-                    new Date(artwork.sold_at).getMonth() === month &&
-                    new Date(artwork.sold_at).getFullYear() === currentYear
-            )
-            .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0) || 0;
-    });
+  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-    // Préparation des labels pour les mois
-    const monthLabels = [
-        "Jan", "Fév", "Mar", "Avr", "Mai", "Juin",
-        "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"
-    ];
+  const barData = {
+    labels: monthLabels,
+    datasets: [
+      {
+        label: "Chiffre d'affaires (CFA)",
+        data: monthlyRevenue,
+        backgroundColor: 'rgba(45,106,79,0.7)',
+        borderRadius: 6,
+      },
+    ],
+  }
 
-    ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-    const barData = {
-        labels: monthLabels,
-        datasets: [
-            {
-                label: "Chiffre d'affaires (CFA)",
-                data: monthlyRevenue,
-                backgroundColor: "rgba(45,106,79,0.7)",
-                borderRadius: 6,
-            },
-        ],
-    };
-
-    const barOptions = {
-        responsive: true,
-        plugins: {
-            legend: { display: false },
-            title: { display: false },
+  const barOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: { display: false },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: (value) => value.toLocaleString(),
+          color: '#fff',
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: (value) => value.toLocaleString(),
-                    color: "#fff"
-                },
-                grid: { color: "#333" }
-            },
-            x: {
-                ticks: { color: "#fff" },
-                grid: { color: "#333" }
-            }
-        }
-    };
-    ChartJS.register(ArcElement);
+        grid: { color: '#333' },
+      },
+      x: {
+        ticks: { color: '#fff' },
+        grid: { color: '#333' },
+      },
+    },
+  }
+  ChartJS.register(ArcElement)
 
-    const soldCount = myArtworks?.filter(a => a.sold)?.length || 0;
-    const forSaleCount = myArtworks?.filter(a => a.status == "approved" && a.for_sale)?.length || 0;
-    const pendingCount = myArtworks?.filter(a => a.status == "pending")?.length || 0;
+  const soldCount = myArtworks?.filter((a) => a.sold)?.length || 0
+  const forSaleCount = myArtworks?.filter((a) => a.status == 'approved' && a.for_sale)?.length || 0
+  const pendingCount = myArtworks?.filter((a) => a.status == 'pending')?.length || 0
 
-    const pieData = {
-        labels: ["Vendues", "En vente", "En attente"],
-        datasets: [
-            {
-                data: [soldCount, forSaleCount, pendingCount],
-                backgroundColor: [
-                    "rgba(45,106,79,0.8)",   // green for sold
-                    "rgba(201,168,76,0.8)",  // gold for for sale
-                    "rgba(212,160,23,0.8)",  // amber for pending
-                ],
-                borderWidth: 1,
-                
-            },
+  const pieData = {
+    labels: ['Vendues', 'En vente', 'En attente'],
+    datasets: [
+      {
+        data: [soldCount, forSaleCount, pendingCount],
+        backgroundColor: [
+          'rgba(45,106,79,0.8)', // green for sold
+          'rgba(201,168,76,0.8)', // gold for for sale
+          'rgba(212,160,23,0.8)', // amber for pending
         ],
-    };
+        borderWidth: 1,
+      },
+    ],
+  }
 
-    const pieOptions = {
-        plugins: {
-            legend: {
-                labels: {
-                    color: "#fff",
-                    font: { size: 14 },
-                },
-            },
+  const pieOptions = {
+    plugins: {
+      legend: {
+        labels: {
+          color: '#fff',
+          font: { size: 14 },
         },
-        maintainAspectRatio: false,
-    };
+      },
+    },
+    maintainAspectRatio: false,
+  }
 
+  if (loading) {
     return (
       <>
-        {/* Statistiques synthétiques */}
+        {/* KPI skeletons */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full lg:px-2">
-            <KPICard
-                icon={Image}
-                label="Total œuvres"
-                value={myArtworks?.length}
-                iconColor="text-kcb-or"
-                iconBgColor="bg-kcb-or/10"
-            />
-            
-            <KPICard
-                icon={TrendingUp}
-                label="Ventes du mois"
-                value={`${monthlySales?.toLocaleString('fr-FR')} CFA`}
-                iconColor="text-green-400"
-                iconBgColor="bg-green-900/20"
-            />
-            
-            <KPICard
-                icon={Truck}
-                label="Oeuvres livrées"
-                value={`${deliveredArtworks}/${soldArtworksNumber}`}
-                subtitle={`${(soldArtworksNumber > 0 ? (deliveredArtworks / soldArtworksNumber) * 100 : 0).toFixed(0)}% livrées`}
-                iconColor="text-kcb-or"
-                iconBgColor="bg-kcb-or/10"
-            />
+          <SkeletonKPI />
+          <SkeletonKPI />
+          <SkeletonKPI />
         </div>
 
-        {/* Actions rapides */}
-        <div className="rounded-[4px] border border-white/[0.06] p-4 my-4">
-            <h3 className="flex gap-2 items-center mb-3 text-sm font-semibold text-white">
-                <Clock className="w-4 h-4 text-kcb-or" /> Actions rapides
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-                <Link to="submit-artwork" className="rounded-[4px] border border-white/[0.06] p-3 flex flex-col items-center gap-2 hover:bg-white/[0.04] text-xs text-kcb-sable text-center transition">
-                    <Image className="w-4 h-4" />
-                    Ajouter une œuvre
-                </Link>
-                <CreateCollection />
-            </div>
+        {/* Chart skeletons */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
+          <SkeletonChart height="h-52" />
+          <SkeletonChart height="h-52" />
         </div>
-
-        {/* Graphiques et liste */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm overflow-hidden">
-            <h3 className="text-sm font-semibold text-white mb-3">Chiffre d'affaires mensuel</h3>
-            <div className="w-full overflow-x-auto">
-              <Bar data={barData} options={barOptions} height={200} />
-            </div>
-          </div>
-          <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm overflow-hidden">
-            <ArtworksList title="Mes œuvres" artworks={myArtworks?.slice(0, 5) || []} />
-          </div>
-        </div>
-
-        {/* Pie chart */}
-        <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm">
-          <h3 className="text-sm font-semibold text-white mb-3">Répartition des œuvres</h3>
-          <div className="h-48 md:h-56 flex items-center justify-center">
-            <Pie data={pieData} options={pieOptions} />
-          </div>
-        </div>
+        <SkeletonChart height="h-48" />
       </>
-    );
+    )
+  }
+
+  return (
+    <>
+      {/* Statistiques synthétiques */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full lg:px-2">
+        <KPICard
+          icon={Image}
+          label="Total œuvres"
+          value={myArtworks?.length}
+          iconColor="text-kcb-or"
+          iconBgColor="bg-kcb-or/10"
+        />
+
+        <KPICard
+          icon={TrendingUp}
+          label="Ventes du mois"
+          value={`${monthlySales?.toLocaleString('fr-FR')} CFA`}
+          iconColor="text-green-400"
+          iconBgColor="bg-green-900/20"
+        />
+
+        <KPICard
+          icon={Truck}
+          label="Oeuvres livrées"
+          value={`${deliveredArtworks}/${soldArtworksNumber}`}
+          subtitle={`${(soldArtworksNumber > 0 ? (deliveredArtworks / soldArtworksNumber) * 100 : 0).toFixed(0)}% livrées`}
+          iconColor="text-kcb-or"
+          iconBgColor="bg-kcb-or/10"
+        />
+      </div>
+
+      {/* Actions rapides */}
+      <div className="rounded-[4px] border border-white/[0.06] p-4 my-4">
+        <h3 className="flex gap-2 items-center mb-3 text-sm font-semibold text-white">
+          <Clock className="w-4 h-4 text-kcb-or" /> Actions rapides
+        </h3>
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            to="submit-artwork"
+            className="rounded-[4px] border border-white/[0.06] p-3 flex flex-col items-center gap-2 hover:bg-white/[0.04] text-xs text-kcb-sable text-center transition"
+          >
+            <Image className="w-4 h-4" />
+            Ajouter une œuvre
+          </Link>
+          <CreateCollection />
+        </div>
+      </div>
+
+      {/* Graphiques et liste */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm overflow-hidden">
+          <h3 className="text-sm font-semibold text-white mb-3">Chiffre d'affaires mensuel</h3>
+          <div className="w-full overflow-x-auto">
+            <Bar data={barData} options={barOptions} height={200} />
+          </div>
+        </div>
+        <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm overflow-hidden">
+          {myArtworks?.length === 0 ? (
+            <EmptyState
+              icon={Image}
+              title="Aucune œuvre"
+              description="Vous n'avez pas encore soumis d'œuvre. Commencez par en ajouter une."
+              actionLabel="Ajouter une œuvre"
+              onAction={() => {}}
+            />
+          ) : (
+            <ArtworksList title="Mes œuvres" artworks={myArtworks?.slice(0, 5) || []} />
+          )}
+        </div>
+      </div>
+
+      {/* Pie chart */}
+      <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm">
+        <h3 className="text-sm font-semibold text-white mb-3">Répartition des œuvres</h3>
+        <div className="h-48 md:h-56 flex items-center justify-center">
+          <Pie data={pieData} options={pieOptions} />
+        </div>
+      </div>
+    </>
+  )
 }

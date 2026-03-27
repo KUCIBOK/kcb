@@ -1,16 +1,29 @@
-import { Plus } from "lucide-react";
-import { useBlog } from "../../store/BlogContext";
-import { useState } from "react";
-import { BlogTable } from "./BlogTable";
-import { useAuth } from "../../store/AuthContext";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { Modal, Input, Button, toast } from "../ui";
-
+import { Plus } from 'lucide-react'
+import { useBlog } from '../../store/BlogContext'
+import { useState, useEffect } from 'react'
+import { BlogTable } from './BlogTable'
+import { useAuth } from '../../store/AuthContext'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+import { Modal, Input, Button, toast } from '../ui'
 
 export function BlogTab() {
-  const { blogPosts, archive } = useBlog();
-  const [showModal, setShowModal] = useState(false);
+  const { blogPosts, archive } = useBlog()
+  const [showModal, setShowModal] = useState(false)
+  // Track initial load: the context starts with empty arrays and populates
+  // asynchronously. We consider loading done once either array has data OR
+  // a short settle window has elapsed (500 ms) to avoid infinite skeleton.
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (blogPosts.length > 0 || archive.length > 0) {
+      setLoading(false) // eslint-disable-line react-hooks/set-state-in-effect
+      return
+    }
+    const timer = setTimeout(() => setLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [blogPosts, archive])
+
   return (
     <>
       <div className="rounded-[4px] p-4 md:p-6 mb-6 shadow-md">
@@ -25,86 +38,80 @@ export function BlogTab() {
         </div>
         <div className="mb-6">
           <h3 className="text-base font-semibold text-kcb-sable mb-2">Articles publiés</h3>
-          <BlogTable posts={blogPosts} />
+          <BlogTable posts={blogPosts} loading={loading} />
         </div>
         <div>
           <h3 className="text-base font-semibold text-kcb-sable mb-2">Articles archivés</h3>
-          <BlogTable posts={archive} />
+          <BlogTable posts={archive} loading={loading} />
         </div>
       </div>
       {showModal && <AddPostModal closeModal={() => setShowModal(false)} />}
     </>
-  );
+  )
 }
 
-
 function AddPostModal({ closeModal }) {
-  const { addPost } = useBlog();
-  const { user } = useAuth();
+  const { addPost } = useBlog()
+  const { user } = useAuth()
   const [state, setState] = useState({
-    title: "",
-    excerpt: "",
-    image: "",
-    content: "",
+    title: '',
+    excerpt: '',
+    image: '',
+    content: '',
     authorId: user?.id,
     tags: [],
-    tag: "",
+    tag: '',
     loading: false,
-    show: ""
-  });
+    show: '',
+  })
 
   const handleAddPost = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       if (state?.tags?.length > 0) {
-        setState({ ...state, loading: true });
-        const charge = { ...state };
-        delete charge.loading;
-        delete charge.tag;
-        delete charge.show;
-        const formData = new FormData();
+        setState({ ...state, loading: true })
+        const charge = { ...state }
+        delete charge.loading
+        delete charge.tag
+        delete charge.show
+        const formData = new FormData()
         Object.keys(charge).forEach((key) => {
           if (key === 'image') {
-            formData.append('image', charge?.image, charge?.image?.filename);
-            return;
+            formData.append('image', charge?.image, charge?.image?.filename)
+            return
           }
-          formData.append(key, charge[key]);
-        });
-        const added = await addPost(formData);
+          formData.append(key, charge[key])
+        })
+        const added = await addPost(formData)
         if (added?._id) {
-          toast.success('✓ Article créé avec succès');
-          closeModal();
+          toast.success('✓ Article créé avec succès')
+          closeModal()
         } else {
-          toast.error('× Erreur lors de la création');
+          toast.error('× Erreur lors de la création')
         }
-        setState({ ...state, loading: false });
+        setState({ ...state, loading: false })
       } else {
-        toast.error('× Ajoutez au moins un mot-clé');
+        toast.error('× Ajoutez au moins un mot-clé')
       }
     } catch (error) {
-      toast.error('× Erreur serveur');
-      setState({ ...state, loading: false });
+      toast.error('× Erreur serveur')
+      setState({ ...state, loading: false })
     }
-  };
+  }
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
-        setState({ ...state, image: file, show: reader.result });
-      };
-      reader.readAsDataURL(file);
+        setState({ ...state, image: file, show: reader.result })
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={closeModal}
-      title="Ajouter un article"
-      size="md"
-    >
+    <Modal isOpen={true} onClose={closeModal} title="Ajouter un article" size="md">
       <form onSubmit={handleAddPost} className="space-y-4 max-h-[70vh] overflow-y-auto">
         <Input
           label="Titre"
@@ -158,7 +165,7 @@ function AddPostModal({ closeModal }) {
               type="button"
               onClick={() => {
                 if (state.tag.length > 0 && state.tags.length < 5) {
-                  setState({ ...state, tags: [...state.tags, state.tag], tag: "" });
+                  setState({ ...state, tags: [...state.tags, state.tag], tag: '' })
                 }
               }}
               className="px-3 py-2 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir rounded-[4px] transition"
@@ -175,7 +182,9 @@ function AddPostModal({ closeModal }) {
                 {tag}
                 <button
                   type="button"
-                  onClick={() => setState({ ...state, tags: state.tags.filter(item => item !== tag) })}
+                  onClick={() =>
+                    setState({ ...state, tags: state.tags.filter((item) => item !== tag) })
+                  }
                   className="ml-1 text-xs text-white/70 hover:text-red-400"
                 >
                   ×
@@ -199,22 +208,14 @@ function AddPostModal({ closeModal }) {
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={closeModal}
-          >
+          <Button type="button" variant="secondary" onClick={closeModal}>
             Annuler
           </Button>
-          <Button
-            type="submit"
-            disabled={state.loading}
-            loading={state.loading}
-          >
+          <Button type="submit" disabled={state.loading} loading={state.loading}>
             Enregistrer
           </Button>
         </div>
       </form>
     </Modal>
-  );
+  )
 }

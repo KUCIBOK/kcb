@@ -1,6 +1,6 @@
 # KUCIBOK — Product Requirements Document
 
-**Version** 2.1 — Mars 2026
+**Version** 2.2 — Mars 2026
 **Auteur** Moctar Sidibe
 **Statut** Actif
 **Horizon** 24 mois (Mars 2026 → Mars 2028)
@@ -115,9 +115,9 @@ KUCIBOK CORE
 - Validation manuelle a l'onboarding
 - Valeur : passeport oeuvre + visibilite sourcing global
 
-**Curateurs africains**
+**Curateurs africains (curator)**
 - Intermediaires cles entre artistes et marche international
-- Valeur : outil de gestion + mise en relation structuree
+- Valeur : outil de gestion + mise en relation structuree + selection d'oeuvres
 
 ### Portail Global (/global)
 
@@ -133,6 +133,10 @@ KUCIBOK CORE
 **Collectionneurs serieux**
 - Budget >EUR 5K par acquisition
 - Acces sur invitation ou validation
+
+**Acheteurs (buyers)**
+- Achat simplifie sans gestion de collection
+- Acces direct aux oeuvres en vente
 
 > **Principe** : chaque utilisateur est valide a l'onboarding. Pas de grand public.
 
@@ -303,12 +307,12 @@ Mois 18-24  : MRR cible EUR 25K + commissions
 
 | Document | Contenu |
 |----------|---------|
-| `docs/TECH-SPEC.md` | Stack, architecture, modeles de donnees, API |
+| `docs/TECH_SPEC.md` | Stack, architecture, modeles de donnees, API |
 | `docs/ROADMAP.md` | Phasage detaille, milestones, checklist |
-| `docs/DESIGN.md` | Direction visuelle Phase 3 (noir/ivoire/or) |
+| `docs/DESIGN_SYSTEM.md` | Design system (noir/ivoire/or, tokens, composants, accessibilite) |
 | `docs/RUNBOOK_M4.md` | Procedure de bascule production |
-| `docs/MIGRATION_SUPABASE.md` | Detail technique migration MongoDB -> Supabase |
+| `supabase/migrations/` | Schema SQL, RLS policies, role refactor |
 
 ---
 
-*Kucibok PRD V2.1 — Mars 2026 — Confidentiel*
+*Kucibok PRD V2.2 — Mars 2026 — Confidentiel*

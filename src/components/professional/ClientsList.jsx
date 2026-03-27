@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,9 +9,9 @@ import {
   MapPin,
   ShoppingCart,
   Crown,
-} from "lucide-react";
-import { deleteClient } from "../../api/useCrm";
-import { ConfirmDialog, toast } from "../ui";
+} from 'lucide-react'
+import { deleteClient } from '../../api/useCrm'
+import { ConfirmDialog, toast, SkeletonTable, EmptyState } from '../ui'
 
 export function ClientsList({
   clients,
@@ -22,46 +22,40 @@ export function ClientsList({
   onViewClient,
   onClientsUpdated,
 }) {
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [clientToDelete, setClientToDelete] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [clientToDelete, setClientToDelete] = useState(null)
 
   const handleDelete = async (clientId) => {
-    setClientToDelete(clientId);
-    setShowDeleteConfirm(true);
-  };
+    setClientToDelete(clientId)
+    setShowDeleteConfirm(true)
+  }
 
   const confirmDelete = async () => {
-    const result = await deleteClient(clientToDelete);
+    const result = await deleteClient(clientToDelete)
     if (!result.error) {
-      toast.success('✓ Client supprimé');
-      await onClientsUpdated();
+      toast.success('✓ Client supprimé')
+      await onClientsUpdated()
     } else {
-      toast.error('× Erreur lors de la suppression');
+      toast.error('× Erreur lors de la suppression')
     }
-    setShowDeleteConfirm(false);
-    setClientToDelete(null);
-  };
+    setShowDeleteConfirm(false)
+    setClientToDelete(null)
+  }
 
-  const pages = Math.ceil(total / 10);
+  const pages = Math.ceil(total / 10)
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
-      </div>
-    );
+    return <SkeletonTable rows={6} cols={6} />
   }
 
   if (clients.length === 0) {
     return (
-      <div className="bg-kcb-ardoise rounded-[4px] p-8 text-center">
-        <ShoppingCart className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
-        <p className="text-kcb-pierre mb-2">Aucun client trouvé</p>
-        <p className="text-kcb-pierre text-sm">
-          Ajoutez votre premier client ou synchronisez vos transactions
-        </p>
-      </div>
-    );
+      <EmptyState
+        icon={ShoppingCart}
+        title="Aucun client trouvé"
+        description="Ajoutez votre premier client ou synchronisez vos transactions."
+      />
+    )
   }
 
   return (
@@ -71,15 +65,11 @@ export function ClientsList({
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
-                  Nom
-                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">Nom</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
                   Contact
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
-                  Statut
-                </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">Statut</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
                   Segment
                 </th>
@@ -93,10 +83,7 @@ export function ClientsList({
             </thead>
             <tbody className="divide-y divide-white/[0.06]">
               {clients.map((client) => (
-                <tr
-                  key={client._id}
-                  className="hover:bg-kcb-noir/50 transition"
-                >
+                <tr key={client._id} className="hover:bg-kcb-noir/50 transition">
                   <td className="px-6 py-4">
                     <div>
                       <p className="text-white font-medium">{client.name}</p>
@@ -125,33 +112,30 @@ export function ClientsList({
                   <td className="px-6 py-4">
                     <span
                       className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                        client.status === "vip"
-                          ? "bg-yellow-900/50 text-yellow-200"
-                          : client.status === "client"
-                          ? "bg-green-900/50 text-green-200"
-                          : client.status === "prospect"
-                          ? "bg-kcb-or/20 text-kcb-sable"
-                          : "bg-kcb-ardoise/50 text-kcb-sable"
+                        client.status === 'vip'
+                          ? 'bg-yellow-900/50 text-yellow-200'
+                          : client.status === 'client'
+                            ? 'bg-green-900/50 text-green-200'
+                            : client.status === 'prospect'
+                              ? 'bg-kcb-or/20 text-kcb-sable'
+                              : 'bg-kcb-ardoise/50 text-kcb-sable'
                       }`}
                     >
-                      {client.status === "vip" && <Crown className="w-3 h-3" />}
-                      {client.status.charAt(0).toUpperCase() +
-                        client.status.slice(1)}
+                      {client.status === 'vip' && <Crown className="w-3 h-3" />}
+                      {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-kcb-sable">
                     {client.segment
-                      ?.replace(/-/g, " ")
-                      .split(" ")
+                      ?.replace(/-/g, ' ')
+                      .split(' ')
                       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                      .join(" ")}
+                      .join(' ')}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <p className="text-white font-medium">
-                      {client.totalPurchases}
-                    </p>
+                    <p className="text-white font-medium">{client.totalPurchases}</p>
                     <p className="text-xs text-kcb-pierre">
-                      {client.totalSpent?.toLocaleString("fr-FR")} CFA
+                      {client.totalSpent?.toLocaleString('fr-FR')} CFA
                     </p>
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -216,7 +200,7 @@ export function ClientsList({
         variant="danger"
       />
     </div>
-  );
+  )
 }
 
-export default ClientsList;
+export default ClientsList

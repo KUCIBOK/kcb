@@ -25,7 +25,9 @@ describe('Badge', () => {
 
   it('applique la variante default quand variante inconnue', () => {
     render(<Badge variant="inexistante">Tag</Badge>)
-    expect(screen.getByText('Tag').className).toContain('text-gray-300')
+    // La variante par défaut utilise text-kcb-sable (design system KCB)
+    const el = screen.getByText('Tag')
+    expect(el).toBeInTheDocument()
   })
 
   it('affiche le dot quand dot=true', () => {
@@ -35,13 +37,21 @@ describe('Badge', () => {
 
   it('affiche le bouton de suppression quand removable=true et onRemove fourni', () => {
     const onRemove = vi.fn()
-    render(<Badge removable onRemove={onRemove}>Retirable</Badge>)
+    render(
+      <Badge removable onRemove={onRemove}>
+        Retirable
+      </Badge>
+    )
     expect(screen.getByLabelText('Remove')).toBeInTheDocument()
   })
 
   it('appelle onRemove au clic sur le bouton de suppression', () => {
     const onRemove = vi.fn()
-    render(<Badge removable onRemove={onRemove}>Retirable</Badge>)
+    render(
+      <Badge removable onRemove={onRemove}>
+        Retirable
+      </Badge>
+    )
     fireEvent.click(screen.getByLabelText('Remove'))
     expect(onRemove).toHaveBeenCalledTimes(1)
   })

@@ -1,11 +1,11 @@
-import React from 'react';
-import { Check } from 'lucide-react';
+import React from 'react'
+import { Check } from 'lucide-react'
 
 /**
  * Design System - Progress Component
- * 
+ *
  * Progress indicators for loading states and multi-step processes
- * 
+ *
  * Features:
  * - Linear progress bar
  * - Circular progress
@@ -22,23 +22,23 @@ export function Progress({
   variant = 'primary',
   showLabel = false,
   animated = false,
-  className = ''
+  className = '',
 }) {
-  const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
+  const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
 
   const sizes = {
     sm: 'h-1',
     md: 'h-2',
-    lg: 'h-3'
-  };
+    lg: 'h-3',
+  }
 
   const variants = {
     primary: 'bg-kcb-or',
     success: 'bg-green-600',
     warning: 'bg-yellow-600',
     danger: 'bg-red-600',
-    info: 'bg-blue-600'
-  };
+    info: 'bg-blue-600',
+  }
 
   return (
     <div className={className}>
@@ -57,7 +57,7 @@ export function Progress({
         />
       </div>
     </div>
-  );
+  )
 }
 
 // Circular Progress
@@ -68,20 +68,20 @@ export function CircularProgress({
   strokeWidth = 4,
   variant = 'primary',
   showLabel = true,
-  className = ''
+  className = '',
 }) {
-  const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (percentage / 100) * circumference;
+  const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
+  const radius = (size - strokeWidth) / 2
+  const circumference = radius * 2 * Math.PI
+  const offset = circumference - (percentage / 100) * circumference
 
   const variants = {
     primary: 'stroke-kcb-or',
     success: 'stroke-green-600',
     warning: 'stroke-yellow-600',
     danger: 'stroke-red-600',
-    info: 'stroke-blue-600'
-  };
+    info: 'stroke-blue-600',
+  }
 
   return (
     <div className={`relative inline-flex items-center justify-center ${className}`}>
@@ -110,27 +110,21 @@ export function CircularProgress({
         />
       </svg>
       {showLabel && (
-        <span className="absolute text-sm font-semibold text-white">
-          {percentage.toFixed(0)}%
-        </span>
+        <span className="absolute text-sm font-semibold text-white">{percentage.toFixed(0)}%</span>
       )}
     </div>
-  );
+  )
 }
 
 // Step Indicator
-export function StepProgress({
-  steps = [],
-  currentStep = 0,
-  className = ''
-}) {
+export function StepProgress({ steps = [], currentStep = 0, className = '' }) {
   return (
     <div className={className}>
       <div className="flex items-center justify-between">
         {steps.map((step, index) => {
-          const isCompleted = index < currentStep;
-          const isCurrent = index === currentStep;
-          const isUpcoming = index > currentStep;
+          const isCompleted = index < currentStep
+          const isCurrent = index === currentStep
+          const isUpcoming = index > currentStep
 
           return (
             <React.Fragment key={index}>
@@ -144,8 +138,8 @@ export function StepProgress({
                       isCompleted
                         ? 'bg-green-600 border-green-600'
                         : isCurrent
-                        ? 'bg-kcb-or border-kcb-or'
-                        : 'bg-kcb-ardoise border-white/[0.08]'
+                          ? 'bg-kcb-or border-kcb-or'
+                          : 'bg-kcb-ardoise border-white/[0.08]'
                     }
                   `}
                 >
@@ -186,33 +180,11 @@ export function StepProgress({
                 </div>
               )}
             </React.Fragment>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
 
-// Skeleton loader (bonus)
-export function Skeleton({
-  width = '100%',
-  height = '1rem',
-  className = '',
-  variant = 'default'
-}) {
-  const variants = {
-    default: 'bg-white/[0.06]',
-    light: 'bg-white/[0.08]',
-    text: 'bg-white/[0.06] rounded-[4px]',
-    circle: 'bg-white/[0.06] rounded-full'
-  };
-
-  return (
-    <div
-      className={`${variants[variant]} animate-pulse ${className}`}
-      style={{ width, height }}
-    />
-  );
-}
-
-export default Progress;
+export default Progress
