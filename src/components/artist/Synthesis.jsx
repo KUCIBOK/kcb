@@ -64,7 +64,7 @@ export function Synthesis(){
             {
                 label: "Chiffre d'affaires (CFA)",
                 data: monthlyRevenue,
-                backgroundColor: "rgba(34,197,94,0.7)",
+                backgroundColor: "rgba(45,106,79,0.7)",
                 borderRadius: 6,
             },
         ],
@@ -103,9 +103,9 @@ export function Synthesis(){
             {
                 data: [soldCount, forSaleCount, pendingCount],
                 backgroundColor: [
-                    "rgba(34,197,94,0.8)",   // green for sold
-                    "rgba(59,130,246,0.8)",  // blue for for sale
-                    "rgba(251,191,36,0.8)",  // yellow for pending
+                    "rgba(45,106,79,0.8)",   // green for sold
+                    "rgba(201,168,76,0.8)",  // gold for for sale
+                    "rgba(212,160,23,0.8)",  // amber for pending
                 ],
                 borderWidth: 1,
                 
@@ -133,13 +133,13 @@ export function Synthesis(){
                 icon={Image}
                 label="Total œuvres"
                 value={myArtworks?.length}
-                iconColor="text-blue-400"
-                iconBgColor="bg-blue-900/20"
+                iconColor="text-kcb-or"
+                iconBgColor="bg-kcb-or/10"
             />
             
             <KPICard
                 icon={TrendingUp}
-                label="Ventes totales"
+                label="Ventes du mois"
                 value={`${monthlySales?.toLocaleString('fr-FR')} CFA`}
                 iconColor="text-green-400"
                 iconBgColor="bg-green-900/20"
@@ -150,18 +150,18 @@ export function Synthesis(){
                 label="Oeuvres livrées"
                 value={`${deliveredArtworks}/${soldArtworksNumber}`}
                 subtitle={`${(soldArtworksNumber > 0 ? (deliveredArtworks / soldArtworksNumber) * 100 : 0).toFixed(0)}% livrées`}
-                iconColor="text-orange-400"
-                iconBgColor="bg-orange-900/20"
+                iconColor="text-kcb-or"
+                iconBgColor="bg-kcb-or/10"
             />
         </div>
 
         {/* Actions rapides */}
-        <div className="rounded-xl border border-white/[0.06] p-4 my-4">
+        <div className="rounded-[4px] border border-white/[0.06] p-4 my-4">
             <h3 className="flex gap-2 items-center mb-3 text-sm font-semibold text-white">
                 <Clock className="w-4 h-4 text-kcb-or" /> Actions rapides
             </h3>
             <div className="grid grid-cols-2 gap-3">
-                <Link to="submit-artwork" className="rounded-lg border border-white/[0.06] p-3 flex flex-col items-center gap-2 hover:bg-gray-900 text-xs text-kcb-sable text-center transition">
+                <Link to="submit-artwork" className="rounded-[4px] border border-white/[0.06] p-3 flex flex-col items-center gap-2 hover:bg-white/[0.04] text-xs text-kcb-sable text-center transition">
                     <Image className="w-4 h-4" />
                     Ajouter une œuvre
                 </Link>
@@ -171,19 +171,19 @@ export function Synthesis(){
 
         {/* Graphiques et liste */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm overflow-hidden">
+          <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm overflow-hidden">
             <h3 className="text-sm font-semibold text-white mb-3">Chiffre d'affaires mensuel</h3>
             <div className="w-full overflow-x-auto">
               <Bar data={barData} options={barOptions} height={200} />
             </div>
           </div>
-          <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm overflow-hidden">
+          <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm overflow-hidden">
             <ArtworksList title="Mes œuvres" artworks={myArtworks?.slice(0, 5) || []} />
           </div>
         </div>
 
         {/* Pie chart */}
-        <div className="rounded-xl bg-card border border-gray-800 p-4 shadow-sm">
+        <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm">
           <h3 className="text-sm font-semibold text-white mb-3">Répartition des œuvres</h3>
           <div className="h-48 md:h-56 flex items-center justify-center">
             <Pie data={pieData} options={pieOptions} />

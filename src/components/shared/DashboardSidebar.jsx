@@ -68,7 +68,7 @@ export default function DashboardSidebar({
       className={`
         fixed top-0 left-0 h-screen w-72 max-w-[85vw] z-30
         flex-shrink-0 overflow-y-auto
-        bg-kcb-ardoise border-r border-gray-800/60
+        bg-kcb-ardoise border-r border-white/[0.06]
         transition-transform duration-300 ease-in-out
         ${toggle ? "translate-x-0" : "-translate-x-full"}
         lg:relative lg:translate-x-0 lg:w-60 lg:h-screen lg:block
@@ -86,7 +86,7 @@ export default function DashboardSidebar({
           </Link>
           <button
             onClick={() => setToggle(false)}
-            className="lg:hidden block text-gray-400 hover:text-white"
+            className="lg:hidden block text-kcb-pierre hover:text-white"
           >
             <X />
           </button>
@@ -97,7 +97,7 @@ export default function DashboardSidebar({
           <div className="flex items-center mb-4">
             <Link
               to={-1}
-              className="text-gray-400 hover:text-white flex items-center gap-2 border hover:bg-gray-800/60 px-2 py-1 rounded-md"
+              className="text-kcb-pierre hover:text-white flex items-center gap-2 border border-white/[0.06] hover:bg-white/[0.06] px-2 py-1 rounded-[4px]"
             >
               <ArrowLeft className="w-4 h-4" /> Retour
             </Link>
@@ -113,9 +113,9 @@ export default function DashboardSidebar({
                 "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
               }
               alt={profile.name}
-              className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-700"
+              className="w-10 h-10 rounded-full object-cover mr-2 border border-white/[0.08]"
             />
-            <span className="text-white text-lg font-serif font-bold truncate">
+            <span className="text-white text-lg font-playfair font-bold truncate">
               {profile.name}
             </span>
           </div>
@@ -123,13 +123,13 @@ export default function DashboardSidebar({
 
         {/* Recherche rapide */}
         <div className="mb-4 relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-kcb-pierre" />
           <input
             type="text"
             placeholder="Rechercher..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-kcb-or transition"
+            className="w-full pl-10 pr-4 py-2 bg-kcb-noir border border-white/[0.08] rounded-[4px] text-white text-sm placeholder-kcb-pierre focus:outline-none focus:border-kcb-or transition"
           />
         </div>
 
@@ -139,18 +139,18 @@ export default function DashboardSidebar({
             <div key={menuIndex} className="mb-2">
               <button
                 onClick={() => toggleMenu(menu.category)}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-800 transition text-gray-300 hover:text-white group"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-[4px] hover:bg-white/[0.06] transition text-kcb-sable hover:text-white group"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-gray-400 group-hover:text-kcb-or transition">
+                  <span className="text-kcb-pierre group-hover:text-kcb-or transition">
                     {menu.icon}
                   </span>
                   <span className="text-sm font-medium">{menu.category}</span>
                 </div>
                 {searchQuery || expandedMenu === menu.category ? (
-                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                  <ChevronDown className="w-4 h-4 text-kcb-pierre" />
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                  <ChevronRight className="w-4 h-4 text-kcb-pierre" />
                 )}
               </button>
 
@@ -162,9 +162,9 @@ export default function DashboardSidebar({
                         key={itemIndex}
                         to={item.to}
                         onClick={() => setToggle(false)}
-                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition text-gray-400 hover:bg-gray-800 hover:text-white"
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-[4px] transition text-kcb-pierre hover:bg-white/[0.06] hover:text-white"
                       >
-                        <span className="text-gray-500">{item.icon}</span>
+                        <span className="text-kcb-pierre">{item.icon}</span>
                         <span className="text-sm">{item.name}</span>
                       </Link>
                     ) : (
@@ -174,15 +174,15 @@ export default function DashboardSidebar({
                           setTab(item.index);
                           setToggle(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-[4px] transition focus-visible:ring-2 focus-visible:ring-kcb-or focus-visible:ring-offset-1 focus-visible:ring-offset-kcb-noir outline-none ${
                           tab === item.index
                             ? "bg-kcb-or/15 text-kcb-or border-l-2 border-kcb-or"
-                            : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                            : "text-kcb-pierre hover:bg-white/[0.06] hover:text-white"
                         }`}
                       >
                         <span
                           className={
-                            tab === item.index ? "text-kcb-or" : "text-gray-500"
+                            tab === item.index ? "text-kcb-or" : "text-kcb-pierre"
                           }
                         >
                           {item.icon}
@@ -201,7 +201,7 @@ export default function DashboardSidebar({
         {cta && (
           <Link
             to={cta.to}
-            className={`w-full flex items-center gap-2 text-xs font-medium text-white py-2 px-4 rounded-md mb-2 transition ${cta.className}`}
+            className={`w-full flex items-center gap-2 text-xs font-medium text-white py-2 px-4 rounded-[4px] mb-2 transition ${cta.className}`}
           >
             {cta.icon}
             {cta.label}
@@ -212,7 +212,7 @@ export default function DashboardSidebar({
         {!subscription && pricingPath && (
           <Link
             to={pricingPath}
-            className="w-full text-kcb-or text-xs font-medium bg-kcb-or/10 border border-kcb-or/30 hover:bg-kcb-or/20 transition py-2 px-4 flex gap-2 items-center rounded-md mb-2"
+            className="w-full text-kcb-or text-xs font-medium bg-kcb-or/10 border border-kcb-or/30 hover:bg-kcb-or/20 transition py-2 px-4 flex gap-2 items-center rounded-[4px] mb-2"
           >
             <Crown className="w-4 h-4" /> Mettre à jour l'abonnement
           </Link>
@@ -221,7 +221,7 @@ export default function DashboardSidebar({
         {/* Déconnexion */}
         <button
           onClick={logout}
-          className="w-full mt-auto px-3 py-2 flex gap-2 items-center text-white text-xs bg-red-950/80 hover:bg-red-900/90 rounded-md transition justify-center"
+          className="w-full mt-auto px-3 py-2 flex gap-2 items-center text-white text-xs bg-[#8B1A1A]/80 hover:bg-[#8B1A1A] rounded-md transition justify-center"
         >
           <LogOut className="w-4 h-4 text-white" />
           <span>Déconnexion</span>

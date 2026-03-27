@@ -136,8 +136,8 @@ export const Profile = () => {
       )
     },
     {
-      value: 'professional',
-      label: 'Professionnel',
+      value: 'curator',
+      label: 'Curateur',
       content: (
         <div className="space-y-4">
           <Input
@@ -149,12 +149,12 @@ export const Profile = () => {
             placeholder="Dans quelle institution travaillez vous ?"
           />
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Qualifications</label>
+            <label className="block text-sm font-medium text-kcb-sable mb-2">Qualifications</label>
             <ReactQuill
               theme="snow"
               value={state.qualifications || ''}
               onChange={(value) => setState({ ...state, qualifications: value })}
-              className="border border-gray-800 rounded-lg bg-white text-black"
+              className="border border-white/[0.06] rounded-[4px] bg-white text-black"
               placeholder="Décrivez vos qualifications"
             />
           </div>
@@ -180,21 +180,21 @@ export const Profile = () => {
                 readOnly
               />
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Clé privée</label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Clé privée</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={user?.wallet?.privateKey ? user.wallet.privateKey.slice(0, 6) + '••••••••••••••••••••' + user.wallet.privateKey.slice(-4) : ''}
-                    className="flex-1 px-4 py-2 bg-background border border-gray-700 rounded-lg text-white text-sm focus:outline-none font-mono"
+                    className="flex-1 px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white text-sm focus:outline-none font-mono"
                     readOnly
                   />
                   <button
                     type="button"
                     onClick={() => navigator.clipboard.writeText(user?.wallet?.privateKey || '')}
-                    className="px-4 py-2 border border-gray-700 bg-background rounded-lg hover:bg-gray-800 transition"
+                    className="px-4 py-2 border border-white/[0.06] bg-kcb-noir rounded-[4px] hover:bg-kcb-ardoise transition"
                     title="Copier la clé privée"
                   >
-                    <Copy className="w-4 h-4 text-gray-400" />
+                    <Copy className="w-4 h-4 text-kcb-pierre" />
                   </button>
                 </div>
                 <p className="text-xs text-yellow-600 mt-1">Ne partagez jamais votre clé privée.</p>
@@ -207,7 +207,7 @@ export const Profile = () => {
   ];
 
   return (
-    <section className="bg-gray-900 rounded-2xl shadow-md border border-gray-800 px-4 py-6 md:px-8 md:py-8 w-full mx-auto">
+    <section className="bg-kcb-ardoise rounded-[4px] shadow-md border border-white/[0.06] px-4 py-6 md:px-8 md:py-8 w-full mx-auto">
       <form onSubmit={handleUpdate} method="post" className="space-y-6">
         {state.error && (
           <div className="text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
@@ -217,20 +217,20 @@ export const Profile = () => {
         {/* Profile Header */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Avatar Section */}
-          <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-6 flex flex-col items-center gap-4 h-fit lg:w-72">
+          <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/60 p-6 flex flex-col items-center gap-4 h-fit lg:w-72">
             <div className="text-center">
               {state?.image ? (
-                <img src={state?.show} alt="Profile" className="w-28 h-28 object-cover rounded-full mb-4 mx-auto border-4 border-gray-800 shadow" />
+                <img src={state?.show} alt="Profile" className="w-28 h-28 object-cover rounded-full mb-4 mx-auto border-4 border-white/[0.06] shadow" />
               ) : (
-                <div className="w-28 h-28 rounded-full bg-gray-800 mb-4 flex justify-center items-center mx-auto border-4 border-gray-800">
-                  <Camera className="w-10 h-10 text-gray-500" />
+                <div className="w-28 h-28 rounded-full bg-kcb-ardoise mb-4 flex justify-center items-center mx-auto border-4 border-white/[0.06]">
+                  <Camera className="w-10 h-10 text-kcb-pierre" />
                 </div>
               )}
               <p className="font-sans text-white font-medium text-base mb-3">{user?.name}</p>
               <button
                 type="button"
                 onClick={() => document.getElementById('profile-image').click()}
-                className="border border-gray-700 bg-gray-900 w-full rounded-md text-xs text-gray-200 font-medium px-3 py-2 hover:bg-gray-800 transition"
+                className="border border-white/[0.06] bg-kcb-ardoise w-full rounded-md text-xs text-kcb-sable font-medium px-3 py-2 hover:bg-kcb-ardoise transition"
               >
                 Modifier la photo
               </button>
@@ -242,8 +242,8 @@ export const Profile = () => {
                 onChange={handleFileChange}
               />
             </div>
-            <div className="w-full pt-4 border-t border-gray-800">
-              <div className="flex justify-between text-xs text-gray-400">
+            <div className="w-full pt-4 border-t border-white/[0.06]">
+              <div className="flex justify-between text-xs text-kcb-pierre">
                 <span>Compte créé</span>
                 <span>{new Date(user?.createdAt)?.toLocaleDateString()}</span>
               </div>
@@ -257,7 +257,7 @@ export const Profile = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end pt-4 border-t border-gray-800">
+        <div className="flex justify-end pt-4 border-t border-white/[0.06]">
           <Button
             type="submit"
             disabled={state?.loading}

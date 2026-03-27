@@ -19,14 +19,14 @@ const ACTIVE_STATUSES = ["pending", "in_transit", "processing", "shipped"]
 function DeliveryStatusBadge({ status }) {
   const CONFIG = {
     pending:    { label: "En attente",  className: "bg-yellow-900/40 text-yellow-300" },
-    processing: { label: "En cours",    className: "bg-blue-900/40 text-blue-300" },
-    shipped:    { label: "Expédiée",    className: "bg-indigo-900/40 text-indigo-300" },
-    in_transit: { label: "En transit",  className: "bg-purple-900/40 text-purple-300" },
+    processing: { label: "En cours",    className: "bg-kcb-or/20 text-kcb-sable" },
+    shipped:    { label: "Expédiée",    className: "bg-kcb-or/20 text-kcb-sable" },
+    in_transit: { label: "En transit",  className: "bg-kcb-bronze/20 text-kcb-sable" },
     delivered:  { label: "Livrée",      className: "bg-green-900/40 text-green-300" },
   }
-  const cfg = CONFIG[status] ?? { label: status, className: "bg-gray-800 text-gray-400" }
+  const cfg = CONFIG[status] ?? { label: status, className: "bg-kcb-ardoise text-kcb-pierre" }
   return (
-    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}>
+    <span className={`text-xs font-medium px-2 py-0.5 rounded-[2px] ${cfg.className}`}>
       {cfg.label}
     </span>
   )
@@ -63,8 +63,8 @@ export function Synthesis() {
           icon={Bookmark}
           label="Œuvres achetées"
           value={buyed?.length ?? 0}
-          iconColor="text-purple-400"
-          iconBgColor="bg-purple-900/20"
+          iconColor="text-kcb-bronze"
+          iconBgColor="bg-kcb-bronze/10"
         />
         <KPICard
           icon={TrendingUp}
@@ -77,8 +77,8 @@ export function Synthesis() {
           icon={Truck}
           label="Livraisons actives"
           value={activeDeliveries.length}
-          iconColor="text-blue-400"
-          iconBgColor="bg-blue-900/20"
+          iconColor="text-kcb-or"
+          iconBgColor="bg-kcb-or/10"
         />
         <KPICard
           icon={CreditCard}
@@ -90,15 +90,15 @@ export function Synthesis() {
       </div>
 
       {/* Actions rapides */}
-      <div className="rounded-xl border border-gray-800 bg-card p-4">
+      <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise p-4">
         <h3 className="flex items-center gap-2 text-white font-semibold mb-4">
-          <Clock className="w-5 h-5 text-gray-400" />
+          <Clock className="w-5 h-5 text-kcb-pierre" />
           Actions rapides
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
-            to="/explore"
-            className="flex items-center justify-center gap-2 rounded-lg border border-gray-700 bg-gray-800/50 hover:bg-gray-700/60 text-gray-200 text-sm font-medium py-3 px-4 transition-colors duration-200"
+            to="/africa/catalogue"
+            className="flex items-center justify-center gap-2 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/50 hover:bg-white/[0.08] text-kcb-sable text-sm font-medium py-3 px-4 transition-colors duration-200"
           >
             <Image className="w-4 h-4" />
             Explorer le marketplace
@@ -110,16 +110,16 @@ export function Synthesis() {
 
       {/* Dernières acquisitions */}
       {lastAcquisitions.length > 0 && (
-        <div className="rounded-xl border border-gray-800 bg-card p-4">
+        <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise p-4">
           <h3 className="flex items-center gap-2 text-white font-semibold mb-4">
-            <Package className="w-5 h-5 text-gray-400" />
+            <Package className="w-5 h-5 text-kcb-pierre" />
             Dernières acquisitions
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {lastAcquisitions.map((artwork) => (
               <div
                 key={artwork._id}
-                className="flex items-center gap-3 rounded-lg border border-gray-800 bg-[#13161e] p-3 hover:border-gray-700 transition-colors duration-200"
+                className="flex items-center gap-3 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise-cool p-3 hover:border-white/[0.06] transition-colors duration-200"
               >
                 {/* Thumbnail */}
                 {artwork.image ? (
@@ -129,15 +129,15 @@ export function Synthesis() {
                     className="w-14 h-14 rounded-md object-cover flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-14 h-14 rounded-md bg-gray-800 flex items-center justify-center flex-shrink-0">
-                    <Image className="w-6 h-6 text-gray-600" />
+                  <div className="w-14 h-14 rounded-md bg-kcb-ardoise flex items-center justify-center flex-shrink-0">
+                    <Image className="w-6 h-6 text-kcb-pierre" />
                   </div>
                 )}
                 {/* Info */}
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-white truncate">{artwork.title || "Sans titre"}</p>
-                  <p className="text-xs text-gray-400 truncate">{artwork.artist?.name || artwork.artistName || "—"}</p>
-                  <p className="text-xs text-indigo-400 font-semibold mt-0.5">
+                  <p className="text-xs text-kcb-pierre truncate">{artwork.artist?.name || artwork.artistName || "—"}</p>
+                  <p className="text-xs text-kcb-or font-semibold mt-0.5">
                     {artwork.price ? `${artwork.price.toLocaleString("fr-FR")} CFA` : "—"}
                   </p>
                 </div>
@@ -149,22 +149,22 @@ export function Synthesis() {
 
       {/* Livraisons en cours */}
       {activeDeliveries.length > 0 && (
-        <div className="rounded-xl border border-gray-800 bg-card p-4">
+        <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise p-4">
           <h3 className="flex items-center gap-2 text-white font-semibold mb-4">
-            <Truck className="w-5 h-5 text-gray-400" />
+            <Truck className="w-5 h-5 text-kcb-pierre" />
             Livraisons en cours
           </h3>
           <ul className="space-y-2">
             {activeDeliveries.map((delivery) => (
               <li
                 key={delivery._id}
-                className="flex items-center justify-between rounded-lg border border-gray-800 bg-[#13161e] px-4 py-3 hover:border-gray-700 transition-colors duration-200"
+                className="flex items-center justify-between rounded-[4px] border border-white/[0.06] bg-kcb-ardoise-cool px-4 py-3 hover:border-white/[0.06] transition-colors duration-200"
               >
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-white truncate">
                     {delivery.artworkTitle || delivery.description || `Livraison #${delivery._id?.slice(-6)}`}
                   </p>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-kcb-pierre mt-0.5">
                     {delivery.destination || "Destination inconnue"}
                   </p>
                 </div>
@@ -172,7 +172,7 @@ export function Synthesis() {
                   <DeliveryStatusBadge status={delivery.status} />
                   <Link
                     to={`/tracking/${delivery._id}`}
-                    className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                    className="text-xs text-kcb-or hover:text-kcb-or/80 transition-colors"
                   >
                     Suivre →
                   </Link>

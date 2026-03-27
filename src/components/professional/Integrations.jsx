@@ -50,7 +50,7 @@ const INTEGRATION_CONFIGS = {
   outlook: {
     name: "Outlook",
     icon: Mail,
-    color: "from-blue-500 to-cyan-500",
+    color: "from-kcb-or to-kcb-bronze",
     description: "Email Microsoft",
     fields: [
       { name: "email", label: "Adresse Outlook", type: "email" },
@@ -60,7 +60,7 @@ const INTEGRATION_CONFIGS = {
   google_calendar: {
     name: "Google Calendar",
     icon: Calendar,
-    color: "from-blue-400 to-purple-500",
+    color: "from-kcb-or to-kcb-bronze",
     description: "Calendrier synchronisé",
     fields: [
       { name: "accessToken", label: "Access Token", type: "password" },
@@ -70,7 +70,7 @@ const INTEGRATION_CONFIGS = {
   instagram: {
     name: "Instagram",
     icon: Instagram,
-    color: "from-pink-500 to-purple-500",
+    color: "from-kcb-or to-kcb-bronze",
     description: "Réseau social professionnel",
     fields: [
       { name: "accessToken", label: "Access Token", type: "password" },
@@ -80,7 +80,7 @@ const INTEGRATION_CONFIGS = {
   facebook: {
     name: "Facebook",
     icon: Facebook,
-    color: "from-blue-600 to-blue-400",
+    color: "from-kcb-or to-kcb-or/70",
     description: "Gestion des pages Facebook",
     fields: [
       { name: "accessToken", label: "Access Token", type: "password" },
@@ -215,7 +215,7 @@ export function Integrations() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Intégrations</h1>
-          <p className="text-gray-400">
+          <p className="text-kcb-pierre">
             Connectez vos services préférés pour optimiser votre workflow
           </p>
         </div>
@@ -223,7 +223,7 @@ export function Integrations() {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-900/50 border border-red-700 rounded-lg p-4 text-red-200 flex items-center gap-2">
+        <div className="bg-red-900/50 border border-red-700 rounded-[4px] p-4 text-red-200 flex items-center gap-2">
           <AlertCircle className="w-4 h-4" />
           {error}
         </div>
@@ -232,12 +232,12 @@ export function Integrations() {
       {/* Stats */}
       {stats.total > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-card rounded-lg p-4 border border-gray-700">
-            <p className="text-gray-400 text-sm">Total</p>
+          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
+            <p className="text-kcb-pierre text-sm">Total</p>
             <p className="text-2xl font-bold text-white">{stats.total}</p>
           </div>
-          <div className="bg-card rounded-lg p-4 border border-gray-700">
-            <p className="text-gray-400 text-sm">Connectées</p>
+          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
+            <p className="text-kcb-pierre text-sm">Connectées</p>
             <p className="text-2xl font-bold text-green-400">{stats.connected}</p>
           </div>
         </div>
@@ -253,11 +253,11 @@ export function Integrations() {
             return (
               <div
                 key={key}
-                className="bg-card rounded-lg p-6 border border-gray-700 hover:border-kcb-or/50 transition"
+                className="bg-kcb-ardoise rounded-[4px] p-6 border border-white/[0.06] hover:border-kcb-or/50 transition"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`p-3 rounded-lg bg-gradient-to-br ${config.color}`}>
+                  <div className={`p-3 rounded-[4px] bg-gradient-to-br ${config.color}`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   {connected && (
@@ -269,13 +269,13 @@ export function Integrations() {
                 <h3 className="text-lg font-bold text-white mb-1">
                   {config.name}
                 </h3>
-                <p className="text-sm text-gray-400 mb-4">
+                <p className="text-sm text-kcb-pierre mb-4">
                   {config.description}
                 </p>
 
                 {/* Status */}
                 {connected && (
-                  <div className="mb-4 text-xs text-gray-400">
+                  <div className="mb-4 text-xs text-kcb-pierre">
                     <p>Connectée depuis {new Date(connected.connectedAt).toLocaleDateString("fr-FR")}</p>
                     {connected.lastSync && (
                       <p>
@@ -323,7 +323,7 @@ export function Integrations() {
                   {!connected ? (
                     <button
                       onClick={() => handleConnect(key)}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition text-sm"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition text-sm"
                     >
                       <LinkIcon className="w-4 h-4" />
                       Connecter
@@ -333,7 +333,7 @@ export function Integrations() {
                       <button
                         onClick={() => handleSync(connected._id)}
                         disabled={syncing === connected._id}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-700/80 hover:bg-green-600 text-white rounded-lg transition text-sm disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-700/80 hover:bg-green-600 text-white rounded-[4px] transition text-sm disabled:opacity-50"
                       >
                         <RefreshCw
                           className={`w-4 h-4 ${
@@ -344,7 +344,7 @@ export function Integrations() {
                       </button>
                       <button
                         onClick={() => handleDisconnect(connected._id)}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-900/80 hover:bg-red-800 text-white rounded-lg transition text-sm"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-900/80 hover:bg-red-800 text-white rounded-[4px] transition text-sm"
                       >
                         <Unlink className="w-4 h-4" />
                         Déconnecter
@@ -365,11 +365,11 @@ export function Integrations() {
       {/* Modal */}
       {showModal && config && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-lg max-w-md w-full p-6 border border-gray-700">
+          <div className="bg-kcb-ardoise rounded-[4px] max-w-md w-full p-6 border border-white/[0.06]">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div
-                  className={`p-2 rounded-lg bg-gradient-to-br ${config.color}`}
+                  className={`p-2 rounded-[4px] bg-gradient-to-br ${config.color}`}
                 >
                   {<config.icon className="w-5 h-5 text-white" />}
                 </div>
@@ -379,16 +379,16 @@ export function Integrations() {
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1 hover:bg-gray-700 rounded transition"
+                className="p-1 hover:bg-white/[0.08] rounded transition"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-kcb-pierre" />
               </button>
             </div>
 
             <form onSubmit={handleSaveIntegration} className="space-y-4">
               {config.fields.map((field) => (
                 <div key={field.name}>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-kcb-sable mb-2">
                     {field.label} *
                   </label>
                   <input
@@ -402,7 +402,7 @@ export function Integrations() {
                       })
                     }
                     required
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                    className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
               ))}
@@ -410,14 +410,14 @@ export function Integrations() {
               <div className="flex gap-2 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition font-medium"
+                  className="flex-1 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition font-medium"
                 >
                   Connecter
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition font-medium"
+                  className="flex-1 px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white rounded-[4px] transition font-medium"
                 >
                   Annuler
                 </button>

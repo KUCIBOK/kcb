@@ -11,7 +11,7 @@ function ArtworkStatusBadge({ status }) {
     pending: { label: "En attente", className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
     rejected: { label: "Refusée", className: "bg-red-500/20 text-red-400 border-red-500/30" },
   }
-  const cfg = CONFIG[status] ?? { label: status, className: "bg-gray-500/20 text-gray-400 border-gray-500/30" }
+  const cfg = CONFIG[status] ?? { label: status, className: "bg-gray-500/20 text-kcb-pierre border-gray-500/30" }
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${cfg.className}`}>
       {cfg.label}
@@ -56,12 +56,12 @@ export function ArtistCertificationTab() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="bg-purple-900/20 text-purple-400 p-2.5 rounded-lg">
+        <div className="bg-kcb-or/10 text-kcb-or p-2.5 rounded-[4px]">
           <ShieldCheck className="w-5 h-5" />
         </div>
         <div>
           <h2 className="text-xl font-bold text-white">Certification KCB</h2>
-          <p className="text-sm text-gray-400">Suivi du Standard Kucibok pour vos œuvres</p>
+          <p className="text-sm text-kcb-pierre">Suivi du Standard Kucibok pour vos œuvres</p>
         </div>
       </div>
 
@@ -71,8 +71,8 @@ export function ArtistCertificationTab() {
           icon={Shield}
           label="Total œuvres"
           value={total}
-          iconColor="text-gray-400"
-          iconBgColor="bg-gray-700/40"
+          iconColor="text-kcb-pierre"
+          iconBgColor="bg-kcb-ardoise/40"
         />
         <KPICard
           icon={ShieldCheck}
@@ -92,24 +92,24 @@ export function ArtistCertificationTab() {
           icon={FileQuestion}
           label="Non certifiées"
           value={uncertified}
-          iconColor="text-gray-500"
-          iconBgColor="bg-gray-800/40"
+          iconColor="text-kcb-pierre"
+          iconBgColor="bg-kcb-ardoise/40"
         />
       </div>
 
       {/* Section info Standard Kucibok */}
-      <div className="bg-indigo-900/10 border border-indigo-500/20 rounded-xl p-5 flex items-start gap-3">
-        <Info className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+      <div className="bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] p-5 flex items-start gap-3">
+        <Info className="w-5 h-5 text-kcb-or shrink-0 mt-0.5" />
         <div>
           <h4 className="text-white font-semibold text-sm mb-1">Qu'est-ce que le Standard Kucibok ?</h4>
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-kcb-pierre text-sm leading-relaxed">
             Le Standard Kucibok (KCB) est un identifiant unique et infalsifiable attribué à chaque œuvre d'art
             africaine certifiée sur la plateforme. Il garantit l'authenticité, la traçabilité de provenance
             et permet une vérification publique via QR code.
           </p>
           <Link
             to="/verify"
-            className="inline-flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 text-sm font-medium mt-2 transition-colors"
+            className="inline-flex items-center gap-1.5 text-kcb-or hover:text-kcb-or/80 text-sm font-medium mt-2 transition-colors"
           >
             En savoir plus sur la vérification
             <ExternalLink className="w-3.5 h-3.5" />
@@ -118,19 +118,19 @@ export function ArtistCertificationTab() {
       </div>
 
       {/* Liste des œuvres */}
-      <div className="bg-[#13161e] border border-gray-800 rounded-xl overflow-hidden">
+      <div className="bg-[#13161e] border border-white/[0.06] rounded-[4px] overflow-hidden">
         {/* Filtres */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 flex-wrap gap-3">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] flex-wrap gap-3">
           <h3 className="text-white font-semibold">Mes œuvres</h3>
-          <div className="flex gap-1 bg-gray-800/60 rounded-lg p-1">
+          <div className="flex gap-1 bg-kcb-ardoise/60 rounded-[4px] p-1">
             {KCB_FILTERS.map((f) => (
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                   filter === f.value
-                    ? "bg-indigo-kcb text-white"
-                    : "text-gray-400 hover:text-white"
+                    ? "bg-kcb-or text-kcb-noir"
+                    : "text-kcb-pierre hover:text-white"
                 }`}
               >
                 {f.label}
@@ -141,27 +141,27 @@ export function ArtistCertificationTab() {
 
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-14 text-center px-6">
-            <Shield className="w-10 h-10 text-gray-600 mb-3" />
-            <p className="text-gray-400 font-medium">Aucune œuvre dans cette catégorie</p>
+            <Shield className="w-10 h-10 text-kcb-pierre mb-3" />
+            <p className="text-kcb-pierre font-medium">Aucune œuvre dans cette catégorie</p>
             {filter === "certified" && (
-              <p className="text-gray-500 text-sm mt-1">
+              <p className="text-kcb-pierre text-sm mt-1">
                 Vous n'avez pas encore d'œuvre certifiée KCB.
               </p>
             )}
           </div>
         ) : (
-          <div className="divide-y divide-gray-800">
+          <div className="divide-y divide-white/[0.06]">
             {/* En-tête du tableau */}
-            <div className="hidden sm:grid grid-cols-12 px-6 py-3 bg-gray-800/30">
-              <span className="col-span-5 text-xs font-medium text-gray-500 uppercase tracking-wide">Titre</span>
-              <span className="col-span-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Statut</span>
-              <span className="col-span-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Identifiant KCB</span>
+            <div className="hidden sm:grid grid-cols-12 px-6 py-3 bg-white/[0.04]">
+              <span className="col-span-5 text-xs font-medium text-kcb-pierre uppercase tracking-wide">Titre</span>
+              <span className="col-span-3 text-xs font-medium text-kcb-pierre uppercase tracking-wide">Statut</span>
+              <span className="col-span-4 text-xs font-medium text-kcb-pierre uppercase tracking-wide">Identifiant KCB</span>
             </div>
 
             {filtered.map((artwork) => (
               <div
                 key={artwork._id}
-                className="grid grid-cols-1 sm:grid-cols-12 px-6 py-4 gap-2 sm:gap-0 items-start sm:items-center hover:bg-gray-800/30 transition-colors"
+                className="grid grid-cols-1 sm:grid-cols-12 px-6 py-4 gap-2 sm:gap-0 items-start sm:items-center hover:bg-white/[0.04] transition-colors"
               >
                 {/* Titre */}
                 <div className="sm:col-span-5">
@@ -188,12 +188,12 @@ export function ArtistCertificationTab() {
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-gray-600 shrink-0" />
-                      <span className="text-gray-500 text-xs">Non certifiée</span>
+                      <Shield className="w-4 h-4 text-kcb-pierre shrink-0" />
+                      <span className="text-kcb-pierre text-xs">Non certifiée</span>
                       {artwork.status === "approved" && (
                         <Link
                           to="/dashboard/submit-artwork"
-                          className="text-indigo-400 hover:text-indigo-300 text-xs font-medium underline transition-colors"
+                          className="text-kcb-or hover:text-kcb-or/80 text-xs font-medium underline transition-colors"
                         >
                           Demander
                         </Link>
@@ -209,18 +209,18 @@ export function ArtistCertificationTab() {
 
       {/* CTA pour les non-certifiées */}
       {uncertified > 0 && (
-        <div className="bg-[#13161e] border border-gray-800 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="bg-[#13161e] border border-white/[0.06] rounded-[4px] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1">
             <h4 className="text-white font-semibold text-sm">
               {uncertified} œuvre{uncertified > 1 ? "s" : ""} non certifiée{uncertified > 1 ? "s" : ""}
             </h4>
-            <p className="text-gray-400 text-sm mt-0.5">
+            <p className="text-kcb-pierre text-sm mt-0.5">
               Soumettez vos œuvres pour obtenir un identifiant KCB et garantir leur authenticité sur la plateforme.
             </p>
           </div>
           <Link
             to="/dashboard/submit-artwork"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-kcb hover:bg-indigo-600 text-white text-sm font-medium rounded-lg transition-colors shrink-0"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-medium rounded-[4px] transition-colors shrink-0"
           >
             <ShieldCheck className="w-4 h-4" />
             Soumettre une œuvre

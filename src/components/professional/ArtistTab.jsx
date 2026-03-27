@@ -6,7 +6,7 @@ export function ArtistTab(){
     const {myArtists} = useArtist()
     return (
         <>
-        <div className="rounded-lg border bg-card shadow-sm p-6">
+        <div className="rounded-[4px] border bg-kcb-ardoise shadow-sm p-6">
             <div className="my-4 overflow-auto">
                 <ArtistTable artists={myArtists} />
             </div>

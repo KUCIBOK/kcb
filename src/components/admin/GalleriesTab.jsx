@@ -106,29 +106,29 @@ export default function GalleriesTab() {
   };
 
   return (
-    <div className="rounded-2xl bg-gray-900 shadow-none p-6">
+    <div className="rounded-[4px] bg-kcb-ardoise shadow-none p-6">
       <h2 className="text-xl font-semibold text-white/90 mb-6">
         Galeries & Institutions
       </h2>
 
       {/* Import / Export */}
-      <div className="mb-4 p-3 rounded-md border border-gray-700 bg-gray-800/40 flex flex-col md:flex-row gap-2 items-start md:items-center">
+      <div className="mb-4 p-3 rounded-md border border-white/[0.06] bg-kcb-ardoise/40 flex flex-col md:flex-row gap-2 items-start md:items-center">
         <input
           type="file"
           accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
-          className="text-sm text-gray-300"
+          className="text-sm text-kcb-sable"
           ref={fileInputRef}
         />
         <button
           disabled={uploading}
           onClick={handleImport}
-          className="px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white text-sm disabled:opacity-50"
+          className="px-3 py-2 rounded-md bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm disabled:opacity-50"
         >
           {uploading ? "Import en cours..." : "Importer (CSV/XLSX)"}
         </button>
         {importResult && (
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-kcb-pierre">
             {importResult.error
               ? `Erreur d'import: ${importResult.error}`
               : `Import ok. Lignes: ${importResult.totalRows} | Avec email: ${importResult.withEmailCount}`}
@@ -137,14 +137,14 @@ export default function GalleriesTab() {
         <div className="flex-1" />
         <button
           onClick={handleExport}
-          className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
+          className="px-3 py-2 rounded-md bg-kcb-ardoise hover:bg-white/[0.08] text-white text-sm"
         >
           Exporter CSV
         </button>
       </div>
 
       {/* Statistiques */}
-      <div className="mb-2 flex gap-4 text-sm text-gray-400">
+      <div className="mb-2 flex gap-4 text-sm text-kcb-pierre">
         <span>
           Total : <span className="font-bold text-white/80">{total}</span>
         </span>
@@ -154,7 +154,7 @@ export default function GalleriesTab() {
         </span>
         <span>
           Affichées :{" "}
-          <span className="font-bold text-blue-400">
+          <span className="font-bold text-kcb-or">
             {state.galleries.length}
           </span>
         </span>
@@ -164,23 +164,23 @@ export default function GalleriesTab() {
       <div className="mb-4 flex items-center">
         <input
           type="text"
-          className="w-full max-w-9/10 rounded-s-md border-y border-s border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none"
+          className="w-full max-w-9/10 rounded-s-md border-y border-s border-white/[0.06] bg-kcb-ardoise px-3 py-2 text-sm text-kcb-sable placeholder-kcb-pierre focus:outline-none"
           placeholder="Rechercher une galerie, ville, pays, téléphone..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <span className="w-full max-w-1/10 rounded-e-md border-y border-e border-gray-700 bg-gray-800 px-3 py-2.5 text-sm text-gray-200">
+        <span className="w-full max-w-1/10 rounded-e-md border-y border-e border-white/[0.06] bg-kcb-ardoise px-3 py-2.5 text-sm text-kcb-sable">
           <Search className="w-4 h-4" />
         </span>
       </div>
 
       {/* Liste */}
       {state?.set?.length === 0 ? (
-        <div className="text-gray-400">Aucune galerie trouvée.</div>
+        <div className="text-kcb-pierre">Aucune galerie trouvée.</div>
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="min-w-full border text-sm bg-gray-950 rounded-lg">
+            <table className="min-w-full border text-sm bg-kcb-noir rounded-[4px]">
               <thead>
                 <tr>
                   <th className="border px-2 py-2">Nom</th>
@@ -189,7 +189,7 @@ export default function GalleriesTab() {
               </thead>
               <tbody>
                 {state.set.map((g) => (
-                  <tr key={g?._id} className="hover:bg-gray-800/40">
+                  <tr key={g?._id} className="hover:bg-kcb-ardoise/40">
                     <td className="border px-2 py-2 font-bold text-white/90">
                       {g?.name}
                     </td>
@@ -206,7 +206,7 @@ export default function GalleriesTab() {
           {state.galleries.length > 40 && (
             <div className="flex justify-end gap-2 mt-4">
               <button
-                className="rounded-md border border-gray-700 px-4 py-2 text-sm text-gray-300 bg-transparent hover:bg-gray-800 transition"
+                className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
                 onClick={() => {
                   if (state.set[0] !== state.galleries[0]) {
                     const startIndex =
@@ -221,13 +221,13 @@ export default function GalleriesTab() {
               >
                 <ChevronLeft className="w-4 h-4 mr-1 inline-block" /> Précédent
               </button>
-              <span className="text-xs text-gray-400 flex items-center px-2">
+              <span className="text-xs text-kcb-pierre flex items-center px-2">
                 Page{" "}
                 {Math.floor(state.galleries.indexOf(state.set[0]) / 40) + 1} /{" "}
                 {Math.ceil(state.galleries.length / 40)}
               </span>
               <button
-                className="rounded-md border border-gray-700 px-4 py-2 text-sm text-gray-300 bg-transparent hover:bg-gray-800 transition"
+                className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
                 onClick={() => {
                   const lastIndex = state.galleries.indexOf(
                     state.set[state.set.length - 1]

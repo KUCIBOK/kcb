@@ -65,7 +65,7 @@ export default function SubmitArtwork() {
       <div className="flex items-center mb-6">
         <Link
           to={-1}
-          className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm text-white bg-gray-800 hover:bg-gray-700/80 transition-colors"
+          className="flex items-center gap-2 rounded-[4px] px-3 py-1.5 text-sm text-white bg-kcb-ardoise hover:bg-kcb-ardoise/80 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 text-white" />
           <span className="font-medium">Retour</span>
@@ -75,15 +75,15 @@ export default function SubmitArtwork() {
         <h1 className="font-serif text-2xl md:text-3xl text-white font-semibold mb-1">
           Soumettre une œuvre
         </h1>
-        <p className="text-gray-400 text-sm">
+        <p className="text-kcb-pierre text-sm">
           Soumettez votre œuvre à la plateforme pour examen et publication
         </p>
       </div>
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg">
+      <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 shadow-lg">
         <p className="text-white text-xl font-serif font-semibold mb-1">
           Détails de l'œuvre
         </p>
-        <p className="text-gray-400 text-sm mb-4">
+        <p className="text-kcb-pierre text-sm mb-4">
           Remplissez les champs pour soumettre votre œuvre
         </p>
         <div className="flex justify-center gap-6 items-center mt-4">
@@ -92,17 +92,17 @@ export default function SubmitArtwork() {
               <div
                 className={`rounded-full mx-auto flex justify-center items-center w-7 h-7 font-medium text-sm transition-all duration-200 ${
                   formState.step === index
-                    ? "bg-indigo-kcb text-white scale-110 shadow"
+                    ? "bg-kcb-or text-white scale-110 shadow"
                     : formState.step > index
                     ? "bg-green-600 text-white"
-                    : "bg-gray-800 text-gray-400"
+                    : "bg-kcb-ardoise text-kcb-pierre"
                 }`}
               >
                 {index + 1}
               </div>
               <span
                 className={`text-[11px] font-medium ${
-                  formState.step === index ? "text-indigo-kcb" : "text-gray-400"
+                  formState.step === index ? "text-kcb-or" : "text-kcb-pierre"
                 }`}
               >
                 {step}

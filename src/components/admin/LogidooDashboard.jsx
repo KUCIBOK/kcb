@@ -109,7 +109,7 @@ export default function LogidooDashboard() {
       critical: 'bg-red-500/20 border-red-500/50 text-red-300',
       warning: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-300',
       success: 'bg-green-500/20 border-green-500/50 text-green-300',
-      info: 'bg-blue-500/20 border-blue-500/50 text-blue-300',
+      info: 'bg-kcb-or/20 border-kcb-or/50 text-kcb-sable',
     };
     return colors[severity] || colors.info;
   };
@@ -140,7 +140,7 @@ export default function LogidooDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-gray-400">Chargement...</p>
+        <p className="text-kcb-pierre">Chargement...</p>
       </div>
     );
   }
@@ -151,12 +151,12 @@ export default function LogidooDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">🚚 Dashboard Logidoo</h1>
-          <p className="text-gray-400 mt-1">Suivi des expéditions et alertes en temps réel</p>
+          <p className="text-kcb-pierre mt-1">Suivi des expéditions et alertes en temps réel</p>
         </div>
         <button
           onClick={handleSync}
           disabled={syncing}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-medium transition disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 rounded-[4px] text-kcb-noir font-medium transition disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
           {syncing ? 'Synchronisation...' : 'Sync Now'}
@@ -182,7 +182,7 @@ export default function LogidooDashboard() {
             label="Dernières 24h"
             value={stats.last24h}
             icon={<Clock className="w-5 h-5" />}
-            color="purple"
+            color="kcb"
           />
           <StatCard
             label="Taux de succès"
@@ -194,7 +194,7 @@ export default function LogidooDashboard() {
       )}
 
       {/* Alertes */}
-      <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-6">
+      <div className="bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06] p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Bell className="w-5 h-5" /> Alertes & Notifications
@@ -207,7 +207,7 @@ export default function LogidooDashboard() {
           {stats?.unread > 0 && (
             <button
               onClick={handleMarkAllRead}
-              className="text-sm text-indigo-400 hover:text-indigo-300"
+              className="text-sm text-kcb-or hover:text-kcb-or/80"
             >
               Tout marquer comme lu
             </button>
@@ -217,14 +217,14 @@ export default function LogidooDashboard() {
         {alerts.length === 0 ? (
           <div className="text-center py-12">
             <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-            <p className="text-gray-400">Aucune alerte - Tout est en ordre!</p>
+            <p className="text-kcb-pierre">Aucune alerte - Tout est en ordre!</p>
           </div>
         ) : (
           <div className="space-y-3">
             {alerts.map((alert) => (
               <div
                 key={alert._id}
-                className={`p-4 rounded-lg border ${getSeverityColor(alert.severity)} ${
+                className={`p-4 rounded-[4px] border ${getSeverityColor(alert.severity)} ${
                   !alert.read ? 'opacity-100' : 'opacity-60'
                 }`}
               >
@@ -235,11 +235,11 @@ export default function LogidooDashboard() {
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-white">{alert.title}</h3>
                         {!alert.read && (
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-300 mt-1">{alert.message}</p>
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                      <p className="text-sm text-kcb-sable mt-1">{alert.message}</p>
+                      <div className="flex items-center gap-4 mt-2 text-xs text-kcb-pierre">
                         <span>{formatDate(alert.createdAt)}</span>
                         {alert.trackingId && (
                           <span className="flex items-center gap-1">
@@ -261,7 +261,7 @@ export default function LogidooDashboard() {
                         className="p-2 hover:bg-white/10 rounded transition"
                         title="Marquer comme lu"
                       >
-                        <Eye className="w-4 h-4 text-gray-400" />
+                        <Eye className="w-4 h-4 text-kcb-pierre" />
                       </button>
                     )}
                   </div>
@@ -275,19 +275,19 @@ export default function LogidooDashboard() {
       {/* Répartition par type */}
       {stats?.byType && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-6">
+          <div className="bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06] p-6">
             <h3 className="text-lg font-bold text-white mb-4">Par type</h3>
             <div className="space-y-3">
               {Object.entries(stats.byType).map(([type, count]) => (
                 <div key={type} className="flex justify-between items-center">
-                  <span className="text-gray-400 capitalize">{type.replace(/_/g, ' ')}</span>
+                  <span className="text-kcb-pierre capitalize">{type.replace(/_/g, ' ')}</span>
                   <span className="text-white font-semibold">{count}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-6">
+          <div className="bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06] p-6">
             <h3 className="text-lg font-bold text-white mb-4">Par sévérité</h3>
             <div className="space-y-3">
               {Object.entries(stats.bySeverity).map(([severity, count]) => (
@@ -295,7 +295,7 @@ export default function LogidooDashboard() {
                   <span className={`capitalize flex items-center gap-2 ${
                     severity === 'critical' ? 'text-red-400' :
                     severity === 'warning' ? 'text-yellow-400' :
-                    severity === 'success' ? 'text-green-400' : 'text-blue-400'
+                    severity === 'success' ? 'text-green-400' : 'text-kcb-or'
                   }`}>
                     {severity === 'critical' && <AlertTriangle className="w-4 h-4" />}
                     {severity === 'warning' && <Clock className="w-4 h-4" />}
@@ -316,25 +316,25 @@ export default function LogidooDashboard() {
 
 function StatCard({ label, value, icon, color }) {
   const colors = {
-    blue: 'bg-blue-500/10 border-blue-500/30',
+    blue: 'bg-kcb-or/10 border-kcb-or/30',
     green: 'bg-green-500/10 border-green-500/30',
     yellow: 'bg-yellow-500/10 border-yellow-500/30',
-    purple: 'bg-purple-500/10 border-purple-500/30',
+    kcb: 'bg-kcb-bronze/10 border-kcb-bronze/30',
     red: 'bg-red-500/10 border-red-500/30',
   };
 
   const textColors = {
-    blue: 'text-blue-300',
+    blue: 'text-kcb-sable',
     green: 'text-green-300',
     yellow: 'text-yellow-300',
-    purple: 'text-purple-300',
+    kcb: 'text-kcb-sable',
     red: 'text-red-300',
   };
 
   return (
-    <div className={`border rounded-lg p-4 ${colors[color]}`}>
+    <div className={`border rounded-[4px] p-4 ${colors[color]}`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-gray-400">{label}</span>
+        <span className="text-xs font-medium text-kcb-pierre">{label}</span>
         <span className={textColors[color]}>{icon}</span>
       </div>
       <div className="text-3xl font-bold text-white">{value}</div>

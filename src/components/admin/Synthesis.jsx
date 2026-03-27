@@ -71,7 +71,7 @@ export function Synthesis({setTab, setToggle}){
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16">
                         <rect x="2" y="6" width="28" height="20" rx="3" fill="#217346"/>
                         <rect x="8" y="10" width="16" height="12" rx="1.5" fill="#fff"/>
-                        <text x="16" y="20" textAnchor="middle" fontSize="10" fill="#217346" fontFamily="Arial, Helvetica, sans-serif" fontWeight="bold">X</text>
+                        <text x="16" y="20" textAnchor="middle" fontSize="10" fill="#217346" fontFamily="DM Sans, sans-serif" fontWeight="bold">X</text>
                     </svg>
                 </span>
             </Button>
@@ -82,8 +82,8 @@ export function Synthesis({setTab, setToggle}){
                 label="Visiteurs totaux"
                 value={state?.visitors?.length}
                 subtitle={`${Number(state?.AverageVisitTime).toFixed(0)} min en moyenne`}
-                iconColor="text-blue-400"
-                iconBgColor="bg-blue-900/20"
+                iconColor="text-kcb-or"
+                iconBgColor="bg-kcb-or/10"
             />
             
             <KPICard
@@ -99,8 +99,8 @@ export function Synthesis({setTab, setToggle}){
                 icon={UserCheck}
                 label="Utilisateurs totaux"
                 value={users?.length}
-                iconColor="text-purple-400"
-                iconBgColor="bg-purple-900/20"
+                iconColor="text-kcb-bronze"
+                iconBgColor="bg-kcb-bronze/10"
             />
             
             <KPICard
@@ -108,47 +108,47 @@ export function Synthesis({setTab, setToggle}){
                 label="Oeuvres totales"
                 value={artworks?.length}
                 subtitle={`${pending?.length} en attente`}
-                iconColor="text-orange-400"
-                iconBgColor="bg-orange-900/20"
+                iconColor="text-kcb-or"
+                iconBgColor="bg-kcb-or/10"
             />
             
             <KPICard
                 icon={CreditCard}
                 label="Abonnements actifs"
                 value={state?.subscriptions?.length}
-                iconColor="text-indigo-400"
-                iconBgColor="bg-indigo-900/20"
+                iconColor="text-kcb-or"
+                iconBgColor="bg-kcb-or/10"
             />
         </div>
         
-        <div className="rounded-xl border p-4 my-4">
+        <div className="rounded-[4px] border border-white/[0.06] p-4 my-4">
             <h3 className="flex gap-2 items-center my-2"> <Clock className="w-6 h-6" /> Actions rapides</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div onClick={() => {setTab(1); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
+                <div onClick={() => {setTab(1); setToggle(false)}} className="rounded-[4px] border border-white/[0.06] p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <AlertTriangle className="w-4 h-4" />
                     Réviser les oeuvres
                     <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-red-900">
                         {pending?.length}
                     </span>
                 </div>
-                <div onClick={() => {setTab(4); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
+                <div onClick={() => {setTab(4); setToggle(false)}} className="rounded-[4px] border border-white/[0.06] p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <Users className="w-4 h-4" />
                     Gérer les utilisateurs
-                    <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-gray-700/80">
+                    <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-kcb-ardoise/80">
                         {users?.length}
                     </span>
                 </div>
-                <div onClick={() => {setTab(13); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
+                <div onClick={() => {setTab(13); setToggle(false)}} className="rounded-[4px] border border-white/[0.06] p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <CreditCard className="w-4 h-4" />
                     Abonnements
-                    <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-blue-700/80">
+                    <span className="rounded-full text-center text-xs font-medium px-2 text-white bg-kcb-or/80">
                         {state?.subscriptions?.length}
                     </span>
                 </div>
-                <div onClick={() => {setTab(0); setToggle(false)}} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
+                <div onClick={() => {setTab(0); setToggle(false)}} className="rounded-[4px] border border-white/[0.06] p-4 grid place-items-center gap-2 hover:bg-kcb-noir-deep cursor-pointer">
                     <BarChart4 className="w-4 h-4" />
                     Voir les rapports
-                    <span className="rounded-full text-center text-xs font-medium px-2 text-white border px-1">
+                    <span className="rounded-full text-center text-xs font-medium px-2 text-white border border-white/[0.06] px-1">
                         Analytics
                     </span>
                 </div>
@@ -156,7 +156,7 @@ export function Synthesis({setTab, setToggle}){
         </div>
         
         <div className="flex flex-col-reverse lg:flex-row-reverse gap-6 py-4">
-            <div className="rounded-lg border p-4 shadow-sm overflow-auto lg:w-1/2">
+            <div className="rounded-[4px] border p-4 shadow-sm overflow-auto lg:w-1/2">
                 <h3 className="text-2xl font-semibold mb-2">Top Artistes</h3>
                 <ul>
                     {artists
@@ -174,31 +174,31 @@ export function Synthesis({setTab, setToggle}){
                                 <div className="flex items-center">
                                     <p>
                                         <span className="flex-1 text-white text-sm font-medium">{artist.name}</span> <br />
-                                        <span className="text-gray-200/30 text-xs mr-4">{artist.salesCount} ventes</span>
+                                        <span className="text-kcb-pierre text-xs mr-4">{artist.salesCount} ventes</span>
                                     </p>
                                 </div>
                                 <span className="text-white font-medium text-sm">{artist.totalSales.toLocaleString()} CFA</span>
                             </li>
                         ))}
                     {(!artists || artists.length === 0) && (
-                        <li className="py-2 text-center text-sm text-muted-foreground">Aucun artiste trouvé.</li>
+                        <li className="py-2 text-center text-sm text-kcb-pierre">Aucun artiste trouvé.</li>
                     )}
                 </ul>
             </div>
-            <div className="rounded-lg border p-4 shadow-sm overflow-auto lg:w-1/2">
+            <div className="rounded-[4px] border p-4 shadow-sm overflow-auto lg:w-1/2">
                 <h3 className="text-2xl font-semibold mb-2 flex items-center"> <UserCheck className="w-5 h-5 mx-2 text-white" /> Répartition des utilisateurs</h3>
                 <div className="flex flex-col gap-6 my-4">
                     <p className="flex justify-between items-start text-white">
-                        <span className="flex items-center gap-2 text-sm"><Image className="text-blue-600 w-4 h-4" /> Artistes</span>
-                        <span className="text-md text-white font-medium"> {artistUsers?.length} <span className="text-gray-700 text-xs"> ({((artistUsers?.length * 100)/users?.length).toFixed(1) }%) </span> </span>
+                        <span className="flex items-center gap-2 text-sm"><Image className="text-kcb-or w-4 h-4" /> Artistes</span>
+                        <span className="text-md text-white font-medium"> {artistUsers?.length} <span className="text-kcb-pierre text-xs"> ({(users?.length ? ((artistUsers?.length * 100)/users?.length).toFixed(1) : 0)}%) </span> </span>
                     </p>
                     <p className="flex justify-between items-start text-white">
                         <span className="flex items-center gap-2 text-sm"><Users className="text-green-600 w-4 h-4" /> Collectionneurs</span>
-                        <span className="text-md text-white font-medium"> {collectors?.length} <span className="text-gray-700 text-xs"> ({((collectors?.length * 100)/users?.length).toFixed(1) }%) </span> </span>
+                        <span className="text-md text-white font-medium"> {collectors?.length} <span className="text-kcb-pierre text-xs"> ({(users?.length ? ((collectors?.length * 100)/users?.length).toFixed(1) : 0)}%) </span> </span>
                     </p>
                     <p className="flex justify-between items-start text-white">
-                        <span className="flex items-center gap-2 text-sm"><CreditCard className="text-purple-600 w-4 h-4" /> Professionnels</span>
-                        <span className="text-md text-white font-medium"> {professionals?.length} <span className="text-gray-700 text-xs"> ({((professionals?.length * 100)/users?.length).toFixed(1) }%) </span> </span>
+                        <span className="flex items-center gap-2 text-sm"><CreditCard className="text-kcb-bronze w-4 h-4" /> Professionnels</span>
+                        <span className="text-md text-white font-medium"> {professionals?.length} <span className="text-kcb-pierre text-xs"> ({(users?.length ? ((professionals?.length * 100)/users?.length).toFixed(1) : 0)}%) </span> </span>
                     </p>
                 </div>
             </div>

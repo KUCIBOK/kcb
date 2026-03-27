@@ -20,8 +20,8 @@ export function CampainTab() {
   const userTypeOptions = [
     { value: "all", label: "Tous" },
     { value: "artist", label: "Artistes" },
-    { value: "professional", label: "Professionnels" },
-    { value: "collector", label: "Collectionneurs" }
+    { value: "curator", label: "Curateurs" },
+    { value: "buyer", label: "Acheteurs" }
   ];
 
   const handleSendCampaign = async (e) => {
@@ -54,9 +54,9 @@ export function CampainTab() {
   return (
     <div className="flex flex-col lg:flex-row gap-4 items-start">
 
-        <section className="border rounded-2xl shadow-lg p-6 w-full md:w-6/10">
+        <section className="border rounded-[4px] shadow-lg p-6 w-full md:w-6/10">
             <header className="flex items-center gap-2 mb-6">
-                <span className="inline-flex items-center justify-center bg-indigo-600/10 rounded-full p-2"><Mail className="w-5 h-5 text-indigo-600" /></span>
+                <span className="inline-flex items-center justify-center bg-kcb-or/10 rounded-full p-2"><Mail className="w-5 h-5 text-kcb-or" /></span>
                 <h2 className="text-lg font-semibold text-white">Nouvelle campagne</h2>
             </header>
             
@@ -79,12 +79,12 @@ export function CampainTab() {
                 />
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Contenu</label>
+                  <label className="block text-sm font-medium text-kcb-sable mb-2">Contenu</label>
                   <ReactQuill
                     theme="snow"
                     value={state.content}
                     onChange={(value) => setState({ ...state, content: value })}
-                    className="border border-gray-800 rounded-lg bg-white text-black"
+                    className="border border-white/[0.06] rounded-[4px] bg-white text-black"
                     placeholder="Contenu de votre campagne"
                   />
                 </div>
@@ -99,28 +99,28 @@ export function CampainTab() {
                 </Button>
             </form>
         </section>
-        <section className="border rounded-2xl shadow-lg p-4 w-full md:w-4/10">
+        <section className="border rounded-[4px] shadow-lg p-4 w-full md:w-4/10">
             <header className="flex items-center gap-2 mb-4">
-                <span className="inline-flex items-center justify-center bg-indigo-600/10 rounded-full p-2"><Users className="w-5 h-5 text-indigo-600" /></span>
+                <span className="inline-flex items-center justify-center bg-kcb-or/10 rounded-full p-2"><Users className="w-5 h-5 text-kcb-or" /></span>
                 <h2 className="text-lg font-semibold text-white">Audience</h2>
             </header>
-            <div className="space-y-4 border-b pb-4 mb-4 border-gray-700">
+            <div className="space-y-4 border-b pb-4 mb-4 border-white/[0.06]">
                 <div className="flex justify-between items-center">
                     <div className="text-sm font-semibold text-white">Artistes</div>
-                    <div className="text-sm font-bold px-2 bg-gray-700 rounded-full"> {artists?.length} </div>
+                    <div className="text-sm font-bold px-2 bg-kcb-ardoise rounded-full"> {artists?.length} </div>
                 </div>
                 <div className="flex justify-between items-center">
                     <div className="text-sm font-semibold text-white">Professionnels</div>
-                    <div className="text-sm font-bold px-2 bg-gray-700 rounded-full"> {professionals?.length} </div>
+                    <div className="text-sm font-bold px-2 bg-kcb-ardoise rounded-full"> {professionals?.length} </div>
                 </div>
                 <div className="flex justify-between items-center">
                     <div className="text-sm font-semibold text-white">Collectionneurs</div>
-                    <div className="text-sm font-bold px-2 bg-gray-700 rounded-full"> {collectors?.length} </div>
+                    <div className="text-sm font-bold px-2 bg-kcb-ardoise rounded-full"> {collectors?.length} </div>
                 </div>
             </div>
             <div className="flex justify-between items-center">
                 <div className="text-sm font-semibold text-white">Total</div>
-                <div className="text-sm font-bold px-2 bg-indigo-600 text-white rounded-full"> {totalAudience} </div>
+                <div className="text-sm font-bold px-2 bg-kcb-or text-kcb-noir rounded-full"> {totalAudience} </div>
             </div>
         </section>
     </div>

@@ -99,27 +99,27 @@ export function ContactsLists() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-white">Contacts & Listes</h1>
-            <p className="text-gray-400">Gérez vos destinataires et segmentez votre audience</p>
+            <p className="text-kcb-pierre">Gérez vos destinataires et segmentez votre audience</p>
           </div>
 
           <div className="flex gap-2">
             <button
               onClick={() => setShowCRMSyncModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-kcb-pierre hover:bg-kcb-ardoise rounded-lg text-white transition"
+              className="flex items-center gap-2 px-4 py-2 bg-kcb-pierre hover:bg-kcb-ardoise rounded-[4px] text-white transition"
             >
               <RefreshCw className="w-4 h-4" />
               Synchroniser CRM
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg text-white transition"
+              className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] text-white transition"
             >
               <UserPlus className="w-4 h-4" />
               Nouveau Contact
             </button>
             <button
               onClick={() => setShowListModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-800 hover:bg-green-700 rounded-lg text-white transition"
+              className="flex items-center gap-2 px-4 py-2 bg-green-800 hover:bg-green-700 rounded-[4px] text-white transition"
             >
               <List className="w-4 h-4" />
               Nouvelle Liste
@@ -135,8 +135,8 @@ export function ContactsLists() {
               label="Total Contacts"
               value={stats.total}
               trend={{ value: '+12%', direction: 'up' }}
-              iconColor="text-indigo-400"
-              iconBgColor="bg-indigo-900/20"
+              iconColor="text-kcb-or"
+              iconBgColor="bg-kcb-or/10"
               loading={loading}
             />
             <KPICard
@@ -170,13 +170,13 @@ export function ContactsLists() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-gray-700 mb-6">
+        <div className="flex gap-2 border-b border-white/[0.06] mb-6">
           <button
             onClick={() => setActiveTab('contacts')}
             className={`px-4 py-2 font-medium transition ${
               activeTab === 'contacts'
                 ? 'text-kcb-or border-b-2 border-kcb-or'
-                : 'text-gray-400 hover:text-white'
+                : 'text-kcb-pierre hover:text-white'
             }`}
           >
             <Users className="w-4 h-4 inline mr-2" />
@@ -187,7 +187,7 @@ export function ContactsLists() {
             className={`px-4 py-2 font-medium transition ${
               activeTab === 'lists'
                 ? 'text-kcb-or border-b-2 border-kcb-or'
-                : 'text-gray-400 hover:text-white'
+                : 'text-kcb-pierre hover:text-white'
             }`}
           >
             <List className="w-4 h-4 inline mr-2" />
@@ -196,18 +196,18 @@ export function ContactsLists() {
         </div>
 
         {/* Filters */}
-        <div className="bg-card border border-gray-700 rounded-lg p-4 mb-6">
+        <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4 mb-6">
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kcb-pierre" />
                 <input
                   type="text"
                   placeholder="Rechercher par nom, email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && loadData()}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                  className="w-full pl-10 pr-4 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                 />
               </div>
             </div>
@@ -217,7 +217,7 @@ export function ContactsLists() {
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                  className="px-4 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                 >
                   <option value="all">Tous les statuts</option>
                   <option value="active">Actifs</option>
@@ -228,10 +228,10 @@ export function ContactsLists() {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                  className="px-4 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                 >
                   <option value="all">Tous les types</option>
-                  <option value="collector">Collectionneurs</option>
+                  <option value="buyer">Acheteurs</option>
                   <option value="gallery">Galeries</option>
                   <option value="artist">Artistes</option>
                   <option value="press">Presse</option>
@@ -242,7 +242,7 @@ export function ContactsLists() {
 
             <button
               onClick={loadData}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white transition"
+              className="px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] rounded-[4px] text-white transition"
             >
               <Filter className="w-4 h-4" />
             </button>
@@ -297,14 +297,14 @@ export function ContactsLists() {
 // Stat Card Component
 function StatCard({ icon, label, value, color }) {
   return (
-    <div className="bg-card border border-gray-700 rounded-lg p-4">
+    <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4">
       <div className="flex items-center gap-3">
-        <div className={`w-12 h-12 ${color} rounded-lg flex items-center justify-center text-white`}>
+        <div className={`w-12 h-12 ${color} rounded-[4px] flex items-center justify-center text-white`}>
           {icon}
         </div>
         <div>
           <p className="text-2xl font-bold text-white">{value}</p>
-          <p className="text-sm text-gray-400">{label}</p>
+          <p className="text-sm text-kcb-pierre">{label}</p>
         </div>
       </div>
     </div>
@@ -314,40 +314,40 @@ function StatCard({ icon, label, value, color }) {
 // Contacts Table Component
 function ContactsTable({ contacts, loading, onEdit, onDelete }) {
   if (loading) {
-    return <div className="text-center py-12 text-gray-400">Chargement...</div>;
+    return <div className="text-center py-12 text-kcb-pierre">Chargement...</div>;
   }
 
   if (contacts.length === 0) {
     return (
-      <div className="bg-card border border-gray-700 rounded-lg p-12 text-center">
-        <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-        <p className="text-gray-400 mb-2">Aucun contact</p>
-        <p className="text-gray-500 text-sm">Ajoutez votre premier contact pour commencer</p>
+      <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-12 text-center">
+        <Users className="w-16 h-16 text-kcb-pierre mx-auto mb-4" />
+        <p className="text-kcb-pierre mb-2">Aucun contact</p>
+        <p className="text-kcb-pierre text-sm">Ajoutez votre premier contact pour commencer</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-card border border-gray-700 rounded-lg overflow-hidden">
+    <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden">
       <table className="w-full">
-        <thead className="bg-gray-800">
+        <thead className="bg-kcb-ardoise">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">Contact</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">Type</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">Statut</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">Tags</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">Engagement</th>
-            <th className="px-4 py-3 text-right text-sm font-medium text-gray-400">Actions</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-kcb-pierre">Contact</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-kcb-pierre">Type</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-kcb-pierre">Statut</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-kcb-pierre">Tags</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-kcb-pierre">Engagement</th>
+            <th className="px-4 py-3 text-right text-sm font-medium text-kcb-pierre">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-700">
+        <tbody className="divide-y divide-white/[0.06]">
           {contacts.map((contact) => (
-            <tr key={contact._id} className="hover:bg-gray-800/50 transition">
+            <tr key={contact._id} className="hover:bg-kcb-ardoise/50 transition">
               <td className="px-4 py-3">
                 <div>
                   <p className="text-white font-medium">{contact.firstName} {contact.lastName}</p>
-                  <p className="text-gray-400 text-sm">{contact.email}</p>
-                  {contact.company && <p className="text-gray-500 text-xs">{contact.company}</p>}
+                  <p className="text-kcb-pierre text-sm">{contact.email}</p>
+                  {contact.company && <p className="text-kcb-pierre text-xs">{contact.company}</p>}
                 </div>
               </td>
               <td className="px-4 py-3">
@@ -361,19 +361,19 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1">
                   {contact.tags?.slice(0, 2).map((tag, idx) => (
-                    <span key={idx} className="px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded">
+                    <span key={idx} className="px-2 py-1 bg-kcb-ardoise text-kcb-sable text-xs rounded">
                       {tag}
                     </span>
                   ))}
                   {contact.tags?.length > 2 && (
-                    <span className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">
+                    <span className="px-2 py-1 bg-kcb-ardoise text-kcb-pierre text-xs rounded">
                       +{contact.tags.length - 2}
                     </span>
                   )}
                 </div>
               </td>
               <td className="px-4 py-3">
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-kcb-pierre">
                   {contact.stats?.emailsOpened || 0} opens / {contact.stats?.emailsClicked || 0} clicks
                 </div>
               </td>
@@ -381,13 +381,13 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => onEdit(contact)}
-                    className="p-2 text-gray-400 hover:text-kcb-or transition"
+                    className="p-2 text-kcb-pierre hover:text-kcb-or transition"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => onDelete(contact._id)}
-                    className="p-2 text-gray-400 hover:text-red-400 transition"
+                    className="p-2 text-kcb-pierre hover:text-red-400 transition"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -420,15 +420,15 @@ function StatusBadge({ status }) {
 // Lists Grid Component
 function ListsGrid({ lists, loading }) {
   if (loading) {
-    return <div className="text-center py-12 text-gray-400">Chargement...</div>;
+    return <div className="text-center py-12 text-kcb-pierre">Chargement...</div>;
   }
 
   if (lists.length === 0) {
     return (
-      <div className="bg-card border border-gray-700 rounded-lg p-12 text-center">
-        <List className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-        <p className="text-gray-400 mb-2">Aucune liste</p>
-        <p className="text-gray-500 text-sm">Créez votre première liste pour organiser vos contacts</p>
+      <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-12 text-center">
+        <List className="w-16 h-16 text-kcb-pierre mx-auto mb-4" />
+        <p className="text-kcb-pierre mb-2">Aucune liste</p>
+        <p className="text-kcb-pierre text-sm">Créez votre première liste pour organiser vos contacts</p>
       </div>
     );
   }
@@ -436,32 +436,32 @@ function ListsGrid({ lists, loading }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {lists.map((list) => (
-        <div key={list._id} className="bg-card border border-gray-700 rounded-lg p-6 hover:border-kcb-or transition">
+        <div key={list._id} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 hover:border-kcb-or transition">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+              <div className={`w-10 h-10 rounded-[4px] flex items-center justify-center ${
                 list.type === 'event' ? 'bg-orange-500' : 
-                list.type === 'dynamic' ? 'bg-purple-500' : 'bg-indigo-500'
+                list.type === 'dynamic' ? 'bg-kcb-bronze' : 'bg-kcb-or'
               }`}>
                 {list.type === 'event' ? <Calendar className="w-5 h-5 text-white" /> : <List className="w-5 h-5 text-white" />}
               </div>
               <div>
                 <h3 className="text-white font-semibold">{list.name}</h3>
-                <p className="text-gray-400 text-sm capitalize">{list.type}</p>
+                <p className="text-kcb-pierre text-sm capitalize">{list.type}</p>
               </div>
             </div>
           </div>
 
           {list.description && (
-            <p className="text-gray-400 text-sm mb-4 line-clamp-2">{list.description}</p>
+            <p className="text-kcb-pierre text-sm mb-4 line-clamp-2">{list.description}</p>
           )}
 
           <div className="flex items-center justify-between text-sm">
-            <div className="text-gray-400">
+            <div className="text-kcb-pierre">
               <span className="text-white font-medium">{list.stats?.totalContacts || 0}</span> contacts
             </div>
             {list.type === 'event' && list.event?.date && (
-              <div className="text-gray-400">
+              <div className="text-kcb-pierre">
                 <Clock className="w-4 h-4 inline mr-1" />
                 {new Date(list.event.date).toLocaleDateString()}
               </div>
@@ -469,7 +469,7 @@ function ListsGrid({ lists, loading }) {
           </div>
 
           {list.type === 'event' && list.rsvps && list.rsvps.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="mt-4 pt-4 border-t border-white/[0.06]">
               <div className="flex gap-4 text-sm">
                 <div className="text-green-400">
                   ✓ {list.rsvps.filter(r => r.status === 'confirmed').length} confirmés
@@ -625,11 +625,11 @@ function CreateListModal({ onClose, onSave }) {
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Description</label>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({...formData, description: e.target.value})}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-kcb-or focus:outline-none"
+            className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm focus:ring-2 focus:ring-kcb-or focus:outline-none"
             rows={3}
             placeholder="Description de la liste"
           />
@@ -689,17 +689,17 @@ function CRMSyncModal({ onClose, onSync, lists }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card border border-gray-700 rounded-lg p-6 w-full max-w-md">
+      <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 w-full max-w-md">
         <h3 className="text-xl font-bold text-white mb-4">Synchroniser depuis CRM Galerie</h3>
         
         {!syncResults ? (
           <div className="space-y-4">
-            <div className="bg-purple-900/20 border border-purple-700 rounded-lg p-4">
-              <p className="text-purple-300 text-sm mb-2">
+            <div className="bg-kcb-bronze/10 border border-kcb-bronze/30 rounded-[4px] p-4">
+              <p className="text-kcb-sable text-sm mb-2">
                 <RefreshCw className="w-4 h-4 inline mr-2" />
                 Cette fonction va:
               </p>
-              <ul className="text-gray-400 text-sm space-y-1">
+              <ul className="text-kcb-pierre text-sm space-y-1">
                 <li>• Importer vos clients CRM</li>
                 <li>• Les ajouter aux contacts marketing</li>
                 <li>• Éviter les doublons par email</li>
@@ -708,11 +708,11 @@ function CRMSyncModal({ onClose, onSync, lists }) {
             </div>
 
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Ajouter à la liste (optionnel)</label>
+              <label className="block text-sm text-kcb-pierre mb-2">Ajouter à la liste (optionnel)</label>
               <select
                 value={selectedList}
                 onChange={(e) => setSelectedList(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded text-white"
+                className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded text-white"
               >
                 <option value="">Aucune liste</option>
                 {lists.map(list => (
@@ -724,7 +724,7 @@ function CRMSyncModal({ onClose, onSync, lists }) {
             <div className="flex gap-2 pt-4">
               <button
                 onClick={onClose}
-                className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-white transition"
+                className="flex-1 px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] rounded text-white transition"
               >
                 Annuler
               </button>
@@ -739,15 +739,15 @@ function CRMSyncModal({ onClose, onSync, lists }) {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="bg-green-900/20 border border-green-700 rounded-lg p-4">
+            <div className="bg-green-900/20 border border-green-700 rounded-[4px] p-4">
               <p className="text-green-300 font-medium mb-2">✓ {syncResults.message}</p>
-              <p className="text-gray-400 text-sm">{syncResults.info}</p>
+              <p className="text-kcb-pierre text-sm">{syncResults.info}</p>
               
               {syncResults.created !== undefined && (
                 <div className="mt-3 space-y-1 text-sm">
-                  <p className="text-gray-300">• Créés: {syncResults.created}</p>
-                  <p className="text-gray-300">• Mis à jour: {syncResults.updated}</p>
-                  <p className="text-gray-300">• Ignorés: {syncResults.skipped}</p>
+                  <p className="text-kcb-sable">• Créés: {syncResults.created}</p>
+                  <p className="text-kcb-sable">• Mis à jour: {syncResults.updated}</p>
+                  <p className="text-kcb-sable">• Ignorés: {syncResults.skipped}</p>
                 </div>
               )}
             </div>

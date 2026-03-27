@@ -17,7 +17,7 @@ import { CollectorCertificatesTab } from "../../components/collector/CollectorCe
 export default function Collector() {
     const {buyed, myArtworks} = useArtworks()
     const [toggle, setToggle] = useState(false)
-    const {user, collectorProfile, subscription, loading} = useAuth()
+    const {user, buyerProfile, subscription, loading} = useAuth()
     const [tab, setTab] = useState(0)
 
     // Menu structure with categories
@@ -177,7 +177,7 @@ export default function Collector() {
               </button>
               <span className="text-white text-sm font-medium truncate">{getCurrentPageInfo().page}</span>
             </div>
-            <Link to="/explore">
+            <Link to="/africa/catalogue">
               <ShoppingBag className="w-5 h-5 text-kcb-or" />
             </Link>
           </header>
@@ -185,13 +185,13 @@ export default function Collector() {
           {/* Sidebar */}
           <DashboardSidebar
             menuStructure={menuStructure}
-            profile={collectorProfile}
+            profile={buyerProfile}
             tab={tab}
             setTab={setTab}
             toggle={toggle}
             setToggle={setToggle}
             cta={{
-              to: "/explore",
+              to: "/africa/catalogue",
               label: "Marketplace",
               icon: <ShoppingBag className="w-4 h-4" />,
               className: "bg-kcb-or text-kcb-noir hover:bg-kcb-bronze justify-center",
@@ -216,7 +216,7 @@ export default function Collector() {
 
 function ComingSoon({ title, description, phase }) {
     return (
-        <div className="flex flex-col items-center justify-center h-64 rounded-xl border border-dashed border-white/[0.06] bg-kcb-ardoise/40 p-8 text-center gap-4">
+        <div className="flex flex-col items-center justify-center h-64 rounded-[4px] border border-dashed border-white/[0.06] bg-kcb-ardoise/40 p-8 text-center gap-4">
             <Clock className="w-10 h-10 text-kcb-pierre" />
             <div>
                 <p className="text-white font-semibold text-lg mb-1">{title}</p>

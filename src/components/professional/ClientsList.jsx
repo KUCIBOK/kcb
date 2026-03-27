@@ -47,17 +47,17 @@ export function ClientsList({
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-kcb"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
       </div>
     );
   }
 
   if (clients.length === 0) {
     return (
-      <div className="bg-card rounded-lg p-8 text-center">
-        <ShoppingCart className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-        <p className="text-gray-400 mb-2">Aucun client trouvé</p>
-        <p className="text-gray-500 text-sm">
+      <div className="bg-kcb-ardoise rounded-[4px] p-8 text-center">
+        <ShoppingCart className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
+        <p className="text-kcb-pierre mb-2">Aucun client trouvé</p>
+        <p className="text-kcb-pierre text-sm">
           Ajoutez votre premier client ou synchronisez vos transactions
         </p>
       </div>
@@ -66,41 +66,41 @@ export function ClientsList({
 
   return (
     <div className="space-y-4">
-      <div className="bg-card rounded-lg overflow-hidden">
+      <div className="bg-kcb-ardoise rounded-[4px] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-700">
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">
+              <tr className="border-b border-white/[0.06]">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
                   Nom
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
                   Contact
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
                   Statut
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-300">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-kcb-sable">
                   Segment
                 </th>
-                <th className="px-6 py-3 text-right text-sm font-semibold text-gray-300">
+                <th className="px-6 py-3 text-right text-sm font-semibold text-kcb-sable">
                   Achats
                 </th>
-                <th className="px-6 py-3 text-right text-sm font-semibold text-gray-300">
+                <th className="px-6 py-3 text-right text-sm font-semibold text-kcb-sable">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-white/[0.06]">
               {clients.map((client) => (
                 <tr
                   key={client._id}
-                  className="hover:bg-background/50 transition"
+                  className="hover:bg-kcb-noir/50 transition"
                 >
                   <td className="px-6 py-4">
                     <div>
                       <p className="text-white font-medium">{client.name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-kcb-pierre">
                         {client.city && `${client.city}, `}
                         {client.country}
                       </p>
@@ -109,13 +109,13 @@ export function ClientsList({
                   <td className="px-6 py-4">
                     <div className="space-y-1">
                       {client.email && (
-                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                        <div className="flex items-center gap-2 text-sm text-kcb-sable">
                           <Mail className="w-4 h-4" />
                           <span>{client.email}</span>
                         </div>
                       )}
                       {client.phone && (
-                        <div className="flex items-center gap-2 text-sm text-gray-300">
+                        <div className="flex items-center gap-2 text-sm text-kcb-sable">
                           <Phone className="w-4 h-4" />
                           <span>{client.phone}</span>
                         </div>
@@ -130,8 +130,8 @@ export function ClientsList({
                           : client.status === "client"
                           ? "bg-green-900/50 text-green-200"
                           : client.status === "prospect"
-                          ? "bg-blue-900/50 text-blue-200"
-                          : "bg-gray-700/50 text-gray-300"
+                          ? "bg-kcb-or/20 text-kcb-sable"
+                          : "bg-kcb-ardoise/50 text-kcb-sable"
                       }`}
                     >
                       {client.status === "vip" && <Crown className="w-3 h-3" />}
@@ -139,7 +139,7 @@ export function ClientsList({
                         client.status.slice(1)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-300">
+                  <td className="px-6 py-4 text-sm text-kcb-sable">
                     {client.segment
                       ?.replace(/-/g, " ")
                       .split(" ")
@@ -150,7 +150,7 @@ export function ClientsList({
                     <p className="text-white font-medium">
                       {client.totalPurchases}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-kcb-pierre">
                       {client.totalSpent?.toLocaleString("fr-FR")} CFA
                     </p>
                   </td>
@@ -158,14 +158,14 @@ export function ClientsList({
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => onViewClient(client)}
-                        className="p-2 hover:bg-background rounded-lg transition"
+                        className="p-2 hover:bg-kcb-noir rounded-[4px] transition"
                         title="Voir"
                       >
-                        <Eye className="w-4 h-4 text-blue-400" />
+                        <Eye className="w-4 h-4 text-kcb-or" />
                       </button>
                       <button
                         onClick={() => handleDelete(client._id)}
-                        className="p-2 hover:bg-background rounded-lg transition"
+                        className="p-2 hover:bg-kcb-noir rounded-[4px] transition"
                         title="Supprimer"
                       >
                         <Trash2 className="w-4 h-4 text-red-400" />
@@ -182,21 +182,21 @@ export function ClientsList({
       {/* Pagination */}
       {pages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-kcb-pierre">
             Page {page} sur {pages} ({total} clients)
           </p>
           <div className="flex gap-2">
             <button
               onClick={() => onPageChange(Math.max(1, page - 1))}
               disabled={page === 1}
-              className="p-2 hover:bg-card rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 hover:bg-kcb-ardoise rounded-[4px] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => onPageChange(Math.min(pages, page + 1))}
               disabled={page === pages}
-              className="p-2 hover:bg-card rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 hover:bg-kcb-ardoise rounded-[4px] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

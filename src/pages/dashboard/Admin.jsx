@@ -190,7 +190,7 @@ export default function Admin() {
         return <AdminArtistsTab />;
       default:
         return (
-          <div className="text-center text-muted-foreground">
+          <div className="text-center text-kcb-pierre">
             Cette fonctionnalité n'est pas encore disponible.
           </div>
         );
@@ -232,7 +232,7 @@ export default function Admin() {
               <span className="text-white font-medium">{getCurrentPageInfo().page}</span>
             </div>
             {tab === 0 && (
-              <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-lg p-1">
+              <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-1">
                 {CURRENCIES.map((c) => (
                   <button
                     key={c.code}

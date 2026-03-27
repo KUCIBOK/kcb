@@ -63,7 +63,7 @@ export function CollectorCertificatesTab() {
         <div className="flex flex-col items-center justify-center h-48 rounded-xl border border-dashed border-white/[0.06] bg-kcb-ardoise/40 gap-3">
           <FileQuestion className="w-10 h-10 text-kcb-pierre" />
           <p className="text-kcb-pierre text-sm">Aucune œuvre dans votre collection pour l'instant.</p>
-          <Link to="/explore" className="text-kcb-or text-sm hover:underline">Explorer le marketplace</Link>
+          <Link to="/africa/catalogue" className="text-kcb-or text-sm hover:underline">Explorer le marketplace</Link>
         </div>
       ) : (
         <div className="space-y-3">

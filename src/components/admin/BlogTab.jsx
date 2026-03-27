@@ -13,22 +13,22 @@ export function BlogTab() {
   const [showModal, setShowModal] = useState(false);
   return (
     <>
-      <div className="rounded-xl p-4 md:p-6 mb-6 shadow-md">
+      <div className="rounded-[4px] p-4 md:p-6 mb-6 shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-white">Gestion des articles</h2>
           <button
             onClick={() => setShowModal(true)}
-            className="rounded bg-indigo-kcb/90 hover:bg-indigo-kcb px-3 py-2 text-white text-xs md:text-sm font-medium flex items-center gap-2 transition"
+            className="rounded bg-kcb-or/90 hover:bg-kcb-or px-3 py-2 text-kcb-noir text-xs md:text-sm font-medium flex items-center gap-2 transition"
           >
             <Plus className="w-4 h-4" /> Ajouter
           </button>
         </div>
         <div className="mb-6">
-          <h3 className="text-base font-semibold text-zinc-300 mb-2">Articles publiés</h3>
+          <h3 className="text-base font-semibold text-kcb-sable mb-2">Articles publiés</h3>
           <BlogTable posts={blogPosts} />
         </div>
         <div>
-          <h3 className="text-base font-semibold text-zinc-300 mb-2">Articles archivés</h3>
+          <h3 className="text-base font-semibold text-kcb-sable mb-2">Articles archivés</h3>
           <BlogTable posts={archive} />
         </div>
       </div>
@@ -126,24 +126,24 @@ function AddPostModal({ closeModal }) {
 
         {/* Image Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Image</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Image</label>
           <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 text-sm"
+            className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-kcb-sable text-sm"
             required
           />
           {state?.show && (
             <div className="mt-2 flex justify-center">
-              <img src={state.show} alt="aperçu" className="rounded-lg h-20 object-contain" />
+              <img src={state.show} alt="aperçu" className="rounded-[4px] h-20 object-contain" />
             </div>
           )}
         </div>
 
         {/* Tags */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Mots-clés</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Mots-clés</label>
           <div className="flex gap-2">
             <input
               type="text"
@@ -152,7 +152,7 @@ function AddPostModal({ closeModal }) {
               placeholder="Mot-clé (max 12 caractères)"
               minLength={3}
               maxLength={12}
-              className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm"
+              className="flex-1 px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm"
             />
             <button
               type="button"
@@ -161,7 +161,7 @@ function AddPostModal({ closeModal }) {
                   setState({ ...state, tags: [...state.tags, state.tag], tag: "" });
                 }
               }}
-              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
+              className="px-3 py-2 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir rounded-[4px] transition"
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -170,7 +170,7 @@ function AddPostModal({ closeModal }) {
             {state.tags.map((tag, index) => (
               <span
                 key={index}
-                className="bg-purple-600/50 text-white rounded-full px-3 py-1 text-xs font-semibold flex items-center gap-2"
+                className="bg-kcb-bronze/50 text-kcb-noir rounded-full px-3 py-1 text-xs font-semibold flex items-center gap-2"
               >
                 {tag}
                 <button
@@ -187,12 +187,12 @@ function AddPostModal({ closeModal }) {
 
         {/* Content Editor */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Contenu</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Contenu</label>
           <ReactQuill
             theme="snow"
             value={state.content}
             onChange={(value) => setState({ ...state, content: value })}
-            className="border border-gray-800 rounded-lg bg-white text-black"
+            className="border border-white/[0.06] rounded-[4px] bg-white text-black"
             placeholder="Contenu de votre article"
           />
         </div>

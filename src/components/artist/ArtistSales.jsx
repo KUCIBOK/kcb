@@ -4,8 +4,6 @@ import {
   TrendingUp,
   ShoppingBag,
   CreditCard,
-  ArrowUpRight,
-  ArrowDownRight,
   Clock,
 } from 'lucide-react';
 import { utils } from '../../api/useAPI';
@@ -102,7 +100,7 @@ export default function ArtistSales() {
           value={stats.completedSales ?? 0}
           change={stats.pendingSales ? `${stats.pendingSales} en cours` : null}
           icon={<ShoppingBag className="w-5 h-5" />}
-          color="purple"
+          color="kcb"
         />
       </div>
 
@@ -187,9 +185,9 @@ export default function ArtistSales() {
 function KPICard({ label, value, change, icon, color }) {
   const colors = {
     green:  'bg-green-500/10  border-green-500/30  text-green-300',
-    blue:   'bg-blue-500/10   border-blue-500/30   text-blue-300',
+    blue:   'bg-kcb-or/10     border-kcb-or/30     text-kcb-sable',
     yellow: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300',
-    purple: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
+    kcb:    'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
   };
   return (
     <div className={`border rounded-lg p-4 ${colors[color]}`}>

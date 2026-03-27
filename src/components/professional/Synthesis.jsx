@@ -71,9 +71,9 @@ export function Synthesis(){
             {
                 label: "Chiffre d'affaires (XOF)",
                 data: monthlyRevenue,
-                backgroundColor: "rgba(34,197,94,0.7)",
+                backgroundColor: "rgba(45,106,79,0.7)",
                 borderRadius: 6,
-                borderColor: "rgba(34,197,94,1)",
+                borderColor: "rgba(45,106,79,1)",
             },
         ],
     };
@@ -118,8 +118,8 @@ export function Synthesis(){
             {
                 label: "Ventes par artiste",
                 data: artistsData.map(a => a.totalSales),
-                backgroundColor: "rgba(59,130,246,0.7)",
-                borderColor: "rgba(59,130,246,1)",
+                backgroundColor: "rgba(201,168,76,0.7)",
+                borderColor: "rgba(201,168,76,1)",
                 borderRadius: 6,
             },
         ],
@@ -154,12 +154,12 @@ export function Synthesis(){
             {
                 label: "Tendance des ventes",
                 data: monthlyRevenue,
-                borderColor: "rgba(168,85,247,1)",
-                backgroundColor: "rgba(168,85,247,0.1)",
+                borderColor: "rgba(201,168,76,1)",
+                backgroundColor: "rgba(201,168,76,0.1)",
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: "rgba(168,85,247,1)",
+                pointBackgroundColor: "rgba(201,168,76,1)",
                 pointRadius: 5,
             },
         ],
@@ -222,9 +222,9 @@ export function Synthesis(){
             {
                 data: [soldCount, forSaleCount, pendingCount],
                 backgroundColor: [
-                    "rgba(34,197,94,0.8)",
-                    "rgba(59,130,246,0.8)",
-                    "rgba(251,191,36,0.8)",
+                    "rgba(45,106,79,0.8)",
+                    "rgba(201,168,76,0.8)",
+                    "rgba(212,160,23,0.8)",
                 ],
                 borderWidth: 1,
             },
@@ -252,16 +252,16 @@ export function Synthesis(){
                     icon={Palette}
                     label="Mes artistes"
                     value={myArtists?.length || 0}
-                    iconColor="text-purple-400"
-                    iconBgColor="bg-purple-900/20"
+                    iconColor="text-kcb-bronze"
+                    iconBgColor="bg-kcb-bronze/10"
                 />
 
                 <KPICard
                     icon={Image}
                     label="Oeuvres totales"
                     value={myArtworks?.length || 0}
-                    iconColor="text-blue-400"
-                    iconBgColor="bg-blue-900/20"
+                    iconColor="text-kcb-or"
+                    iconBgColor="bg-kcb-or/10"
                 />
 
                 <KPICard
@@ -281,58 +281,58 @@ export function Synthesis(){
                     label="Livrées / Vendues"
                     value={`${deliveredArtworks}/${soldArtworksNumber}`}
                     subtitle={`${((deliveredArtworks/soldArtworksNumber)*100 || 0).toFixed(0)}% livrées`}
-                    iconColor="text-orange-400"
-                    iconBgColor="bg-orange-900/20"
+                    iconColor="text-kcb-or"
+                    iconBgColor="bg-kcb-or/10"
                 />
             </div>
 
             {/* Advanced Analytics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-card rounded-xl p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <div className="flex justify-between items-center mb-2">
-                        <h6 className="text-gray-400 text-sm">Revenue total</h6>
+                        <h6 className="text-kcb-pierre text-sm">Revenue total</h6>
                         <DollarSign className="w-4 h-4 text-green-400" />
                     </div>
                     <p className="text-xl font-bold text-white">{fmtMoney(totalRevenue, 'XOF', { compact: true })}</p>
-                    <p className="text-xs text-gray-400 mt-2">Toutes les ventes</p>
+                    <p className="text-xs text-kcb-pierre mt-2">Toutes les ventes</p>
                 </div>
 
-                <div className="bg-card rounded-xl p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <div className="flex justify-between items-center mb-2">
-                        <h6 className="text-gray-400 text-sm">Prix moyen</h6>
-                        <Target className="w-4 h-4 text-blue-400" />
+                        <h6 className="text-kcb-pierre text-sm">Prix moyen</h6>
+                        <Target className="w-4 h-4 text-kcb-or" />
                     </div>
                     <p className="text-xl font-bold text-white">{fmtMoney(averagePricePerArtwork, 'XOF', { compact: true })}</p>
-                    <p className="text-xs text-gray-400 mt-2">Par oeuvre vendue</p>
+                    <p className="text-xs text-kcb-pierre mt-2">Par oeuvre vendue</p>
                 </div>
 
-                <div className="bg-card rounded-xl p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <div className="flex justify-between items-center mb-2">
-                        <h6 className="text-gray-400 text-sm">Taux de conversion</h6>
-                        <ArrowUp className="w-4 h-4 text-purple-400" />
+                        <h6 className="text-kcb-pierre text-sm">Taux de conversion</h6>
+                        <ArrowUp className="w-4 h-4 text-kcb-bronze" />
                     </div>
                     <p className="text-xl font-bold text-white">{conversionRate.toFixed(1)}%</p>
-                    <p className="text-xs text-gray-400 mt-2">{soldArtworksNumber} / {myArtworks?.length}</p>
+                    <p className="text-xs text-kcb-pierre mt-2">{soldArtworksNumber} / {myArtworks?.length}</p>
                 </div>
 
-                <div className="bg-card rounded-xl p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <div className="flex justify-between items-center mb-2">
-                        <h6 className="text-gray-400 text-sm">Meilleur ROI</h6>
-                        <Award className="w-4 h-4 text-yellow-400" />
+                        <h6 className="text-kcb-pierre text-sm">Meilleur ROI</h6>
+                        <Award className="w-4 h-4 text-kcb-or" />
                     </div>
                     <p className="text-xl font-bold text-green-400">{bestROIArtwork?.roi?.toFixed(1)}%</p>
-                    <p className="text-xs text-gray-400 mt-2 truncate">{bestROIArtwork?.title}</p>
+                    <p className="text-xs text-kcb-pierre mt-2 truncate">{bestROIArtwork?.title}</p>
                 </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-card rounded-lg p-4 border border-gray-700">
+            <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                 <h3 className="flex gap-2 items-center my-2 text-lg font-semibold text-white">
                     <Clock className="w-5 h-5" /> Actions rapides
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <AddArtistAction/>
-                    <Link to={"add-artwork"} className="rounded-lg border border-gray-700 p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer transition">
+                    <Link to={"add-artwork"} className="rounded-[4px] border border-white/[0.06] p-4 grid place-items-center gap-2 hover:bg-white/[0.04] cursor-pointer transition">
                         <Image className="w-4 h-4" />
                         <span className="text-sm">Ajouter une oeuvre</span>
                     </Link>
@@ -343,7 +343,7 @@ export function Synthesis(){
             {/* Main Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Monthly Revenue */}
-                <div className="bg-card rounded-lg p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
                         <BarChart3 className="w-5 h-5" />
                         Chiffre d'affaires mensuel
@@ -352,16 +352,16 @@ export function Synthesis(){
                 </div>
 
                 {/* Status Distribution */}
-                <div className="bg-card rounded-lg p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <h3 className="text-lg font-semibold mb-4 text-white">Répartition des oeuvres</h3>
                     <Pie data={pieData} options={pieOptions} height={250} />
                 </div>
             </div>
 
             {/* Trend Line */}
-            <div className="bg-card rounded-lg p-4 border border-gray-700">
+            <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                 <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-purple-400" />
+                    <TrendingUp className="w-5 h-5 text-kcb-bronze" />
                     Tendance des ventes
                 </h3>
                 <Line data={lineData} options={lineOptions} height={250} />
@@ -369,9 +369,9 @@ export function Synthesis(){
 
             {/* Sales by Artist */}
             {artistsData.length > 0 && (
-                <div className="bg-card rounded-lg p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                        <Award className="w-5 h-5 text-yellow-400" />
+                        <Award className="w-5 h-5 text-kcb-or" />
                         Top artistes par chiffre d'affaires
                     </h3>
                     <Bar data={artistBarData} options={artistBarOptions} height={300} />
@@ -380,17 +380,17 @@ export function Synthesis(){
 
             {/* ROI Analysis */}
             {artworksWithROI.length > 0 && (
-                <div className="bg-card rounded-lg p-4 border border-gray-700">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                     <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                        <Target className="w-5 h-5 text-blue-400" />
+                        <Target className="w-5 h-5 text-kcb-or" />
                         Analyse ROI par oeuvre (Top 10)
                     </h3>
                     <div className="space-y-2 max-h-96 overflow-y-auto">
                         {artworksWithROI.map((artwork, idx) => (
-                            <div key={idx} className="bg-background/50 rounded-lg p-3 flex justify-between items-center">
+                            <div key={idx} className="bg-kcb-noir/50 rounded-[4px] p-3 flex justify-between items-center">
                                 <div className="flex-1">
                                     <p className="text-sm text-white font-medium truncate">{idx + 1}. {artwork.title}</p>
-                                    <p className="text-xs text-gray-400">Estimé: {fmtMoney(artwork.estimatedPrice, 'XOF', { compact: true })} → Vendu: {fmtMoney(artwork.soldPrice, 'XOF', { compact: true })}</p>
+                                    <p className="text-xs text-kcb-pierre">Estimé: {fmtMoney(artwork.estimatedPrice, 'XOF', { compact: true })} → Vendu: {fmtMoney(artwork.soldPrice, 'XOF', { compact: true })}</p>
                                 </div>
                                 <div className={`text-right ${artwork.roi >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                                     <div className="flex items-center gap-1">
@@ -405,34 +405,34 @@ export function Synthesis(){
             )}
 
             {/* Forecast */}
-            <div className="bg-card rounded-lg p-4 border border-gray-700">
+            <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
                 <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-indigo-400" />
+                    <TrendingUp className="w-5 h-5 text-kcb-or" />
                     Prévisions de vente (3 mois)
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
                     {["Mois 1", "Mois 2", "Mois 3"].map((month, idx) => (
-                        <div key={idx} className="bg-background/50 rounded-lg p-4 text-center">
-                            <p className="text-gray-400 text-sm mb-2">{month}</p>
-                            <p className="text-2xl font-bold text-indigo-400">
+                        <div key={idx} className="bg-kcb-noir/50 rounded-[4px] p-4 text-center">
+                            <p className="text-kcb-pierre text-sm mb-2">{month}</p>
+                            <p className="text-2xl font-bold text-kcb-or">
                                 {fmtMoney(forecastedRevenue[idx], 'XOF', { compact: true })}
                             </p>
-                            <p className="text-xs text-gray-500 mt-2">XOF estimé</p>
+                            <p className="text-xs text-kcb-pierre mt-2">XOF estimé</p>
                         </div>
                     ))}
                 </div>
-                <p className="text-xs text-gray-400 mt-4">
+                <p className="text-xs text-kcb-pierre mt-4">
                     Basé sur une croissance de {revenueGrowth}% / mois
                 </p>
             </div>
 
             {/* Artists and Artworks Tables */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-card rounded-lg p-4 border border-gray-700 overflow-auto">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06] overflow-auto">
                     <h3 className="text-lg font-semibold mb-4 text-white">Mes artistes</h3>
                     <ArtistTable artists={myArtists} />
                 </div>
-                <div className="bg-card rounded-lg p-4 border border-gray-700 overflow-auto">
+                <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06] overflow-auto">
                     <h3 className="text-lg font-semibold mb-4 text-white">Mes oeuvres récentes</h3>
                     <ArtworksList title="" artworks={myArtworks?.slice(0, 5) || []} />
                 </div>

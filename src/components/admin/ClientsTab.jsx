@@ -111,7 +111,7 @@ const ClientsTab = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="text-gray-400">Chargement des clients...</div>
+        <div className="text-kcb-pierre">Chargement des clients...</div>
       </div>
     );
   }
@@ -121,41 +121,41 @@ const ClientsTab = () => {
       {/* En-tête */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <Users className="w-6 h-6 text-purple-kcb" />
+          <Users className="w-6 h-6 text-kcb-or" />
           <h2 className="text-2xl font-bold text-white">
             Portefeuille clients
           </h2>
         </div>
-        <p className="text-gray-400">
+        <p className="text-kcb-pierre">
           Tous les clients de tous les artistes de la plateforme
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-background border border-gray-800 rounded-xl p-4">
+        <div className="bg-kcb-noir border border-white/[0.06] rounded-[4px] p-4">
           <div className="text-2xl font-bold text-white mb-1">
             {clients.length}
           </div>
-          <div className="text-gray-400 text-sm">Total clients</div>
+          <div className="text-kcb-pierre text-sm">Total clients</div>
         </div>
-        <div className="bg-background border border-gray-800 rounded-xl p-4">
+        <div className="bg-kcb-noir border border-white/[0.06] rounded-[4px] p-4">
           <div className="text-2xl font-bold text-green-400 mb-1">
             {clients.filter((c) => !c.isDeletedByArtist).length}
           </div>
-          <div className="text-gray-400 text-sm">Clients actifs</div>
+          <div className="text-kcb-pierre text-sm">Clients actifs</div>
         </div>
-        <div className="bg-background border border-gray-800 rounded-xl p-4">
+        <div className="bg-kcb-noir border border-white/[0.06] rounded-[4px] p-4">
           <div className="text-2xl font-bold text-red-400 mb-1">
             {clients.filter((c) => c.isDeletedByArtist).length}
           </div>
-          <div className="text-gray-400 text-sm">Clients supprimés</div>
+          <div className="text-kcb-pierre text-sm">Clients supprimés</div>
         </div>
-        <div className="bg-background border border-gray-800 rounded-xl p-4">
+        <div className="bg-kcb-noir border border-white/[0.06] rounded-[4px] p-4">
           <div className="text-2xl font-bold text-white mb-1">
             {Object.keys(getClientsByArtist()).length}
           </div>
-          <div className="text-gray-400 text-sm">Artistes actifs</div>
+          <div className="text-kcb-pierre text-sm">Artistes actifs</div>
         </div>
       </div>
 
@@ -164,23 +164,23 @@ const ClientsTab = () => {
         <div className="flex items-center">
           <input
             type="text"
-            className="w-full rounded-s-md border-y border-s border-gray-700 bg-background px-3 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none"
+            className="w-full rounded-s-md border-y border-s border-white/[0.06] bg-kcb-noir px-3 py-2 text-sm text-kcb-sable placeholder-kcb-pierre focus:outline-none"
             placeholder="Rechercher un client par nom, prénom, email, ville..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <span className="rounded-e-md border-y border-e border-gray-700 bg-background px-3 py-2.5 text-sm text-gray-200">
+          <span className="rounded-e-md border-y border-e border-white/[0.06] bg-kcb-noir px-3 py-2.5 text-sm text-kcb-sable">
             <Search className="w-4 h-4" />
           </span>
         </div>
       </div>
 
       {/* Tableau des clients */}
-      <div className="overflow-x-auto bg-background border border-gray-800 rounded-xl px-4 py-4 shadow-sm">
+      <div className="overflow-x-auto bg-kcb-noir border border-white/[0.06] rounded-[4px] px-4 py-4 shadow-sm">
         {currentSet?.length >= 1 ? (
-          <table className="w-full text-xs text-gray-200">
+          <table className="w-full text-xs text-kcb-sable">
             <thead>
-              <tr className="border-b border-gray-800">
+              <tr className="border-b border-white/[0.06]">
                 <th className="font-semibold py-2 text-left">Nom</th>
                 <th className="font-semibold py-2 text-left">Prénom</th>
                 <th className="font-semibold py-2 text-left">Email</th>
@@ -195,33 +195,33 @@ const ClientsTab = () => {
               {currentSet?.map((client, index) => (
                 <Fragment key={client._id || index}>
                   <tr
-                    className={`border-b border-gray-800 hover:bg-background/60 transition ${
+                    className={`border-b border-white/[0.06] hover:bg-white/[0.04] transition ${
                       client.isDeletedByArtist ? "opacity-60" : ""
                     }`}
                   >
                     <td className="py-2 font-semibold text-white">
                       {client.nom}
                     </td>
-                    <td className="py-2 text-gray-300">{client.prenom}</td>
-                    <td className="py-2 text-gray-300">{client.email}</td>
-                    <td className="py-2 text-gray-400">
+                    <td className="py-2 text-kcb-sable">{client.prenom}</td>
+                    <td className="py-2 text-kcb-sable">{client.email}</td>
+                    <td className="py-2 text-kcb-pierre">
                       {client.telephone || "-"}
                     </td>
-                    <td className="py-2 text-gray-400">
+                    <td className="py-2 text-kcb-pierre">
                       {client.ville || "-"}
                     </td>
-                    <td className="py-2 text-gray-400">
+                    <td className="py-2 text-kcb-pierre">
                       {artists[client.artistId] ? (
                         <span
                           title={`ID: ${client.artistId}`}
-                          className="cursor-help hover:text-purple-kcb transition-colors duration-200 font-medium"
+                          className="cursor-help hover:text-kcb-or transition-colors duration-200 font-medium"
                         >
                           {artists[client.artistId].name}
                         </span>
                       ) : (
                         <span
                           title={`ID: ${client.artistId}`}
-                          className="cursor-help text-gray-500 italic"
+                          className="cursor-help text-kcb-pierre italic"
                         >
                           Chargement...
                         </span>
@@ -238,7 +238,7 @@ const ClientsTab = () => {
                         </span>
                       )}
                     </td>
-                    <td className="py-2 text-gray-400">
+                    <td className="py-2 text-kcb-pierre">
                       {new Date(client.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
@@ -247,12 +247,12 @@ const ClientsTab = () => {
             </tbody>
           </table>
         ) : (
-          <div className="text-center py-16 border border-gray-800 border-dashed rounded-xl w-full bg-background/60">
-            <Users className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-            <h3 className="font-medium text-base text-gray-400 mb-1">
+          <div className="text-center py-16 border border-white/[0.06] border-dashed rounded-[4px] w-full bg-white/[0.04]">
+            <Users className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
+            <h3 className="font-medium text-base text-kcb-pierre mb-1">
               Aucun client trouvé
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-kcb-pierre">
               {search
                 ? "Essayez une autre recherche"
                 : "Aucun client n'a encore été ajouté"}
@@ -265,18 +265,18 @@ const ClientsTab = () => {
       {filteredClients.length > 50 && (
         <div className="flex justify-end gap-2 mt-4">
           <button
-            className="rounded-md border border-gray-700 px-4 py-2 text-sm text-gray-300 bg-transparent hover:bg-gray-800 transition"
+            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
             onClick={handlePrevPage}
             disabled={currentSet[0] === filteredClients[0]}
           >
             <ChevronLeft className="w-4 h-4 mr-1 inline-block" /> Précédent
           </button>
-          <span className="text-xs text-gray-400 flex items-center px-2">
+          <span className="text-xs text-kcb-pierre flex items-center px-2">
             Page {Math.floor(filteredClients.indexOf(currentSet[0]) / 50) + 1} /{" "}
             {Math.ceil(filteredClients.length / 50)}
           </span>
           <button
-            className="rounded-md border border-gray-700 px-4 py-2 text-sm text-gray-300 bg-transparent hover:bg-gray-800 transition"
+            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
             onClick={handleNextPage}
             disabled={
               currentSet[currentSet.length - 1] ===

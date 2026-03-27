@@ -17,6 +17,8 @@ import {
   ZoomIn,
   AlertTriangle,
   Zap,
+  Check,
+  Pause,
 } from 'lucide-react';
 
 export function Analytics({ currency = 'EUR' }) {
@@ -134,7 +136,7 @@ export function Analytics({ currency = 'EUR' }) {
     }
   };
 
-  if (!data) return <div className="text-white">Chargement...</div>;
+  if (!data) return <div className="flex items-center justify-center min-h-[400px]"><div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
     <div className="space-y-6 pb-10">
@@ -142,7 +144,7 @@ export function Analytics({ currency = 'EUR' }) {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-4xl font-bold text-white">Dashboard Principal</h1>
-          <p className="text-gray-400 mt-2">Vue d'ensemble complète de la plateforme</p>
+          <p className="text-kcb-pierre mt-2">Vue d'ensemble complète de la plateforme</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -150,10 +152,10 @@ export function Analytics({ currency = 'EUR' }) {
             className={`px-4 py-2 rounded text-sm font-medium transition ${
               autoRefresh
                 ? 'bg-green-600/20 text-green-300 border border-green-600/30'
-                : 'bg-gray-700 text-gray-300'
+                : 'bg-kcb-ardoise text-kcb-sable'
             }`}
           >
-            {autoRefresh ? '✓ Auto-refresh' : '⏸ Paused'}
+            {autoRefresh ? <><Check className="w-4 h-4 inline mr-1" /> Auto-refresh</> : <><Pause className="w-4 h-4 inline mr-1" /> Paused</>}
           </button>
           <button
             onClick={loadData}
@@ -170,10 +172,10 @@ export function Analytics({ currency = 'EUR' }) {
           {data.alerts.map((alert, idx) => (
             <div
               key={idx}
-              className={`p-4 rounded-lg border ${
+              className={`p-4 rounded-[4px] border ${
                 alert.type === 'warning'
                   ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300'
-                  : 'bg-blue-500/10 border-blue-500/30 text-blue-300'
+                  : 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable'
               }`}
             >
               <div className="flex items-start gap-2">
@@ -225,7 +227,7 @@ export function Analytics({ currency = 'EUR' }) {
           <RevenueBreakdown
             title="Mix de revenu"
             data={data.revenue_mix}
-            colors={['#10b981', '#3b82f6', '#a855f7']}
+            colors={['#2D6A4F', '#C9A84C', '#8B6914']}
           />
           <MetricCard
             label="Payback Period"
@@ -264,12 +266,12 @@ export function Analytics({ currency = 'EUR' }) {
             change="Utilisateurs actifs quotidiens"
             color="violet"
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm mb-2">Canaux d'acquisition</p>
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <p className="text-kcb-pierre text-sm mb-2">Canaux d'acquisition</p>
             <div className="space-y-2">
               {Object.entries(data.channels).map(([channel, metrics]) => (
                 <div key={channel} className="flex justify-between text-sm">
-                  <span className="text-gray-300 capitalize">{channel}</span>
+                  <span className="text-kcb-sable capitalize">{channel}</span>
                   <span className="text-white font-semibold">
                     {metrics.users} (ROI: {metrics.roi}x)
                   </span>
@@ -290,12 +292,12 @@ export function Analytics({ currency = 'EUR' }) {
             trend="up"
             color="purple"
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm mb-2">Par catégorie</p>
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <p className="text-kcb-pierre text-sm mb-2">Par catégorie</p>
             <div className="space-y-1">
               {Object.entries(data.artworks_by_category).map(([cat, count]) => (
                 <div key={cat} className="flex justify-between text-sm">
-                  <span className="text-gray-300 capitalize">{cat}</span>
+                  <span className="text-kcb-sable capitalize">{cat}</span>
                   <span className="text-white font-semibold">{count}</span>
                 </div>
               ))}
@@ -308,12 +310,12 @@ export function Analytics({ currency = 'EUR' }) {
             trend="up"
             color="green"
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm mb-2">Top Artistes</p>
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <p className="text-kcb-pierre text-sm mb-2">Top Artistes</p>
             <div className="space-y-1">
               {data.top_artists.slice(0, 3).map((artist, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
-                  <span className="text-gray-300">{artist.name}</span>
+                  <span className="text-kcb-sable">{artist.name}</span>
                   <span className="text-green-300 font-semibold">{fmtMoney(artist.revenue, currency, { compact: true })}</span>
                 </div>
               ))}
@@ -360,14 +362,14 @@ export function Analytics({ currency = 'EUR' }) {
               { label: 'Ventes', value: data.sales, color: 'green' },
             ]}
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-white font-semibold mb-3">Meilleures ventes</p>
             <div className="space-y-2">
               {data.best_sellers.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-start">
                   <div>
                     <p className="text-white text-sm font-medium">{item.title}</p>
-                    <p className="text-gray-400 text-xs">{item.sales} ventes</p>
+                    <p className="text-kcb-pierre text-xs">{item.sales} ventes</p>
                   </div>
                   <span className="text-green-300 font-semibold">{fmtMoney(item.revenue, currency, { compact: true })}</span>
                 </div>
@@ -407,7 +409,7 @@ export function Analytics({ currency = 'EUR' }) {
             color="red"
           />
         </div>
-        <div className="mt-4 bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+        <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
           <p className="text-white font-semibold mb-3">Adoption des features</p>
           <div className="space-y-2">
             {Object.entries(data.feature_adoption).map(([feature, adoption]) => (
@@ -451,7 +453,7 @@ export function Analytics({ currency = 'EUR' }) {
             color="purple"
           />
         </div>
-        <div className="mt-4 bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+        <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
           <p className="text-white font-semibold mb-3">Web Vitals</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <VitalCard label="LCP" value={`${data.lcp}s`} target="< 2.5s" status="good" />
@@ -491,12 +493,12 @@ export function Analytics({ currency = 'EUR' }) {
           />
         </div>
         <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-white font-semibold mb-3">Catégories de problèmes</p>
             <div className="space-y-2">
               {Object.entries(data.ticket_categories).map(([category, count]) => (
                 <div key={category} className="flex justify-between text-sm">
-                  <span className="text-gray-300 capitalize">{category}</span>
+                  <span className="text-kcb-sable capitalize">{category}</span>
                   <span className="text-white font-semibold">{count} tickets</span>
                 </div>
               ))}
@@ -566,7 +568,7 @@ export function Analytics({ currency = 'EUR' }) {
 function Section({ title, children }) {
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-white">{title}</h2>
+      <h2 className="text-2xl font-bold text-white font-playfair">{title}</h2>
       {children}
     </div>
   );
@@ -575,19 +577,19 @@ function Section({ title, children }) {
 function MetricCard({ label, value, change, trend, color = 'gray' }) {
   const colorClasses = {
     green: 'bg-green-500/10 border-green-500/30 text-green-300',
-    blue: 'bg-blue-500/10 border-blue-500/30 text-blue-300',
-    purple: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
-    indigo: 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300',
-    violet: 'bg-violet-500/10 border-violet-500/30 text-violet-300',
-    amber: 'bg-amber-500/10 border-amber-500/30 text-amber-300',
-    emerald: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
-    orange: 'bg-orange-500/10 border-orange-500/30 text-orange-300',
+    blue: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    purple: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
+    indigo: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    violet: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
+    amber: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    emerald: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    orange: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
     red: 'bg-red-500/10 border-red-500/30 text-red-300',
   };
 
   return (
-    <div className={`border rounded-lg p-4 ${colorClasses[color]}`}>
-      <p className="text-gray-400 text-sm mb-2">{label}</p>
+    <div className={`border rounded-[4px] p-4 ${colorClasses[color]}`}>
+      <p className="text-kcb-pierre text-sm mb-2">{label}</p>
       <div className="flex items-end justify-between">
         <div className="text-3xl font-bold text-white">{value}</div>
         {trend && (
@@ -608,16 +610,16 @@ function MetricCard({ label, value, change, trend, color = 'gray' }) {
 function RevenueBreakdown({ title, data, colors }) {
   const total = Object.values(data).reduce((a, b) => a + b, 0);
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+    <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
       <p className="text-white font-semibold mb-3">{title}</p>
       <div className="space-y-2">
         {Object.entries(data).map(([key, value], idx) => (
           <div key={key}>
             <div className="flex justify-between text-sm mb-1">
-              <span className="text-gray-300 capitalize">{key}</span>
+              <span className="text-kcb-sable capitalize">{key}</span>
               <span className="text-white font-semibold">{((value / total) * 100).toFixed(0)}%</span>
             </div>
-            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+            <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
               <div
                 className="h-full"
                 style={{ width: `${(value / total) * 100}%`, backgroundColor: colors[idx] }}
@@ -633,19 +635,19 @@ function RevenueBreakdown({ title, data, colors }) {
 function FunnelChart({ title, stages }) {
   const maxValue = Math.max(...stages.map((s) => s.value));
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+    <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
       <p className="text-white font-semibold mb-4">{title}</p>
       <div className="space-y-3">
         {stages.map((stage, idx) => {
           const width = (stage.value / maxValue) * 100;
-          const colorMap = { blue: '#3b82f6', purple: '#a855f7', indigo: '#6366f1', green: '#10b981' };
+          const colorMap = { blue: '#C9A84C', purple: '#8B6914', indigo: '#C9A84C', green: '#10b981' };
           return (
             <div key={idx}>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-300">{stage.label}</span>
+                <span className="text-kcb-sable">{stage.label}</span>
                 <span className="text-white font-semibold">{stage.value.toLocaleString()}</span>
               </div>
-              <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
+              <div className="h-3 bg-kcb-ardoise rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${width}%`, backgroundColor: colorMap[stage.color] }}
@@ -663,11 +665,11 @@ function ProgressBar({ label, value }) {
   return (
     <div>
       <div className="flex justify-between text-sm mb-1">
-        <span className="text-gray-300">{label}</span>
+        <span className="text-kcb-sable">{label}</span>
         <span className="text-white font-semibold">{value}%</span>
       </div>
-      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500" style={{ width: `${value}%` }} />
+      <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-kcb-or to-kcb-bronze" style={{ width: `${value}%` }} />
       </div>
     </div>
   );
@@ -676,10 +678,10 @@ function ProgressBar({ label, value }) {
 function VitalCard({ label, value, target, status }) {
   const statusColor = status === 'good' ? 'text-green-400' : 'text-yellow-400';
   return (
-    <div className="bg-gray-800/50 rounded-lg p-3 text-center">
-      <p className="text-gray-400 text-xs mb-1">{label}</p>
+    <div className="bg-kcb-ardoise/50 rounded-[4px] p-3 text-center border border-white/[0.06]">
+      <p className="text-kcb-pierre text-xs mb-1">{label}</p>
       <p className={`text-2xl font-bold ${statusColor}`}>{value}</p>
-      <p className="text-gray-500 text-xs mt-1">{target}</p>
+      <p className="text-kcb-pierre text-xs mt-1">{target}</p>
     </div>
   );
 }
@@ -688,7 +690,7 @@ function ActionButton({ icon, label, badge, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="bg-gray-900/50 border border-gray-800 hover:border-kcb-or/50 rounded-lg p-4 text-left transition group"
+      className="bg-kcb-ardoise/50 border border-white/[0.06] hover:border-kcb-or/50 rounded-[4px] p-4 text-left transition group"
     >
       <div className="flex items-start justify-between mb-2">
         <span className="text-2xl">{icon}</span>
