@@ -311,6 +311,7 @@ export default async function handler(req, res) {
     if (s0 === 'report-error') return await routeReportError(req, res);
 
     // ── /api/auth/* ──────────────────────────────────────────────────────────
+    if (s0 === 'auth' && s1 === 'status' && s2) return await authSetStatus(req, res, s2);
     if (s0 === 'auth') return await routeAuth(req, res, s1);
 
     // ── /api/artworks/:id ────────────────────────────────────────────────────
@@ -652,11 +653,15 @@ const BASE_URL = process.env.CORS_ORIGIN ?? 'https://kucibok.com';
  * @param {string} action - s1 (signup, signin, signout, me, …)
  */
 async function routeAuth(req, res, action) {
-  // GET|PUT /api/auth/:uuid — lookup ou mise à jour utilisateur par ID
+  // GET /api/auth — liste tous les utilisateurs (admin uniquement)
+  if (!action && req.method === 'GET') return await authListUsers(req, res);
+
+  // GET|PUT|DELETE /api/auth/:uuid — lookup, mise à jour ou suppression par ID
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (action && UUID_RE.test(action)) {
-    if (req.method === 'GET') return await authGetById(req, res, action);
-    if (req.method === 'PUT') return await authUpdateById(req, res, action);
+    if (req.method === 'GET')    return await authGetById(req, res, action);
+    if (req.method === 'PUT')    return await authUpdateById(req, res, action);
+    if (req.method === 'DELETE') return await authDeleteById(req, res, action);
   }
 
   switch (action) {
@@ -736,6 +741,75 @@ async function authUpdateById(req, res, id) {
   if (error) return fail(res, error.message);
 
   return ok(res, { _id: data.id, ...data });
+}
+
+/**
+ * GET /api/auth — Liste tous les utilisateurs (admin uniquement).
+ */
+async function authListUsers(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const { data: profiles, error: profileError } = await supabaseAdmin
+    .from('users')
+    .select('id, name, username, role, country, telephone, is_active, created_at, auth_provider')
+    .order('created_at', { ascending: false });
+
+  if (profileError) return fail(res, profileError.message);
+
+  const { data: authData } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const emailMap = {};
+  if (authData?.users) {
+    for (const u of authData.users) emailMap[u.id] = u.email;
+  }
+
+  const users = profiles.map(p => ({ ...p, _id: p.id, email: emailMap[p.id] || null }));
+  return ok(res, users);
+}
+
+/**
+ * DELETE /api/auth/:id — Supprime un utilisateur (admin uniquement).
+ */
+async function authDeleteById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  if (authResult.user.id === id) return fail(res, 'Vous ne pouvez pas supprimer votre propre compte', 403);
+
+  const { data: userToDelete } = await supabaseAdmin.from('users').select('id, name, role').eq('id', id).single();
+  if (!userToDelete) return notFound(res, 'Utilisateur');
+
+  const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+  if (error) return fail(res, error.message);
+
+  return ok(res, { ...userToDelete, _id: id });
+}
+
+/**
+ * GET /api/auth/status/:id — Bascule is_active d'un utilisateur (admin uniquement).
+ */
+async function authSetStatus(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const { data: current } = await supabaseAdmin.from('users').select('id, name, role, is_active').eq('id', id).single();
+  if (!current) return notFound(res, 'Utilisateur');
+
+  const { data, error } = await supabaseAdmin
+    .from('users')
+    .update({ is_active: !current.is_active })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) return fail(res, error.message);
+  return ok(res, { ...data, _id: data.id, isActive: data.is_active });
 }
 
 /**
