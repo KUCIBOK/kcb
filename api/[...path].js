@@ -615,7 +615,7 @@ async function routeContact(req, res) {
   const { name, email, subject, message } = req.body ?? {};
   if (!name || !email || !message) return fail(res, 'Nom, email et message requis');
 
-  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   const { Resend } = await import('resend');
   const resend = new Resend(process.env.RESEND_API_KEY);
