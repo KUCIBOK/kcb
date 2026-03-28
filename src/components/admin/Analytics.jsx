@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { utils } from '../../api/useAPI'
-import { fmtMoney } from '../../lib/currency'
+import { fmtMoney, XOF_PER_EUR } from '../../lib/currency'
 import { SkeletonKPI, SkeletonChart } from '../ui'
 import {
   TrendingUp,
@@ -25,34 +25,36 @@ import {
 export function Analytics({ currency = 'EUR' }) {
   const [data, setData] = useState(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
+  // Les valeurs de defaultData sont en EUR — fmtMoney attend du XOF, on convertit avant affichage
+  const fmt = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
 
   // Données complètes par défaut
   const defaultData = {
-    // Revenue & Finance
+    // Revenue & Finance — valeurs en EUR
     mrr: 4303,
-    arr: 51636,
+    arr: 51636,    // = MRR × 12 ✓
     mrrGrowth: 12.5,
     arr_growth: 18.2,
     // Mix: Marketplace 20% / SaaS 40% / Numérisation 10% / Logistique 30%
     revenue_mix: { marketplace: 20, subscriptions: 40, artworks: 10, logistique: 30 },
-    cac: 190,       // CAC = Budget marketing annuel ÷ Nouveaux abonnés = 12 700 ÷ 67
-    ltv: 325,       // LTV 12 mois = ARPA × 12 = 27 × 12
+    cac: 190,      // Budget marketing 12 700 € ÷ 67 nouveaux abonnés
+    ltv: 600,      // ARPA ÷ churn mensuel 4,5 % = 27 ÷ 0,045
     payback_period: 7, // CAC ÷ ARPA = 190 ÷ 27
-    revenue_projection_3m: 14460, // 3 × MRR mois prochain
+    revenue_projection_3m: 4820, // MRR mois prochain = MRR × 1,12
 
     // SaaS — Sous-segments abonnements
     saas_subscribers: 159,
     arpa: 27,
     saas_segments: {
-      collectionneur: { count: 34, mrr: 1760, share: 22 },
-      curateur:       { count: 87, mrr: 2368, share: 55 },
-      galerie:        { count: 43, mrr: 175,  share: 23 }, // ajusté pour total MRR = 4 303 €
+      collectionneur: { count: 34,  mrr: 909,  share: 22 },
+      curateur:       { count: 87,  mrr: 2272, share: 55 },
+      galerie:        { count: 43,  mrr: 1117, share: 27 }, // 909+2272+1117 = 4 298 ≈ 4 303 €
     },
 
     // Utilisateurs & Croissance
-    totalUsers: 5500,
-    mau: 5500,
-    dau: 3668, // DAU/MAU 66,7 % × 5 500
+    totalUsers: 7154,
+    mau: 5500,     // MAU = DAU ÷ 66,7 % = 3 668 ÷ 0,667
+    dau: 3668,     // NE PAS MODIFIER — DAU/MAU 66,7 %
     acquisition_growth: 15,
     channels: {
       organic:  { users: 8,  roi: 3.2 },
@@ -72,9 +74,9 @@ export function Analytics({ currency = 'EUR' }) {
     quality_score: 87,
     artworks_with_cert: 215,
 
-    // Marketplace & Ventes
-    gmv: 1707,        // GMV mensuel
-    aov: 279,         // Panier moyen
+    // Marketplace & Ventes — valeurs en EUR
+    gmv: 1707,           // GMV mensuel
+    aov: 279,            // = round(GMV / sales) ✓
     conversion_rate: 3.8,
     views_total: 12450,
     favorites: 856,
@@ -84,9 +86,9 @@ export function Analytics({ currency = 'EUR' }) {
       { title: 'Artwork 1', sales: 45, revenue: 22500 },
       { title: 'Artwork 2', sales: 32, revenue: 16000 },
     ],
-    commission_revenue: 341, // 20 % du GMV
+    commission_revenue: 341, // = round(GMV × 0,20) ✓
 
-    // Logistique
+    // Logistique — valeurs en EUR
     logistics: {
       envois_2025: 110,
       envois_mensuels: 9,
@@ -123,7 +125,7 @@ export function Analytics({ currency = 'EUR' }) {
       general: 15,
     },
 
-    // Prédictions
+    // Prédictions — valeurs en EUR
     mrr_projection: 4820,
     churn_risk_users: 7,
     upsell_opportunities: 7,
@@ -255,28 +257,28 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="MRR"
-            value={fmtMoney(data.mrr, currency)}
+            value={fmt(data.mrr)}
             change={`+${data.mrrGrowth}% MoM`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="ARR"
-            value={fmtMoney(data.arr, currency)}
+            value={fmt(data.arr)}
             change={`+${data.arr_growth}% YoY`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="CAC"
-            value={fmtMoney(data.cac, currency)}
+            value={fmt(data.cac)}
             change="Coût d'acquisition"
             trend="down"
             color="blue"
           />
           <MetricCard
             label="LTV"
-            value={fmtMoney(data.ltv, currency)}
+            value={fmt(data.ltv)}
             change={`Ratio LTV:CAC = ${(data.ltv / data.cac).toFixed(1)}x`}
             trend="up"
             color="purple"
@@ -295,9 +297,9 @@ export function Analytics({ currency = 'EUR' }) {
             color="indigo"
           />
           <MetricCard
-            label="Projection 3M"
-            value={fmtMoney(data.revenue_projection_3m, currency)}
-            change="Revenu estimé"
+            label="MRR M+1"
+            value={fmt(data.revenue_projection_3m)}
+            change={`+12% MoM — MRR × 1,12`}
             color="emerald"
           />
         </div>
@@ -317,7 +319,7 @@ export function Analytics({ currency = 'EUR' }) {
             <div key={seg} className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
               <p className="text-kcb-pierre text-sm mb-1 capitalize">{seg} <span className="text-kcb-or">({info.share}%)</span></p>
               <p className="text-2xl font-bold text-white">{info.count} <span className="text-base font-normal text-kcb-pierre">abonnés</span></p>
-              <p className="text-green-300 font-semibold mt-1">{fmtMoney(info.mrr, currency)} MRR</p>
+              <p className="text-green-300 font-semibold mt-1">{fmt(info.mrr)} MRR</p>
             </div>
           ))}
         </div>
@@ -396,7 +398,7 @@ export function Analytics({ currency = 'EUR' }) {
                 <div key={idx} className="flex justify-between text-sm">
                   <span className="text-kcb-sable">{artist.name}</span>
                   <span className="text-green-300 font-semibold">
-                    {fmtMoney(artist.revenue, currency, { compact: true })}
+                    {fmt(artist.revenue, { compact: true })}
                   </span>
                 </div>
               ))}
@@ -410,13 +412,13 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="GMV"
-            value={fmtMoney(data.gmv, currency, { compact: true })}
+            value={fmt(data.gmv, { compact: true })}
             change="Volume marchand brut"
             color="green"
           />
           <MetricCard
             label="AOV"
-            value={fmtMoney(data.aov, currency)}
+            value={fmt(data.aov)}
             change="Valeur moyenne par commande"
             color="blue"
           />
@@ -428,7 +430,7 @@ export function Analytics({ currency = 'EUR' }) {
           />
           <MetricCard
             label="Commission"
-            value={fmtMoney(data.commission_revenue, currency, { compact: true })}
+            value={fmt(data.commission_revenue, { compact: true })}
             change="Revenu commission"
             color="amber"
           />
@@ -453,7 +455,7 @@ export function Analytics({ currency = 'EUR' }) {
                     <p className="text-kcb-pierre text-xs">{item.sales} ventes</p>
                   </div>
                   <span className="text-green-300 font-semibold">
-                    {fmtMoney(item.revenue, currency, { compact: true })}
+                    {fmt(item.revenue, { compact: true })}
                   </span>
                 </div>
               ))}
@@ -474,13 +476,13 @@ export function Analytics({ currency = 'EUR' }) {
             />
             <MetricCard
               label="Panier moyen logistique"
-              value={fmtMoney(data.logistics.panier_moyen, currency)}
+              value={fmt(data.logistics.panier_moyen)}
               change="Par envoi"
               color="indigo"
             />
             <MetricCard
               label="Revenu logistique/mois"
-              value={fmtMoney(data.logistics.revenu_mensuel, currency)}
+              value={fmt(data.logistics.revenu_mensuel)}
               trend="up"
               color="green"
             />
@@ -634,7 +636,7 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             label="MRR Projection"
-            value={fmtMoney(data.mrr_projection, currency)}
+            value={fmt(data.mrr_projection)}
             change="Estimé le mois prochain"
             color="green"
           />
