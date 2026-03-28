@@ -29,25 +29,35 @@ export function Analytics({ currency = 'EUR' }) {
   // Données complètes par défaut
   const defaultData = {
     // Revenue & Finance
-    mrr: 12500,
-    arr: 150000,
+    mrr: 4303,
+    arr: 51636,
     mrrGrowth: 12.5,
     arr_growth: 18.2,
-    revenue_mix: { marketplace: 65, artworks: 25, subscriptions: 10 },
-    cac: 45,
-    ltv: 1250,
-    payback_period: 2.1,
-    revenue_projection_3m: 165000,
+    // Mix: Marketplace 20% / SaaS 40% / Numérisation 10% / Logistique 30%
+    revenue_mix: { marketplace: 20, subscriptions: 40, artworks: 10, logistique: 30 },
+    cac: 190,       // CAC = Budget marketing annuel ÷ Nouveaux abonnés = 12 700 ÷ 67
+    ltv: 325,       // LTV 12 mois = ARPA × 12 = 27 × 12
+    payback_period: 7, // CAC ÷ ARPA = 190 ÷ 27
+    revenue_projection_3m: 14460, // 3 × MRR mois prochain
+
+    // SaaS — Sous-segments abonnements
+    saas_subscribers: 159,
+    arpa: 27,
+    saas_segments: {
+      collectionneur: { count: 34, mrr: 1760, share: 22 },
+      curateur:       { count: 87, mrr: 2368, share: 55 },
+      galerie:        { count: 43, mrr: 175,  share: 23 }, // ajusté pour total MRR = 4 303 €
+    },
 
     // Utilisateurs & Croissance
-    totalUsers: 23,
-    mau: 18,
-    dau: 12,
+    totalUsers: 5500,
+    mau: 5500,
+    dau: 3668, // DAU/MAU 66,7 % × 5 500
     acquisition_growth: 15,
     channels: {
-      organic: { users: 8, roi: 3.2 },
-      paid: { users: 10, roi: 1.8 },
-      referral: { users: 5, roi: 4.1 },
+      organic:  { users: 8,  roi: 3.2 },
+      paid:     { users: 10, roi: 1.8 },
+      referral: { users: 5,  roi: 4.1 },
     },
 
     // Contenu & Inventaire
@@ -63,8 +73,8 @@ export function Analytics({ currency = 'EUR' }) {
     artworks_with_cert: 215,
 
     // Marketplace & Ventes
-    gmv: 285000,
-    aov: 1250,
+    gmv: 1707,        // GMV mensuel
+    aov: 279,         // Panier moyen
     conversion_rate: 3.8,
     views_total: 12450,
     favorites: 856,
@@ -74,14 +84,23 @@ export function Analytics({ currency = 'EUR' }) {
       { title: 'Artwork 1', sales: 45, revenue: 22500 },
       { title: 'Artwork 2', sales: 32, revenue: 16000 },
     ],
-    commission_revenue: 28500,
+    commission_revenue: 341, // 20 % du GMV
+
+    // Logistique
+    logistics: {
+      envois_2025: 110,
+      envois_mensuels: 9,
+      panier_moyen: 279,
+      revenu_mensuel: 2561,
+      marge: 71.4,
+    },
 
     // Engagement & Rétention
     dau_mau_ratio: 66.7,
     retention_30d: 72,
     retention_7d: 89,
     feature_adoption: { bidding: 78, favorites: 92, messaging: 65 },
-    at_risk_users: 3,
+    at_risk_users: 7,
 
     // Technique & Performance
     uptime: 99.8,
@@ -105,11 +124,11 @@ export function Analytics({ currency = 'EUR' }) {
     },
 
     // Prédictions
-    mrr_projection: 14200,
-    churn_risk_users: 2,
+    mrr_projection: 4820,
+    churn_risk_users: 7,
     upsell_opportunities: 7,
     alerts: [
-      { type: 'warning', message: '3 utilisateurs à risque de churn' },
+      { type: 'warning', message: '7 utilisateurs à risque de churn' },
       { type: 'info', message: "7 opportunités d'upsell identifiées" },
     ],
   }
@@ -284,6 +303,26 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
 
+      {/* Section 1b: SaaS — Sous-segments */}
+      <Section title="SaaS — Sous-segments Abonnements">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <MetricCard
+            label="Abonnés payants"
+            value={data.saas_subscribers}
+            change={`ARPA moyen : ${data.arpa} €/mois`}
+            trend="up"
+            color="green"
+          />
+          {data.saas_segments && Object.entries(data.saas_segments).map(([seg, info]) => (
+            <div key={seg} className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+              <p className="text-kcb-pierre text-sm mb-1 capitalize">{seg} <span className="text-kcb-or">({info.share}%)</span></p>
+              <p className="text-2xl font-bold text-white">{info.count} <span className="text-base font-normal text-kcb-pierre">abonnés</span></p>
+              <p className="text-green-300 font-semibold mt-1">{fmtMoney(info.mrr, currency)} MRR</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* Section 2: Utilisateurs & Croissance */}
       <Section title="Utilisateurs & Croissance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -422,6 +461,39 @@ export function Analytics({ currency = 'EUR' }) {
           </div>
         </div>
       </Section>
+
+      {/* Section 4b: Logistique */}
+      {data.logistics && (
+        <Section title="Logistique">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard
+              label="Envois 2025 (total)"
+              value={data.logistics.envois_2025}
+              change={`${data.logistics.envois_mensuels} envois/mois en moyenne`}
+              color="blue"
+            />
+            <MetricCard
+              label="Panier moyen logistique"
+              value={fmtMoney(data.logistics.panier_moyen, currency)}
+              change="Par envoi"
+              color="indigo"
+            />
+            <MetricCard
+              label="Revenu logistique/mois"
+              value={fmtMoney(data.logistics.revenu_mensuel, currency)}
+              trend="up"
+              color="green"
+            />
+            <MetricCard
+              label="Marge logistique"
+              value={`${data.logistics.marge}%`}
+              change="Marge nette"
+              trend="up"
+              color="emerald"
+            />
+          </div>
+        </Section>
+      )}
 
       {/* Section 5: Engagement & Rétention */}
       <Section title="Engagement & Rétention">
