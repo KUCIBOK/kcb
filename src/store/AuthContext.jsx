@@ -194,7 +194,7 @@ export function AuthContextProvider({ children }) {
       }).catch(() => {});
       return updated;
     }
-    return { error: updated?.message };
+    return { error: updated?.error || updated?.message };
   }, [user]);
 
   /** Met à jour le profil artiste. */
@@ -209,7 +209,7 @@ export function AuthContextProvider({ children }) {
       }).catch(() => {});
       return profile;
     }
-    return { error: profile?.message };
+    return { error: profile?.error || profile?.message };
   }, [user]);
 
   /** Met à jour le profil buyer / curator. */
@@ -224,7 +224,7 @@ export function AuthContextProvider({ children }) {
       }).catch(() => {});
       return profile;
     }
-    return { error: profile?.message };
+    return { error: profile?.error || profile?.message };
   }, [user, setProfile]);
 
   /** Change le mot de passe via Supabase Auth (vérifie l'ancien mot de passe côté serveur). */

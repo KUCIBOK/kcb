@@ -206,6 +206,7 @@ export const ArtworksContextProvider = ({ children }) => {
               return data
             }
             makeToast('Erreur', 'warning', data?.error)
+            return data
           } catch (error) {
             makeToast('Erreur', 'warning', error.message)
             return {

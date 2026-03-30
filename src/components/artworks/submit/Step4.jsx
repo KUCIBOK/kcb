@@ -12,10 +12,11 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
       let data = { ...formState }
       if (user?.role == 'artist') {
         data.artist = profile?.name
+        data.artistId = profile?._id
       } else {
         data.artist = formState.artist
+        data.artistId = null
       }
-      data.artistId = profile?._id
       delete data.step
       delete data.tag
       delete data.loading
@@ -23,7 +24,11 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
       delete data.error
       const formData = new FormData()
       Object.keys(data).forEach((key) => {
-        formData.append(key, data[key])
+        if (key === 'tags' && Array.isArray(data[key])) {
+          formData.append(key, JSON.stringify(data[key]))
+        } else {
+          formData.append(key, data[key])
+        }
       })
       const artwork = await submitArtwork(formData)
       if (artwork?.error) {

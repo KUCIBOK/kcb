@@ -1346,7 +1346,7 @@ async function routeArtworks(req, res) {
         price:          Number(price),
         currency:       currency ?? 'XOF',
         category:       category ?? null,
-        tags:           Array.isArray(tags) ? tags : (tags ? [tags] : []),
+        tags:           (() => { if (!tags) return []; if (Array.isArray(tags)) return tags; try { const p = JSON.parse(tags); return Array.isArray(p) ? p : [String(p)]; } catch { return String(tags).split(',').map(t => t.trim()).filter(Boolean); } })(),
         for_sale:       !!for_sale,
         edition_number: edition_number ? Number(edition_number) : 1,
         edition_total:  edition_total  ? Number(edition_total)  : 1,
