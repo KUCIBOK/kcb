@@ -53,7 +53,7 @@ export function EmailComposer() {
         </Card>
 
         {/* Templates disponibles */}
-        <div className="bg-card border border-gray-700 rounded-lg p-6 mb-6">
+        <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Templates Disponibles</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -61,7 +61,7 @@ export function EmailComposer() {
               title="Nouvelle Exposition"
               description="Annoncez une nouvelle exposition"
               icon={<Layout className="w-6 h-6" />}
-              color="bg-indigo-500"
+              color="bg-kcb-or"
             />
             <TemplateCard
               title="Newsletter"
@@ -79,7 +79,7 @@ export function EmailComposer() {
         </div>
 
         {/* Blocs disponibles */}
-        <div className="bg-card border border-gray-700 rounded-lg p-6 mb-6">
+        <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Blocs de Construction</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -93,7 +93,7 @@ export function EmailComposer() {
         </div>
 
         {/* Aperçu de l'éditeur */}
-        <div className="bg-card border border-gray-700 rounded-lg p-6">
+        <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-white">Aperçu</h2>
             <div className="flex gap-2">
@@ -117,12 +117,12 @@ export function EmailComposer() {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-lg p-8 min-h-[400px] flex items-center justify-center">
+          <div className="bg-kcb-ardoise rounded-[4px] p-8 min-h-[400px] flex items-center justify-center">
             <div className="text-center">
-              <Mail className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 mb-2">Constructeur d'email drag & drop</p>
-              <p className="text-gray-500 text-sm">Fonctionnalité avancée en cours de développement</p>
-              <p className="text-gray-500 text-sm mt-4">
+              <Mail className="w-16 h-16 text-kcb-pierre mx-auto mb-4" />
+              <p className="text-kcb-pierre mb-2">Constructeur d'email drag & drop</p>
+              <p className="text-kcb-pierre text-sm">Fonctionnalité avancée en cours de développement</p>
+              <p className="text-kcb-pierre text-sm mt-4">
                 Cette interface permettra de créer des emails visuellement<br />
                 avec des blocs réutilisables, des templates et des merge tags
               </p>
@@ -131,31 +131,31 @@ export function EmailComposer() {
         </div>
 
         {/* Features à venir */}
-        <div className="mt-6 bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+        <div className="mt-6 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-6">
           <h3 className="text-lg font-semibold text-white mb-3">Fonctionnalités à venir</h3>
-          <ul className="space-y-2 text-gray-400">
+          <ul className="space-y-2 text-kcb-pierre">
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+              <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
               Éditeur drag & drop complet
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+              <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
               Merge tags dynamiques (prénom, nom, etc.)
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+              <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
               Templates prédéfinis et personnalisables
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+              <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
               Aperçu mobile et desktop
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+              <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
               Envoi et planification de campagnes
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+              <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
               Analytics détaillées (opens, clicks, etc.)
             </li>
           </ul>
@@ -187,22 +187,22 @@ function CampaignModal({ onClose, emailName, subject, preheader }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-card border border-gray-700 rounded-lg p-6 w-full max-w-md">
+      <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 w-full max-w-md">
         <h3 className="text-xl font-bold text-white mb-4">Créer une Campagne</h3>
         
         <div className="space-y-4">
-          <div className="bg-gray-800 rounded-lg p-4">
-            <p className="text-sm text-gray-400 mb-2">Email préparé:</p>
+          <div className="bg-kcb-ardoise rounded-[4px] p-4">
+            <p className="text-sm text-kcb-pierre mb-2">Email préparé:</p>
             <p className="text-white font-medium">{emailName}</p>
-            <p className="text-gray-400 text-sm mt-1">Objet: {subject || 'Non défini'}</p>
+            <p className="text-kcb-pierre text-sm mt-1">Objet: {subject || 'Non défini'}</p>
           </div>
 
-          <div className="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
-            <p className="text-blue-300 text-sm">
+          <div className="bg-kcb-or/10 border border-kcb-or/30 rounded-[4px] p-4">
+            <p className="text-kcb-sable text-sm">
               <Users className="w-4 h-4 inline mr-2" />
               Vous allez pouvoir sélectionner vos destinataires:
             </p>
-            <ul className="text-gray-400 text-sm mt-2 space-y-1">
+            <ul className="text-kcb-pierre text-sm mt-2 space-y-1">
               <li>• Listes de contacts</li>
               <li>• Contacts CRM individuels</li>
               <li>• Segmentation avancée</li>
@@ -212,7 +212,7 @@ function CampaignModal({ onClose, emailName, subject, preheader }) {
           <div className="flex gap-2 pt-4">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-white transition"
+              className="flex-1 px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] rounded text-white transition"
             >
               Annuler
             </button>
@@ -231,23 +231,23 @@ function CampaignModal({ onClose, emailName, subject, preheader }) {
 
 function TemplateCard({ title, description, icon, color }) {
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-indigo-500 transition cursor-pointer group">
-      <div className={`w-12 h-12 ${color} rounded-lg flex items-center justify-center mb-3 text-white group-hover:scale-110 transition`}>
+    <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4 hover:border-kcb-or transition cursor-pointer group">
+      <div className={`w-12 h-12 ${color} rounded-[4px] flex items-center justify-center mb-3 text-white group-hover:scale-110 transition`}>
         {icon}
       </div>
       <h3 className="text-white font-semibold mb-1">{title}</h3>
-      <p className="text-gray-400 text-sm">{description}</p>
+      <p className="text-kcb-pierre text-sm">{description}</p>
     </div>
   );
 }
 
 function BlockCard({ icon, label }) {
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-indigo-500 transition cursor-pointer text-center group">
-      <div className="text-gray-400 group-hover:text-indigo-400 transition mb-2">
+    <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4 hover:border-kcb-or transition cursor-pointer text-center group">
+      <div className="text-kcb-pierre group-hover:text-kcb-or transition mb-2">
         {icon}
       </div>
-      <p className="text-gray-400 text-sm">{label}</p>
+      <p className="text-kcb-pierre text-sm">{label}</p>
     </div>
   );
 }

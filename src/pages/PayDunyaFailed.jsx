@@ -43,7 +43,7 @@ const PayDunyaFailed = () => {
           </button>
           
           <Link
-            to="/explore"
+            to="/africa/catalogue"
             className="w-full inline-flex items-center justify-center gap-2 border border-white/[0.06] hover:bg-kcb-ardoise text-white px-6 py-3 rounded-[4px] transition"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -51,7 +51,7 @@ const PayDunyaFailed = () => {
           </Link>
           
           <Link
-            to="/contact"
+            to="/africa/contact"
             className="w-full inline-flex items-center justify-center gap-2 text-kcb-pierre hover:text-white transition text-sm"
           >
             <HelpCircle className="w-4 h-4" />

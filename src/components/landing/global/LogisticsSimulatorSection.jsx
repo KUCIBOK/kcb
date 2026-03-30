@@ -254,7 +254,7 @@ export default function LogisticsSimulatorSection() {
                 <input
                   type="range"
                   min={500}
-                  max={100000}
+                  max={500000}
                   step={500}
                   value={params.value}
                   onChange={e => set("value")(Number(e.target.value))}
@@ -262,7 +262,7 @@ export default function LogisticsSimulatorSection() {
                 />
                 <div className="flex justify-between mt-1">
                   <span className="font-jetbrains text-[8px] text-kcb-pierre/40">500 €</span>
-                  <span className="font-jetbrains text-[8px] text-kcb-pierre/40">100 000 €</span>
+                  <span className="font-jetbrains text-[8px] text-kcb-pierre/40">500 000 €</span>
                 </div>
               </div>
             </div>
@@ -307,7 +307,7 @@ export default function LogisticsSimulatorSection() {
               {/* CTA */}
               <div className="mt-6 space-y-3">
                 <Link
-                  to="/contact"
+                  to="/global/sourcing"
                   className="flex items-center justify-center gap-2 bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-6 py-3.5 w-full transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline"
                 >
                   {t.cta} <ArrowRight className="w-3.5 h-3.5" />

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { setSupabaseToken } from '../api/useAPI';
@@ -8,9 +8,6 @@ import { createLog } from '../api/useLog';
 
 /** @type {React.Context} */
 export const AuthContext = createContext(null);
-
-/** @type {string[]} Rôles valides de la plateforme */
-const VALID_ROLES = ['collector', 'artist', 'professional', 'admin'];
 
 /**
  * Normalise un utilisateur Supabase vers la forme KCB.
@@ -24,7 +21,7 @@ const toKcbUser = (supabaseUser) => {
     _id: supabaseUser.id,
     id: supabaseUser.id,
     email: supabaseUser.email,
-    role: supabaseUser.user_metadata?.role ?? 'collector',
+    role: supabaseUser.user_metadata?.role ?? 'buyer',
     name: supabaseUser.user_metadata?.name ?? '',
     isEmailVerified: !!supabaseUser.email_confirmed_at,
     ...supabaseUser.user_metadata,
@@ -40,11 +37,11 @@ const toKcbUser = (supabaseUser) => {
 const profileKeyForRole = (role) => {
   const map = {
     artist: 'artistProfile',
-    collector: 'collectorProfile',
-    professional: 'professionalProfile',
+    buyer: 'buyerProfile',
+    curator: 'curatorProfile',
     admin: 'adminProfile',
   };
-  return map[role] ?? 'collectorProfile';
+  return map[role] ?? 'buyerProfile';
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -62,8 +59,8 @@ export function AuthContextProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [artistProfile, setArtistProfile] = useState(null);
-  const [collectorProfile, setCollectorProfile] = useState(null);
-  const [professionalProfile, setProfessionalProfile] = useState(null);
+  const [buyerProfile, setBuyerProfile] = useState(null);
+  const [curatorProfile, setCuratorProfile] = useState(null);
   const [adminProfile, setAdminProfile] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [plan, setPlan] = useState(null);
@@ -72,14 +69,17 @@ export function AuthContextProvider({ children }) {
   // ── Chargement du profil étendu (Supabase — artists / profiles) ─────────────
   const loadProfile = useCallback(async (kcbUser) => {
     if (!kcbUser?._id) return;
-    const profileData = await getUserProfile(kcbUser._id);
-    if (!profileData?._id && !profileData?.userId) return;
-
-    const key = profileKeyForRole(kcbUser.role);
-    if (key === 'artistProfile') setArtistProfile(profileData);
-    else if (key === 'collectorProfile') setCollectorProfile(profileData);
-    else if (key === 'professionalProfile') setProfessionalProfile(profileData);
-    else if (key === 'adminProfile') setAdminProfile(profileData);
+    try {
+      const profileData = await getUserProfile(kcbUser._id);
+      if (!profileData?._id && !profileData?.userId) return;
+      const key = profileKeyForRole(kcbUser.role);
+      if (key === 'artistProfile') setArtistProfile(profileData);
+      else if (key === 'buyerProfile') setBuyerProfile(profileData);
+      else if (key === 'curatorProfile') setCuratorProfile(profileData);
+      else if (key === 'adminProfile') setAdminProfile(profileData);
+    } catch {
+      // Profil étendu non critique — ne pas bloquer l'authentification
+    }
   }, []);
 
   /**
@@ -97,21 +97,26 @@ export function AuthContextProvider({ children }) {
   }, []);
 
   // ── Écoute les changements de session Supabase ────────────────────────────
+  const loadedRef = useRef(false);
+
   useEffect(() => {
-    // Récupère la session initiale au montage
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSupabaseToken(session?.access_token ?? null);
-      const kcbUser = toKcbUser(session?.user ?? null);
-      if (kcbUser) {
-        const dbRole = await loadDbRole(kcbUser._id);
-        if (dbRole) kcbUser.role = dbRole;
-        setUser(kcbUser);
-        loadProfile(kcbUser);
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
+    // Récupère la session initiale au montage — guard against double invocation (React StrictMode)
+    if (!loadedRef.current) {
+      loadedRef.current = true;
+      supabase.auth.getSession().then(async ({ data: { session } }) => {
+        setSupabaseToken(session?.access_token ?? null);
+        const kcbUser = toKcbUser(session?.user ?? null);
+        if (kcbUser) {
+          const dbRole = await loadDbRole(kcbUser._id);
+          if (dbRole) kcbUser.role = dbRole;
+          setUser(kcbUser);
+          loadProfile(kcbUser);
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      });
+    }
 
     // S'abonne aux changements (login, logout, refresh token, OAuth callback)
     const { data: { subscription: authListener } } = supabase.auth.onAuthStateChange(
@@ -139,8 +144,8 @@ export function AuthContextProvider({ children }) {
 
         if (event === 'SIGNED_OUT') {
           setArtistProfile(null);
-          setCollectorProfile(null);
-          setProfessionalProfile(null);
+          setBuyerProfile(null);
+          setCuratorProfile(null);
           setAdminProfile(null);
           setSubscription(null);
           setPlan(null);
@@ -166,8 +171,8 @@ export function AuthContextProvider({ children }) {
     if (!user?.role) return;
     const key = profileKeyForRole(user.role);
     if (key === 'artistProfile') setArtistProfile(profile);
-    else if (key === 'collectorProfile') setCollectorProfile(profile);
-    else if (key === 'professionalProfile') setProfessionalProfile(profile);
+    else if (key === 'buyerProfile') setBuyerProfile(profile);
+    else if (key === 'curatorProfile') setCuratorProfile(profile);
     else if (key === 'adminProfile') setAdminProfile(profile);
   }, [user]);
 
@@ -189,7 +194,7 @@ export function AuthContextProvider({ children }) {
       }).catch(() => {});
       return updated;
     }
-    return { error: updated?.message };
+    return { error: updated?.error || updated?.message };
   }, [user]);
 
   /** Met à jour le profil artiste. */
@@ -204,10 +209,10 @@ export function AuthContextProvider({ children }) {
       }).catch(() => {});
       return profile;
     }
-    return { error: profile?.message };
+    return { error: profile?.error || profile?.message };
   }, [user]);
 
-  /** Met à jour le profil collector / professional. */
+  /** Met à jour le profil buyer / curator. */
   const updateProfileCtx = useCallback(async (payload) => {
     if (!user?._id) return { error: 'Utilisateur non connecté.' };
     const profile = await updateProfile(user._id, payload);
@@ -219,7 +224,7 @@ export function AuthContextProvider({ children }) {
       }).catch(() => {});
       return profile;
     }
-    return { error: profile?.message };
+    return { error: profile?.error || profile?.message };
   }, [user, setProfile]);
 
   /** Change le mot de passe via Supabase Auth (vérifie l'ancien mot de passe côté serveur). */
@@ -239,8 +244,8 @@ export function AuthContextProvider({ children }) {
   const value = {
     user,
     artistProfile,
-    collectorProfile,
-    professionalProfile,
+    buyerProfile,
+    curatorProfile,
     adminProfile,
     subscription,
     plan,
@@ -251,8 +256,6 @@ export function AuthContextProvider({ children }) {
     updateArtist: updateArtistCtx,
     updateProfile: updateProfileCtx,
     changePassword: changePasswordCtx,
-    // Compatibilité descendante — login() n'est plus nécessaire (onAuthStateChange gère tout)
-    login: () => {},
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

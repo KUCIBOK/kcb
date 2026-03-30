@@ -113,13 +113,13 @@ export function AnalytiquePro() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Analytique Pro</h1>
-          <p className="text-gray-400">KPIs avancés et analyses détaillées</p>
+          <p className="text-kcb-pierre">KPIs avancés et analyses détaillées</p>
         </div>
         <div className="flex gap-2">
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="bg-card border border-gray-700 text-white rounded-lg px-4 py-2 focus:border-kcb-or focus:outline-none"
+            className="bg-kcb-ardoise border border-white/[0.06] text-white rounded-[4px] px-4 py-2 focus:border-kcb-or focus:outline-none"
           >
             <option value="week">Cette semaine</option>
             <option value="month">Ce mois</option>
@@ -129,7 +129,7 @@ export function AnalytiquePro() {
           </select>
           <button
             onClick={loadAnalytics}
-            className="p-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-lg transition"
+            className="p-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-[4px] transition"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
@@ -137,85 +137,85 @@ export function AnalytiquePro() {
       </div>
 
       {error && (
-        <div className="bg-red-900/50 border border-red-700 rounded-lg p-4 text-red-200">
+        <div className="bg-red-900/50 border border-red-700 rounded-[4px] p-4 text-red-200">
           {error}
         </div>
       )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <Percent className="w-5 h-5 text-purple-400" />
+            <Percent className="w-5 h-5 text-kcb-bronze" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.kpis?.conversionRate || 0}%</p>
-          <p className="text-xs text-gray-400 mt-1">Taux de conversion</p>
+          <p className="text-xs text-kcb-pierre mt-1">Taux de conversion</p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <Clock className="w-5 h-5 text-blue-400" />
+            <Clock className="w-5 h-5 text-kcb-or" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.kpis?.averageSaleTime || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">Jours de vente</p>
+          <p className="text-xs text-kcb-pierre mt-1">Jours de vente</p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <Eye className="w-5 h-5 text-green-400" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.kpis?.totalViews || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">Vues totales</p>
+          <p className="text-xs text-kcb-pierre mt-1">Vues totales</p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <Heart className="w-5 h-5 text-pink-400" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.kpis?.totalFavorites || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">Favoris</p>
+          <p className="text-xs text-kcb-pierre mt-1">Favoris</p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <Target className="w-5 h-5 text-orange-400" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.kpis?.viewsToSale || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">Vues → Vente</p>
+          <p className="text-xs text-kcb-pierre mt-1">Vues → Vente</p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <DollarSign className="w-5 h-5 text-yellow-400" />
           </div>
           <p className="text-2xl font-bold text-white">{((analytics?.overview?.totalRevenue || 0) / 1000000).toFixed(2)}M</p>
-          <p className="text-xs text-gray-400 mt-1">Revenu total</p>
+          <p className="text-xs text-kcb-pierre mt-1">Revenu total</p>
         </div>
       </div>
 
       {/* Real-time Stats */}
       {realtime && (
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-5 h-5 text-green-400" />
             <h3 className="text-lg font-semibold text-white">Temps réel</h3>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-background/50 rounded-lg p-3 text-center">
+            <div className="bg-kcb-noir/50 rounded-[4px] p-3 text-center">
               <p className="text-2xl font-bold text-green-400">{realtime.todayViews}</p>
-              <p className="text-xs text-gray-400">Vues aujourd'hui</p>
+              <p className="text-xs text-kcb-pierre">Vues aujourd'hui</p>
             </div>
-            <div className="bg-background/50 rounded-lg p-3 text-center">
-              <p className="text-2xl font-bold text-blue-400">{realtime.weekViews}</p>
-              <p className="text-xs text-gray-400">Vues cette semaine</p>
+            <div className="bg-kcb-noir/50 rounded-[4px] p-3 text-center">
+              <p className="text-2xl font-bold text-kcb-or">{realtime.weekViews}</p>
+              <p className="text-xs text-kcb-pierre">Vues cette semaine</p>
             </div>
-            <div className="bg-background/50 rounded-lg p-3 text-center">
-              <p className="text-2xl font-bold text-purple-400">{realtime.activeListings}</p>
-              <p className="text-xs text-gray-400">Annonces actives</p>
+            <div className="bg-kcb-noir/50 rounded-[4px] p-3 text-center">
+              <p className="text-2xl font-bold text-kcb-bronze">{realtime.activeListings}</p>
+              <p className="text-xs text-kcb-pierre">Annonces actives</p>
             </div>
-            <div className="bg-background/50 rounded-lg p-3 text-center">
+            <div className="bg-kcb-noir/50 rounded-[4px] p-3 text-center">
               <p className="text-2xl font-bold text-orange-400">{realtime.inquiriesCount}</p>
-              <p className="text-xs text-gray-400">Demandes</p>
+              <p className="text-xs text-kcb-pierre">Demandes</p>
             </div>
           </div>
         </div>
@@ -223,40 +223,40 @@ export function AnalytiquePro() {
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <Package className="w-5 h-5 text-gray-400" />
+            <Package className="w-5 h-5 text-kcb-pierre" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.overview?.totalArtworks || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">Total oeuvres</p>
+          <p className="text-xs text-kcb-pierre mt-1">Total oeuvres</p>
         </div>
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <ArrowUp className="w-5 h-5 text-green-400" />
           </div>
           <p className="text-2xl font-bold text-green-400">{analytics?.overview?.soldArtworks || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">Vendues</p>
+          <p className="text-xs text-kcb-pierre mt-1">Vendues</p>
         </div>
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <ArrowDown className="w-5 h-5 text-blue-400" />
+            <ArrowDown className="w-5 h-5 text-kcb-or" />
           </div>
-          <p className="text-2xl font-bold text-blue-400">{analytics?.overview?.unsoldArtworks || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">En vente</p>
+          <p className="text-2xl font-bold text-kcb-or">{analytics?.overview?.unsoldArtworks || 0}</p>
+          <p className="text-xs text-kcb-pierre mt-1">En vente</p>
         </div>
-        <div className="bg-card rounded-xl p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <Calendar className="w-5 h-5 text-yellow-400" />
           </div>
           <p className="text-2xl font-bold text-yellow-400">{analytics?.overview?.pendingArtworks || 0}</p>
-          <p className="text-xs text-gray-400 mt-1">En attente</p>
+          <p className="text-xs text-kcb-pierre mt-1">En attente</p>
         </div>
       </div>
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Sales by Category */}
-        <div className="bg-card rounded-lg p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
             <PieChartIcon className="w-5 h-5" />
             Ventes par catégorie
@@ -283,13 +283,13 @@ export function AnalytiquePro() {
                 options={pieOptions} 
               />
             ) : (
-              <p className="text-gray-500 text-center py-8">Aucune donnée</p>
+              <p className="text-kcb-pierre text-center py-8">Aucune donnée</p>
             )}
           </div>
         </div>
 
         {/* Sales by Price Range */}
-        <div className="bg-card rounded-lg p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
             <BarChart3 className="w-5 h-5" />
             Ventes par fourchette de prix
@@ -309,16 +309,16 @@ export function AnalytiquePro() {
                 options={barOptions} 
               />
             ) : (
-              <p className="text-gray-500 text-center py-8">Aucune donnée</p>
+              <p className="text-kcb-pierre text-center py-8">Aucune donnée</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Sales Trend */}
-      <div className="bg-card rounded-lg p-4 border border-gray-700">
+      <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
         <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-purple-400" />
+          <TrendingUp className="w-5 h-5 text-kcb-bronze" />
           Tendance des ventes (12 mois)
         </h3>
         <div className="h-64">
@@ -338,14 +338,14 @@ export function AnalytiquePro() {
               options={lineOptions} 
             />
           ) : (
-            <p className="text-gray-500 text-center py-8">Aucune donnée</p>
+            <p className="text-kcb-pierre text-center py-8">Aucune donnée</p>
           )}
         </div>
       </div>
 
       {/* Top Artworks */}
       {analytics?.topArtworks?.length > 0 && (
-        <div className="bg-card rounded-lg p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
             <Target className="w-5 h-5 text-yellow-400" />
             Top 10 Oeuvres vendues
@@ -353,19 +353,19 @@ export function AnalytiquePro() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="text-left py-2 px-3 text-gray-400">#</th>
-                  <th className="text-left py-2 px-3 text-gray-400">Titre</th>
-                  <th className="text-left py-2 px-3 text-gray-400">Artiste</th>
-                  <th className="text-right py-2 px-3 text-gray-400">Prix de vente</th>
+                <tr className="border-b border-white/[0.06]">
+                  <th className="text-left py-2 px-3 text-kcb-pierre">#</th>
+                  <th className="text-left py-2 px-3 text-kcb-pierre">Titre</th>
+                  <th className="text-left py-2 px-3 text-kcb-pierre">Artiste</th>
+                  <th className="text-right py-2 px-3 text-kcb-pierre">Prix de vente</th>
                 </tr>
               </thead>
               <tbody>
                 {analytics.topArtworks.map((artwork, idx) => (
-                  <tr key={idx} className="border-b border-gray-700/50 hover:bg-gray-800/50">
-                    <td className="py-2 px-3 text-gray-400">{idx + 1}</td>
+                  <tr key={idx} className="border-b border-white/[0.06]/50 hover:bg-kcb-ardoise/50">
+                    <td className="py-2 px-3 text-kcb-pierre">{idx + 1}</td>
                     <td className="py-2 px-3 text-white font-medium truncate max-w-xs">{artwork.title}</td>
-                    <td className="py-2 px-3 text-gray-300">{artwork.artist}</td>
+                    <td className="py-2 px-3 text-kcb-sable">{artwork.artist}</td>
                     <td className="py-2 px-3 text-right text-green-400 font-medium">
                       {Number(artwork.price).toLocaleString()} CFA
                     </td>
@@ -379,27 +379,27 @@ export function AnalytiquePro() {
 
       {/* Top Artists */}
       {analytics?.topArtists?.length > 0 && (
-        <div className="bg-card rounded-lg p-4 border border-gray-700">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-            <Activity className="w-5 h-5 text-blue-400" />
+            <Activity className="w-5 h-5 text-kcb-or" />
             Top Artistes par revenue
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="text-left py-2 px-3 text-gray-400">#</th>
-                  <th className="text-left py-2 px-3 text-gray-400">Artiste</th>
-                  <th className="text-right py-2 px-3 text-gray-400">Ventes</th>
-                  <th className="text-right py-2 px-3 text-gray-400">Revenue</th>
+                <tr className="border-b border-white/[0.06]">
+                  <th className="text-left py-2 px-3 text-kcb-pierre">#</th>
+                  <th className="text-left py-2 px-3 text-kcb-pierre">Artiste</th>
+                  <th className="text-right py-2 px-3 text-kcb-pierre">Ventes</th>
+                  <th className="text-right py-2 px-3 text-kcb-pierre">Revenue</th>
                 </tr>
               </thead>
               <tbody>
                 {analytics.topArtists.map((artist, idx) => (
-                  <tr key={idx} className="border-b border-gray-700/50 hover:bg-gray-800/50">
-                    <td className="py-2 px-3 text-gray-400">{idx + 1}</td>
+                  <tr key={idx} className="border-b border-white/[0.06]/50 hover:bg-kcb-ardoise/50">
+                    <td className="py-2 px-3 text-kcb-pierre">{idx + 1}</td>
                     <td className="py-2 px-3 text-white font-medium">{artist.name}</td>
-                    <td className="py-2 px-3 text-right text-gray-300">{artist.count}</td>
+                    <td className="py-2 px-3 text-right text-kcb-sable">{artist.count}</td>
                     <td className="py-2 px-3 text-right text-green-400 font-medium">
                       {(artist.revenue / 1000000).toFixed(2)}M CFA
                     </td>

@@ -4,10 +4,10 @@ import { supabase } from "../../lib/supabase";
 import RevealOnScroll from "../../components/landing/RevealOnScroll";
 
 const ROLE_DASHBOARDS = {
-  artist:       '/dashboard/artist',
-  collector:    '/dashboard/collector',
-  professional: '/dashboard/professional',
-  admin:        '/dashboard/admin',
+  artist:  '/dashboard/artist',
+  curator: '/dashboard/curator',
+  buyer:   '/account',
+  admin:   '/dashboard/admin',
 };
 
 export default function VerifyEmail() {
@@ -23,7 +23,7 @@ export default function VerifyEmail() {
           // Lire le rôle depuis public.users (source de vérité)
           const { data: dbUser } = await supabase
             .from('users').select('role').eq('id', session.user.id).single();
-          const role = dbUser?.role ?? 'collector';
+          const role = dbUser?.role ?? 'buyer';
           navigate(ROLE_DASHBOARDS[role] ?? '/', { replace: true });
         }
         if (event === 'TOKEN_REFRESHED') return;

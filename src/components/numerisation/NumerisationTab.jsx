@@ -10,28 +10,28 @@ export function NumerisationTab() {
         <div className="space-y-4">
             <div className="flex md:flex-row flex-col gap-6 w-full lg:px-2">
                 <div className="flex md:flex-row flex-col gap-6 w-full lg:px-2">
-                    <div className="md:w-1/2 min-h-[18vh] w-full rounded-xl p-4 border text-sm space-4">
+                    <div className="md:w-1/2 min-h-[18vh] w-full rounded-[4px] p-4 border text-sm space-4">
                         <div className="flex justify-between items-center">
                             <h6>Total des numérisations</h6>
-                            <Scan className="w-4 h-4 text-gray-400" />
+                            <Scan className="w-4 h-4 text-kcb-pierre" />
                         </div>
                         <p className="text-2xl font-bold text-white mt-2">
                             {myNumerisations?.length}
                         </p>
                     </div>
-                    <div className="md:w-1/2 min-h-[18vh] w-full rounded-xl p-4 border text-sm space-4">
+                    <div className="md:w-1/2 min-h-[18vh] w-full rounded-[4px] p-4 border text-sm space-4">
                         <div className="flex justify-between items-center">
                             <h6>En attente</h6>
-                            <ClockFading className="w-4 h-4 text-gray-400" />
+                            <ClockFading className="w-4 h-4 text-kcb-pierre" />
                         </div>
                         <p className="text-2xl font-bold text-white mt-2">
                             {myNumerisations.length > 0 ? myNumerisations?.filter(numerisation => numerisation?.status === "pending")?.length : 0}
                         </p>
                     </div>
-                    <div className="md:w-1/2 min-h-[18vh] w-full rounded-xl p-4 border text-sm space-4">
+                    <div className="md:w-1/2 min-h-[18vh] w-full rounded-[4px] p-4 border text-sm space-4">
                         <div className="flex justify-between items-center">
                             <h6>Terminées</h6>
-                            <CheckCircle className="w-4 h-4 text-gray-400" />
+                            <CheckCircle className="w-4 h-4 text-kcb-pierre" />
                         </div>
                         <p className="text-2xl font-bold text-white mt-2">
                             {myNumerisations?.filter(numerisation => numerisation?.status === "delivered")?.length}

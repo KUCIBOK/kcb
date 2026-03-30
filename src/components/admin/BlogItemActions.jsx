@@ -59,22 +59,22 @@ export function BlogItemActions({post}) {
         <div className="flex items-center gap-1">
             <Link
                 to={`/blog/${post?._id || post?.id}`}
-                className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
+                className="rounded-full bg-kcb-ardoise p-2 hover:bg-white/[0.08] transition flex items-center justify-center shadow-none border-none"
                 title="Voir l'article"
             >
-                <Eye className="w-4 h-4 text-purple-kcb"/>
+                <Eye className="w-4 h-4 text-kcb-or"/>
             </Link>
             <button
                 onClick={() => setState({...state, updateModal : true})}
-                className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
+                className="rounded-full bg-kcb-ardoise p-2 hover:bg-white/[0.08] transition flex items-center justify-center shadow-none border-none"
                 title="Modifier"
             >
-                <Pen className="w-4 h-4 text-indigo-400" />
+                <Pen className="w-4 h-4 text-kcb-or" />
             </button>
             {post?.status == 'published' && (
                 <button
                     onClick={handleArchiving}
-                    className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
+                    className="rounded-full bg-kcb-ardoise p-2 hover:bg-white/[0.08] transition flex items-center justify-center shadow-none border-none"
                     title="Archiver"
                 >
                     {state?.loading ? <DataLoader/> : <Archive className="w-4 h-4 text-red-500" />}
@@ -83,7 +83,7 @@ export function BlogItemActions({post}) {
             {post?.status == 'archived' && (
                 <button
                     onClick={handlePublishing}
-                    className="rounded-full bg-gray-900 p-2 hover:bg-gray-800 transition flex items-center justify-center shadow-none border-none"
+                    className="rounded-full bg-kcb-ardoise p-2 hover:bg-white/[0.08] transition flex items-center justify-center shadow-none border-none"
                     title="Publier"
                 >
                     {state?.loading ? <DataLoader/> : <Upload className="w-4 h-4 text-green-500" />}
@@ -173,28 +173,28 @@ function UpdatePostModal({post, closeModal}){
 
                 {/* Image Upload */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Image</label>
+                    <label className="block text-sm font-medium text-kcb-sable mb-2">Image</label>
                     <input
                         type="file"
                         accept="image/*"
                         onChange={handleFileChange}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 text-sm"
+                        className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-kcb-sable text-sm"
                     />
                     {state?.show && (
                         <div className="mt-2 flex justify-center">
-                            <img src={state.show} alt="aperçu" className="rounded-lg h-20 object-contain" />
+                            <img src={state.show} alt="aperçu" className="rounded-[4px] h-20 object-contain" />
                         </div>
                     )}
                 </div>
 
                 {/* Content Editor */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Contenu</label>
+                    <label className="block text-sm font-medium text-kcb-sable mb-2">Contenu</label>
                     <ReactQuill
                         theme="snow"
                         value={state.content}
                         onChange={value => setState({ ...state, content: value })}
-                        className="border border-gray-800 rounded-lg bg-white text-black"
+                        className="border border-white/[0.06] rounded-[4px] bg-white text-black"
                         placeholder="Contenu de votre article"
                     />
                 </div>

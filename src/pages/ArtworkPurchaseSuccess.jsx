@@ -19,7 +19,7 @@ export default function ArtworkPurchaseSuccess(){
         const validateArtworkPurchase = async function () {
             const data = await purchaseArtwork(transactionId)
             if(data?.error){
-                navigate('/dashboard/collector')
+                navigate('/account')
             }
             if(data?.artwork && data?.transaction){
                 setState(prev => ({
@@ -80,7 +80,7 @@ export default function ArtworkPurchaseSuccess(){
                 )}
             </div>
             <div className="flex flex-col lg:flex-row gap-4 mt-6 w-full">
-                <Link to={'/dashboard/collector'} className="rounded-md border border-white/[0.06] bg-kcb-noir-deep hover:bg-kcb-noir-deep transition flex items-center gap-2 px-4 py-2 w-full text-sm font-medium text-white justify-center">
+                <Link to={'/account'} className="rounded-md border border-white/[0.06] bg-kcb-noir-deep hover:bg-kcb-noir-deep transition flex items-center gap-2 px-4 py-2 w-full text-sm font-medium text-white justify-center">
                     <Eye className="w-4 h-4" /> Voir ma collection
                 </Link>
                 <Link to={'/explore'} className="rounded-md bg-kcb-noir-deep hover:bg-kcb-ardoise transition flex items-center gap-2 px-4 py-2 w-full text-sm font-medium text-white justify-center">

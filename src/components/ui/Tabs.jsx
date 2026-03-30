@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 
 /**
  * Design System - Tabs Component
@@ -15,22 +15,22 @@ import React, { useState } from 'react';
 
 const variants = {
   line: {
-    container: 'border-b border-gray-800',
+    container: 'border-b border-white/[0.06]',
     tab: 'px-4 py-2 font-medium transition relative',
-    active: 'text-indigo-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-indigo-400',
-    inactive: 'text-gray-400 hover:text-white'
+    active: 'text-kcb-or after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-kcb-or',
+    inactive: 'text-kcb-pierre hover:text-white'
   },
   pills: {
-    container: 'flex gap-2 p-1 bg-gray-800/50 rounded-lg',
-    tab: 'px-4 py-2 rounded-md font-medium transition',
-    active: 'bg-indigo-600 text-white',
-    inactive: 'text-gray-400 hover:text-white hover:bg-gray-700'
+    container: 'flex gap-2 p-1 bg-white/[0.03] rounded-[4px]',
+    tab: 'px-4 py-2 rounded-[4px] font-medium transition',
+    active: 'bg-kcb-or text-kcb-noir',
+    inactive: 'text-kcb-pierre hover:text-white hover:bg-white/[0.06]'
   },
   enclosed: {
-    container: 'flex gap-1 border-b border-gray-800',
-    tab: 'px-4 py-2 rounded-t-lg font-medium transition border-t border-x',
-    active: 'bg-card border-gray-700 text-white',
-    inactive: 'border-transparent text-gray-400 hover:text-white'
+    container: 'flex gap-1 border-b border-white/[0.06]',
+    tab: 'px-4 py-2 rounded-t-[4px] font-medium transition border-t border-x',
+    active: 'bg-kcb-ardoise border-white/[0.08] text-white',
+    inactive: 'border-transparent text-kcb-pierre hover:text-white'
   }
 };
 
@@ -44,7 +44,8 @@ export function Tabs({
   className = ''
 }) {
   const [internalValue, setInternalValue] = useState(defaultValue || tabs[0]?.value);
-  
+  const baseId = useId();
+
   const isControlled = controlledValue !== undefined;
   const activeValue = isControlled ? controlledValue : internalValue;
 
@@ -61,14 +62,38 @@ export function Tabs({
   return (
     <div className={className}>
       {/* Tab list */}
-      <div className={`flex ${fullWidth ? 'w-full' : ''} ${variantStyles.container}`}>
-        {tabs.map((tab) => {
+      <div role="tablist" className={`flex ${fullWidth ? 'w-full' : ''} ${variantStyles.container}`}>
+        {tabs.map((tab, index) => {
           const isActive = tab.value === activeValue;
-          
+          const tabId = `${baseId}-tab-${tab.value}`;
+          const panelId = `${baseId}-panel-${tab.value}`;
+
           return (
             <button
               key={tab.value}
+              id={tabId}
+              role="tab"
+              aria-selected={isActive}
+              aria-controls={panelId}
+              tabIndex={isActive ? 0 : -1}
               onClick={() => !tab.disabled && handleTabChange(tab.value)}
+              onKeyDown={(e) => {
+                let nextIndex;
+                if (e.key === 'ArrowRight') {
+                  nextIndex = (index + 1) % tabs.length;
+                } else if (e.key === 'ArrowLeft') {
+                  nextIndex = (index - 1 + tabs.length) % tabs.length;
+                } else if (e.key === 'Home') {
+                  nextIndex = 0;
+                } else if (e.key === 'End') {
+                  nextIndex = tabs.length - 1;
+                }
+                if (nextIndex !== undefined) {
+                  e.preventDefault();
+                  handleTabChange(tabs[nextIndex].value);
+                  e.currentTarget.parentElement.children[nextIndex]?.focus();
+                }
+              }}
               disabled={tab.disabled}
               className={`
                 ${variantStyles.tab}
@@ -83,7 +108,7 @@ export function Tabs({
               {tab.badge !== undefined && (
                 <span className={`
                   px-2 py-0.5 text-xs rounded-full
-                  ${isActive ? 'bg-indigo-500 text-white' : 'bg-gray-700 text-gray-300'}
+                  ${isActive ? 'bg-kcb-or text-kcb-noir' : 'bg-white/[0.06] text-kcb-sable'}
                 `}>
                   {tab.badge}
                 </span>
@@ -94,7 +119,7 @@ export function Tabs({
       </div>
 
       {/* Tab content */}
-      <div className="mt-4">
+      <div role="tabpanel" id={`${baseId}-panel-${activeValue}`} aria-labelledby={`${baseId}-tab-${activeValue}`} className="mt-4">
         {activeTab?.content}
       </div>
     </div>
@@ -176,7 +201,7 @@ export function Tab({ value, children, icon, badge, disabled, activeValue, onVal
       {badge !== undefined && (
         <span className={`
           px-2 py-0.5 text-xs rounded-full
-          ${isActive ? 'bg-indigo-500 text-white' : 'bg-gray-700 text-gray-300'}
+          ${isActive ? 'bg-kcb-or text-kcb-noir' : 'bg-white/[0.06] text-kcb-sable'}
         `}>
           {badge}
         </span>

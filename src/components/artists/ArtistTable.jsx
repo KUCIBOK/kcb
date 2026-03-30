@@ -12,7 +12,7 @@ export function ArtistTable({ artists }) {
       header: 'Photo',
       accessor: 'image',
       render: (value, row) => (
-        <div className="h-12 w-12 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+        <div className="h-12 w-12 rounded-full bg-kcb-ardoise flex items-center justify-center overflow-hidden">
           <img
             loading="lazy"
             src={value}

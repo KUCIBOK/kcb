@@ -29,10 +29,10 @@ export const Footer = memo(() => (
             Navigation
           </h4>
           <ul className="list-none space-y-2.5">
-            <li><Link to="/explore" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Explorer</Link></li>
-            <li><Link to="/artists" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Artistes</Link></li>
-            <li><Link to="/about" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">A propos</Link></li>
-            <li><Link to="/blog" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Blog</Link></li>
+            <li><Link to="/africa/catalogue" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Catalogue</Link></li>
+            <li><Link to="/africa/artists" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Artistes</Link></li>
+            <li><Link to="/africa/about" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">A propos</Link></li>
+            <li><Link to="/africa/blog" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Blog</Link></li>
           </ul>
         </div>
 
@@ -42,8 +42,8 @@ export const Footer = memo(() => (
             Ressources
           </h4>
           <ul className="list-none space-y-2.5">
-            <li><Link to="/faq" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">FAQ</Link></li>
-            <li><Link to="/contact" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Contact</Link></li>
+            <li><Link to="/africa/faq" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">FAQ</Link></li>
+            <li><Link to="/africa/contact" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Contact</Link></li>
             <li><Link to="/africa" className="text-[13px] text-kcb-or no-underline transition-colors hover:text-white">Portail Afrique</Link></li>
             <li><Link to="/global" className="text-[13px] text-kcb-silver no-underline transition-colors hover:text-white">Global Portal</Link></li>
           </ul>

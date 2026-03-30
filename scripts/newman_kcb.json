@@ -1,0 +1,320 @@
+{
+  "info": {
+    "name": "Kucibok API — Smoke Tests",
+    "_postman_id": "kcb-smoke-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "https://kucibok.com" },
+    { "key": "api_key",  "value": "{{API_KEY}}" },
+    { "key": "token",    "value": "" }
+  ],
+  "item": [
+    {
+      "name": "── PUBLIC ──────────────────────────────────",
+      "item": [
+        {
+          "name": "GET /api/health",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/health"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('health 200', () => pm.response.to.have.status(200));",
+              "pm.test('supabase ok', () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.data?.supabase).to.eql('ok');",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/artworks/verify/KCB-00000001 (public QR)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/artworks/verify/KCB-00000001"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists (not 404)', () => pm.expect(pm.response.code).to.not.eql(404));"
+            ]}
+          }]
+        }
+      ]
+    },
+    {
+      "name": "── API KEY ONLY (GET public) ────────────────",
+      "item": [
+        {
+          "name": "GET /api/plan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/plan"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('plan 200', () => pm.response.to.have.status(200));",
+              "pm.test('data is array', () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b).to.have.property('data');",
+              "  pm.expect(b.data).to.be.an('array');",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/plans (alias)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/plans"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('plans alias 200', () => pm.response.to.have.status(200));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/category",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/category"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('category 200', () => pm.response.to.have.status(200));",
+              "pm.test('data is array', () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.data).to.be.an('array');",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/categories (alias)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/categories"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('categories alias 200', () => pm.response.to.have.status(200));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/artworks (public listing)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/artworks"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('artworks 200', () => pm.response.to.have.status(200));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/blog",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/blog"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('blog 200', () => pm.response.to.have.status(200));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /api/visitor (no auth needed)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "kcb-api-key",   "value": "{{api_key}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"ipAddress\":\"1.2.3.4\",\"userAgent\":\"newman-test\",\"pageVisited\":\"/\"}"
+            },
+            "url": "{{base_url}}/api/visitor"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('visitor POST 201', () => pm.response.to.have.status(201));"
+            ]}
+          }]
+        }
+      ]
+    },
+    {
+      "name": "── AUTH REQUIRED — expects 401 (not 404) ───",
+      "item": [
+        {
+          "name": "GET /api/visitor (admin) — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/visitor"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/galleries — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/galleries"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/clients — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/clients"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/collection — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/collection"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/numerisation — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/numerisation"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/auth/me — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/auth/me"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/delivery — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/delivery"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /api/subscription — no token → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "{{api_key}}" }],
+            "url": "{{base_url}}/api/subscription"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('route exists — 401 not 404', () => {",
+              "  pm.expect(pm.response.code).to.eql(401);",
+              "});"
+            ]}
+          }]
+        }
+      ]
+    },
+    {
+      "name": "── INVALID API KEY — expects 401 ───────────",
+      "item": [
+        {
+          "name": "GET /api/plan — mauvaise clé → 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "kcb-api-key", "value": "invalid_key" }],
+            "url": "{{base_url}}/api/plan"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('bad api key → 401', () => pm.response.to.have.status(401));"
+            ]}
+          }]
+        }
+      ]
+    }
+  ]
+}

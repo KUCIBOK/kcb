@@ -150,7 +150,7 @@ export function MultiEntite() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Multi-Entité</h1>
-          <p className="text-gray-400">
+          <p className="text-kcb-pierre">
             Gérez plusieurs galeries et structures avec facilité
           </p>
         </div>
@@ -164,7 +164,7 @@ export function MultiEntite() {
                 socialMedia: {},
               });
             }}
-            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-4 py-2 rounded-lg transition"
+            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-4 py-2 rounded-[4px] transition"
           >
             <Plus className="w-4 h-4" />
             Créer une entité
@@ -174,18 +174,18 @@ export function MultiEntite() {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-900/50 border border-red-700 rounded-lg p-4 text-red-200">
+        <div className="bg-red-900/50 border border-red-700 rounded-[4px] p-4 text-red-200">
           {error}
         </div>
       )}
 
       {/* Entity Selector */}
       {entities.length > 0 && view === "list" && (
-        <div className="bg-card rounded-lg p-4">
+        <div className="bg-kcb-ardoise rounded-[4px] p-4">
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-background border border-gray-700 rounded-lg text-white hover:border-kcb-or transition"
+              className="w-full flex items-center justify-between px-4 py-3 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white hover:border-kcb-or transition"
             >
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
@@ -199,7 +199,7 @@ export function MultiEntite() {
             </button>
 
             {showDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-gray-700 rounded-lg overflow-hidden shadow-lg z-10">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden shadow-lg z-10">
                 {entities.map((entity) => (
                   <button
                     key={entity._id}
@@ -207,7 +207,7 @@ export function MultiEntite() {
                     className={`w-full text-left px-4 py-3 transition flex items-center gap-2 ${
                       selectedEntity?._id === entity._id
                         ? "bg-kcb-or text-kcb-noir"
-                        : "text-gray-300 hover:bg-gray-800"
+                        : "text-kcb-sable hover:bg-white/[0.08]"
                     }`}
                   >
                     <Building2 className="w-4 h-4" />
@@ -227,7 +227,7 @@ export function MultiEntite() {
       {view === "list" && selectedEntity && (
         <div className="space-y-6">
           {/* Entity Details */}
-          <div className="bg-card rounded-lg p-6">
+          <div className="bg-kcb-ardoise rounded-[4px] p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                 <Building2 className="w-6 h-6" />
@@ -240,14 +240,14 @@ export function MultiEntite() {
                       setEditing(true);
                       setFormData(selectedEntity);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition"
+                    className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition"
                   >
                     <Edit className="w-4 h-4" />
                     Éditer
                   </button>
                   <button
                     onClick={() => handleDeleteEntity(selectedEntity._id)}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-900/80 hover:bg-red-800 text-white rounded-lg transition"
+                    className="flex items-center gap-2 px-4 py-2 bg-red-900/80 hover:bg-red-800 text-white rounded-[4px] transition"
                   >
                     <Trash2 className="w-4 h-4" />
                     Supprimer
@@ -259,7 +259,7 @@ export function MultiEntite() {
             {editing ? (
               <form className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-kcb-sable mb-2">
                     Nom
                   </label>
                   <input
@@ -267,12 +267,12 @@ export function MultiEntite() {
                     name="name"
                     value={formData.name || ""}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                    className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-kcb-sable mb-2">
                     Description
                   </label>
                   <textarea
@@ -280,13 +280,13 @@ export function MultiEntite() {
                     value={formData.description || ""}
                     onChange={handleFormChange}
                     rows={3}
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                    className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-kcb-sable mb-2">
                       Email
                     </label>
                     <input
@@ -294,12 +294,12 @@ export function MultiEntite() {
                       name="email"
                       value={formData.email || ""}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                      className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-kcb-sable mb-2">
                       Téléphone
                     </label>
                     <input
@@ -307,13 +307,13 @@ export function MultiEntite() {
                       name="phone"
                       value={formData.phone || ""}
                       onChange={handleFormChange}
-                      className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                      className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-kcb-sable mb-2">
                     Site web
                   </label>
                   <input
@@ -321,7 +321,7 @@ export function MultiEntite() {
                     name="website"
                     value={formData.website || ""}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                    className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                   />
                 </div>
 
@@ -329,7 +329,7 @@ export function MultiEntite() {
                   <button
                     type="button"
                     onClick={handleUpdateEntity}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg transition"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-[4px] transition"
                   >
                     <Save className="w-4 h-4" />
                     Enregistrer
@@ -337,7 +337,7 @@ export function MultiEntite() {
                   <button
                     type="button"
                     onClick={() => setEditing(false)}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white rounded-[4px] transition"
                   >
                     <X className="w-4 h-4" />
                     Annuler
@@ -347,24 +347,24 @@ export function MultiEntite() {
             ) : (
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-400">Type</p>
+                  <p className="text-kcb-pierre">Type</p>
                   <p className="text-white font-medium">{selectedEntity.type}</p>
                 </div>
                 {selectedEntity.email && (
                   <div>
-                    <p className="text-gray-400">Email</p>
+                    <p className="text-kcb-pierre">Email</p>
                     <p className="text-white font-medium">{selectedEntity.email}</p>
                   </div>
                 )}
                 {selectedEntity.phone && (
                   <div>
-                    <p className="text-gray-400">Téléphone</p>
+                    <p className="text-kcb-pierre">Téléphone</p>
                     <p className="text-white font-medium">{selectedEntity.phone}</p>
                   </div>
                 )}
                 {selectedEntity.website && (
                   <div>
-                    <p className="text-gray-400">Site web</p>
+                    <p className="text-kcb-pierre">Site web</p>
                     <p className="text-white font-medium">{selectedEntity.website}</p>
                   </div>
                 )}
@@ -373,7 +373,7 @@ export function MultiEntite() {
           </div>
 
           {/* Members */}
-          <div className="bg-card rounded-lg p-6">
+          <div className="bg-kcb-ardoise rounded-[4px] p-6">
             <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
               <Users className="w-5 h-5" />
               Membres ({selectedEntity.members?.length || 0})
@@ -384,13 +384,13 @@ export function MultiEntite() {
                 selectedEntity.members.map((member) => (
                   <div
                     key={member._id}
-                    className="flex items-center justify-between p-4 bg-background/50 rounded-lg border border-gray-700"
+                    className="flex items-center justify-between p-4 bg-kcb-noir/50 rounded-[4px] border border-white/[0.06]"
                   >
                     <div className="flex-1">
                       <p className="text-white font-medium">
                         {member.userId?.name || "Utilisateur inconnu"}
                       </p>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-kcb-pierre">
                         {member.userId?.email}
                       </p>
                     </div>
@@ -410,7 +410,7 @@ export function MultiEntite() {
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 text-center py-4">Aucun membre</p>
+                <p className="text-kcb-pierre text-center py-4">Aucun membre</p>
               )}
             </div>
           </div>
@@ -419,14 +419,14 @@ export function MultiEntite() {
 
       {/* Create View */}
       {view === "create" && (
-        <div className="max-w-2xl mx-auto bg-card rounded-lg p-6">
+        <div className="max-w-2xl mx-auto bg-kcb-ardoise rounded-[4px] p-6">
           <h2 className="text-2xl font-bold text-white mb-6">
             Créer une nouvelle entité
           </h2>
 
           <form onSubmit={handleCreateEntity} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-kcb-sable mb-2">
                 Nom *
               </label>
               <input
@@ -435,19 +435,19 @@ export function MultiEntite() {
                 value={formData.name || ""}
                 onChange={handleFormChange}
                 required
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-kcb-sable mb-2">
                 Type
               </label>
               <select
                 name="type"
                 value={formData.type || "gallery"}
                 onChange={handleFormChange}
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
               >
                 <option value="gallery">Galerie</option>
                 <option value="studio">Studio</option>
@@ -458,7 +458,7 @@ export function MultiEntite() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-kcb-sable mb-2">
                 Description
               </label>
               <textarea
@@ -466,13 +466,13 @@ export function MultiEntite() {
                 value={formData.description || ""}
                 onChange={handleFormChange}
                 rows={3}
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-kcb-sable mb-2">
                   Email
                 </label>
                 <input
@@ -480,12 +480,12 @@ export function MultiEntite() {
                   name="email"
                   value={formData.email || ""}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                  className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-kcb-sable mb-2">
                   Téléphone
                 </label>
                 <input
@@ -493,13 +493,13 @@ export function MultiEntite() {
                   name="phone"
                   value={formData.phone || ""}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                  className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-kcb-sable mb-2">
                 Site web
               </label>
               <input
@@ -507,14 +507,14 @@ export function MultiEntite() {
                 name="website"
                 value={formData.website || ""}
                 onChange={handleFormChange}
-                className="w-full px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:border-kcb-or focus:outline-none"
+                className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
               />
             </div>
 
             <div className="flex gap-2 pt-4">
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition font-medium"
+                className="flex-1 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition font-medium"
               >
                 Créer l'entité
               </button>
@@ -524,7 +524,7 @@ export function MultiEntite() {
                   setView("list");
                   setFormData({});
                 }}
-                className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition font-medium"
+                className="flex-1 px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white rounded-[4px] transition font-medium"
               >
                 Annuler
               </button>
@@ -535,10 +535,10 @@ export function MultiEntite() {
 
       {/* Empty State */}
       {entities.length === 0 && view === "list" && (
-        <div className="bg-card rounded-lg p-8 text-center">
-          <Building2 className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-          <p className="text-gray-400 mb-2">Aucune entité créée</p>
-          <p className="text-gray-500 text-sm mb-4">
+        <div className="bg-kcb-ardoise rounded-[4px] p-8 text-center">
+          <Building2 className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
+          <p className="text-kcb-pierre mb-2">Aucune entité créée</p>
+          <p className="text-kcb-pierre text-sm mb-4">
             Créez votre première galerie ou structure
           </p>
           <button
@@ -550,7 +550,7 @@ export function MultiEntite() {
                 socialMedia: {},
               });
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition"
           >
             <Plus className="w-4 h-4" />
             Créer une entité

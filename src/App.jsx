@@ -3,7 +3,7 @@ import { Router } from "./routes/Router";
 import { ToastContextProvider } from "./store/ToastContext";
 import { ToastProvider } from "./components/ui/Toast";
 import { useEffect, useState } from "react";
-import { createVisitor, setVisitTime } from "./api/useVisitor";
+import { createVisitor } from "./api/useVisitor";
 
 // P1-SEC-016 — Clé de stockage du consentement RGPD
 const CONSENT_KEY = "kcb_analytics_consent";
@@ -88,18 +88,6 @@ function App() {
 
     addVisitor();
   }, [consent]);
-
-  useEffect(() => {
-    if (visitor?._id) {
-      const startTime = Date.now();
-      const updateVisitTime = async () => {
-        const duration = Math.round((Date.now() - startTime) / 60000);
-        await setVisitTime({ sessionId: visitor.sessionId, visitTime: duration });
-      };
-      window.addEventListener("beforeunload", updateVisitTime);
-      return () => window.removeEventListener("beforeunload", updateVisitTime);
-    }
-  }, [visitor]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

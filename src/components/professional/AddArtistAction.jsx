@@ -14,7 +14,7 @@ export function AddArtistAction(){
     })
     return (
         <>
-        <button onClick={() => setState({...state, addArtist : true})} className="rounded-lg border p-4 grid place-items-center gap-2 hover:bg-gray-900 cursor-pointer">
+        <button onClick={() => setState({...state, addArtist : true})} className="rounded-[4px] border p-4 grid place-items-center gap-2 hover:bg-white/[0.04] cursor-pointer">
             <Plus className="w-4 h-4 text-white font-bold mx-auto" />
             <p className="mx-auto text-sm">Ajouter un artiste</p>
         </button>
@@ -106,13 +106,13 @@ function AddArtistModal({closeModal}){
         {/* Avatar Upload */}
         <div className="flex flex-col items-center gap-2">
           {state?.image ? 
-            <img src={state?.show} alt="Profile" className="w-20 h-20 object-cover rounded-full border border-gray-700" />
+            <img src={state?.show} alt="Profile" className="w-20 h-20 object-cover rounded-full border border-white/[0.06]" />
             : 
-            <div className="w-20 h-20 rounded-full bg-indigo-900/30 flex justify-center items-center border border-gray-700">
-              <Camera className="w-8 h-8 text-indigo-400" />
+            <div className="w-20 h-20 rounded-full bg-kcb-or/10 flex justify-center items-center border border-white/[0.06]">
+              <Camera className="w-8 h-8 text-kcb-or" />
             </div>
           }
-          <button type="button" onClick={() => document.getElementById('profile-image').click()} className="text-xs font-medium px-3 py-2 border border-gray-700 bg-gray-800 hover:bg-gray-700 rounded transition">
+          <button type="button" onClick={() => document.getElementById('profile-image').click()} className="text-xs font-medium px-3 py-2 border border-white/[0.06] bg-kcb-ardoise hover:bg-white/[0.08] rounded transition">
             Modifier la photo
           </button>
           <input
@@ -145,11 +145,11 @@ function AddArtistModal({closeModal}){
 
         {/* Country Select */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Pays</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Pays</label>
           <select 
             value={state.country} 
             onChange={(e) => setState({...state, country : e.target.value})}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+            className="w-full px-3 py-2 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm focus:ring-2 focus:ring-kcb-or focus:outline-none"
             required
           >
             <option value="" disabled>Sélectionnez un pays</option>
@@ -161,19 +161,19 @@ function AddArtistModal({closeModal}){
 
         {/* Biography */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Biographie</label>
+          <label className="block text-sm font-medium text-kcb-sable mb-2">Biographie</label>
           <ReactQuill
             theme="snow"
             value={state.biography}
             onChange={(value) => setState({ ...state, biography: value })}
-            className="border border-gray-800 rounded-lg bg-white text-black"
+            className="border border-white/[0.06] rounded-[4px] bg-white text-black"
             placeholder="Parlez-nous de lui"
           />
         </div>
 
         {/* Social Media Links */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">Réseaux sociaux (facultatif)</label>
+          <label className="block text-sm font-medium text-kcb-sable">Réseaux sociaux (facultatif)</label>
           <Input
             type="text"
             placeholder="Facebook"

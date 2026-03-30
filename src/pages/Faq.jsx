@@ -1,8 +1,7 @@
 import { Helmet } from "react-helmet"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { Palette, Users, ShieldCheck, ShoppingBag, ArrowRight } from "lucide-react"
-import PortalLayout from "../components/landing/PortalLayout"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
 import GeoLine from "../components/landing/GeoLine"
@@ -53,6 +52,8 @@ const STEPS = [
  * @returns {JSX.Element}
  */
 export default function Faq() {
+  const { pathname } = useLocation();
+  const portal = pathname.startsWith("/global") ? "/global" : "/africa";
   const [currentTab, setCurrentTab] = useState("general")
 
   return (
@@ -62,10 +63,10 @@ export default function Faq() {
       <meta name="description" content="Toutes les réponses à vos questions sur Kucibok Bridge : certification d'œuvres, traçabilité, inscription artiste, livraison transfrontalière et paiements." />
       <meta property="og:title" content="FAQ Kucibok — Certification et marché de l'art africain" />
       <meta property="og:description" content="Questions fréquentes sur la certification, traçabilité, inscription et paiements sur Kucibok Bridge." />
-      <meta property="og:url" content="https://kucibok.com/faq" />
-      <link rel="canonical" href="https://kucibok.com/faq" />
+      <meta property="og:url" content={`https://kucibok.com${portal}/faq`} />
+      <link rel="canonical" href={`https://kucibok.com${portal}/faq`} />
     </Helmet>
-    <PortalLayout portal="africa">
+    <div className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans" style={{ "--accent": "#C9A84C", "--accent-dark": "#8B6914" }}>
       {/* ── HERO ── */}
       <section className="pt-20 md:pt-40 pb-10 md:pb-20 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
@@ -95,7 +96,7 @@ export default function Faq() {
         <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
           <div className="mb-10 md:mb-20">
             <RevealOnScroll>
-              <SectionLabel text="Comment ca marche" />
+              <SectionLabel text="Comment ça marche" />
               <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-3">
                 Quatre etapes simples
               </h2>
@@ -213,13 +214,13 @@ export default function Faq() {
           <RevealOnScroll delay={0.2}>
             <div className="flex justify-center gap-4 flex-wrap">
               <Link
-                to="/contact"
+                to={`${portal}/contact`}
                 className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline"
               >
                 Nous contacter <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <Link
-                to="/about"
+                to={`${portal}/about`}
                 className="inline-flex items-center gap-2 bg-transparent text-[var(--accent)] font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 border border-[var(--accent)] transition-all hover:bg-[var(--accent)] hover:text-kcb-noir no-underline"
               >
                 A propos de Kucibok
@@ -228,7 +229,7 @@ export default function Faq() {
           </RevealOnScroll>
         </div>
       </section>
-    </PortalLayout>
+    </div>
     </>
   )
 }

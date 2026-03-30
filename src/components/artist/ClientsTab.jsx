@@ -94,19 +94,19 @@ export const ClientsTab = ({ user }) => {
         <div className="flex-1 flex items-center">
           <input
             type="text"
-            className="w-full rounded-s-md border-y border-s border-gray-700 bg-background px-3 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none"
+            className="w-full rounded-s-md border-y border-s border-white/[0.06] bg-kcb-noir px-3 py-2 text-sm text-kcb-sable placeholder-kcb-pierre focus:outline-none"
             placeholder="Rechercher un client par nom, prénom, email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <span className="rounded-e-md border-y border-e border-gray-700 bg-background px-3 py-2.5 text-sm text-gray-200">
+          <span className="rounded-e-md border-y border-e border-white/[0.06] bg-kcb-noir px-3 py-2.5 text-sm text-kcb-sable">
             <Search className="w-4 h-4" />
           </span>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setShowAddForm(true)}
-            className="px-4 py-2 text-sm rounded-md bg-purple-kcb text-white hover:bg-purple-kcb/90 transition flex items-center gap-1"
+            className="px-4 py-2 text-sm rounded-md bg-kcb-or text-kcb-noir hover:bg-kcb-or/90 transition flex items-center gap-1"
           >
             <Plus className="h-4 w-4" />
             Ajouter un client
@@ -116,11 +116,11 @@ export const ClientsTab = ({ user }) => {
       </div>
 
       {/* Tableau des clients */}
-      <div className="overflow-x-auto bg-background border border-gray-800 rounded-xl px-4 py-4 shadow-sm">
+      <div className="overflow-x-auto bg-kcb-noir border border-white/[0.06] rounded-[4px] px-4 py-4 shadow-sm">
         {currentSet?.length >= 1 ? (
-          <table className="w-full text-xs text-gray-200">
+          <table className="w-full text-xs text-kcb-sable">
             <thead>
-              <tr className="border-b border-gray-800">
+              <tr className="border-b border-white/[0.06]">
                 <th className="font-semibold py-2 text-left">Nom</th>
                 <th className="font-semibold py-2 text-left">Prénom</th>
                 <th className="font-semibold py-2 text-left">Email</th>
@@ -133,19 +133,19 @@ export const ClientsTab = ({ user }) => {
             <tbody>
               {currentSet?.map((client, index) => (
                 <Fragment key={index}>
-                  <tr className="border-b border-gray-800 hover:bg-background/60 transition">
+                  <tr className="border-b border-white/[0.06] hover:bg-white/[0.04] transition">
                     <td className="py-2 font-semibold text-white">
                       {client.nom}
                     </td>
-                    <td className="py-2 text-gray-300">{client.prenom}</td>
-                    <td className="py-2 text-gray-300">{client.email}</td>
-                    <td className="py-2 text-gray-400">
+                    <td className="py-2 text-kcb-sable">{client.prenom}</td>
+                    <td className="py-2 text-kcb-sable">{client.email}</td>
+                    <td className="py-2 text-kcb-pierre">
                       {client.telephone || "-"}
                     </td>
-                    <td className="py-2 text-gray-400">
+                    <td className="py-2 text-kcb-pierre">
                       {client.ville || "-"}
                     </td>
-                    <td className="py-2 text-gray-400">
+                    <td className="py-2 text-kcb-pierre">
                       {new Date(client.createdAt).toLocaleDateString()}
                     </td>
                     <td className="py-2">
@@ -161,11 +161,11 @@ export const ClientsTab = ({ user }) => {
             </tbody>
           </table>
         ) : (
-          <div className="text-center py-16 border border-gray-800 border-dashed rounded-xl w-full bg-background/60">
-            <h3 className="font-medium text-base text-gray-400 mb-1">
+          <div className="text-center py-16 border border-white/[0.06] border-dashed rounded-[4px] w-full bg-white/[0.04]">
+            <h3 className="font-medium text-base text-kcb-pierre mb-1">
               Aucun client trouvé
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-kcb-pierre">
               {search
                 ? "Essayez une autre recherche"
                 : "Commencez par ajouter un client"}
@@ -178,18 +178,18 @@ export const ClientsTab = ({ user }) => {
       {filteredClients.length > 5 && (
         <div className="flex justify-end gap-2 mt-4">
           <button
-            className="rounded-md border border-gray-700 px-4 py-2 text-sm text-gray-300 bg-transparent hover:bg-gray-800 transition"
+            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
             onClick={handlePrevPage}
             disabled={currentSet[0] === filteredClients[0]}
           >
             <ChevronLeft className="w-4 h-4 mr-1 inline-block" /> Précédent
           </button>
-          <span className="text-xs text-gray-400 flex items-center px-2">
+          <span className="text-xs text-kcb-pierre flex items-center px-2">
             Page {Math.floor(filteredClients.indexOf(currentSet[0]) / 40) + 1} /{" "}
             {Math.ceil(filteredClients.length / 40)}
           </span>
           <button
-            className="rounded-md border border-gray-700 px-4 py-2 text-sm text-gray-300 bg-transparent hover:bg-gray-800 transition"
+            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
             onClick={handleNextPage}
             disabled={
               currentSet[currentSet.length - 1] ===

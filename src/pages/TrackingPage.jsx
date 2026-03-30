@@ -20,7 +20,7 @@ const STATUS_COLORS = {
   pending:          "text-kcb-pierre border-white/[0.08]",
   in_preparation:   "text-yellow-400 border-yellow-600",
   in_transit:       "text-kcb-or border-kcb-or",
-  customs_cleared:  "text-kcb-or border-indigo-600",
+  customs_cleared:  "text-kcb-or border-kcb-or",
   delivered:        "text-green-400 border-green-600",
   rejected:         "text-red-400 border-red-600",
 };

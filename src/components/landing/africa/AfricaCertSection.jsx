@@ -19,18 +19,6 @@ export default function AfricaCertSection() {
 
   return (
     <section className="py-16 md:py-36 bg-kcb-noir-deep">
-      <style>{`
-        @keyframes kcb-cert-scan {
-          0%   { top: 0%;   opacity: 0.6; }
-          95%  { top: 100%; opacity: 0.4; }
-          100% { top: 100%; opacity: 0;   }
-        }
-        @keyframes kcb-cert-pulse {
-          0%, 100% { opacity: 1;   }
-          50%       { opacity: 0.4; }
-        }
-      `}</style>
-
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 lg:gap-24 items-center">
 

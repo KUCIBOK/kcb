@@ -1,8 +1,8 @@
-import { supabase } from '../lib/supabase';
-import { uploadProfileImage } from '../lib/storage';
-import { utils } from './useAPI';
+import { supabase } from '../lib/supabase'
+import { uploadProfileImage } from '../lib/storage'
+import { utils } from './useAPI'
 
-const { api } = utils;
+const { api } = utils
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPER
@@ -15,18 +15,19 @@ const { api } = utils;
  * @param {import('@supabase/supabase-js').User | null} supabaseUser
  * @returns {object | null}
  */
+// NOTE: duplicated from AuthContext — extract to shared util in Phase 2
 const toKcbUser = (supabaseUser) => {
-  if (!supabaseUser) return null;
+  if (!supabaseUser) return null
   return {
     _id: supabaseUser.id,
     id: supabaseUser.id,
     email: supabaseUser.email,
-    role: supabaseUser.user_metadata?.role ?? 'collector',
+    role: supabaseUser.user_metadata?.role ?? 'buyer',
     name: supabaseUser.user_metadata?.name ?? '',
     isEmailVerified: !!supabaseUser.email_confirmed_at,
     ...supabaseUser.user_metadata,
-  };
-};
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTH — SUPABASE
@@ -41,11 +42,11 @@ const toKcbUser = (supabaseUser) => {
  */
 export async function loginUser(email, password) {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return { error: error.message };
-    return { user: toKcbUser(data.user) };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) return { error: error.message }
+    return { user: toKcbUser(data.user) }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -59,7 +60,7 @@ export async function loginUser(email, password) {
  */
 export async function SignUpUser(charge) {
   try {
-    const { email, password, role, name, image, ...rest } = charge;
+    const { email, password, role, name, image, ...rest } = charge
 
     // Inscription Supabase d'abord — l'image est uploadée APRÈS auth pour avoir un vrai userId
     const { data, error } = await supabase.auth.signUp({
@@ -67,30 +68,30 @@ export async function SignUpUser(charge) {
       password,
       options: {
         data: {
-          role: role ?? 'collector',
+          role: role ?? 'buyer',
           name: name ?? '',
           ...rest,
         },
       },
-    });
+    })
 
     if (error) {
       if (error.message.toLowerCase().includes('already registered')) {
-        return { error: "L'utilisateur existe déjà. Essayez de vous connecter." };
+        return { error: "L'utilisateur existe déjà. Essayez de vous connecter." }
       }
-      return { error: error.message };
+      return { error: error.message }
     }
 
     // Upload de la photo de profil avec le vrai userId Supabase
-    let imageUrl = null;
-    const userId = data.user?.id;
+    let imageUrl = null
+    const userId = data.user?.id
     if (role === 'artist' && image instanceof File && userId) {
-      const uploadResult = await uploadProfileImage(userId, image);
+      const uploadResult = await uploadProfileImage(userId, image)
       // En cas d'échec upload, on ne bloque pas l'inscription — l'image peut être ajoutée plus tard
       if (!uploadResult.error) {
-        imageUrl = uploadResult.url;
+        imageUrl = uploadResult.url
         // Mettre à jour les metadata avec l'URL de l'image
-        await supabase.auth.updateUser({ data: { imageUrl } });
+        await supabase.auth.updateUser({ data: { imageUrl } })
       }
     }
 
@@ -98,9 +99,9 @@ export async function SignUpUser(charge) {
       user: toKcbUser(data.user),
       imageUrl,
       message: 'Inscription réussie. Vérifiez votre adresse email pour continuer.',
-    };
+    }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -117,10 +118,10 @@ export async function loginWithGoogle() {
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
-    });
-    if (error) return { error: error.message };
+    })
+    if (error) return { error: error.message }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -134,13 +135,13 @@ export async function loginWithGoogle() {
 export async function verifyEmail() {
   try {
     // Laisser Supabase un court délai pour traiter le token de l'URL
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const { data, error } = await supabase.auth.getSession();
-    if (error) return { error: error.message };
-    if (!data.session?.user) return { error: 'Lien de vérification invalide ou expiré.' };
-    return { user: toKcbUser(data.session.user) };
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    const { data, error } = await supabase.auth.getSession()
+    if (error) return { error: error.message }
+    if (!data.session?.user) return { error: 'Lien de vérification invalide ou expiré.' }
+    return { user: toKcbUser(data.session.user) }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -154,11 +155,11 @@ export async function forgotPassword({ email }) {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
-    });
-    if (error) return { error: error.message };
-    return { ok: true };
+    })
+    if (error) return { error: error.message }
+    return { ok: true }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -171,11 +172,11 @@ export async function forgotPassword({ email }) {
  */
 export async function resetPassword({ password }) {
   try {
-    const { data, error } = await supabase.auth.updateUser({ password });
-    if (error) return { error: error.message };
-    return { ok: true, user: toKcbUser(data.user) };
+    const { data, error } = await supabase.auth.updateUser({ password })
+    if (error) return { error: error.message }
+    return { ok: true, user: toKcbUser(data.user) }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -185,7 +186,7 @@ export async function resetPassword({ password }) {
  * @returns {Promise<void>}
  */
 export async function logoutUser() {
-  await supabase.auth.signOut();
+  await supabase.auth.signOut()
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -193,21 +194,21 @@ export async function logoutUser() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Récupère le profil étendu d'un utilisateur (artiste ou collector/pro) depuis Supabase.
+ * Récupère le profil étendu d'un utilisateur (artiste ou buyer/curator) depuis Supabase.
  *
  * @param {string} id - UUID Supabase de l'utilisateur
  * @returns {Promise<object | { error: string }>}
  */
 export async function getUserProfile(id) {
   try {
-    const response = await fetch(`${api}/profile/${id}`, { ...utils.options });
-    const body = await response.json();
+    const response = await fetch(`${api}/profile/${id}`, { ...utils.options })
+    const body = await response.json()
     // Les Vercel Functions retournent { data: {...} }
-    const data = body?.data ?? body;
-    if (data?._id || data?.userId) return data;
-    return { error: body?.error ?? 'Profil introuvable' };
+    const data = body?.data ?? body
+    if (data?._id || data?.userId) return data
+    return { error: body?.error ?? 'Profil introuvable' }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -219,13 +220,13 @@ export async function getUserProfile(id) {
  */
 export async function getUserById(id) {
   try {
-    const response = await fetch(`${api}/auth/${id}`, { ...utils.options });
-    const body = await response.json();
-    const data = body?.data ?? body;
-    if (data?._id) return data;
-    return { error: body?.error ?? 'Utilisateur introuvable' };
+    const response = await fetch(`${api}/auth/${id}`, { ...utils.options })
+    const body = await response.json()
+    const data = body?.data ?? body
+    if (data?.id || data?._id) return data
+    return { error: body?.error ?? 'Utilisateur introuvable' }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -242,13 +243,13 @@ export async function updateUser(id, payload) {
       ...utils.options,
       method: 'PUT',
       body: JSON.stringify(payload),
-    });
-    const body = await response.json();
-    const user = body?.data ?? body;
-    if (user?.role || user?._id) return user;
-    return { error: body?.error ?? body?.message };
+    })
+    const body = await response.json()
+    const user = body?.data ?? body
+    if (user?.role || user?._id) return user
+    return { error: body?.error ?? body?.message }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -265,24 +266,24 @@ export async function updateUser(id, payload) {
 export async function updateProfile(id, payload) {
   try {
     // Extraire les champs du FormData ou d'un objet plain
-    const fields = {};
+    const fields = {}
     if (payload instanceof FormData) {
       for (const [key, value] of payload.entries()) {
-        fields[key] = value;
+        fields[key] = value
       }
     } else {
-      Object.assign(fields, payload);
+      Object.assign(fields, payload)
     }
 
     // Si une image File est présente, l'uploader vers Supabase Storage
     if (fields.image instanceof File) {
-      const uploadResult = await uploadProfileImage(id, fields.image);
-      if (uploadResult.error) return { error: uploadResult.error };
-      fields.image = uploadResult.url;
+      const uploadResult = await uploadProfileImage(id, fields.image)
+      if (uploadResult.error) return { error: uploadResult.error }
+      fields.image = uploadResult.url
     }
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    const token = sessionData.session?.access_token ?? '';
+    const { data: sessionData } = await supabase.auth.getSession()
+    const token = sessionData.session?.access_token ?? ''
 
     const response = await fetch(`${api}/profile/${id}`, {
       method: 'PUT',
@@ -292,13 +293,13 @@ export async function updateProfile(id, payload) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(fields),
-    });
-    const body = await response.json();
-    const profile = body?.data ?? body;
-    if (profile?.userId) return profile;
-    return { error: body?.error || body?.message };
+    })
+    const body = await response.json()
+    const profile = body?.data ?? body
+    if (profile?.userId) return profile
+    return { error: body?.error || body?.message }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -315,12 +316,12 @@ export async function changePassword(payload) {
       ...utils.options,
       method: 'POST',
       body: JSON.stringify(payload),
-    });
-    const body = await response.json();
-    const user = body?.data ?? body;
-    if (user?._id) return user;
-    return { error: body?.error || body?.message };
+    })
+    const body = await response.json()
+    const user = body?.data ?? body
+    if (user?._id) return user
+    return { error: body?.error || body?.message }
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }

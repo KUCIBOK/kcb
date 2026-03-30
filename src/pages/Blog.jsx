@@ -5,8 +5,25 @@ import { useBlog } from "../store/BlogContext"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
 
+function BlogSkeleton() {
+    return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/40 overflow-hidden animate-pulse">
+                    <div className="h-48 bg-white/[0.06]" />
+                    <div className="p-4 space-y-2">
+                        <div className="h-4 bg-white/[0.06] rounded w-3/4" />
+                        <div className="h-3 bg-white/[0.06] rounded w-1/2" />
+                        <div className="h-3 bg-white/[0.06] rounded w-full" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
+
 export default function Blog() {
-    const { blogPosts } = useBlog();
+    const { blogPosts, loading } = useBlog();
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -38,7 +55,9 @@ export default function Blog() {
             </section>
             <div className="max-w-6xl mx-auto px-4">
                 <RevealOnScroll delay={0.25}>
-                    {blogPosts?.length >= 1 ? (
+                    {loading ? (
+                        <BlogSkeleton />
+                    ) : blogPosts?.length >= 1 ? (
                         <BlogPostsList blogPosts={[...blogPosts].reverse()} />
                     ) : (
                         <div className="flex flex-col items-center justify-center py-16 border border-white/[0.06] border-dashed rounded-[4px] w-full bg-kcb-ardoise/30">

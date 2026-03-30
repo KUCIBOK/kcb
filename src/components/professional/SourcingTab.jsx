@@ -1,34 +1,25 @@
-import { useState, useEffect, useCallback } from "react"
-import {
-  Search,
-  Filter,
-  MessageSquare,
-  Loader2,
-  ChevronDown,
-  ChevronUp,
-  Send,
-  Inbox,
-} from "lucide-react"
-import { getMyInquiries } from "../../api/useSourcing"
-import { KPICard } from "../ui"
+import { useState, useEffect, useCallback } from 'react'
+import { Search, Filter, MessageSquare, ChevronDown, ChevronUp, Send, Inbox } from 'lucide-react'
+import { getMyInquiries } from '../../api/useSourcing'
+import { KPICard, SkeletonTable, EmptyState } from '../ui'
 
 /** @type {Record<string, {label: string, className: string}>} */
 const PURPOSE_CONFIG = {
-  purchase:   { label: "Achat",      className: "bg-green-900/40 text-green-300" },
-  exhibition: { label: "Exposition", className: "bg-purple-900/40 text-purple-300" },
-  research:   { label: "Recherche",  className: "bg-blue-900/40 text-blue-300" },
-  loan:       { label: "Prêt",       className: "bg-amber-900/40 text-amber-300" },
+  purchase: { label: 'Achat', className: 'bg-green-900/40 text-green-300' },
+  exhibition: { label: 'Exposition', className: 'bg-kcb-bronze/20 text-kcb-sable' },
+  research: { label: 'Recherche', className: 'bg-kcb-or/20 text-kcb-sable' },
+  loan: { label: 'Prêt', className: 'bg-amber-900/40 text-amber-300' },
 }
 
 /** @type {Record<string, {label: string, className: string}>} */
 const STATUS_CONFIG = {
-  pending:    { label: "En attente", className: "bg-yellow-900/40 text-yellow-300" },
-  responded:  { label: "Répondue",   className: "bg-green-900/40 text-green-300" },
-  closed:     { label: "Fermée",     className: "bg-gray-800 text-gray-400" },
+  pending: { label: 'En attente', className: 'bg-yellow-900/40 text-yellow-300' },
+  responded: { label: 'Répondue', className: 'bg-green-900/40 text-green-300' },
+  closed: { label: 'Fermée', className: 'bg-kcb-ardoise text-kcb-pierre' },
 }
 
 /** Valeur sentinel pour "Tous" dans les filtres. */
-const ALL = "all"
+const ALL = 'all'
 
 /**
  * Badge de purpose d'une demande de sourcing.
@@ -37,9 +28,14 @@ const ALL = "all"
  * @returns {JSX.Element}
  */
 function PurposeBadge({ purpose }) {
-  const cfg = PURPOSE_CONFIG[purpose] ?? { label: purpose, className: "bg-gray-800 text-gray-400" }
+  const cfg = PURPOSE_CONFIG[purpose] ?? {
+    label: purpose,
+    className: 'bg-kcb-ardoise text-kcb-pierre',
+  }
   return (
-    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}>
+    <span
+      className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}
+    >
       {cfg.label}
     </span>
   )
@@ -52,9 +48,14 @@ function PurposeBadge({ purpose }) {
  * @returns {JSX.Element}
  */
 function StatusBadge({ status }) {
-  const cfg = STATUS_CONFIG[status] ?? { label: status, className: "bg-gray-800 text-gray-400" }
+  const cfg = STATUS_CONFIG[status] ?? {
+    label: status,
+    className: 'bg-kcb-ardoise text-kcb-pierre',
+  }
   return (
-    <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}>
+    <span
+      className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${cfg.className}`}
+    >
       {cfg.label}
     </span>
   )
@@ -67,11 +68,11 @@ function StatusBadge({ status }) {
  * @returns {string}
  */
 function formatDate(isoDate) {
-  if (!isoDate) return "—"
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+  if (!isoDate) return '—'
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   }).format(new Date(isoDate))
 }
 
@@ -84,41 +85,41 @@ function formatDate(isoDate) {
  */
 function InquiryCard({ inquiry }) {
   const [expanded, setExpanded] = useState(false)
-  const [replyText, setReplyText] = useState("")
+  const [replyText, setReplyText] = useState('')
   const [sent, setSent] = useState(false)
 
   const handleSend = useCallback(() => {
     if (!replyText.trim()) return
     // Simulation — pas d'API de réponse exposée pour l'instant
     setSent(true)
-    setReplyText("")
+    setReplyText('')
   }, [replyText])
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-[#13161e] overflow-hidden transition-colors duration-200 hover:border-gray-700">
+    <div className="rounded-[4px] border border-white/[0.06] bg-[#13161e] overflow-hidden transition-colors duration-200 hover:border-white/[0.06]">
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-4">
         {/* Artwork + requester */}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white truncate">
-            {inquiry.artworkTitle || `Œuvre #${inquiry.artworkId?.slice(-6) ?? "—"}`}
+            {inquiry.artworkTitle || `Œuvre #${inquiry.artworkId?.slice(-6) ?? '—'}`}
           </p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-            <span className="text-xs text-gray-400">
-              {inquiry.buyerName || "Acheteur inconnu"}
+            <span className="text-xs text-kcb-pierre">
+              {inquiry.buyerName || 'Acheteur inconnu'}
             </span>
             {inquiry.organization && (
-              <span className="text-xs text-gray-500">· {inquiry.organization}</span>
+              <span className="text-xs text-kcb-pierre">· {inquiry.organization}</span>
             )}
             {inquiry.budget != null && (
-              <span className="text-xs text-indigo-400 font-medium">
-                Budget : {Number(inquiry.budget).toLocaleString("fr-FR")} CFA
+              <span className="text-xs text-kcb-or font-medium">
+                Budget : {Number(inquiry.budget).toLocaleString('fr-FR')} CFA
               </span>
             )}
           </div>
           {/* Message preview */}
           {inquiry.message && (
-            <p className="text-xs text-gray-500 mt-1.5 line-clamp-2 italic">
+            <p className="text-xs text-kcb-pierre mt-1.5 line-clamp-2 italic">
               "{inquiry.message}"
             </p>
           )}
@@ -128,11 +129,11 @@ function InquiryCard({ inquiry }) {
         <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
           <PurposeBadge purpose={inquiry.purpose} />
           <StatusBadge status={inquiry.status} />
-          <span className="text-xs text-gray-600">{formatDate(inquiry.createdAt)}</span>
+          <span className="text-xs text-kcb-pierre">{formatDate(inquiry.createdAt)}</span>
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors ml-2"
-            aria-label={expanded ? "Replier" : "Répondre"}
+            className="flex items-center gap-1 text-xs text-kcb-or hover:text-kcb-or/80 transition-colors ml-2"
+            aria-label={expanded ? 'Replier' : 'Répondre'}
           >
             <MessageSquare className="w-3.5 h-3.5" />
             Répondre
@@ -147,25 +148,23 @@ function InquiryCard({ inquiry }) {
 
       {/* Expansion — zone de réponse */}
       {expanded && (
-        <div className="border-t border-gray-800 px-4 py-4 space-y-3">
+        <div className="border-t border-white/[0.06] px-4 py-4 space-y-3">
           {sent ? (
-            <p className="text-sm text-green-400 font-medium">
-              Réponse envoyée.
-            </p>
+            <p className="text-sm text-green-400 font-medium">Réponse envoyée.</p>
           ) : (
             <>
               <textarea
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
-                placeholder={`Répondre à ${inquiry.buyerName || "ce demandeur"}…`}
+                placeholder={`Répondre à ${inquiry.buyerName || 'ce demandeur'}…`}
                 rows={3}
-                className="w-full rounded-lg border border-gray-700 bg-gray-900 text-gray-200 text-sm placeholder-gray-600 px-3 py-2 focus:outline-none focus:border-indigo-500 resize-none transition-colors"
+                className="w-full rounded-[4px] border border-white/[0.06] bg-kcb-ardoise text-kcb-sable text-sm placeholder-kcb-pierre px-3 py-2 focus:outline-none focus:border-kcb-or resize-none transition-colors"
               />
               <div className="flex justify-end">
                 <button
                   onClick={handleSend}
                   disabled={!replyText.trim()}
-                  className="flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 transition-colors duration-200"
+                  className="flex items-center gap-2 rounded-[4px] bg-kcb-or hover:bg-kcb-or/90 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 transition-colors duration-200"
                 >
                   <Send className="w-3.5 h-3.5" />
                   Envoyer
@@ -191,7 +190,7 @@ export function SourcingTab() {
   const [inquiries, setInquiries] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState(ALL)
   const [filterPurpose, setFilterPurpose] = useState(ALL)
 
@@ -212,20 +211,23 @@ export function SourcingTab() {
     }
 
     fetchInquiries()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // KPIs
-  const total     = inquiries.length
-  const pending   = inquiries.filter((i) => i.status === "pending").length
-  const responded = inquiries.filter((i) => i.status === "responded").length
-  const closed    = inquiries.filter((i) => i.status === "closed").length
+  const total = inquiries.length
+  const pending = inquiries.filter((i) => i.status === 'pending').length
+  const responded = inquiries.filter((i) => i.status === 'responded').length
+  const closed = inquiries.filter((i) => i.status === 'closed').length
 
   // Filtres appliqués
   const filtered = inquiries.filter((inquiry) => {
-    const matchStatus  = filterStatus  === ALL || inquiry.status  === filterStatus
+    const matchStatus = filterStatus === ALL || inquiry.status === filterStatus
     const matchPurpose = filterPurpose === ALL || inquiry.purpose === filterPurpose
-    const matchSearch  = !search.trim() ||
+    const matchSearch =
+      !search.trim() ||
       inquiry.artworkTitle?.toLowerCase().includes(search.toLowerCase()) ||
       inquiry.buyerName?.toLowerCase().includes(search.toLowerCase()) ||
       inquiry.organization?.toLowerCase().includes(search.toLowerCase())
@@ -237,7 +239,7 @@ export function SourcingTab() {
       {/* Title */}
       <div>
         <h2 className="text-xl font-bold text-white">Demandes de sourcing</h2>
-        <p className="text-sm text-gray-400 mt-1">
+        <p className="text-sm text-kcb-pierre mt-1">
           Demandes de mise en relation reçues pour vos œuvres.
         </p>
       </div>
@@ -248,8 +250,8 @@ export function SourcingTab() {
           icon={Inbox}
           label="Total demandes"
           value={total}
-          iconColor="text-indigo-400"
-          iconBgColor="bg-indigo-900/20"
+          iconColor="text-kcb-or"
+          iconBgColor="bg-kcb-or/10"
           loading={loading}
         />
         <KPICard
@@ -272,8 +274,8 @@ export function SourcingTab() {
           icon={Filter}
           label="Fermées"
           value={closed}
-          iconColor="text-gray-400"
-          iconBgColor="bg-gray-800"
+          iconColor="text-kcb-pierre"
+          iconBgColor="bg-kcb-ardoise"
           loading={loading}
         />
       </div>
@@ -282,23 +284,23 @@ export function SourcingTab() {
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Recherche */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kcb-pierre pointer-events-none" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher par œuvre, demandeur, organisation…"
-            className="w-full rounded-lg border border-gray-700 bg-gray-900 text-gray-200 text-sm placeholder-gray-600 pl-9 pr-4 py-2 focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full rounded-[4px] border border-white/[0.06] bg-kcb-ardoise text-kcb-sable text-sm placeholder-kcb-pierre pl-9 pr-4 py-2 focus:outline-none focus:border-kcb-or transition-colors"
           />
         </div>
 
         {/* Filtre statut */}
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kcb-pierre pointer-events-none" />
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="appearance-none rounded-lg border border-gray-700 bg-gray-900 text-gray-200 text-sm pl-9 pr-8 py-2 focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer"
+            className="appearance-none rounded-[4px] border border-white/[0.06] bg-kcb-ardoise text-kcb-sable text-sm pl-9 pr-8 py-2 focus:outline-none focus:border-kcb-or transition-colors cursor-pointer"
           >
             <option value={ALL}>Tous les statuts</option>
             <option value="pending">En attente</option>
@@ -309,11 +311,11 @@ export function SourcingTab() {
 
         {/* Filtre purpose */}
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kcb-pierre pointer-events-none" />
           <select
             value={filterPurpose}
             onChange={(e) => setFilterPurpose(e.target.value)}
-            className="appearance-none rounded-lg border border-gray-700 bg-gray-900 text-gray-200 text-sm pl-9 pr-8 py-2 focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer"
+            className="appearance-none rounded-[4px] border border-white/[0.06] bg-kcb-ardoise text-kcb-sable text-sm pl-9 pr-8 py-2 focus:outline-none focus:border-kcb-or transition-colors cursor-pointer"
           >
             <option value={ALL}>Tous les types</option>
             <option value="purchase">Achat</option>
@@ -325,27 +327,24 @@ export function SourcingTab() {
       </div>
 
       {/* Contenu */}
-      {loading && (
-        <div className="flex items-center justify-center h-48">
-          <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
-        </div>
-      )}
+      {loading && <SkeletonTable rows={5} cols={4} />}
 
       {!loading && error && (
-        <div className="rounded-xl border border-red-800 bg-red-900/20 p-4 text-sm text-red-300">
+        <div className="rounded-[4px] border border-red-800 bg-red-900/20 p-4 text-sm text-red-300">
           Impossible de charger les demandes : {error}
         </div>
       )}
 
       {!loading && !error && filtered.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-48 text-gray-500 space-y-2">
-          <Inbox className="w-10 h-10 opacity-40" />
-          <p className="text-sm">
-            {inquiries.length === 0
-              ? "Aucune demande de sourcing reçue pour l'instant."
-              : "Aucune demande ne correspond à vos filtres."}
-          </p>
-        </div>
+        <EmptyState
+          icon={Inbox}
+          title={inquiries.length === 0 ? 'Aucune demande de sourcing' : 'Aucun résultat'}
+          description={
+            inquiries.length === 0
+              ? "Vous n'avez pas encore reçu de demandes de sourcing."
+              : 'Aucune demande ne correspond à vos filtres.'
+          }
+        />
       )}
 
       {!loading && !error && filtered.length > 0 && (

@@ -164,18 +164,18 @@ export function DeliveryTab() {
             {/* Header with Logidoo branding */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 lg:px-2">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-3 rounded-xl">
+                    <div className="bg-gradient-to-br from-kcb-or to-kcb-bronze p-3 rounded-[4px]">
                         <Globe className="w-6 h-6 text-white" />
                     </div>
                     <div>
                         <h2 className="text-xl font-bold text-white">Interface Logistique Mondiale</h2>
-                        <p className="text-xs text-gray-400">Powered by Logidoo API - Livraison dans le monde entier</p>
+                        <p className="text-xs text-kcb-pierre">Powered by Logidoo API - Livraison dans le monde entier</p>
                     </div>
                 </div>
                 <button
                     onClick={handleSync}
                     disabled={syncing}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white rounded-lg text-sm transition"
+                    className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 disabled:bg-kcb-or/50 text-kcb-noir rounded-[4px] text-sm transition font-semibold"
                 >
                     <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
                     {syncing ? 'Synchronisation...' : 'Synchroniser avec Logidoo'}
@@ -183,53 +183,53 @@ export function DeliveryTab() {
             </div>
 
             {syncMessage && (
-                <div className="lg:px-2 bg-green-900/20 border border-green-600/50 text-green-400 px-4 py-2 rounded-lg text-sm">
+                <div className="lg:px-2 bg-green-900/20 border border-green-600/50 text-green-400 px-4 py-2 rounded-[4px] text-sm">
                     {syncMessage}
                 </div>
             )}
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 lg:px-2">
-                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700">
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[4px] p-4 border border-white/[0.06]">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-xs text-gray-400">Total</p>
+                            <p className="text-xs text-kcb-pierre">Total</p>
                             <p className="text-2xl font-bold text-white">{stats.total}</p>
                         </div>
-                        <Boxes className="w-5 h-5 text-blue-400" />
+                        <Boxes className="w-5 h-5 text-kcb-or" />
                     </div>
                 </div>
-                <div className="bg-gradient-to-br from-yellow-900/30 to-gray-900 rounded-xl p-4 border border-yellow-700/50">
+                <div className="bg-gradient-to-br from-yellow-900/30 to-gray-900 rounded-[4px] p-4 border border-yellow-700/50">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-xs text-gray-400">En attente</p>
+                            <p className="text-xs text-kcb-pierre">En attente</p>
                             <p className="text-2xl font-bold text-yellow-400">{stats.pending}</p>
                         </div>
                         <ClockFading className="w-5 h-5 text-yellow-400" />
                     </div>
                 </div>
-                <div className="bg-gradient-to-br from-orange-900/30 to-gray-900 rounded-xl p-4 border border-orange-700/50">
+                <div className="bg-gradient-to-br from-orange-900/30 to-gray-900 rounded-[4px] p-4 border border-orange-700/50">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-xs text-gray-400">En préparation</p>
+                            <p className="text-xs text-kcb-pierre">En préparation</p>
                             <p className="text-2xl font-bold text-orange-400">{stats.inPreparation}</p>
                         </div>
                         <Package className="w-5 h-5 text-orange-400" />
                     </div>
                 </div>
-                <div className="bg-gradient-to-br from-blue-900/30 to-gray-900 rounded-xl p-4 border border-blue-700/50">
+                <div className="bg-gradient-to-br from-kcb-or/10 to-gray-900 rounded-[4px] p-4 border border-kcb-or/30">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-xs text-gray-400">En transit</p>
-                            <p className="text-2xl font-bold text-blue-400">{stats.inTransit}</p>
+                            <p className="text-xs text-kcb-pierre">En transit</p>
+                            <p className="text-2xl font-bold text-kcb-or">{stats.inTransit}</p>
                         </div>
-                        <Truck className="w-5 h-5 text-blue-400" />
+                        <Truck className="w-5 h-5 text-kcb-or" />
                     </div>
                 </div>
-                <div className="bg-gradient-to-br from-green-900/30 to-gray-900 rounded-xl p-4 border border-green-700/50">
+                <div className="bg-gradient-to-br from-green-900/30 to-gray-900 rounded-[4px] p-4 border border-green-700/50">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-xs text-gray-400">Livrées</p>
+                            <p className="text-xs text-kcb-pierre">Livrées</p>
                             <p className="text-2xl font-bold text-green-400">{stats.delivered}</p>
                         </div>
                         <CheckCircle className="w-5 h-5 text-green-400" />
@@ -241,23 +241,23 @@ export function DeliveryTab() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:px-2">
                 
                 {/* Create Expedition Form - 2 columns on large screens */}
-                <div className="lg:col-span-2 bg-gray-900/50 rounded-2xl border border-gray-800 p-6">
+                <div className="lg:col-span-2 bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06] p-6">
                     <div className="flex items-center gap-2 mb-6">
-                        <div className="bg-blue-600/20 p-2 rounded-lg">
-                            <Package className="w-5 h-5 text-blue-400" />
+                        <div className="bg-kcb-or/20 p-2 rounded-[4px]">
+                            <Package className="w-5 h-5 text-kcb-or" />
                         </div>
                         <h3 className="text-lg font-semibold text-white">Demande de Cotation</h3>
                     </div>
 
                     {formError && (
-                        <div className="mb-4 bg-red-900/20 border border-red-600/50 text-red-400 px-4 py-2 rounded-lg text-sm flex items-center gap-2">
+                        <div className="mb-4 bg-red-900/20 border border-red-600/50 text-red-400 px-4 py-2 rounded-[4px] text-sm flex items-center gap-2">
                             <AlertCircle className="w-4 h-4" />
                             {formError}
                         </div>
                     )}
 
                     {formSuccess && (
-                        <div className="mb-4 bg-green-900/20 border border-green-600/50 text-green-400 px-4 py-2 rounded-lg text-sm flex items-center gap-2">
+                        <div className="mb-4 bg-green-900/20 border border-green-600/50 text-green-400 px-4 py-2 rounded-[4px] text-sm flex items-center gap-2">
                             <Check className="w-4 h-4" />
                             {formSuccess}
                         </div>
@@ -266,14 +266,14 @@ export function DeliveryTab() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Zone de livraison */}
                         <div>
-                            <label className="block text-xs text-gray-400 mb-1">Pays/Zone de livraison</label>
+                            <label className="block text-xs text-kcb-pierre mb-1">Pays/Zone de livraison</label>
                             <select
                                 value={formData.selectedZone}
                                 onChange={(e) => {
                                     setFormData({...formData, selectedZone: e.target.value});
                                     setRates(null);
                                 }}
-                                className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                             >
                                 <option value="">Sélectionnez votre destination</option>
                                 {zones && zones.length > 0 ? (
@@ -291,11 +291,11 @@ export function DeliveryTab() {
                         {/* Point de retrait */}
                         {pickupPoints.length > 0 && (
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Point de retrait (optionnel)</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Point de retrait (optionnel)</label>
                                 <select
                                     value={formData.selectedPickupPoint}
                                     onChange={(e) => setFormData({...formData, selectedPickupPoint: e.target.value})}
-                                    className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                    className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                 >
                                     <option value="">Livraison à l'adresse</option>
                                     {pickupPoints.map(point => (
@@ -309,15 +309,15 @@ export function DeliveryTab() {
 
                         {/* Adresse de livraison */}
                         <div>
-                            <label className="block text-xs text-gray-400 mb-1">Adresse de livraison</label>
+                            <label className="block text-xs text-kcb-pierre mb-1">Adresse de livraison</label>
                             <div className="relative">
-                                <MapPin className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                                <MapPin className="absolute left-3 top-2.5 w-4 h-4 text-kcb-pierre" />
                                 <input
                                     type="text"
                                     value={formData.deliveryAddress}
                                     onChange={(e) => setFormData({...formData, deliveryAddress: e.target.value})}
                                     placeholder="Adresse complète, Ville, Code Postal"
-                                    className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                    className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                 />
                             </div>
                         </div>
@@ -325,28 +325,28 @@ export function DeliveryTab() {
                         {/* Destinataire */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Nom du destinataire</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Nom du destinataire</label>
                                 <div className="relative">
-                                    <User className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                                    <User className="absolute left-3 top-2.5 w-4 h-4 text-kcb-pierre" />
                                     <input
                                         type="text"
                                         value={formData.recipientName}
                                         onChange={(e) => setFormData({...formData, recipientName: e.target.value})}
                                         placeholder="Nom complet"
-                                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Téléphone</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Téléphone</label>
                                 <div className="relative">
-                                    <Phone className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                                    <Phone className="absolute left-3 top-2.5 w-4 h-4 text-kcb-pierre" />
                                     <input
                                         type="tel"
                                         value={formData.recipientPhone}
                                         onChange={(e) => setFormData({...formData, recipientPhone: e.target.value})}
                                         placeholder="Numéro international"
-                                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                     />
                                 </div>
                             </div>
@@ -355,26 +355,26 @@ export function DeliveryTab() {
                         {/* Dates */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Date de collecte</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Date de collecte</label>
                                 <div className="relative">
-                                    <Calendar className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                                    <Calendar className="absolute left-3 top-2.5 w-4 h-4 text-kcb-pierre" />
                                     <input
                                         type="date"
                                         value={formData.collectDate}
                                         onChange={(e) => setFormData({...formData, collectDate: e.target.value})}
-                                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Date de livraison</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Date de livraison</label>
                                 <div className="relative">
-                                    <Calendar className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                                    <Calendar className="absolute left-3 top-2.5 w-4 h-4 text-kcb-pierre" />
                                     <input
                                         type="date"
                                         value={formData.deliveryDate}
                                         onChange={(e) => setFormData({...formData, deliveryDate: e.target.value})}
-                                        className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                        className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                     />
                                 </div>
                             </div>
@@ -383,14 +383,14 @@ export function DeliveryTab() {
                         {/* Package details */}
                         <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Taille</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Taille</label>
                                 <select
                                     value={formData.packageSize}
                                     onChange={(e) => {
                                         setFormData({...formData, packageSize: e.target.value});
                                         setRates(null);
                                     }}
-                                    className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                    className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                 >
                                     <option value="small">Petit</option>
                                     <option value="medium">Moyen</option>
@@ -398,7 +398,7 @@ export function DeliveryTab() {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Poids (kg)</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Poids (kg)</label>
                                 <input
                                     type="number"
                                     min="0.1"
@@ -408,15 +408,15 @@ export function DeliveryTab() {
                                         setFormData({...formData, packageWeight: e.target.value});
                                         setRates(null);
                                     }}
-                                    className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                    className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs text-gray-400 mb-1">Priorité</label>
+                                <label className="block text-xs text-kcb-pierre mb-1">Priorité</label>
                                 <select
                                     value={formData.deliveryPriority}
                                     onChange={(e) => setFormData({...formData, deliveryPriority: e.target.value})}
-                                    className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                                    className="w-full bg-kcb-ardoise text-white border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm focus:ring-2 focus:ring-kcb-or"
                                 >
                                     <option value="standard">Standard</option>
                                     <option value="priority">Prioritaire</option>
@@ -431,7 +431,7 @@ export function DeliveryTab() {
                                 type="button"
                                 onClick={calculateRate}
                                 disabled={logisticsLoading}
-                                className="w-full flex items-center justify-center gap-2 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm transition"
+                                className="w-full flex items-center justify-center gap-2 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white rounded-[4px] text-sm transition"
                             >
                                 <Calculator className="w-4 h-4" />
                                 {logisticsLoading ? 'Calcul...' : 'Calculer la cotation'}
@@ -440,15 +440,15 @@ export function DeliveryTab() {
 
                         {/* Rate display */}
                         {rates && (
-                            <div className="bg-blue-900/20 border border-blue-600/50 rounded-lg p-4">
+                            <div className="bg-kcb-or/10 border border-kcb-or/30 rounded-[4px] p-4">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-gray-400 text-sm">Tarif estimé:</span>
-                                    <span className="text-2xl font-bold text-blue-400">
+                                    <span className="text-kcb-pierre text-sm">Tarif estimé:</span>
+                                    <span className="text-2xl font-bold text-kcb-or">
                                         {rates.price || '1500'} XOF
                                     </span>
                                 </div>
                                 {rates.estimatedDays && (
-                                    <p className="text-xs text-gray-400 mt-1">
+                                    <p className="text-xs text-kcb-pierre mt-1">
                                         Délai estimé: {rates.estimatedDays}
                                     </p>
                                 )}
@@ -460,7 +460,7 @@ export function DeliveryTab() {
                         <button
                             type="submit"
                             disabled={formLoading}
-                            className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition disabled:opacity-50"
+                            className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-kcb-or to-kcb-bronze hover:from-kcb-or/90 hover:to-kcb-bronze/90 text-kcb-noir rounded-[4px] font-semibold transition disabled:opacity-50"
                         >
                             {formLoading ? (
                                 <>
@@ -489,34 +489,34 @@ export function DeliveryTab() {
                     <Package className="w-6 h-6" />
                     Historique des expeditions
                 </h3>
-                <div className="bg-gray-900/50 rounded-2xl border border-gray-800 overflow-hidden">
+                <div className="bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06] overflow-hidden">
                     {myDeliveries && myDeliveries.length > 0 ? (
                         <table className="w-full">
-                            <thead className="bg-gray-800/50">
+                            <thead className="bg-kcb-ardoise/50">
                                 <tr>
-                                    <th className="text-left text-xs text-gray-400 px-4 py-3">Tracking</th>
-                                    <th className="text-left text-xs text-gray-400 px-4 py-3">Destinataire</th>
-                                    <th className="text-left text-xs text-gray-400 px-4 py-3">Zone</th>
-                                    <th className="text-left text-xs text-gray-400 px-4 py-3">Statut</th>
-                                    <th className="text-left text-xs text-gray-400 px-4 py-3">Date</th>
+                                    <th className="text-left text-xs text-kcb-pierre px-4 py-3">Tracking</th>
+                                    <th className="text-left text-xs text-kcb-pierre px-4 py-3">Destinataire</th>
+                                    <th className="text-left text-xs text-kcb-pierre px-4 py-3">Zone</th>
+                                    <th className="text-left text-xs text-kcb-pierre px-4 py-3">Statut</th>
+                                    <th className="text-left text-xs text-kcb-pierre px-4 py-3">Date</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-800">
+                            <tbody className="divide-y divide-white/[0.06]">
                                 {myDeliveries.slice(0, 10).map((delivery, idx) => (
-                                    <tr key={idx} className="hover:bg-gray-800/30">
-                                        <td className="px-4 py-3 text-blue-400 text-sm font-mono">
+                                    <tr key={idx} className="hover:bg-white/[0.04]">
+                                        <td className="px-4 py-3 text-kcb-or text-sm font-mono">
                                             {delivery.trackingId || 'N/A'}
                                         </td>
                                         <td className="px-4 py-3 text-white text-sm">
                                             {delivery.recipientName}
                                         </td>
-                                        <td className="px-4 py-3 text-gray-400 text-sm">
+                                        <td className="px-4 py-3 text-kcb-pierre text-sm">
                                             {delivery.deliveryAddress?.substring(0, 20)}...
                                         </td>
                                         <td className="px-4 py-3">
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                                 delivery.status === 'delivered' ? 'bg-green-900/30 text-green-400' :
-                                                delivery.status === 'on_the_way' ? 'bg-blue-900/30 text-blue-400' :
+                                                delivery.status === 'on_the_way' ? 'bg-kcb-or/10 text-kcb-or' :
                                                 delivery.status === 'in_preparation' ? 'bg-orange-900/30 text-orange-400' :
                                                 'bg-yellow-900/30 text-yellow-400'
                                             }`}>
@@ -526,7 +526,7 @@ export function DeliveryTab() {
                                                  delivery.status === 'delivered' ? 'Livrée' : delivery.status}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3 text-gray-400 text-sm">
+                                        <td className="px-4 py-3 text-kcb-pierre text-sm">
                                             {delivery.collectDate ? new Date(delivery.collectDate).toLocaleDateString('fr-FR') : 'N/A'}
                                         </td>
                                     </tr>
@@ -535,9 +535,9 @@ export function DeliveryTab() {
                         </table>
                     ) : (
                         <div className="p-8 text-center">
-                            <Truck className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                            <p className="text-gray-500">Aucune expedition trouvée</p>
-                            <p className="text-gray-600 text-sm">Créez votre première expedition ci-dessus</p>
+                            <Truck className="w-12 h-12 text-kcb-pierre mx-auto mb-3" />
+                            <p className="text-kcb-pierre">Aucune expedition trouvée</p>
+                            <p className="text-kcb-pierre text-sm">Créez votre première expedition ci-dessus</p>
                         </div>
                     )}
                 </div>

@@ -32,7 +32,7 @@ export function LogsTab() {
   }, []);
 
   return (
-    <section className="bg-gray-900 rounded-2xl shadow-md border border-gray-800 px-0 py-0 md:px-6 md:py-6 w-full mx-auto">
+    <section className="bg-kcb-ardoise rounded-[4px] shadow-md border border-white/[0.06] px-0 py-0 md:px-6 md:py-6 w-full mx-auto">
       <header className="flex items-center justify-between px-6 pt-6 pb-2">
         <h2 className="text-lg font-semibold text-white tracking-tight">Logs</h2>
       </header>
@@ -42,22 +42,22 @@ export function LogsTab() {
             <DataLoader />
           </div>
         ) : state?.set?.length >= 1 ? (
-          <table className="w-full text-sm text-left text-gray-300">
+          <table className="w-full text-sm text-left text-kcb-sable">
             <thead>
-              <tr className="border-b border-gray-800">
-                <th className="py-2 font-medium text-gray-400">Description</th>
-                <th className="py-2 font-medium text-gray-400">Fait le</th>
-                <th className="py-2 font-medium text-gray-400">Utilisateur</th>
+              <tr className="border-b border-white/[0.06]">
+                <th className="py-2 font-medium text-kcb-pierre">Description</th>
+                <th className="py-2 font-medium text-kcb-pierre">Fait le</th>
+                <th className="py-2 font-medium text-kcb-pierre">Utilisateur</th>
               </tr>
             </thead>
             <tbody>
               {state.set.map((log, index) => (
                 <tr
                   key={index}
-                  className="border-b border-gray-800 last:border-0 hover:bg-gray-800/40 transition-colors"
+                  className="border-b border-white/[0.06] last:border-0 hover:bg-kcb-ardoise/40 transition-colors"
                 >
                   <td className="py-2 px-1 md:px-2 align-top max-w-xs truncate">{log.description}</td>
-                  <td className="py-2 px-1 md:px-2 align-top whitespace-nowrap text-gray-400">
+                  <td className="py-2 px-1 md:px-2 align-top whitespace-nowrap text-kcb-pierre">
                     {new Date(log.createdAt).toLocaleString()}
                   </td>
                   <td className="py-2 px-1 md:px-2 align-top">
@@ -68,12 +68,12 @@ export function LogsTab() {
             </tbody>
           </table>
         ) : (
-          <div className="text-center text-gray-500 py-8 text-sm">Aucun log à afficher.</div>
+          <div className="text-center text-kcb-pierre py-8 text-sm">Aucun log à afficher.</div>
         )}
       </div>
       <footer className="flex justify-end gap-2 px-6 pb-6 pt-2">
         <button
-          className="rounded-full px-4 py-1 bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="rounded-full px-4 py-1 bg-kcb-ardoise text-kcb-sable border border-white/[0.06] hover:bg-kcb-ardoise transition disabled:opacity-40 disabled:cursor-not-allowed"
           onClick={() => {
             if (state.set[0] !== state.logs[0]) {
               const startIndex = state.logs.indexOf(state.set[0]) - 5;
@@ -88,7 +88,7 @@ export function LogsTab() {
           Précédent
         </button>
         <button
-          className="rounded-full px-4 py-1 bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          className="rounded-full px-4 py-1 bg-kcb-ardoise text-kcb-sable border border-white/[0.06] hover:bg-kcb-ardoise transition disabled:opacity-40 disabled:cursor-not-allowed"
           onClick={() => {
             const lastIndex = state.logs.indexOf(state.set[state.set.length - 1]);
             if (lastIndex < state.logs.length - 1) {
@@ -129,8 +129,8 @@ function UserInfo({ id }) {
     return () => { mounted = false; };
   }, [id]);
   return (
-    <span className="inline-block rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-300 max-w-[120px] truncate">
-      {user?.name || <span className="text-gray-500">...</span>}
+    <span className="inline-block rounded bg-kcb-ardoise px-2 py-0.5 text-xs text-kcb-sable max-w-[120px] truncate">
+      {user?.name || <span className="text-kcb-pierre">...</span>}
     </span>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { EyeClosed, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { loginUser, loginWithGoogle } from "../../api/useAuth";
+import { friendlyAuthError } from "../../lib/authErrors";
 import { Helmet } from "react-helmet";
 import { Button, Input } from "../../components/ui";
 import RevealOnScroll from "../../components/landing/RevealOnScroll";
@@ -22,13 +23,13 @@ export default function SignIn () {
     try {
       const data = await loginUser(formState.email, formState.password);
       if (data?.error) {
-        setFormState(prev => ({ ...prev, loading: false, error: data.error }));
+        setFormState(prev => ({ ...prev, loading: false, error: friendlyAuthError(data.error) }));
         return;
       }
       // onAuthStateChange dans AuthContext prend le relais — navigation via GuestProtectedRoute
       setFormState(prev => ({ ...prev, loading: false }));
     } catch (err) {
-      setFormState(prev => ({ ...prev, loading: false, error: err?.message || "Erreur pendant la connexion" }));
+      setFormState(prev => ({ ...prev, loading: false, error: friendlyAuthError(err?.message) }));
       window.scrollTo(0, 0);
     }
   };
@@ -38,7 +39,7 @@ export default function SignIn () {
     setFormState(prev => ({ ...prev, loading: true, error: null }));
     const result = await loginWithGoogle();
     if (result?.error) {
-      setFormState(prev => ({ ...prev, loading: false, error: result.error }));
+      setFormState(prev => ({ ...prev, loading: false, error: friendlyAuthError(result.error) }));
     }
     // Supabase gère la redirection OAuth — pas besoin de navigate() ici
   };
@@ -67,7 +68,7 @@ export default function SignIn () {
               <p className="text-xs text-kcb-pierre">Infrastructure de l'art africain</p>
             </div>
             {formState.error && (
-              <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
+              <div className="mb-4 text-red-300 text-center bg-red-900/20 border border-red-900 rounded-[4px] p-2 text-xs">
                 {formState.error}
               </div>
             )}

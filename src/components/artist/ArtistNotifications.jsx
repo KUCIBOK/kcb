@@ -110,7 +110,7 @@ export default function ArtistNotifications() {
     const styles = {
       success: 'bg-green-500/10 border-green-500/30 text-green-300',
       warning: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300',
-      info: 'bg-blue-500/10 border-blue-500/30 text-blue-300',
+      info: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
       critical: 'bg-red-500/10 border-red-500/30 text-red-300',
     };
     return styles[severity] || styles.info;
@@ -134,7 +134,7 @@ export default function ArtistNotifications() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">🔔 Notifications</h1>
-          <p className="text-gray-400 mt-1">
+          <p className="text-kcb-pierre mt-1">
             {unreadCount > 0 
               ? `${unreadCount} notification${unreadCount > 1 ? 's' : ''} non lue${unreadCount > 1 ? 's' : ''}`
               : 'Toutes les notifications ont été lues'
@@ -145,7 +145,7 @@ export default function ArtistNotifications() {
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllRead}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white text-sm font-medium transition"
+              className="px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 rounded-[4px] text-kcb-noir text-sm font-medium transition"
             >
               Tout marquer comme lu
             </button>
@@ -153,7 +153,7 @@ export default function ArtistNotifications() {
           {notifications.length > 0 && (
             <button
               onClick={handleClearAll}
-              className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg text-sm font-medium transition"
+              className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-[4px] text-sm font-medium transition"
             >
               Tout supprimer
             </button>
@@ -167,10 +167,10 @@ export default function ArtistNotifications() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`px-4 py-2 rounded-[4px] text-sm font-medium transition ${
               filter === f
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                ? 'bg-kcb-or text-kcb-noir'
+                : 'bg-kcb-ardoise text-kcb-sable hover:bg-white/[0.08]'
             }`}
           >
             {f === 'all' ? 'Toutes' : f === 'unread' ? 'Non lues' : 'Lues'}
@@ -180,9 +180,9 @@ export default function ArtistNotifications() {
 
       {/* Liste des notifications */}
       {filteredNotifications.length === 0 ? (
-        <div className="text-center py-12 bg-gray-900/50 rounded-2xl border border-gray-800">
-          <Bell className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-          <p className="text-gray-400">
+        <div className="text-center py-12 bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06]">
+          <Bell className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
+          <p className="text-kcb-pierre">
             {filter === 'all' 
               ? 'Aucune notification' 
               : filter === 'unread' 
@@ -196,7 +196,7 @@ export default function ArtistNotifications() {
           {filteredNotifications.map((notification) => (
             <div
               key={notification._id}
-              className={`p-4 rounded-lg border ${getSeverityStyle(notification.severity)} ${
+              className={`p-4 rounded-[4px] border ${getSeverityStyle(notification.severity)} ${
                 !notification.read ? 'opacity-100' : 'opacity-60'
               }`}
             >
@@ -209,11 +209,11 @@ export default function ArtistNotifications() {
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-white">{notification.title}</h3>
                       {!notification.read && (
-                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-300 mt-1">{notification.message}</p>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                    <p className="text-sm text-kcb-sable mt-1">{notification.message}</p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-kcb-pierre">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" /> {notification.time}
                       </span>
@@ -227,7 +227,7 @@ export default function ArtistNotifications() {
                       className="p-2 hover:bg-white/10 rounded transition"
                       title="Marquer comme lu"
                     >
-                      <Eye className="w-4 h-4 text-gray-400" />
+                      <Eye className="w-4 h-4 text-kcb-pierre" />
                     </button>
                   )}
                   <button
@@ -235,7 +235,7 @@ export default function ArtistNotifications() {
                     className="p-2 hover:bg-white/10 rounded transition"
                     title="Supprimer"
                   >
-                    <X className="w-4 h-4 text-gray-400" />
+                    <X className="w-4 h-4 text-kcb-pierre" />
                   </button>
                 </div>
               </div>
@@ -262,7 +262,7 @@ export default function ArtistNotifications() {
           label="Messages" 
           value={notifications.filter(n => n.type === 'message').length}
           icon={<MessageSquare className="w-4 h-4" />}
-          color="purple"
+          color="kcb"
         />
         <StatCard 
           label="Favoris" 
@@ -278,13 +278,13 @@ export default function ArtistNotifications() {
 function StatCard({ label, value, icon, color }) {
   const colors = {
     green: 'bg-green-500/10 border-green-500/30 text-green-300',
-    blue: 'bg-blue-500/10 border-blue-500/30 text-blue-300',
-    purple: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
+    blue: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    kcb: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
     red: 'bg-red-500/10 border-red-500/30 text-red-300',
   };
 
   return (
-    <div className={`border rounded-lg p-4 ${colors[color]}`}>
+    <div className={`border rounded-[4px] p-4 ${colors[color]}`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium opacity-75">{label}</span>
         {icon}

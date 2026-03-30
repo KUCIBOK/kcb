@@ -73,12 +73,12 @@ function Breadcrumb({ title }) {
     <nav className="flex mb-6" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-1 text-sm">
         <li>
-          <Link to="/auction" className="text-gray-400 hover:text-white">
+          <Link to="/auction" className="text-kcb-pierre hover:text-white">
             Enchères
           </Link>
         </li>
         <li>
-          <span className="mx-2 text-gray-500">/</span>
+          <span className="mx-2 text-kcb-pierre">/</span>
         </li>
         <li className="text-white" aria-current="page">
           {title}
@@ -91,12 +91,12 @@ function Breadcrumb({ title }) {
 function ErrorDisplay({ message }) {
   return (
     <div className="text-center py-12">
-      <div className="bg-gray-800/50 rounded-xl p-8 max-w-md mx-auto">
+      <div className="bg-kcb-ardoise/50 rounded-[4px] p-8 max-w-md mx-auto">
         <h3 className="text-xl font-medium text-white mb-2">Erreur</h3>
-        <p className="text-gray-400 mb-4">{message}</p>
+        <p className="text-kcb-pierre mb-4">{message}</p>
         <Link
           to="/auction"
-          className="inline-block px-4 py-2 bg-gradient rounded-md text-white hover:opacity-90 transition"
+          className="inline-block px-4 py-2 bg-gradient rounded-[4px] text-white hover:opacity-90 transition"
         >
           Retour aux enchères
         </Link>

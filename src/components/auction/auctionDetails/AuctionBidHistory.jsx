@@ -9,24 +9,24 @@ export default function AuctionBidHistory({ bids }) {
       </h2>
 
       {bids.length === 0 ? (
-        <p className="text-gray-400">Aucune enchère pour le moment</p>
+        <p className="text-kcb-pierre">Aucune enchère pour le moment</p>
       ) : (
-        <div className="bg-gray-800/50 rounded-lg overflow-hidden">
+        <div className="bg-kcb-ardoise/50 rounded-[4px] overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-700/50">
+            <thead className="bg-kcb-ardoise/50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">
                   Montant
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">
                   Enchérisseur
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">
+                <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">
                   Date
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700/50">
+            <tbody className="divide-y divide-white/[0.06]/50">
               {bids.map((bid) => (
                 <tr key={bid._id}>
                   <td className="px-4 py-3 text-white">{bid.amount} FCFA</td>
@@ -36,7 +36,7 @@ export default function AuctionBidHistory({ bids }) {
                         ? `Utilisateur #${bid.bidder.slice(-4)}`
                         : "Anonyme")}
                   </td>
-                  <td className="px-4 py-3 text-gray-400">
+                  <td className="px-4 py-3 text-kcb-pierre">
                     {new Date(bid.createdAt).toLocaleString()}
                   </td>
                 </tr>

@@ -12,7 +12,7 @@ export function ProfessionalHelp() {
       value: "crm",
       label: "Comment gérer mes clients?",
       content: (
-        <div className="space-y-2 text-sm text-gray-400">
+        <div className="space-y-2 text-sm text-kcb-pierre">
           <p>Utilisez le module CRM pour:</p>
           <ul className="list-disc list-inside space-y-1">
             <li>Ajouter et organiser vos clients</li>
@@ -27,7 +27,7 @@ export function ProfessionalHelp() {
       value: "entities",
       label: "Qu'est-ce qu'une entité dans Multi-Entité?",
       content: (
-        <div className="space-y-2 text-sm text-gray-400">
+        <div className="space-y-2 text-sm text-kcb-pierre">
           <p>Une entité représente une structure commerciale:</p>
           <ul className="list-disc list-inside space-y-1">
             <li><strong>Galerie</strong>: Espace d'exposition</li>
@@ -43,7 +43,7 @@ export function ProfessionalHelp() {
       value: "analytics",
       label: "Comment interpréter mes statistiques?",
       content: (
-        <div className="space-y-2 text-sm text-gray-400">
+        <div className="space-y-2 text-sm text-kcb-pierre">
           <p><strong>Métriques principales:</strong></p>
           <ul className="list-disc list-inside space-y-1">
             <li><strong>Chiffre d'affaires</strong>: Total des ventes mensuelles</li>
@@ -58,7 +58,7 @@ export function ProfessionalHelp() {
       value: "integrations",
       label: "Quels services puis-je intégrer?",
       content: (
-        <div className="space-y-2 text-sm text-gray-400">
+        <div className="space-y-2 text-sm text-kcb-pierre">
           <p>Connectez vos outils favoris:</p>
           <ul className="list-disc list-inside space-y-1">
             <li><strong>Email</strong>: Campagnes newsletters</li>
@@ -73,7 +73,7 @@ export function ProfessionalHelp() {
       value: "contacts",
       label: "Comment organiser mes contacts?",
       content: (
-        <div className="space-y-2 text-sm text-gray-400">
+        <div className="space-y-2 text-sm text-kcb-pierre">
           <p>Utilisez les listes de contacts pour:</p>
           <ul className="list-disc list-inside space-y-1">
             <li>Créer des <strong>listes statiques</strong> manuelles</li>
@@ -87,13 +87,13 @@ export function ProfessionalHelp() {
   ];
 
   return (
-    <div className="bg-gray-900 rounded-2xl shadow-md border border-gray-800 p-6">
+    <div className="bg-kcb-ardoise rounded-[4px] shadow-md border border-white/[0.06] p-6">
       <div className="flex items-center gap-3 mb-6">
-        <HelpCircle className="w-6 h-6 text-indigo-400" />
+        <HelpCircle className="w-6 h-6 text-kcb-or" />
         <h2 className="text-2xl font-bold text-white">Centre d'aide</h2>
       </div>
 
-      <p className="text-gray-400 text-sm mb-6">
+      <p className="text-kcb-pierre text-sm mb-6">
         Questions fréquemment posées sur la gestion de votre dashboard professionnel.
       </p>
 
@@ -104,8 +104,8 @@ export function ProfessionalHelp() {
         className="space-y-2"
       />
 
-      <div className="mt-8 p-4 bg-indigo-900/20 border border-indigo-700/30 rounded-lg">
-        <p className="text-sm text-indigo-300">
+      <div className="mt-8 p-4 bg-kcb-or/10 border border-kcb-or/20 rounded-[4px]">
+        <p className="text-sm text-kcb-sable">
           💡 <strong>Besoin d'aide supplémentaire?</strong> Contactez notre équipe support à support@kucibok.com
         </p>
       </div>

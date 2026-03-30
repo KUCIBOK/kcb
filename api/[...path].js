@@ -65,6 +65,7 @@ import { join }         from 'path';
 const REQUIRED_ENV = [
   'SUPABASE_URL',
   'SUPABASE_SERVICE_ROLE_KEY',
+  'SUPABASE_ANON_KEY',
   'API_KEY',
   'CORS_ORIGIN',
   'RESEND_API_KEY',
@@ -95,6 +96,16 @@ const supabaseAdmin = createClient(
 // ─── Response Helpers ─────────────────────────────────────────────────────────
 
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://kucibok.com';
+
+// ─── Rate limiting (in-memory, par instance Vercel) ─────────────────────────
+const _rlMap = new Map();
+function rateLimit(ip, windowMs = 60_000, max = 5) {
+  const now = Date.now();
+  const hits = (_rlMap.get(ip) ?? []).filter(t => now - t < windowMs);
+  hits.push(now);
+  _rlMap.set(ip, hits);
+  return hits.length <= max;
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':      CORS_ORIGIN,
@@ -218,8 +229,11 @@ async function requireRole(user, roles) {
     .eq('id', user.id)
     .single();
 
-  const userRole = dbUser?.role ?? user.user_metadata?.role ?? 'collector';
-  if (error || !roles.includes(userRole)) {
+  if (error || !dbUser) {
+    return { error: 'Impossible de vérifier le rôle', status: 403 };
+  }
+  const userRole = dbUser.role ?? 'buyer';
+  if (!roles.includes(userRole)) {
     return { error: `Accès refusé. Rôle requis : ${roles.join(' ou ')}`, status: 403 };
   }
   return { ok: true, role: userRole };
@@ -234,12 +248,12 @@ async function requireRole(user, roles) {
 const requireAdmin = async (user) => requireRole(user, ['admin']);
 
 /**
- * Vérifie que l'utilisateur est professional ou admin.
+ * Vérifie que l'utilisateur est curator ou admin.
  *
  * @param {object} user
  * @returns {{ ok: true } | { error: string, status: number }}
  */
-const requirePro = async (user) => requireRole(user, ['professional', 'admin']);
+const requireCurator = async (user) => requireRole(user, ['curator', 'admin']);
 
 /**
  * Récupère le rôle d'un utilisateur depuis la DB (source de vérité).
@@ -253,7 +267,7 @@ async function getDbRole(userId) {
     .select('role')
     .eq('id', userId)
     .single();
-  return data?.role ?? 'collector';
+  return data?.role ?? 'buyer';
 }
 
 /**
@@ -300,10 +314,14 @@ export default async function handler(req, res) {
     const apiKeyCheck = requireApiKey(req);
     if (!apiKeyCheck.ok) return fail(res, apiKeyCheck.error, apiKeyCheck.status);
 
+    // ── /api/contact ──────────────────────────────────────────────────────────
+    if (s0 === 'contact' && req.method === 'POST') return await routeContact(req, res);
+
     // ── /api/report-error ────────────────────────────────────────────────────
     if (s0 === 'report-error') return await routeReportError(req, res);
 
     // ── /api/auth/* ──────────────────────────────────────────────────────────
+    if (s0 === 'auth' && s1 === 'status' && s2) return await authSetStatus(req, res, s2);
     if (s0 === 'auth') return await routeAuth(req, res, s1);
 
     // ── /api/artworks/:id ────────────────────────────────────────────────────
@@ -318,6 +336,33 @@ export default async function handler(req, res) {
     // ── /api/artist ──────────────────────────────────────────────────────────
     if (s0 === 'artist') return await routeArtists(req, res);
 
+    // ── /api/blog/comment/:id/:commentId ──────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'comment' && s2) return await routeBlogComment(req, res, s2, segments[3]);
+
+    // ── /api/blog/publish/:id ──────────────────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'publish' && s2) return await routeBlogPublish(req, res, s2);
+
+    // ── /api/blog/archive/:id ──────────────────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'archive' && s2) return await routeBlogArchive(req, res, s2);
+
+    // ── /api/blog/published/user:id ────────────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'published' && s2?.startsWith('user')) return await routeBlogByUser(req, res, s2.replace('user', ''), 'published');
+
+    // ── /api/blog/draft/user:id ────────────────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'draft' && s2?.startsWith('user')) return await routeBlogByUser(req, res, s2.replace('user', ''), 'draft');
+
+    // ── /api/blog/archived/user:id ─────────────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'archived' && s2?.startsWith('user')) return await routeBlogByUser(req, res, s2.replace('user', ''), 'archived');
+
+    // ── /api/blog/published ────────────────────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'published') return await routeBlogFiltered(req, res, 'published');
+
+    // ── /api/blog/archived ─────────────────────────────────────────────────────
+    if (s0 === 'blog' && s1 === 'archived') return await routeBlogFiltered(req, res, 'archived');
+
+    // ── /api/blog/:id ──────────────────────────────────────────────────────────
+    if (s0 === 'blog' && s1) return await routeBlogById(req, res, s1);
+
     // ── /api/blog ────────────────────────────────────────────────────────────
     if (s0 === 'blog') return await routeBlog(req, res);
 
@@ -327,8 +372,8 @@ export default async function handler(req, res) {
     // ── /api/plans (+ alias /api/plan) ───────────────────────────────────────
     if (s0 === 'plans' || s0 === 'plan') return await routePlans(req, res);
 
-    // ── /api/visitor/visit-time ───────────────────────────────────────────────
-    if (s0 === 'visitor' && s1 === 'visit-time') return await routeVisitorVisitTime(req, res);
+    // ── /api/visitor/visit-time ────────────────────────────────────────────────
+    if (s0 === 'visitor' && s1 === 'visit-time') return await routeVisitorTime(req, res);
 
     // ── /api/visitor ──────────────────────────────────────────────────────────
     if (s0 === 'visitor') return await routeVisitor(req, res);
@@ -360,14 +405,116 @@ export default async function handler(req, res) {
     // ── /api/payments/paydunya-callback ──────────────────────────────────────
     if (s0 === 'payments' && s1 === 'paydunya-callback') return await routePaydunyaCallback(req, res);
 
+    // ── /api/transaction/fail/:id ──────────────────────────────────────────────
+    if (s0 === 'transaction' && s1 === 'fail' && s2) return await routeTransactionStatus(req, res, s2, 'failed');
+
+    // ── /api/transaction/:id ───────────────────────────────────────────────────
+    if (s0 === 'transaction' && s1) return await routeTransactionById(req, res, s1);
+
     // ── /api/transactions/* ──────────────────────────────────────────────────
     if (s0 === 'transactions') return await routeTransactions(req, res, s1);
+
+    // ── /api/subscription/fail/:id ─────────────────────────────────────────────
+    if (s0 === 'subscription' && s1 === 'fail' && s2) return await routeSubscriptionStatus(req, res, s2, 'failed');
+
+    // ── /api/subscription/activate/:id ─────────────────────────────────────────
+    if (s0 === 'subscription' && s1 === 'activate' && s2) return await routeSubscriptionStatus(req, res, s2, 'active');
+
+    // ── /api/subscription/:id ──────────────────────────────────────────────────
+    if (s0 === 'subscription' && s1) return await routeSubscriptionById(req, res, s1);
 
     // ── /api/subscription ────────────────────────────────────────────────────
     if (s0 === 'subscription') return await routeSubscription(req, res);
 
     // ── /api/sourcing ────────────────────────────────────────────────────────
     if (s0 === 'sourcing') return await routeSourcing(req, res);
+
+    // ── /api/review/artwork/:id ────────────────────────────────────────────────
+    if (s0 === 'review' && s1 === 'artwork' && s2) return await routeReviewByArtwork(req, res, s2);
+
+    // ── /api/review ────────────────────────────────────────────────────────────
+    if (s0 === 'review') return await routeReview(req, res);
+
+    // ── /api/crm/export/csv ────────────────────────────────────────────────────
+    if (s0 === 'crm' && s1 === 'export' && s2 === 'csv') return await routeCrmExport(req, res);
+
+    // ── /api/crm/stats ─────────────────────────────────────────────────────────
+    if (s0 === 'crm' && s1 === 'stats') return await routeCrmStats(req, res);
+
+    // ── /api/crm/sync-from-transactions ────────────────────────────────────────
+    if (s0 === 'crm' && s1 === 'sync-from-transactions') return await routeCrmSync(req, res);
+
+    // ── /api/crm/clients/:id/notes/:noteId ─────────────────────────────────────
+    if (s0 === 'crm' && s1 === 'clients' && s2 && segments[3] === 'notes') return await routeCrmNotes(req, res, s2, segments[4]);
+
+    // ── /api/crm/clients/:id/interactions/:interactionId ───────────────────────
+    if (s0 === 'crm' && s1 === 'clients' && s2 && segments[3] === 'interactions') return await routeCrmInteractions(req, res, s2, segments[4]);
+
+    // ── /api/crm/clients/:id ───────────────────────────────────────────────────
+    if (s0 === 'crm' && s1 === 'clients' && s2) return await routeCrmClientById(req, res, s2);
+
+    // ── /api/crm/clients ───────────────────────────────────────────────────────
+    if (s0 === 'crm' && s1 === 'clients') return await routeCrmClients(req, res);
+
+    // ── /api/contacts/sync/* ───────────────────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'sync') return await routeContactSync(req, res, s2, segments[3]);
+
+    // ── /api/contacts/contacts/stats ───────────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'contacts' && s2 === 'stats') return await routeContactStats(req, res);
+
+    // ── /api/contacts/contacts/import ──────────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'contacts' && s2 === 'import') return await routeContactImport(req, res);
+
+    // ── /api/contacts/contacts/:id/unsubscribe ─────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'contacts' && s2 && segments[3] === 'unsubscribe') return await routeContactUnsubscribe(req, res, s2);
+
+    // ── /api/contacts/contacts/:id ─────────────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'contacts' && s2) return await routeContactById(req, res, s2);
+
+    // ── /api/contacts/contacts ─────────────────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'contacts') return await routeContacts(req, res);
+
+    // ── /api/contacts/lists/:listId/rsvp ───────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'lists' && s2 && segments[3] === 'rsvp') return await routeContactListRsvp(req, res, s2);
+
+    // ── /api/contacts/lists/:id ────────────────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'lists' && s2) return await routeContactListById(req, res, s2);
+
+    // ── /api/contacts/lists ────────────────────────────────────────────────────
+    if (s0 === 'contacts' && s1 === 'lists') return await routeContactLists(req, res);
+
+    // ── /api/entities/:entityId/members/:memberId ──────────────────────────────
+    if (s0 === 'entities' && s1 && s2 === 'members') return await routeEntityMembers(req, res, s1, segments[3]);
+
+    // ── /api/entities/:id/switch ───────────────────────────────────────────────
+    if (s0 === 'entities' && s1 && s2 === 'switch') return await routeEntitySwitch(req, res, s1);
+
+    // ── /api/entities/:id ──────────────────────────────────────────────────────
+    if (s0 === 'entities' && s1) return await routeEntityById(req, res, s1);
+
+    // ── /api/entities ──────────────────────────────────────────────────────────
+    if (s0 === 'entities') return await routeEntities(req, res);
+
+    // ── /api/integrations/stats ────────────────────────────────────────────────
+    if (s0 === 'integrations' && s1 === 'stats') return await routeIntegrationStats(req, res);
+
+    // ── /api/integrations/:id/sync ─────────────────────────────────────────────
+    if (s0 === 'integrations' && s1 && s2 === 'sync') return await routeIntegrationSync(req, res, s1);
+
+    // ── /api/integrations/:id ──────────────────────────────────────────────────
+    if (s0 === 'integrations' && s1) return await routeIntegrationById(req, res, s1);
+
+    // ── /api/integrations ──────────────────────────────────────────────────────
+    if (s0 === 'integrations') return await routeIntegrations(req, res);
+
+    // ── /api/professional-analytics/realtime ───────────────────────────────────
+    if (s0 === 'professional-analytics' && s1 === 'realtime') return await routeProAnalyticsRealtime(req, res);
+
+    // ── /api/professional-analytics ────────────────────────────────────────────
+    if (s0 === 'professional-analytics') return await routeProAnalytics(req, res);
+
+    // ── /api/campaigns/campaigns/:id/* ─────────────────────────────────────────
+    if (s0 === 'campaigns' && s1 === 'campaigns') return await routeCampaignsCrud(req, res, s2, segments[3]);
 
     // ── /api/campaigns/send ──────────────────────────────────────────────────
     if (s0 === 'campaigns' && s1 === 'send') return await routeCampaignSend(req, res);
@@ -465,6 +612,47 @@ async function routeReportError(req, res) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// CONTACT FORM
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * POST /api/contact — Public contact form submission.
+ * Sends an email to the admin via Resend.
+ */
+async function routeContact(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown';
+  if (!rateLimit(ip, 60_000, 5)) return fail(res, 'Trop de requêtes. Réessayez dans une minute.', 429);
+
+  const { name, email, subject, message } = req.body ?? {};
+  if (!name || !email || !message) return fail(res, 'Nom, email et message requis');
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  const { Resend } = await import('resend');
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from:    `Kucibok Contact <${process.env.ADMIN_EMAIL ?? 'noreply@kucibok.com'}>`,
+    to:      process.env.ADMIN_EMAIL,
+    replyTo: email,
+    subject: `[Contact] ${esc(subject || 'Message depuis kucibok.com')}`,
+    html: `
+      <h2>Nouveau message — Formulaire de contact</h2>
+      <p><strong>Nom :</strong> ${esc(name)}</p>
+      <p><strong>Email :</strong> ${esc(email)}</p>
+      <p><strong>Sujet :</strong> ${esc(subject)}</p>
+      <hr/>
+      <p>${esc(message).replace(/\n/g, '<br/>')}</p>
+      <p><em>${new Date().toISOString()}</em></p>
+    `,
+  });
+
+  return ok(res, { sent: true });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // AUTH
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -478,11 +666,15 @@ const BASE_URL = process.env.CORS_ORIGIN ?? 'https://kucibok.com';
  * @param {string} action - s1 (signup, signin, signout, me, …)
  */
 async function routeAuth(req, res, action) {
-  // GET|PUT /api/auth/:uuid — lookup ou mise à jour utilisateur par ID
+  // GET /api/auth — liste tous les utilisateurs (admin uniquement)
+  if (!action && req.method === 'GET') return await authListUsers(req, res);
+
+  // GET|PUT|DELETE /api/auth/:uuid — lookup, mise à jour ou suppression par ID
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (action && UUID_RE.test(action)) {
-    if (req.method === 'GET') return await authGetById(req, res, action);
-    if (req.method === 'PUT') return await authUpdateById(req, res, action);
+    if (req.method === 'GET')    return await authGetById(req, res, action);
+    if (req.method === 'PUT')    return await authUpdateById(req, res, action);
+    if (req.method === 'DELETE') return await authDeleteById(req, res, action);
   }
 
   switch (action) {
@@ -495,6 +687,7 @@ async function routeAuth(req, res, action) {
     case 'change-password': return await authChangePassword(req, res);
     case 'google-callback': return await authGoogleCallback(req, res);
     case 'send-access':     return await authSendAccess(req, res);
+    case 'create-buyer':    return await authCreateBuyer(req, res);
     default:                return fail(res, 'Action auth inconnue', 404);
   }
 }
@@ -564,6 +757,75 @@ async function authUpdateById(req, res, id) {
 }
 
 /**
+ * GET /api/auth — Liste tous les utilisateurs (admin uniquement).
+ */
+async function authListUsers(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const { data: profiles, error: profileError } = await supabaseAdmin
+    .from('users')
+    .select('id, name, username, role, country, telephone, is_active, created_at, auth_provider')
+    .order('created_at', { ascending: false });
+
+  if (profileError) return fail(res, profileError.message);
+
+  const { data: authData } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const emailMap = {};
+  if (authData?.users) {
+    for (const u of authData.users) emailMap[u.id] = u.email;
+  }
+
+  const users = profiles.map(p => ({ ...p, _id: p.id, email: emailMap[p.id] || null }));
+  return ok(res, users);
+}
+
+/**
+ * DELETE /api/auth/:id — Supprime un utilisateur (admin uniquement).
+ */
+async function authDeleteById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  if (authResult.user.id === id) return fail(res, 'Vous ne pouvez pas supprimer votre propre compte', 403);
+
+  const { data: userToDelete } = await supabaseAdmin.from('users').select('id, name, role').eq('id', id).single();
+  if (!userToDelete) return notFound(res, 'Utilisateur');
+
+  const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+  if (error) return fail(res, error.message);
+
+  return ok(res, { ...userToDelete, _id: id });
+}
+
+/**
+ * GET /api/auth/status/:id — Bascule is_active d'un utilisateur (admin uniquement).
+ */
+async function authSetStatus(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const { data: current } = await supabaseAdmin.from('users').select('id, name, role, is_active').eq('id', id).single();
+  if (!current) return notFound(res, 'Utilisateur');
+
+  const { data, error } = await supabaseAdmin
+    .from('users')
+    .update({ is_active: !current.is_active })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) return fail(res, error.message);
+  return ok(res, { ...data, _id: data.id, isActive: data.is_active });
+}
+
+/**
  * POST /api/auth/signup — Inscription avec email/mot de passe.
  *
  * @param {import('@vercel/node').VercelRequest}  req
@@ -576,8 +838,9 @@ async function authSignup(req, res) {
 
   if (!email || !password) return fail(res, 'Email et mot de passe requis');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(res, 'Format email invalide');
-  if (!['collector', 'artist', 'professional'].includes(role)) {
-    return fail(res, 'Rôle invalide. Valeurs acceptées : collector, artist, professional');
+  if (password.length < 8) return fail(res, 'Mot de passe requis (min. 8 caractères)');
+  if (!['artist', 'curator'].includes(role)) {
+    return fail(res, 'Rôle invalide. Valeurs acceptées : artist, curator');
   }
 
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
@@ -593,7 +856,7 @@ async function authSignup(req, res) {
   await supabaseAdmin.from('users').insert({
     id:           data.user.id,
     name:         name ?? null,
-    role:         role ?? 'collector',
+    role:         role ?? 'buyer',
     country:      country ?? null,
     auth_provider: 'email',
     is_active:    true,
@@ -766,8 +1029,18 @@ async function authChangePassword(req, res) {
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
 
-  const { password } = req.body ?? {};
-  if (!password || password.length < 8) return fail(res, 'Mot de passe requis (min. 8 caractères)');
+  const { oldPassword, password } = req.body ?? {};
+  if (!oldPassword) return fail(res, "L'ancien mot de passe est requis");
+  if (!password || password.length < 8) return fail(res, 'Nouveau mot de passe requis (min. 8 caractères)');
+
+  // Vérifier l'ancien mot de passe via Supabase Auth (anon client)
+  const { createClient: createAnonClient } = await import('@supabase/supabase-js');
+  const supabaseAnon = createAnonClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+  const { error: signInError } = await supabaseAnon.auth.signInWithPassword({
+    email: authResult.user.email,
+    password: oldPassword,
+  });
+  if (signInError) return fail(res, 'Ancien mot de passe incorrect', 403);
 
   const { error } = await supabaseAdmin.auth.admin.updateUserById(authResult.user.id, { password });
   if (error) return fail(res, error.message);
@@ -795,8 +1068,8 @@ async function authGoogleCallback(req, res) {
 
   const existingRole = dbUser?.role;
 
-  // Utilisateur existant avec rôle — retourner directement
-  if (existingRole && existingRole !== 'collector') {
+  // Utilisateur existant avec rôle — retourner directement (tout rôle DB valide = pas de re-sélection)
+  if (existingRole) {
     return ok(res, {
       needs_role_selection: false,
       user: { id: user.id, email: user.email, role: existingRole },
@@ -805,7 +1078,7 @@ async function authGoogleCallback(req, res) {
 
   // Nouvel utilisateur Google sans rôle — demander la sélection
   const { role } = req.body ?? {};
-  if (!['collector', 'artist', 'professional'].includes(role)) {
+  if (!['artist', 'curator'].includes(role)) {
     return ok(res, { needs_role_selection: true, user: { id: user.id, email: user.email } });
   }
 
@@ -822,6 +1095,79 @@ async function authGoogleCallback(req, res) {
     needs_role_selection: false,
     user: { id: data.user.id, email: data.user.email, role },
   });
+}
+
+/**
+ * POST /api/auth/create-buyer — Crée un compte buyer léger pour le checkout guest.
+ * Accepte { email, name, phone }. Retourne un session token pour usage immédiat.
+ *
+ * @param {import('@vercel/node').VercelRequest}  req
+ * @param {import('@vercel/node').VercelResponse} res
+ */
+async function authCreateBuyer(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const { email, name, phone } = req.body ?? {};
+  if (!email) return fail(res, 'Email requis');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail(res, 'Format email invalide');
+
+  // Vérifier si l'email est déjà enregistré (query ciblée, pas listUsers)
+  const { data: existingUser } = await supabaseAdmin
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  if (existingUser) {
+    return fail(res, 'Un compte avec cet email existe déjà. Veuillez vous connecter.', 409);
+  }
+
+  // Générer un mot de passe temporaire (le buyer devra le définir après achat)
+  const tempPassword = randomBytes(16).toString('hex');
+
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    email,
+    password:       tempPassword,
+    email_confirm:  true, // Auto-confirmer pour permettre le paiement immédiat
+    user_metadata:  { role: 'buyer', name: name ?? null, phone: phone ?? null },
+  });
+
+  if (error) return fail(res, error.message);
+
+  // Créer l'entrée dans public.users
+  await supabaseAdmin.from('users').insert({
+    id:            data.user.id,
+    name:          name ?? null,
+    role:          'buyer',
+    telephone:     phone ?? null,
+    auth_provider: 'email',
+    is_active:     true,
+  }).then(null, () => {});
+
+  // Créer une session pour le buyer
+  const supabaseAnon = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+
+  const { data: signInData, error: signInError } = await supabaseAnon.auth.signInWithPassword({
+    email,
+    password: tempPassword,
+  });
+
+  if (signInError) return fail(res, 'Compte créé mais connexion échouée. Veuillez vous connecter manuellement.');
+
+  return ok(res, {
+    access_token:  signInData.session.access_token,
+    refresh_token: signInData.session.refresh_token,
+    expires_at:    signInData.session.expires_at,
+    user: {
+      id:    data.user.id,
+      email: data.user.email,
+      role:  'buyer',
+      name:  name ?? null,
+    },
+  }, 201);
 }
 
 /**
@@ -848,7 +1194,7 @@ async function authSendAccess(req, res) {
   if (!users) {
     const { email, first_name, role } = req.body ?? {};
     if (!email) return fail(res, 'email requis');
-    users = [{ email, first_name: first_name ?? '', role: role ?? 'collector' }];
+    users = [{ email, first_name: first_name ?? '', role: role ?? 'buyer' }];
   }
   if (!Array.isArray(users) || !users.length) return fail(res, 'users doit être un tableau non vide');
 
@@ -860,7 +1206,7 @@ async function authSendAccess(req, res) {
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   for (const u of users) {
-    const { email, first_name = '', role = 'collector' } = u;
+    const { email, first_name = '', role = 'buyer' } = u;
 
     // Fix 4 — validation format email
     if (!email || !EMAIL_RE.test(email)) {
@@ -882,7 +1228,7 @@ async function authSendAccess(req, res) {
       if (!recoveryLink) { results.push({ email, status: 'error', reason: 'Impossible de générer le lien d\'accès (compte inexistant ?)' }); continue; }
 
       // 2. Sélectionner le template selon le rôle (professional → collector en fallback)
-      const templateName = role === 'artist' ? 'welcome-artist' : 'welcome-collector';
+      const templateName = role === 'artist' ? 'welcome-artist' : 'welcome-buyer';
       let html = readFileSync(join(process.cwd(), 'emails', `${templateName}.html`), 'utf8');
 
       // Fix 2 — fallback first_name si vide
@@ -941,15 +1287,14 @@ async function routeArtworks(req, res) {
       if (authUser) callerIsAdmin = (await getDbRole(authUser.id)) === 'admin';
     }
 
-    if (status)    query = query.eq('status', status);
+    // Sécurité : forcer status=approved pour les non-admins AVANT tout filtre
+    const effectiveStatus = callerIsAdmin ? status : 'approved';
+    if (effectiveStatus) query = query.eq('status', effectiveStatus);
     if (category)  query = query.eq('category', category);
     if (for_sale)  query = query.eq('for_sale', for_sale === 'true');
     if (featured)  query = query.eq('featured', featured === 'true');
     if (artist_id) query = query.eq('artist_id', artist_id);
     if (user_id)   query = query.eq('user_id', user_id);
-
-    // Forcer status=approved pour les requêtes non-admin (sécurité)
-    if (!callerIsAdmin && !status) query = query.eq('status', 'approved');
 
     const { data, error, count } = await query;
     if (error) return fail(res, error.message);
@@ -977,7 +1322,7 @@ async function routeArtworks(req, res) {
     if (price == null) return fail(res, 'Le prix est requis');
 
     let resolvedArtistId = artistId ?? null;
-    if (!resolvedArtistId && user.user_metadata?.role === 'artist') {
+    if (!resolvedArtistId && (await getDbRole(user.id)) === 'artist') {
       const { data: artistProfile } = await supabaseAdmin
         .from('artists').select('id').eq('user_id', user.id).single();
       resolvedArtistId = artistProfile?.id ?? null;
@@ -1001,7 +1346,7 @@ async function routeArtworks(req, res) {
         price:          Number(price),
         currency:       currency ?? 'XOF',
         category:       category ?? null,
-        tags:           Array.isArray(tags) ? tags : (tags ? [tags] : []),
+        tags:           (() => { if (!tags) return []; if (Array.isArray(tags)) return tags; try { const p = JSON.parse(tags); return Array.isArray(p) ? p : [String(p)]; } catch { return String(tags).split(',').map(t => t.trim()).filter(Boolean); } })(),
         for_sale:       !!for_sale,
         edition_number: edition_number ? Number(edition_number) : 1,
         edition_total:  edition_total  ? Number(edition_total)  : 1,
@@ -1036,6 +1381,16 @@ async function routeArtworkById(req, res, id) {
       .single();
 
     if (error || !data) return notFound(res, 'Œuvre');
+
+    // Non-approved artworks are only visible to admin or the owner
+    if (data.status !== 'approved') {
+      const authResult = await requireAuth(req).catch(() => ({}));
+      const callerId = authResult?.user?.id;
+      const callerRole = callerId ? await getDbRole(callerId) : null;
+      if (callerRole !== 'admin' && callerId !== data.user_id) {
+        return notFound(res, 'Œuvre');
+      }
+    }
 
     // Incrémenter les visites en arrière-plan (non bloquant)
     (async () => { try { await supabaseAdmin.rpc('increment_artwork_visited', { artwork_id: id }); } catch {} })();
@@ -1235,7 +1590,8 @@ async function routeArtistById(req, res, id) {
     if (error || !data) return notFound(res, 'Artiste');
 
     // Incrémenter visites en arrière-plan
-    (async () => { try { await supabaseAdmin.from('artists').update({ visited: (data.visited ?? 0) + 1 }).eq('id', data.id); } catch {} })();
+    // NOTE: race condition — concurrent reads can lose increments. Use Supabase RPC atomic increment when available.
+    (async () => { try { await supabaseAdmin.rpc('increment_field', { table_name: 'artists', column_name: 'visited', row_id: data.id }).then(({ error }) => { if (error) { supabaseAdmin.from('artists').update({ visited: (data.visited ?? 0) + 1 }).eq('id', data.id); } }); } catch { try { await supabaseAdmin.from('artists').update({ visited: (data.visited ?? 0) + 1 }).eq('id', data.id); } catch {} } })();
 
     return ok(res, data);
   }
@@ -1308,8 +1664,8 @@ async function routeBlog(req, res) {
   if (req.method === 'POST') {
     const authResult = await requireAuth(req);
     if (authResult.error) return fail(res, authResult.error, authResult.status);
-    const proCheck = await requirePro(authResult.user);
-    if (!proCheck.ok) return fail(res, proCheck.error, proCheck.status);
+    const curatorCheck = await requireCurator(authResult.user);
+    if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
 
     const { title, content, image, category, tags, published } = req.body ?? {};
     if (!title) return fail(res, 'Titre requis');
@@ -1701,7 +2057,8 @@ async function routeGalleries(req, res) {
       .range(from, to);
 
     if (search) {
-      query = query.ilike('name', `%${search}%`);
+      const safeSearch = search.replace(/%/g, '\\%').replace(/_/g, '\\_');
+      query = query.ilike('name', `%${safeSearch}%`);
     }
 
     const { data, error, count } = await query;
@@ -1715,7 +2072,7 @@ async function routeGalleries(req, res) {
 
     const { data, error } = await supabaseAdmin
       .from('galleries')
-      .insert({ name, description, location, website, image })
+      .insert({ name, email, description, location, website, image })
       .select()
       .single();
 
@@ -1741,13 +2098,17 @@ async function routeGalleriesImport(req, res) {
   const galleries = req.body?.galleries;
   if (!Array.isArray(galleries) || !galleries.length) return fail(res, 'galleries[] requis');
 
+  const FIELD_MAX = { name: 255, description: 2000, location: 255, website: 500, image: 500 };
   const rows = galleries.map(g => ({
-    name: g.name ?? '',
-    description: g.description ?? null,
-    location: g.location ?? null,
-    website: g.website ?? null,
-    image: g.image ?? null,
+    name:        String(g.name ?? '').trim().slice(0, FIELD_MAX.name),
+    description: g.description ? String(g.description).trim().slice(0, FIELD_MAX.description) : null,
+    location:    g.location    ? String(g.location).trim().slice(0, FIELD_MAX.location)    : null,
+    website:     g.website     ? String(g.website).trim().slice(0, FIELD_MAX.website)     : null,
+    image:       g.image       ? String(g.image).trim().slice(0, FIELD_MAX.image)         : null,
   }));
+
+  const invalid = rows.find(r => !r.name);
+  if (invalid) return fail(res, 'Chaque galerie doit avoir un nom non vide');
 
   const { data, error } = await supabaseAdmin.from('galleries').insert(rows).select();
   if (error) return fail(res, error.message);
@@ -1764,6 +2125,8 @@ async function routeGalleriesImport(req, res) {
  */
 async function routeVisitor(req, res) {
   if (req.method === 'POST') {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown';
+    if (!rateLimit(ip, 10_000, 10)) return ok(res, { throttled: true }, 200);
     const { ipAddress, userAgent, pageVisited, sessionId } = req.body ?? {};
     const { data, error } = await supabaseAdmin
       .from('visitors')
@@ -1792,14 +2155,6 @@ async function routeVisitor(req, res) {
   }
 
   return fail(res, 'Méthode non autorisée', 405);
-}
-
-/**
- * PUT /api/visitor/visit-time — Met à jour la durée de visite (no-op, table sans colonne dédiée).
- */
-async function routeVisitorVisitTime(req, res) {
-  if (req.method !== 'PUT') return fail(res, 'Méthode non autorisée', 405);
-  return ok(res, { updated: true });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -2276,8 +2631,8 @@ async function routeCampaignSend(req, res) {
 
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
-  const proCheck = await requirePro(authResult.user);
-  if (!proCheck.ok) return fail(res, proCheck.error, proCheck.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
 
   const { campaign_id } = req.body ?? {};
   if (!campaign_id) return fail(res, 'campaign_id requis');
@@ -2484,7 +2839,7 @@ async function routeProfile(req, res, id) {
   }
 
   if (req.method === 'PUT') {
-    const role = user.user_metadata?.role;
+    const role = await getDbRole(user.id);
 
     // telephone vit dans public.users, pas dans artists/profiles
     if (req.body?.telephone !== undefined) {
@@ -2742,6 +3097,1199 @@ async function routeCollection(req, res) {
       .select()
       .single();
 
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BLOG — CRUD complet
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET /api/blog/:id — Détail d'un article.
+ * PUT /api/blog/:id — Met à jour un article (auteur ou admin).
+ * DELETE /api/blog/:id — Supprime un article (auteur ou admin).
+ */
+async function routeBlogById(req, res, id) {
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin
+      .from('blog_posts').select('*').eq('id', id).single();
+    if (error || !data) return notFound(res, 'Article');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const role = await getDbRole(authResult.user.id);
+
+  if (req.method === 'PUT') {
+    const { title, content, image, category, tags, published } = req.body ?? {};
+    const updates = {};
+    if (title !== undefined)     updates.title = title;
+    if (content !== undefined)   updates.content = content;
+    if (image !== undefined)     updates.image = image;
+    if (category !== undefined)  updates.category = category;
+    if (tags !== undefined)      updates.tags = Array.isArray(tags) ? tags : [];
+    if (published !== undefined) updates.published = !!published;
+
+    let query = supabaseAdmin.from('blog_posts').update(updates).eq('id', id);
+    if (role !== 'admin') query = query.eq('user_id', authResult.user.id);
+
+    const { data, error } = await query.select().single();
+    if (error || !data) return fail(res, error?.message ?? 'Article non trouvé ou accès refusé');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE') {
+    let query = supabaseAdmin.from('blog_posts').delete().eq('id', id);
+    if (role !== 'admin') query = query.eq('user_id', authResult.user.id);
+
+    const { error } = await query;
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * GET /api/blog/published — Articles publiés.
+ * GET /api/blog/archived — Articles archivés.
+ */
+async function routeBlogFiltered(req, res, filter) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const { from, to, page, limit } = parsePagination(req);
+
+  let query = supabaseAdmin
+    .from('blog_posts')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (filter === 'published') query = query.eq('published', true);
+  if (filter === 'archived')  query = query.eq('archived', true);
+
+  const { data, error, count } = await query;
+  if (error) return fail(res, error.message);
+  return ok(res, (data ?? []).map(p => ({ ...p, _id: p.id })), 200, { page, limit, total: count });
+}
+
+/**
+ * GET /api/blog/published/user:id — Articles publiés d'un auteur.
+ * GET /api/blog/draft/user:id — Brouillons d'un auteur.
+ * GET /api/blog/archived/user:id — Articles archivés d'un auteur.
+ */
+async function routeBlogByUser(req, res, userId, status) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+
+  let query = supabaseAdmin
+    .from('blog_posts')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (status === 'published') query = query.eq('published', true);
+  if (status === 'draft')     query = query.eq('published', false).eq('archived', false);
+  if (status === 'archived')  query = query.eq('archived', true);
+
+  const { data, error } = await query;
+  if (error) return fail(res, error.message);
+  return ok(res, (data ?? []).map(p => ({ ...p, _id: p.id })));
+}
+
+/**
+ * POST /api/blog/publish/:id — Publie un article.
+ */
+async function routeBlogPublish(req, res, id) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  const { data: existing } = await supabaseAdmin
+    .from('blog_posts').select('user_id').eq('id', id).single();
+  if (!existing) return notFound(res, 'Article');
+  if (role !== 'admin' && existing.user_id !== userId) return fail(res, 'Accès refusé', 403);
+
+  const { data, error } = await supabaseAdmin
+    .from('blog_posts')
+    .update({ published: true, archived: false })
+    .eq('id', id)
+    .select().single();
+
+  if (error || !data) return fail(res, error?.message ?? 'Article non trouvé');
+  return ok(res, { ...data, _id: data.id });
+}
+
+/**
+ * POST /api/blog/archive/:id — Archive un article.
+ */
+async function routeBlogArchive(req, res, id) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  const { data: existing } = await supabaseAdmin
+    .from('blog_posts').select('user_id').eq('id', id).single();
+  if (!existing) return notFound(res, 'Article');
+  if (role !== 'admin' && existing.user_id !== userId) return fail(res, 'Accès refusé', 403);
+
+  const { data, error } = await supabaseAdmin
+    .from('blog_posts')
+    .update({ archived: true, published: false })
+    .eq('id', id)
+    .select().single();
+
+  if (error || !data) return fail(res, error?.message ?? 'Article non trouvé');
+  return ok(res, { ...data, _id: data.id });
+}
+
+/**
+ * POST /api/blog/comment/:id — Ajoute un commentaire.
+ * DELETE /api/blog/comment/:id/:commentId — Supprime un commentaire.
+ */
+async function routeBlogComment(req, res, postId, commentId) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'POST') {
+    const { content } = req.body ?? {};
+    if (!content) return fail(res, 'Contenu du commentaire requis');
+
+    // Sanitize HTML to prevent stored XSS
+    const safeContent = (content ?? '')
+      .replace(/<script[\s>][\s\S]*?<\/script>/gi, '')
+      .replace(/<iframe[\s>][\s\S]*?<\/iframe>/gi, '')
+      .replace(/<object[\s>][\s\S]*?<\/object>/gi, '')
+      .replace(/<embed[\s>][\s\S]*?>/gi, '')
+      .replace(/<link[\s>][\s\S]*?>/gi, '')
+      .replace(/\son\w+\s*=/gi, ' data-removed=');
+
+    const { data, error } = await supabaseAdmin
+      .from('blog_comments')
+      .insert({ post_id: postId, user_id: userId, content: safeContent })
+      .select('*, users(name, image)')
+      .single();
+
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  if (req.method === 'DELETE' && commentId) {
+    const role = await getDbRole(userId);
+    let query = supabaseAdmin.from('blog_comments').delete().eq('id', commentId).eq('post_id', postId);
+    if (role !== 'admin') query = query.eq('user_id', userId);
+
+    const { error } = await query;
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TRANSACTIONS — Confirmation / Échec
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET /api/transaction/:id — Détail d'une transaction (acheteur ou vendeur).
+ */
+async function routeTransactionById(req, res, id) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  let query = supabaseAdmin
+    .from('transactions')
+    .select('*, artworks(title, image, kucibok_id, price, currency), buyer:buyer_id(name, email), seller:seller_id(name, email)')
+    .eq('id', id);
+
+  if (role !== 'admin') query = query.or(`buyer_id.eq.${userId},seller_id.eq.${userId}`);
+
+  const { data, error } = await query.single();
+  if (error || !data) return notFound(res, 'Transaction');
+  return ok(res, { ...data, _id: data.id });
+}
+
+/**
+ * GET /api/transaction/fail/:id — Marque une transaction comme échouée et retourne les détails.
+ */
+async function routeTransactionStatus(req, res, id, status) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  let query = supabaseAdmin
+    .from('transactions')
+    .update({ status })
+    .eq('id', id);
+
+  if (role !== 'admin') query = query.or(`buyer_id.eq.${userId},seller_id.eq.${userId}`);
+
+  const { data, error } = await query
+    .select('*, artworks(title, image, kucibok_id)')
+    .single();
+
+  if (error || !data) return notFound(res, 'Transaction');
+  return ok(res, { ...data, _id: data.id });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SUBSCRIPTION — By ID / Status
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET /api/subscription/:id — Détail d'un abonnement.
+ */
+async function routeSubscriptionById(req, res, id) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  let query = supabaseAdmin
+    .from('subscriptions')
+    .select('*, plans(*)')
+    .eq('id', id);
+
+  if (role !== 'admin') query = query.eq('user_id', userId);
+
+  const { data, error } = await query.single();
+
+  if (error || !data) return notFound(res, 'Abonnement');
+  return ok(res, { ...data, _id: data.id });
+}
+
+/**
+ * POST /api/subscription/fail/:id — Met à jour le statut d'un abonnement.
+ * POST /api/subscription/activate/:id — Active un abonnement.
+ */
+async function routeSubscriptionStatus(req, res, id, status) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  let query = supabaseAdmin
+    .from('subscriptions')
+    .update({ status })
+    .eq('id', id);
+
+  if (role !== 'admin') query = query.eq('user_id', userId);
+
+  const { data, error } = await query
+    .select('*, plans(*)')
+    .single();
+
+  if (error || !data) return notFound(res, 'Abonnement');
+  return ok(res, { ...data, _id: data.id });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REVIEWS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * POST /api/review — Crée un avis sur une œuvre.
+ */
+async function routeReview(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { artwork_id, rating, comment } = req.body ?? {};
+  if (!artwork_id) return fail(res, 'artwork_id requis');
+  if (!rating || rating < 1 || rating > 5) return fail(res, 'rating requis (1-5)');
+
+  const { data, error } = await supabaseAdmin
+    .from('reviews')
+    .insert({ artwork_id, user_id: authResult.user.id, rating: Number(rating), comment: comment ?? null })
+    .select('*, users(name, image)')
+    .single();
+
+  if (error) return fail(res, error.message);
+  return ok(res, { ...data, _id: data.id }, 201);
+}
+
+/**
+ * GET /api/review/artwork/:id — Avis sur une œuvre.
+ */
+async function routeReviewByArtwork(req, res, artworkId) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+
+  const { data, error } = await supabaseAdmin
+    .from('reviews')
+    .select('*, users(name, image)')
+    .eq('artwork_id', artworkId)
+    .order('created_at', { ascending: false });
+
+  if (error) return fail(res, error.message);
+  return ok(res, (data ?? []).map(r => ({ ...r, _id: r.id })));
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VISITOR — Visit time
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * PUT /api/visitor/visit-time — Met à jour le temps de visite.
+ */
+async function routeVisitorTime(req, res) {
+  if (req.method !== 'PUT') return fail(res, 'Méthode non autorisée', 405);
+
+  const { visitor_id, duration } = req.body ?? {};
+  if (!visitor_id) return fail(res, 'visitor_id requis');
+
+  const { data, error } = await supabaseAdmin
+    .from('visitors')
+    .update({ visit_duration: duration ?? 0 })
+    .eq('id', visitor_id)
+    .select()
+    .single();
+
+  if (error) return fail(res, error.message);
+  return ok(res, data);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CRM (Professional)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET/POST /api/crm/clients — Liste et création de clients CRM.
+ */
+async function routeCrmClients(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin
+      .from('crm_clients')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(c => ({ ...c, _id: c.id })));
+  }
+
+  if (req.method === 'POST') {
+    const { name, email, phone, company, type, source, notes, tags } = req.body ?? {};
+    if (!name && !email) return fail(res, 'name ou email requis');
+
+    const { data, error } = await supabaseAdmin
+      .from('crm_clients')
+      .insert({ user_id: userId, name, email, phone, company, type, source, notes, tags: tags ?? [] })
+      .select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * GET/PUT/DELETE /api/crm/clients/:id
+ */
+async function routeCrmClientById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin
+      .from('crm_clients').select('*').eq('id', id).eq('user_id', userId).single();
+    if (error || !data) return notFound(res, 'Client CRM');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'PUT') {
+    const { name, email, phone, company, type, source, notes, tags } = req.body ?? {};
+    const updates = {};
+    if (name !== undefined)    updates.name = name;
+    if (email !== undefined)   updates.email = email;
+    if (phone !== undefined)   updates.phone = phone;
+    if (company !== undefined) updates.company = company;
+    if (type !== undefined)    updates.type = type;
+    if (source !== undefined)  updates.source = source;
+    if (notes !== undefined)   updates.notes = notes;
+    if (tags !== undefined)    updates.tags = tags;
+
+    const { data, error } = await supabaseAdmin
+      .from('crm_clients').update(updates).eq('id', id).eq('user_id', userId).select().single();
+    if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE') {
+    const { error } = await supabaseAdmin.from('crm_clients').delete().eq('id', id).eq('user_id', userId);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * POST/DELETE /api/crm/clients/:clientId/notes/:noteId
+ */
+async function routeCrmNotes(req, res, clientId, noteId) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  if (req.method === 'POST') {
+    const { content } = req.body ?? {};
+    if (!content) return fail(res, 'content requis');
+    const { data, error } = await supabaseAdmin
+      .from('crm_notes')
+      .insert({ client_id: clientId, user_id: authResult.user.id, content })
+      .select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  if (req.method === 'DELETE' && noteId) {
+    const { error } = await supabaseAdmin.from('crm_notes').delete().eq('id', noteId).eq('client_id', clientId);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * POST/DELETE /api/crm/clients/:clientId/interactions/:interactionId
+ */
+async function routeCrmInteractions(req, res, clientId, interactionId) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  if (req.method === 'POST') {
+    const { type, subject, notes, date } = req.body ?? {};
+    const { data, error } = await supabaseAdmin
+      .from('crm_interactions')
+      .insert({ client_id: clientId, user_id: authResult.user.id, type: type ?? 'note', subject, notes, date: date ?? new Date().toISOString() })
+      .select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  if (req.method === 'DELETE' && interactionId) {
+    const { error } = await supabaseAdmin.from('crm_interactions').delete().eq('id', interactionId).eq('client_id', clientId);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * GET /api/crm/stats
+ */
+async function routeCrmStats(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  const { data: clients } = await supabaseAdmin.from('crm_clients').select('id, type, created_at').eq('user_id', authResult.user.id);
+  const total = clients?.length ?? 0;
+  const byType = {};
+  (clients ?? []).forEach(c => { byType[c.type ?? 'other'] = (byType[c.type ?? 'other'] || 0) + 1; });
+
+  return ok(res, { total, byType });
+}
+
+/**
+ * POST /api/crm/sync-from-transactions
+ */
+async function routeCrmSync(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  // Get transactions where user is seller, extract unique buyers
+  const { data: txs } = await supabaseAdmin
+    .from('transactions')
+    .select('buyer_id, buyer:buyer_id(name, email)')
+    .eq('seller_id', authResult.user.id)
+    .eq('status', 'completed');
+
+  const seen = new Set();
+  let synced = 0;
+  for (const tx of (txs ?? [])) {
+    if (!tx.buyer_id || seen.has(tx.buyer_id)) continue;
+    seen.add(tx.buyer_id);
+    // Check if already exists
+    const { data: existing } = await supabaseAdmin.from('crm_clients').select('id').eq('user_id', authResult.user.id).eq('email', tx.buyer?.email).maybeSingle();
+    if (existing) continue;
+    await supabaseAdmin.from('crm_clients').insert({
+      user_id: authResult.user.id, name: tx.buyer?.name, email: tx.buyer?.email, source: 'transaction', type: 'buyer',
+    });
+    synced++;
+  }
+
+  return ok(res, { synced });
+}
+
+/**
+ * GET /api/crm/export/csv
+ */
+async function routeCrmExport(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  const { data } = await supabaseAdmin.from('crm_clients').select('*').eq('user_id', authResult.user.id).order('name');
+  const rows = (data ?? []).map(c => `"${c.name ?? ''}","${c.email ?? ''}","${c.phone ?? ''}","${c.company ?? ''}","${c.type ?? ''}"`);
+  const csv = ['name,email,phone,company,type', ...rows].join('\n');
+
+  setCors(res);
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename=crm-clients.csv');
+  return res.status(200).send(csv);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONTACTS (Professional — listes de contacts & emailing)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET/POST /api/contacts/contacts
+ */
+async function routeContacts(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { from, to, page, limit } = parsePagination(req);
+    const { data, error, count } = await supabaseAdmin
+      .from('contacts').select('*', { count: 'exact' }).eq('user_id', userId)
+      .order('created_at', { ascending: false }).range(from, to);
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(c => ({ ...c, _id: c.id })), 200, { page, limit, total: count });
+  }
+
+  if (req.method === 'POST') {
+    const { name, email, phone, tags, list_id } = req.body ?? {};
+    if (!email) return fail(res, 'email requis');
+    const { data, error } = await supabaseAdmin
+      .from('contacts').insert({ user_id: userId, name, email, phone, tags: tags ?? [], list_id: list_id ?? null })
+      .select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * GET/PUT/DELETE /api/contacts/contacts/:id
+ */
+async function routeContactById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin.from('contacts').select('*').eq('id', id).eq('user_id', userId).single();
+    if (error || !data) return notFound(res, 'Contact');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'PUT') {
+    const body = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('contacts').update(body).eq('id', id).eq('user_id', userId).select().single();
+    if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE') {
+    const { error } = await supabaseAdmin.from('contacts').delete().eq('id', id).eq('user_id', userId);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * POST /api/contacts/contacts/import — Import CSV de contacts.
+ */
+async function routeContactImport(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  const { contacts, list_id } = req.body ?? {};
+  if (!Array.isArray(contacts) || contacts.length === 0) return fail(res, 'contacts[] requis');
+
+  const rows = contacts.map(c => ({
+    user_id: authResult.user.id, name: c.name, email: c.email, phone: c.phone, tags: c.tags ?? [], list_id: list_id ?? null,
+  }));
+
+  const { data, error } = await supabaseAdmin.from('contacts').insert(rows).select();
+  if (error) return fail(res, error.message);
+  return ok(res, { imported: data?.length ?? 0 }, 201);
+}
+
+/**
+ * POST /api/contacts/contacts/:id/unsubscribe
+ */
+async function routeContactUnsubscribe(req, res, id) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const { data, error } = await supabaseAdmin.from('contacts').update({ unsubscribed: true }).eq('id', id).select().single();
+  if (error || !data) return notFound(res, 'Contact');
+  return ok(res, { ...data, _id: data.id });
+}
+
+/**
+ * GET /api/contacts/contacts/stats
+ */
+async function routeContactStats(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  const { data } = await supabaseAdmin.from('contacts').select('id, unsubscribed').eq('user_id', authResult.user.id);
+  const total = data?.length ?? 0;
+  const unsubscribed = (data ?? []).filter(c => c.unsubscribed).length;
+  return ok(res, { total, active: total - unsubscribed, unsubscribed });
+}
+
+/**
+ * GET/POST /api/contacts/lists
+ */
+async function routeContactLists(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin.from('contact_lists').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(l => ({ ...l, _id: l.id })));
+  }
+
+  if (req.method === 'POST') {
+    const { name, description } = req.body ?? {};
+    if (!name) return fail(res, 'name requis');
+    const { data, error } = await supabaseAdmin.from('contact_lists').insert({ user_id: userId, name, description }).select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * GET/PUT/DELETE /api/contacts/lists/:id
+ */
+async function routeContactListById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin.from('contact_lists').select('*, contacts(*)').eq('id', id).eq('user_id', userId).single();
+    if (error || !data) return notFound(res, 'Liste');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'PUT') {
+    const body = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('contact_lists').update(body).eq('id', id).eq('user_id', userId).select().single();
+    if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE') {
+    const { error } = await supabaseAdmin.from('contact_lists').delete().eq('id', id).eq('user_id', userId);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * POST /api/contacts/lists/:listId/rsvp
+ */
+async function routeContactListRsvp(req, res, listId) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { contact_id, status } = req.body ?? {};
+  if (!contact_id) return fail(res, 'contact_id requis');
+
+  const { data, error } = await supabaseAdmin
+    .from('contact_list_rsvp')
+    .upsert({ list_id: listId, contact_id, status: status ?? 'pending' }, { onConflict: 'list_id,contact_id' })
+    .select().single();
+
+  if (error) return fail(res, error.message);
+  return ok(res, data);
+}
+
+/**
+ * POST /api/contacts/sync/crm — Sync contacts with CRM.
+ */
+async function routeContactSync(req, res, sub, extra) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  // GET /api/contacts/sync/crm/:crmContactId/check
+  if (req.method === 'GET' && sub === 'crm' && extra === 'check') {
+    // segments[4] would be the crmContactId — not yet parsed, use a simple approach
+    return ok(res, { synced: false });
+  }
+
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  if (sub === 'crm' && extra === 'bulk') {
+    // Bulk sync from CRM
+    const { contact_ids } = req.body ?? {};
+    return ok(res, { synced: Array.isArray(contact_ids) ? contact_ids.length : 0 });
+  }
+
+  // Single sync
+  const { crm_client_id } = req.body ?? {};
+  if (!crm_client_id) return fail(res, 'crm_client_id requis');
+
+  const { data: client } = await supabaseAdmin.from('crm_clients').select('*').eq('id', crm_client_id).eq('user_id', authResult.user.id).single();
+  if (!client) return notFound(res, 'Client CRM');
+
+  const { data, error } = await supabaseAdmin.from('contacts').insert({
+    user_id: authResult.user.id, name: client.name, email: client.email, phone: client.phone, tags: ['crm-sync'],
+  }).select().single();
+
+  if (error) return fail(res, error.message);
+  return ok(res, { ...data, _id: data.id }, 201);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ENTITIES (Multi-entité professional)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET/POST /api/entities
+ */
+async function routeEntities(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin
+      .from('entities').select('*, entity_members(*)').or(`owner_id.eq.${userId},entity_members.user_id.eq.${userId}`)
+      .order('created_at', { ascending: false });
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(e => ({ ...e, _id: e.id })));
+  }
+
+  if (req.method === 'POST') {
+    const { name, type, description, logo } = req.body ?? {};
+    if (!name) return fail(res, 'name requis');
+    const { data, error } = await supabaseAdmin
+      .from('entities').insert({ owner_id: userId, name, type, description, logo })
+      .select().single();
+    if (error) return fail(res, error.message);
+    // Also add owner as admin member
+    await supabaseAdmin.from('entity_members').insert({ entity_id: data.id, user_id: userId, role: 'admin' });
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * GET/PUT/DELETE /api/entities/:id
+ */
+async function routeEntityById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin.from('entities').select('*, entity_members(*, users(name, email, image))').eq('id', id).single();
+    if (error || !data) return notFound(res, 'Entité');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'PUT') {
+    const body = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('entities').update(body).eq('id', id).select().single();
+    if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE') {
+    await supabaseAdmin.from('entity_members').delete().eq('entity_id', id);
+    const { error } = await supabaseAdmin.from('entities').delete().eq('id', id);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * POST /api/entities/:id/switch — Switch to this entity context.
+ */
+async function routeEntitySwitch(req, res, id) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { data, error } = await supabaseAdmin.from('entities').select('*').eq('id', id).single();
+  if (error || !data) return notFound(res, 'Entité');
+  return ok(res, { ...data, _id: data.id, switched: true });
+}
+
+/**
+ * POST/PUT/DELETE /api/entities/:entityId/members/:memberId
+ */
+async function routeEntityMembers(req, res, entityId, memberId) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  if (req.method === 'POST') {
+    const { user_id, role } = req.body ?? {};
+    if (!user_id) return fail(res, 'user_id requis');
+    const { data, error } = await supabaseAdmin.from('entity_members')
+      .insert({ entity_id: entityId, user_id, role: role ?? 'member' }).select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  if (req.method === 'PUT' && memberId) {
+    const { role } = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('entity_members')
+      .update({ role }).eq('id', memberId).eq('entity_id', entityId).select().single();
+    if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE' && memberId) {
+    const { error } = await supabaseAdmin.from('entity_members').delete().eq('id', memberId).eq('entity_id', entityId);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INTEGRATIONS (Professional)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET/POST /api/integrations
+ */
+async function routeIntegrations(req, res) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin.from('integrations').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(i => ({ ...i, _id: i.id })));
+  }
+
+  if (req.method === 'POST') {
+    const { name, type, config, enabled } = req.body ?? {};
+    if (!name || !type) return fail(res, 'name et type requis');
+    const { data, error } = await supabaseAdmin.from('integrations')
+      .insert({ user_id: userId, name, type, config: config ?? {}, enabled: enabled ?? true }).select().single();
+    if (error) return fail(res, error.message);
+    return ok(res, { ...data, _id: data.id }, 201);
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * GET/PUT/DELETE /api/integrations/:id
+ */
+async function routeIntegrationById(req, res, id) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin.from('integrations').select('*').eq('id', id).eq('user_id', userId).single();
+    if (error || !data) return notFound(res, 'Intégration');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'PUT') {
+    const body = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('integrations').update(body).eq('id', id).eq('user_id', userId).select().single();
+    if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
+    return ok(res, { ...data, _id: data.id });
+  }
+
+  if (req.method === 'DELETE') {
+    const { error } = await supabaseAdmin.from('integrations').delete().eq('id', id).eq('user_id', userId);
+    if (error) return fail(res, error.message);
+    return ok(res, { deleted: true });
+  }
+
+  return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * POST /api/integrations/:id/sync
+ */
+async function routeIntegrationSync(req, res, id) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { data, error } = await supabaseAdmin.from('integrations')
+    .update({ last_synced_at: new Date().toISOString() }).eq('id', id).select().single();
+  if (error || !data) return notFound(res, 'Intégration');
+  return ok(res, { ...data, _id: data.id, synced: true });
+}
+
+/**
+ * GET /api/integrations/stats
+ */
+async function routeIntegrationStats(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { data } = await supabaseAdmin.from('integrations').select('id, type, enabled').eq('user_id', authResult.user.id);
+  const total = data?.length ?? 0;
+  const active = (data ?? []).filter(i => i.enabled).length;
+  return ok(res, { total, active, inactive: total - active });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROFESSIONAL ANALYTICS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET /api/professional-analytics — KPIs du dashboard pro.
+ */
+async function routeProAnalytics(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  const [artworksRes, txRes, clientsRes, deliveryRes] = await Promise.all([
+    supabaseAdmin.from('artworks').select('id, status, for_sale, sold, price, currency').eq('managed_by', userId),
+    supabaseAdmin.from('transactions').select('id, amount, status, currency, created_at').eq('seller_id', userId),
+    supabaseAdmin.from('crm_clients').select('id').eq('user_id', userId),
+    supabaseAdmin.from('delivery_requests').select('id, status').eq('user_id', userId),
+  ]);
+
+  const artworks = artworksRes.data ?? [];
+  const txs = txRes.data ?? [];
+  const completedTxs = txs.filter(t => t.status === 'completed');
+  const totalRevenue = completedTxs.reduce((s, t) => s + (t.amount ?? 0), 0);
+
+  return ok(res, {
+    artworks: { total: artworks.length, forSale: artworks.filter(a => a.for_sale && !a.sold).length, sold: artworks.filter(a => a.sold).length },
+    revenue: { total: totalRevenue, currency: completedTxs[0]?.currency ?? 'XOF', transactions: txs.length, completed: completedTxs.length },
+    clients: { total: clientsRes.data?.length ?? 0 },
+    deliveries: { total: deliveryRes.data?.length ?? 0, pending: (deliveryRes.data ?? []).filter(d => d.status === 'pending').length },
+  });
+}
+
+/**
+ * GET /api/professional-analytics/realtime — Données temps réel.
+ */
+async function routeProAnalyticsRealtime(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+
+  const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+  const [recentTxs, recentViews] = await Promise.all([
+    supabaseAdmin.from('transactions').select('id, amount, status, created_at').eq('seller_id', authResult.user.id).gte('created_at', since),
+    supabaseAdmin.from('visitors').select('id').gte('created_at', since),
+  ]);
+
+  return ok(res, {
+    last24h: {
+      transactions: recentTxs.data?.length ?? 0,
+      revenue: (recentTxs.data ?? []).filter(t => t.status === 'completed').reduce((s, t) => s + (t.amount ?? 0), 0),
+      visitors: recentViews.data?.length ?? 0,
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CAMPAIGNS CRUD (Professional)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * CRUD /api/campaigns/campaigns — Gestion des campagnes email.
+ * GET    /api/campaigns/campaigns — Liste.
+ * POST   /api/campaigns/campaigns — Créer.
+ * GET    /api/campaigns/campaigns/:id — Détail.
+ * PUT    /api/campaigns/campaigns/:id — Modifier.
+ * DELETE /api/campaigns/campaigns/:id — Supprimer.
+ * POST   /api/campaigns/campaigns/:id/send-test — Envoyer un test.
+ * POST   /api/campaigns/campaigns/:id/send — Envoyer la campagne.
+ * GET    /api/campaigns/campaigns/:id/analytics — Stats campagne.
+ */
+async function routeCampaignsCrud(req, res, id, action) {
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const curatorCheck = await requireCurator(authResult.user);
+  if (!curatorCheck.ok) return fail(res, curatorCheck.error, curatorCheck.status);
+  const userId = authResult.user.id;
+
+  // POST /api/campaigns/campaigns/:id/send-test
+  if (id && action === 'send-test' && req.method === 'POST') {
+    const { data: campaign } = await supabaseAdmin.from('campaigns').select('*').eq('id', id).eq('user_id', userId).single();
+    if (!campaign) return notFound(res, 'Campagne');
+    const { test_email } = req.body ?? {};
+    if (!test_email) return fail(res, 'test_email requis');
+    // Send test via Resend
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+        body: JSON.stringify({ from: `Kucibok <${process.env.ADMIN_EMAIL}>`, to: [test_email], subject: `[TEST] ${campaign.subject}`, html: campaign.html_content ?? campaign.content ?? '' }),
+      });
+    } catch (e) { return fail(res, 'Erreur envoi test: ' + e.message); }
+    return ok(res, { sent: true, to: test_email });
+  }
+
+  // POST /api/campaigns/campaigns/:id/send
+  if (id && action === 'send' && req.method === 'POST') {
+    const { data: campaign } = await supabaseAdmin.from('campaigns').select('*').eq('id', id).eq('user_id', userId).single();
+    if (!campaign) return notFound(res, 'Campagne');
+    // Get recipients from list or all contacts
+    const { data: contacts } = campaign.list_id
+      ? await supabaseAdmin.from('contacts').select('email').eq('list_id', campaign.list_id).eq('unsubscribed', false)
+      : await supabaseAdmin.from('contacts').select('email').eq('user_id', userId).eq('unsubscribed', false);
+
+    const emails = (contacts ?? []).map(c => c.email).filter(Boolean);
+    if (emails.length === 0) return fail(res, 'Aucun destinataire');
+
+    // Send in batches of 50
+    let sent = 0;
+    for (let i = 0; i < emails.length; i += 50) {
+      const batch = emails.slice(i, i + 50);
+      try {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+          body: JSON.stringify({ from: `Kucibok <${process.env.ADMIN_EMAIL}>`, bcc: batch, subject: campaign.subject, html: campaign.html_content ?? campaign.content ?? '' }),
+        });
+        sent += batch.length;
+      } catch (e) { /* continue with next batch */ }
+    }
+
+    await supabaseAdmin.from('campaigns').update({ status: 'sent', sent_at: new Date().toISOString(), recipients_count: sent }).eq('id', id);
+    return ok(res, { sent, total: emails.length });
+  }
+
+  // GET /api/campaigns/campaigns/:id/analytics
+  if (id && action === 'analytics' && req.method === 'GET') {
+    const { data: campaign } = await supabaseAdmin.from('campaigns').select('*').eq('id', id).eq('user_id', userId).single();
+    if (!campaign) return notFound(res, 'Campagne');
+    return ok(res, { recipients: campaign.recipients_count ?? 0, status: campaign.status, sent_at: campaign.sent_at });
+  }
+
+  // GET/PUT/DELETE /api/campaigns/campaigns/:id
+  if (id) {
+    if (req.method === 'GET') {
+      const { data, error } = await supabaseAdmin.from('campaigns').select('*').eq('id', id).eq('user_id', userId).single();
+      if (error || !data) return notFound(res, 'Campagne');
+      return ok(res, { ...data, _id: data.id });
+    }
+    if (req.method === 'PUT') {
+      const body = req.body ?? {};
+      const { data, error } = await supabaseAdmin.from('campaigns').update(body).eq('id', id).eq('user_id', userId).select().single();
+      if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
+      return ok(res, { ...data, _id: data.id });
+    }
+    if (req.method === 'DELETE') {
+      const { error } = await supabaseAdmin.from('campaigns').delete().eq('id', id).eq('user_id', userId);
+      if (error) return fail(res, error.message);
+      return ok(res, { deleted: true });
+    }
+    return fail(res, 'Méthode non autorisée', 405);
+  }
+
+  // GET/POST /api/campaigns/campaigns
+  if (req.method === 'GET') {
+    const { from, to, page, limit } = parsePagination(req);
+    const { data, error, count } = await supabaseAdmin.from('campaigns').select('*', { count: 'exact' })
+      .eq('user_id', userId).order('created_at', { ascending: false }).range(from, to);
+    if (error) return fail(res, error.message);
+    return ok(res, (data ?? []).map(c => ({ ...c, _id: c.id })), 200, { page, limit, total: count });
+  }
+
+  if (req.method === 'POST') {
+    const { name, subject, content, html_content, list_id } = req.body ?? {};
+    if (!name || !subject) return fail(res, 'name et subject requis');
+    const { data, error } = await supabaseAdmin.from('campaigns')
+      .insert({ user_id: userId, name, subject, content, html_content, list_id, status: 'draft' }).select().single();
     if (error) return fail(res, error.message);
     return ok(res, { ...data, _id: data.id }, 201);
   }

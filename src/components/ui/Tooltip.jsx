@@ -30,8 +30,8 @@ export function Tooltip({
   const timeoutRef = useRef(null);
 
   const variants = {
-    default: 'bg-gray-800 text-gray-200 border-gray-700',
-    dark: 'bg-gray-900 text-white border-gray-800',
+    default: 'bg-kcb-ardoise text-kcb-sable border-white/[0.08]',
+    dark: 'bg-kcb-noir-deep text-white border-white/[0.06]',
     success: 'bg-green-900/90 text-green-100 border-green-700',
     danger: 'bg-red-900/90 text-red-100 border-red-700',
     warning: 'bg-orange-900/90 text-orange-100 border-orange-700'
@@ -111,6 +111,8 @@ export function Tooltip({
         ref={triggerRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onFocus={handleMouseEnter}
+        onBlur={handleMouseLeave}
         className="inline-block"
       >
         {children}
@@ -119,7 +121,7 @@ export function Tooltip({
       {isVisible && (
         <div
           ref={tooltipRef}
-          className={`fixed z-[9999] px-3 py-2 text-sm rounded-lg border shadow-lg pointer-events-none
+          className={`fixed z-[9999] px-3 py-2 text-sm rounded-[4px] border shadow-lg pointer-events-none
             ${variants[variant]}
             animate-in fade-in duration-150`}
           style={{

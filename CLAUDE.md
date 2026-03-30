@@ -30,11 +30,13 @@ src/api/                  30 hooks API (useArtworks, useAuth, useDelivery...)
 src/components/           Composants par domaine (admin, artist, artworks, delivery, ui...)
 src/pages/                ~46 pages (dashboards, landings, auth, checkout...)
 src/store/                12 Context providers (Auth, Artwork, Artist, Blog, Gallery...)
+public/images/            Assets statiques (placeholder-artwork.svg)
 src/lib/supabase.js       Client Supabase singleton
 src/lib/storage.js        Helpers Supabase Storage
 scripts/                  Migration MongoDB -> Supabase (4 scripts)
-supabase/migrations/      Schema SQL + RLS policies
-docs/                     PRD, TECH-SPEC, ROADMAP, DESIGN, RUNBOOK
+supabase/migrations/      Schema SQL + RLS policies (001-008)
+src/test/                 12 fichiers tests Vitest (299 tests)
+docs/                     PRD, TECH-SPEC, ROADMAP, DESIGN, RUNBOOK, MOCTAR
 ```
 
 ## Conventions
@@ -44,8 +46,9 @@ docs/                     PRD, TECH-SPEC, ROADMAP, DESIGN, RUNBOOK
 - **API Key** partagee front/back via header `kcb-api-key`.
 - **Auth** : `supabase.auth` cote front, `supabaseAdmin` (service_role) cote Function.
 - **Identifiants oeuvres** : format `KCB-XXXXXXXX`, generes par trigger PostgreSQL.
-- **Roles** : `collector`, `artist`, `professional`, `admin`. Roles prevus Phase 1 : `gallery_africa`, `curator_global`, `gallery_global`, `expert`.
-- **Routes protegees** : 6 wrappers dans `src/utils/` (Guest, Auth, Artist, Collector, Professional, Admin).
+- **Roles** : `buyer` (defaut), `artist`, `curator`, `admin`. Roles prevus Phase 1 : `gallery_africa`, `gallery_global`, `expert`.
+- **Routes protegees** : 6 wrappers dans `src/utils/` (Guest, Auth, Artist, Buyer, Curator, Admin).
+- **Dashboard buyer** : route `/account` (pas `/dashboard/buyer`). Les nav components gerent ce cas special.
 - **Portails** : `/africa` et `/global` sont hors du Layout principal (standalone). Tout le reste est dans `<Layout />`.
 - **Encheres** : module masque du nav public, accessible admin uniquement. Code conserve pour reactivation Phase 3.
 - **CORS** : restreint a `CORS_ORIGIN` (kucibok.com). Jamais de wildcard.
@@ -98,11 +101,16 @@ Routes principales :
 - `GET/POST /api/sourcing/*` — Sourcing B2B
 - `POST /api/payments/paydunya-*` — Paiements
 - `POST /api/certificates/generate` — PDF certificat
+- `POST /api/subscription/fail/:id` — Echec abonnement
+- `POST /api/subscription/activate/:id` — Activation abonnement
+- `POST /api/transaction/fail/:id` — Echec transaction
+- `POST /api/contact` — Formulaire de contact (Resend)
+- `POST /api/report-error` — Rapport erreur frontend
 - `GET /api/health` — Healthcheck
 
 ## Base de donnees
 
-34 tables PostgreSQL. Tables cles :
+36 tables PostgreSQL. Tables cles :
 - `users` (extends auth.users), `artists`, `profiles`, `galleries`
 - `artworks` (kucibok_id unique, certification, provenance)
 - `delivery_requests`, `delivery_events`, `delivery_artwork_ids`
@@ -117,24 +125,52 @@ Triggers automatiques :
 
 ## Dette technique connue
 
-- `dotenv` et `socket.io-client` dans package.json : a supprimer (inutiles)
-- `setVisitTime` non importe dans App.jsx : bug silencieux
-- `pdfkit` dans le package.json frontend : devrait etre cote serveur uniquement
+- ~~`dotenv` et `socket.io-client` dans package.json~~ — resolu (deps nettoyees Phase 0)
+- ~~`setVisitTime` non importe dans App.jsx~~ — resolu Phase 0
+- ~~`pdfkit` dans le package.json frontend~~ — resolu (deplace cote serveur Phase 0)
+- ~~Pas de linting configure~~ — resolu (ESLint + Prettier configures Phase 0)
+- ~~Pas de tests automatises~~ — resolu (Vitest : 12 fichiers, 299 tests)
 - 12 Context providers imbriques : migration React Query prevue Phase 2
 - `api/[...path].js` est un fichier volumineux : a decouper en modules Phase 2
-- Pas de tests automatises : ajouter Vitest Phase 1
-- Pas de linting configure : ajouter ESLint + Prettier Phase 0
+- Rate limiting absent : a implementer Phase 1 (Upstash Redis ou Cloudflare)
 
 ## Migration en cours
 
 Migration de VPS Hostinger + MongoDB + Cloudinary vers Supabase + Vercel.
-M1-M3 terminees. **M4 (bascule production) en attente. Deadline VPS : 19 mars 2026.**
+M1-M3 terminees. **M4 (bascule production) en attente.**
 Voir `docs/RUNBOOK_M4.md` pour la procedure.
+
+## Audits (Mars 2026)
+
+### Audit UX/UI — 80+ corrections (P0-P5)
+- P0 : bugs fonctionnels (typos CSS, liens morts, IDs instables)
+- P1 : couleurs bannies purgees (violet, orange, gradients) → tokens KCB
+- P2 : typographie (font-playfair), border-radius (rounded-[4px]), liens morts
+- P3 : accessibilite (ARIA, focus-visible, clavier, contraste)
+- P4 : SEO (Helmet sur Africa/Global, og:image, canonicals)
+- P5 : polish UX (skeletons, null guards, dead code, animations)
+
+### Audit securite — 10 correctifs appliques
+- XSS : DOMPurify client + sanitisation serveur (blog comments)
+- IDOR : ownership checks transactions/abonnements
+- Escalade role : suppression fallback user_metadata dans requireRole
+- Oeuvres non-approuvees : cachees aux non-proprietaires
+- GET → POST : endpoints mutation (fail/activate)
+- DoS : remplacement listUsers() par requete ciblee
+- SQL injection : echappement wildcards ilike
+- Mot de passe : validation min 8 caracteres
+
+### Refactor roles — collector→buyer, professional→curator
+- Migrations SQL : 007 (donnees) + 008 (fonction RLS)
+- Frontend : PortalNav, UserLinks, admin views, profils, CRM
+- Backend : VALID_ROLES, requireCurator, email templates, ownership checks
+- Voir `docs/MOCTAR.md` pour les actions manuelles restantes
 
 ## Documentation
 
 - `docs/PRD.md` — Produit, utilisateurs, modules, KPIs
-- `docs/TECH-SPEC.md` — Stack, API, schema, architecture
+- `docs/TECH_SPEC.md` — Stack, API, schema, architecture
 - `docs/ROADMAP.md` — Phases 0-4, scorecards, dette technique
-- `docs/DESIGN.md` — Direction visuelle Phase 3 (noir/ivoire/or)
+- `docs/DESIGN_SYSTEM.md` — Design system (noir/ivoire/or, tokens, composants, accessibilite)
 - `docs/RUNBOOK_M4.md` — Procedure bascule production
+- `docs/MOCTAR.md` — Configuration manuelle restante (migrations, Supabase, Vercel, securite)

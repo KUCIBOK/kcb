@@ -60,6 +60,8 @@ export function Accordion({
             <button
               onClick={() => !item.disabled && toggleItem(item.value)}
               disabled={item.disabled}
+              aria-expanded={isOpen}
+              aria-controls={`accordion-content-${item.value}`}
               className={`
                 w-full flex items-center justify-between p-4
                 text-left transition-colors
@@ -79,7 +81,7 @@ export function Accordion({
                   )}
                 </div>
                 {item.badge !== undefined && (
-                  <span className="px-2 py-1 text-xs rounded-full bg-gray-700 text-gray-300">
+                  <span className="px-2 py-1 text-xs rounded-full bg-white/[0.06] text-kcb-sable">
                     {item.badge}
                   </span>
                 )}
@@ -93,6 +95,9 @@ export function Accordion({
 
             {/* Accordion content */}
             <div
+              id={`accordion-content-${item.value}`}
+              role="region"
+              aria-labelledby={`accordion-header-${item.value}`}
               className={`
                 transition-all duration-200 ease-in-out overflow-hidden
                 ${isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}
@@ -196,7 +201,7 @@ export function AccordionItem({
             )}
           </div>
           {badge !== undefined && (
-            <span className="px-2 py-1 text-xs rounded-full bg-gray-700 text-gray-300">
+            <span className="px-2 py-1 text-xs rounded-full bg-white/[0.06] text-kcb-sable">
               {badge}
             </span>
           )}

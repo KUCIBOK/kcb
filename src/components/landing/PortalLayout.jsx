@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import PortalNav from "./PortalNav"
 import PortalFooter from "./PortalFooter"
 import { LangProvider } from "../../store/LangContext"
@@ -12,14 +13,26 @@ const PORTAL_VARS = {
 /**
  * Wrapper layout for portal landing pages.
  * Sets CSS accent vars, renders Nav + children + Footer + grain overlay.
+ * Handles hash-based scrolling when navigating from sub-pages (e.g. /global/catalogue → /global#pricing).
+ *
  * @param {object} props
  * @param {"africa"|"global"} props.portal - Active portal
  * @param {React.ReactNode} props.children - Page sections
  */
 export default function PortalLayout({ portal, children }) {
+  const { hash } = useLocation()
+
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (hash) {
+      const id = hash.replace("#", "")
+      // Small delay to let sections mount before scrolling
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+      }, 300)
+    } else {
+      window.scrollTo(0, 0)
+    }
+  }, [hash])
 
   return (
     <LangProvider defaultLang={portal === "africa" ? "fr" : "en"}>

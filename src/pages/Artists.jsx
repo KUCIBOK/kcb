@@ -8,7 +8,7 @@ import RevealOnScroll from "../components/landing/RevealOnScroll";
 import SectionLabel from "../components/landing/SectionLabel";
 
 export default function Artists() {
-    const { artists } = useArtist();
+    const { artists, loading: contextLoading } = useArtist();
     // Deduplicate by _id then shuffle randomly (different order each refresh)
     const seen = new Set()
     const sortedArtists = [...(artists ?? [])]
@@ -20,12 +20,10 @@ export default function Artists() {
       })
       .sort(() => Math.random() - 0.5)
     const [search, setSearch] = useState("");
-    const [loading, setLoading] = useState(true);
     const [filtered, setFiltered] = useState([]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        setLoading(true);
         let result = sortedArtists;
         if (search.trim() !== "") {
             const s = search.toLowerCase();
@@ -35,7 +33,6 @@ export default function Artists() {
             );
         }
         setFiltered(result);
-        setLoading(false);
     }, [artists, search]);
 
     return (
@@ -77,9 +74,16 @@ export default function Artists() {
                 </div>
             </RevealOnScroll>
             <div className="flex flex-col gap-6">
-                {loading ? (
+                {contextLoading ? (
                     <div className="flex items-center justify-center h-40">
                         <DataLoader />
+                    </div>
+                ) : filtered.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-16 border border-white/[0.06] border-dashed rounded-[4px] w-full bg-kcb-ardoise/30">
+                        <h3 className="font-medium text-base text-kcb-pierre mb-1">
+                            {search.trim() ? 'Aucun artiste trouvé pour cette recherche.' : 'Aucun artiste pour le moment.'}
+                        </h3>
+                        <p className="text-xs text-kcb-pierre/60">Revenez bientôt pour découvrir nos artistes certifiés.</p>
                     </div>
                 ) : (
                     <ArtistList artists={filtered} />

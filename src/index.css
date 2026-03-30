@@ -1,28 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @import "tailwindcss";
-
-body {
-  @apply bg-gray-900; /* Couleur de fond sombre */
-  /* background-color: #0f1624; */
-  @apply text-gray-300;
-  font-family: "Poppins", sans-serif;
-  overflow-x: hidden;
-  padding: 0;
-  margin: 0;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply text-white font-medium tracking-tight;
-  font-family: "Playfair Display", serif;
-}
 
 /* Scrollbar fine et couleur personnalisée */
 * {
@@ -34,13 +12,13 @@ table {
   @apply w-full caption-bottom text-sm;
 }
 thead {
-  @apply [&_tr]:border-b border-gray-700;
+  @apply [&_tr]:border-b border-white/[0.08];
 }
 tbody {
   @apply [&_tr:last-child]:border-0;
 }
 tr {
-  @apply border-b border-gray-700 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted;
+  @apply border-b border-white/[0.08] transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted;
 }
 th {
   @apply h-12 px-4 text-left align-middle font-medium text-white [&:has([role=checkbox])]:pr-0;
@@ -49,43 +27,8 @@ td {
   @apply p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium text-white;
 }
 
-.font-montserrat {
-  font-family: "Montserrat";
-}
-
-.font-open-sans {
-  font-family: "Open Sans", sans-serif;
-}
-
 .font-playfair {
   font-family: "Playfair Display", serif;
-}
-
-.text-gradient {
-  background: linear-gradient(90deg, #7072c5 0%, #b132a7 100%);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.bg-gradient {
-  background: linear-gradient(90deg, #7072c5 0%, #b132a7 100%);
-}
-
-.bg-indigo-kcb {
-  background-color: #7072c5;
-}
-.bg-purple-kcb {
-  background-color: #b132a7;
-}
-
-.text-indigo-kcb {
-  color: #7072c5;
-}
-.text-purple-kcb {
-  color: #b132a7;
-}
-
-.border-kcb {
-  border-color: #7072c5;
 }
 
 .bg-card {
@@ -186,7 +129,6 @@ td {
   }
   100% {
     opacity: 0;
-    display: none;
   }
 }
 
@@ -200,22 +142,6 @@ td {
     transform: translateY(0);
   }
 }
-
-.bg-earth {
-  background-color: #c56c39;
-} /* Terracotta*/
-.bg-clay {
-  background-color: #d2a86e;
-} /* Ochre/sand*/
-.bg-night {
-  background-color: #1f2a44;
-} /* Deep blue*/
-.bg-forest {
-  background-color: #4d7c5a;
-} /* Deep green*/
-.bg-kente {
-  background-color: #c73e3a;
-} /* Deep red from kente cloth*/
 
 @layer base {
   /* :root {
@@ -360,13 +286,12 @@ td {
 
   button {
     @apply cursor-pointer;
-    @apply hover:opacity-90;
   }
 }
 
 @layer utilities {
   .font-sans {
-    font-family: "Poppins", sans-serif;
+    font-family: "DM Sans", system-ui, sans-serif;
   }
 
   .font-serif {
@@ -412,8 +337,6 @@ td {
   --color-night: #1f2a44; /* Deep blue*/
   --color-forest: #4d7c5a; /* Deep green*/
   --color-kente: #c73e3a; /* Deep red from kente cloth*/
-  --color-indigo-kcb: #7072c5;
-  --color-purple-kcb: #b132a7;
   --color-primary-foreground: hsl(var(--primary-foreground));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
@@ -475,13 +398,6 @@ td {
     background-position: 0% 50%;
   }
 }
-
-/* .indigo-kcb{
-  color : rgb(112, 114, 197);
-}
-.purple-kcb{
-  color : rgb(177, 50, 167);
-} */
 
 /* ═══════════════════════════════════════════
    KCB Landing — Utilities & Animations
@@ -568,6 +484,17 @@ td {
 @keyframes kuzi-shine {
   0%   { opacity: 0.4; transform: scale(1);    }
   100% { opacity: 0.9; transform: scale(1.4);  }
+}
+
+/* Cert section — scan line & pulse dot */
+@keyframes kcb-cert-scan {
+  0%   { top: 0%;   opacity: 0.6; }
+  95%  { top: 100%; opacity: 0.4; }
+  100% { top: 100%; opacity: 0;   }
+}
+@keyframes kcb-cert-pulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.4; }
 }
 
 /* Float animations — Global hero stats */

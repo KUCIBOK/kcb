@@ -8,10 +8,10 @@ export function CategoryList({ categories }) {
     await deleteCategory(id);
   };
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-800 bg-gray-900 px-0 py-0">
+    <div className="overflow-x-auto rounded-[4px] border border-white/[0.06] bg-kcb-ardoise px-0 py-0">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-gray-900 text-white/80">
+          <tr className="bg-kcb-ardoise text-white/80">
             <th className="py-2 px-4 font-semibold text-left">Titre</th>
             <th className="py-2 px-4 font-semibold text-left">Créé le</th>
             <th className="py-2 px-4 font-semibold text-right">Actions</th>
@@ -20,7 +20,7 @@ export function CategoryList({ categories }) {
         <tbody>
           {categories?.length > 0 ? (
             categories.map((category, index) => (
-              <tr key={index} className="border-b border-gray-800 last:border-0 hover:bg-gray-900/60 transition">
+              <tr key={index} className="border-b border-white/[0.06] last:border-0 hover:bg-kcb-ardoise/60 transition">
                 <td className="py-2 px-4 text-white/90">{category.title}</td>
                 <td className="py-2 px-4 text-white/50">{new Date(category.createdAt).toLocaleDateString()}</td>
                 <td className="py-2 px-4 text-right">

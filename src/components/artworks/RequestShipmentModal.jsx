@@ -65,14 +65,14 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 sticky top-0 bg-gray-900 z-10">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] sticky top-0 bg-kcb-ardoise z-10">
           <div className="flex items-center gap-2">
-            <Truck className="w-5 h-5 text-indigo-400" />
+            <Truck className="w-5 h-5 text-kcb-or" />
             <h2 className="text-white font-semibold">Demande d'expédition transfrontalière</h2>
           </div>
-          <button onClick={handleClose} className="text-gray-400 hover:text-white transition p-1 rounded-md hover:bg-gray-800">
+          <button onClick={handleClose} className="text-kcb-pierre hover:text-white transition p-1 rounded-md hover:bg-kcb-ardoise">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -82,17 +82,17 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
           <div className="px-6 py-10 text-center">
             <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
             <h3 className="text-white font-semibold text-xl mb-2">Demande envoyée !</h3>
-            <p className="text-gray-400 text-sm mb-6">
+            <p className="text-kcb-pierre text-sm mb-6">
               Votre demande d'expédition pour <strong className="text-white">{artwork.title}</strong> a été soumise.
               L'équipe Kucibok vous contactera sous 48h avec un devis.
             </p>
             {typeof success === "string" && success.length > 10 && (
-              <div className="bg-gray-800 border border-indigo-700/40 rounded-lg p-4 mb-6">
-                <p className="text-gray-400 text-xs mb-1">Numéro de suivi</p>
-                <p className="text-indigo-400 font-mono font-semibold text-lg">{success}</p>
+              <div className="bg-kcb-ardoise border border-kcb-or/30 rounded-[4px] p-4 mb-6">
+                <p className="text-kcb-pierre text-xs mb-1">Numéro de suivi</p>
+                <p className="text-kcb-or font-mono font-semibold text-lg">{success}</p>
               </div>
             )}
-            <button onClick={handleClose} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-md transition">
+            <button onClick={handleClose} className="px-6 py-2.5 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-semibold rounded-md transition">
               Fermer
             </button>
           </div>
@@ -102,23 +102,23 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
         {!success && (
           <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
             {/* Œuvre concernée */}
-            <div className="bg-gray-800/60 border border-gray-700 rounded-lg p-3 flex items-center gap-3">
+            <div className="bg-kcb-ardoise/60 border border-white/[0.06] rounded-[4px] p-3 flex items-center gap-3">
               {artwork.image && (
                 <img src={artwork.image} alt={artwork.title} className="w-12 h-12 object-cover rounded-md shrink-0" />
               )}
               <div>
                 <p className="text-white text-sm font-semibold">{artwork.title}</p>
-                <p className="text-gray-400 text-xs">{artwork.artist}</p>
+                <p className="text-kcb-pierre text-xs">{artwork.artist}</p>
               </div>
             </div>
 
             {/* Corridor */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-400 font-medium">Direction</label>
+              <label className="text-xs text-kcb-pierre font-medium">Direction</label>
               <select
                 value={form.corridor}
                 onChange={e => set("corridor", e.target.value)}
-                className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
               >
                 <option value="AF_TO_FR">Afrique → France</option>
                 <option value="FR_TO_AF">France → Afrique</option>
@@ -127,12 +127,12 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
 
             {/* Pays d'origine */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-400 font-medium">Pays d'origine <span className="text-red-400">*</span></label>
+              <label className="text-xs text-kcb-pierre font-medium">Pays d'origine <span className="text-red-400">*</span></label>
               <select
                 required
                 value={form.originCountry}
                 onChange={e => set("originCountry", e.target.value)}
-                className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
               >
                 <option value="">Sélectionner…</option>
                 {ORIGIN_COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -142,22 +142,22 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             {/* Destinataire */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Nom du destinataire <span className="text-red-400">*</span></label>
+                <label className="text-xs text-kcb-pierre font-medium">Nom du destinataire <span className="text-red-400">*</span></label>
                 <input
                   required
                   value={form.recipientName}
                   onChange={e => set("recipientName", e.target.value)}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="Jean Dupont"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Téléphone <span className="text-red-400">*</span></label>
+                <label className="text-xs text-kcb-pierre font-medium">Téléphone <span className="text-red-400">*</span></label>
                 <input
                   required
                   value={form.recipientPhone}
                   onChange={e => set("recipientPhone", e.target.value)}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="+33 6 00 00 00 00"
                 />
               </div>
@@ -165,12 +165,12 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
 
             {/* Adresse de livraison */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-400 font-medium">Adresse de livraison <span className="text-red-400">*</span></label>
+              <label className="text-xs text-kcb-pierre font-medium">Adresse de livraison <span className="text-red-400">*</span></label>
               <input
                 required
                 value={form.deliveryAddress}
                 onChange={e => set("deliveryAddress", e.target.value)}
-                className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 placeholder="12 rue de l'Art, 75001 Paris, France"
               />
             </div>
@@ -178,21 +178,21 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             {/* Dates */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Date de collecte</label>
+                <label className="text-xs text-kcb-pierre font-medium">Date de collecte</label>
                 <input
                   type="date"
                   value={form.collectDate}
                   onChange={e => set("collectDate", e.target.value)}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Livraison souhaitée</label>
+                <label className="text-xs text-kcb-pierre font-medium">Livraison souhaitée</label>
                 <input
                   type="date"
                   value={form.deliveryDate}
                   onChange={e => set("deliveryDate", e.target.value)}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 />
               </div>
             </div>
@@ -200,11 +200,11 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             {/* Colis */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Taille du colis</label>
+                <label className="text-xs text-kcb-pierre font-medium">Taille du colis</label>
                 <select
                   value={form.packageSize}
                   onChange={e => set("packageSize", e.target.value)}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 >
                   <option value="small">Petit (&lt;50cm)</option>
                   <option value="medium">Moyen</option>
@@ -213,23 +213,23 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 </select>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Poids estimé (kg)</label>
+                <label className="text-xs text-kcb-pierre font-medium">Poids estimé (kg)</label>
                 <input
                   type="number"
                   min="0.1"
                   max="500"
                   value={form.packageWeight}
                   onChange={e => set("packageWeight", e.target.value)}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="ex: 5"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Priorité</label>
+                <label className="text-xs text-kcb-pierre font-medium">Priorité</label>
                 <select
                   value={form.deliveryPriority}
                   onChange={e => set("deliveryPriority", e.target.value)}
-                  className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-kcb"
+                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 >
                   <option value="standard">Standard</option>
                   <option value="express">Express</option>
@@ -239,10 +239,10 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             </div>
 
             {/* Checklist emballage muséal */}
-            <div className="border border-indigo-900/40 rounded-lg p-4 space-y-3 bg-indigo-950/20">
+            <div className="border border-kcb-or/20 rounded-[4px] p-4 space-y-3 bg-kcb-or/5">
               <div className="flex items-center gap-2 mb-1">
-                <Package className="w-4 h-4 text-indigo-400" />
-                <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+                <Package className="w-4 h-4 text-kcb-or" />
+                <p className="text-xs font-semibold text-kcb-or uppercase tracking-wider">
                   Protocole emballage muséal
                 </p>
               </div>
@@ -252,27 +252,27 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                     type="checkbox"
                     checked={form.packagingChecklist[item.key]}
                     onChange={e => setChecklist(item.key, e.target.checked)}
-                    className="accent-indigo-kcb scale-110"
+                    className="accent-kcb-or scale-110"
                   />
-                  <span className="text-sm text-gray-300 group-hover:text-white transition">{item.label}</span>
+                  <span className="text-sm text-kcb-sable group-hover:text-white transition">{item.label}</span>
                 </label>
               ))}
             </div>
 
             {/* Instructions spéciales */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-400 font-medium">Instructions spéciales</label>
+              <label className="text-xs text-kcb-pierre font-medium">Instructions spéciales</label>
               <textarea
                 value={form.specialInstructions}
                 onChange={e => set("specialInstructions", e.target.value)}
                 rows={3}
-                className="rounded-md bg-gray-900 border border-gray-700 p-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-kcb resize-none"
+                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or resize-none"
                 placeholder="ex: œuvre fragile, nécessite klimatisation, accès difficile…"
               />
             </div>
 
             {/* Note CITES */}
-            <p className="text-xs text-gray-500 bg-gray-800/60 rounded-lg p-3">
+            <p className="text-xs text-kcb-pierre bg-kcb-ardoise/60 rounded-[4px] p-3">
               ℹ️ Si l'œuvre implique des matériaux protégés (ivoire, bois rare…), un certificat CITES sera
               demandé par les douanes. Kucibok vous accompagne dans cette démarche.
             </p>
@@ -282,14 +282,14 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 rounded-md hover:bg-gray-800 transition"
+                className="px-4 py-2 text-sm text-kcb-pierre hover:text-white border border-white/[0.06] rounded-md hover:bg-kcb-ardoise transition"
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-5 py-2 text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2 text-sm font-semibold bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir rounded-md transition flex items-center gap-2 disabled:opacity-50"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Truck className="w-4 h-4" />}
                 Soumettre la demande

@@ -8,10 +8,10 @@ import { KPICard } from "../ui"
 function StatusBadge({ status }) {
   const CONFIG = {
     pending: { label: "En attente", className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-    processing: { label: "En cours", className: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
+    processing: { label: "En cours", className: "bg-kcb-or/20 text-kcb-or border-kcb-or/30" },
     delivered: { label: "Terminée", className: "bg-green-500/20 text-green-400 border-green-500/30" },
   }
-  const cfg = CONFIG[status] ?? { label: status, className: "bg-gray-500/20 text-gray-400 border-gray-500/30" }
+  const cfg = CONFIG[status] ?? { label: status, className: "bg-gray-500/20 text-kcb-pierre border-gray-500/30" }
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${cfg.className}`}>
       {cfg.label}
@@ -123,25 +123,25 @@ export function ArtistNumerisationTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-indigo-900/20 text-indigo-400 p-2.5 rounded-lg">
+          <div className="bg-kcb-or/10 text-kcb-or p-2.5 rounded-[4px]">
             <Scan className="w-5 h-5" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-white">Numérisation</h2>
-            <p className="text-sm text-gray-400">Gérez vos demandes de numérisation d'œuvres</p>
+            <p className="text-sm text-kcb-pierre">Gérez vos demandes de numérisation d'œuvres</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={fetchRequests}
-            className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 text-kcb-pierre hover:text-white hover:bg-kcb-ardoise rounded-[4px] transition-colors"
             title="Rafraîchir"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
           <button
             onClick={() => { setShowForm(true); setFormError(null) }}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-kcb hover:bg-indigo-600 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-medium rounded-[4px] transition-colors"
           >
             <Plus className="w-4 h-4" />
             Nouvelle demande
@@ -156,8 +156,8 @@ export function ArtistNumerisationTab() {
           label="Total demandes"
           value={loading ? "—" : total}
           loading={loading}
-          iconColor="text-indigo-400"
-          iconBgColor="bg-indigo-900/20"
+          iconColor="text-kcb-or"
+          iconBgColor="bg-kcb-or/10"
         />
         <KPICard
           icon={Clock}
@@ -172,8 +172,8 @@ export function ArtistNumerisationTab() {
           label="En cours"
           value={loading ? "—" : processing}
           loading={loading}
-          iconColor="text-blue-400"
-          iconBgColor="bg-blue-900/20"
+          iconColor="text-kcb-or"
+          iconBgColor="bg-kcb-or/10"
         />
         <KPICard
           icon={CheckCircle}
@@ -187,12 +187,12 @@ export function ArtistNumerisationTab() {
 
       {/* Formulaire inline */}
       {showForm && (
-        <div className="bg-[#13161e] border border-gray-700 rounded-xl p-6 space-y-4">
+        <div className="bg-[#13161e] border border-white/[0.06] rounded-[4px] p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-white font-semibold">Nouvelle demande de numérisation</h3>
             <button
               onClick={() => { setShowForm(false); setFormError(null) }}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-kcb-pierre hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -201,13 +201,13 @@ export function ArtistNumerisationTab() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Sélection de l'œuvre */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
+              <label className="block text-sm font-medium text-kcb-sable mb-1.5">
                 Œuvre <span className="text-red-400">*</span>
               </label>
               <select
                 value={form.artworkId}
                 onChange={handleArtworkChange}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-kcb-ardoise border border-white/[0.06] text-white rounded-[4px] px-3 py-2 text-sm focus:outline-none focus:border-kcb-or transition-colors"
               >
                 <option value="">Sélectionner une œuvre…</option>
                 {myArtworks?.map((artwork) => (
@@ -221,13 +221,13 @@ export function ArtistNumerisationTab() {
 
             {/* Priorité */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
+              <label className="block text-sm font-medium text-kcb-sable mb-1.5">
                 Priorité
               </label>
               <select
                 value={form.priority}
                 onChange={(e) => setForm((prev) => ({ ...prev, priority: e.target.value }))}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-kcb-ardoise border border-white/[0.06] text-white rounded-[4px] px-3 py-2 text-sm focus:outline-none focus:border-kcb-or transition-colors"
               >
                 <option value="normal">Normale</option>
                 <option value="urgent">Urgente</option>
@@ -236,7 +236,7 @@ export function ArtistNumerisationTab() {
 
             {/* Notes */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
+              <label className="block text-sm font-medium text-kcb-sable mb-1.5">
                 Notes (optionnel)
               </label>
               <textarea
@@ -244,13 +244,13 @@ export function ArtistNumerisationTab() {
                 onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
                 placeholder="Instructions particulières, contexte de l'œuvre…"
                 rows={3}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition-colors resize-none placeholder-gray-500"
+                className="w-full bg-kcb-ardoise border border-white/[0.06] text-white rounded-[4px] px-3 py-2 text-sm focus:outline-none focus:border-kcb-or transition-colors resize-none placeholder-kcb-pierre"
               />
             </div>
 
             {/* Erreur formulaire */}
             {formError && (
-              <div className="flex items-center gap-2 text-red-400 text-sm bg-red-900/20 border border-red-500/30 rounded-lg px-3 py-2">
+              <div className="flex items-center gap-2 text-red-400 text-sm bg-red-900/20 border border-red-500/30 rounded-[4px] px-3 py-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 {formError}
               </div>
@@ -260,7 +260,7 @@ export function ArtistNumerisationTab() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex items-center gap-2 px-5 py-2 bg-indigo-kcb hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+                className="flex items-center gap-2 px-5 py-2 bg-kcb-or hover:bg-kcb-or/90 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-[4px] transition-colors"
               >
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 {submitting ? "Envoi…" : "Soumettre la demande"}
@@ -268,7 +268,7 @@ export function ArtistNumerisationTab() {
               <button
                 type="button"
                 onClick={() => { setShowForm(false); setFormError(null) }}
-                className="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors"
+                className="px-5 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white text-sm font-medium rounded-[4px] transition-colors"
               >
                 Annuler
               </button>
@@ -279,40 +279,40 @@ export function ArtistNumerisationTab() {
 
       {/* Erreur de chargement */}
       {error && (
-        <div className="flex items-center gap-2 text-red-400 text-sm bg-red-900/20 border border-red-500/30 rounded-lg px-4 py-3">
+        <div className="flex items-center gap-2 text-red-400 text-sm bg-red-900/20 border border-red-500/30 rounded-[4px] px-4 py-3">
           <AlertCircle className="w-4 h-4 shrink-0" />
           {error}
         </div>
       )}
 
       {/* Liste des demandes */}
-      <div className="bg-[#13161e] border border-gray-800 rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-800">
+      <div className="bg-[#13161e] border border-white/[0.06] rounded-[4px] overflow-hidden">
+        <div className="px-6 py-4 border-b border-white/[0.06]">
           <h3 className="text-white font-semibold flex items-center gap-2">
-            <Scan className="w-4 h-4 text-gray-400" />
+            <Scan className="w-4 h-4 text-kcb-pierre" />
             Historique des demandes
           </h3>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+            <Loader2 className="w-6 h-6 animate-spin text-kcb-or" />
           </div>
         ) : requests.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-14 text-center px-6">
-            <Scan className="w-10 h-10 text-gray-600 mb-3" />
-            <p className="text-gray-400 font-medium">Aucune demande de numérisation</p>
-            <p className="text-gray-500 text-sm mt-1">
+            <Scan className="w-10 h-10 text-kcb-pierre mb-3" />
+            <p className="text-kcb-pierre font-medium">Aucune demande de numérisation</p>
+            <p className="text-kcb-pierre text-sm mt-1">
               Cliquez sur «&nbsp;Nouvelle demande&nbsp;» pour commencer.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-800">
+          <div className="divide-y divide-white/[0.06]">
             {requests.map((req) => (
-              <div key={req._id} className="flex items-center justify-between px-6 py-4 hover:bg-gray-800/40 transition-colors">
+              <div key={req._id} className="flex items-center justify-between px-6 py-4 hover:bg-kcb-ardoise/40 transition-colors">
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-sm font-medium truncate">{req.artworkTitle || "Œuvre sans titre"}</p>
-                  <p className="text-gray-500 text-xs mt-0.5">
+                  <p className="text-kcb-pierre text-xs mt-0.5">
                     {req.createdAt ? new Date(req.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
                     {req.priority === "urgent" && (
                       <span className="ml-2 text-orange-400 font-medium">· Urgent</span>
@@ -325,7 +325,7 @@ export function ArtistNumerisationTab() {
                     <button
                       onClick={() => handleDelete(req._id)}
                       disabled={deletingId === req._id}
-                      className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-1.5 text-kcb-pierre hover:text-red-400 hover:bg-red-900/20 rounded-[4px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Supprimer la demande"
                     >
                       {deletingId === req._id

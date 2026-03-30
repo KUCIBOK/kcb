@@ -6,7 +6,7 @@ import { ValidateAction } from "./ValidateAction";
 export function NumerisationListItem({ numerisation }) {
     const { user } = useAuth();
     return (
-        <tr className="hover:bg-gray-800">
+        <tr className="hover:bg-kcb-ardoise">
             <td className="text-left">{numerisation.category}</td>
             <td className="text-left">{numerisation.artworkCount}</td>
             <td className="text-right">{numerisation.telephone}</td>

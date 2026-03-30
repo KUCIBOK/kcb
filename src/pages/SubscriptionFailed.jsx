@@ -64,7 +64,7 @@ export default function SubscriptionFailed() {
 
   const handleRetry = () => {
     // Rediriger vers la page de checkout pour réessayer
-    window.location.href = `/subscription-plan-checkout/${state.plan?._id}`
+    window.location.href = `/subscription-checkout/${state.plan?._id}`
   }
 
   if (state.loading) {
@@ -88,7 +88,7 @@ export default function SubscriptionFailed() {
           <h1 className="text-2xl font-bold text-white mb-2">Erreur</h1>
           <p className="text-kcb-pierre mb-6">{state.error}</p>
           <Link
-            to="/plans"
+            to="/global#pricing"
             className="inline-flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-6 py-3 rounded-[4px] font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -180,7 +180,7 @@ export default function SubscriptionFailed() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
-              to="/plans"
+              to="/global#pricing"
               className="flex items-center justify-center gap-2 bg-kcb-ardoise hover:bg-white/[0.03] text-white px-6 py-3 rounded-[4px] font-medium transition-colors"
             >
               <CreditCard className="w-4 h-4" />
@@ -188,7 +188,7 @@ export default function SubscriptionFailed() {
             </Link>
             
             <Link
-              to="/contact"
+              to="/africa/contact"
               className="flex items-center justify-center gap-2 bg-kcb-ardoise hover:bg-white/[0.03] text-white px-6 py-3 rounded-[4px] font-medium transition-colors"
             >
               <MessageCircle className="w-4 h-4" />

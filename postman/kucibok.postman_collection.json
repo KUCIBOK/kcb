@@ -1,0 +1,1669 @@
+{
+	"info": {
+		"_postman_id": "kcb-collection-001",
+		"name": "Kucibok API",
+		"description": "Kucibok API — Infrastructure digitale de standardisation et de circulation securisee de l'art africain.\n\nAll routes go through a single Vercel catch-all function at `api/[...path].js`.\n\n**Response format:**\n- Success: `{ \"data\": ... }` (with optional `pagination` object)\n- Error: `{ \"error\": \"message\" }`\n\n**Authentication:**\n- `kcb-api-key` header on every request\n- `Authorization: Bearer <token>` for authenticated routes\n\n**Setup:** Run the \"Sign In\" request in folder 0 first to populate the auth_token variable.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request: attach kcb-api-key header to every request",
+					"pm.request.headers.upsert({",
+					"    key: 'kcb-api-key',",
+					"    value: pm.environment.get('api_key')",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "artwork_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "artist_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "profile_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "delivery_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tracking_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "kucibok_id",
+			"value": "KCB-00000001",
+			"type": "string"
+		},
+		{
+			"key": "blog_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "subscription_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "0. Setup",
+			"description": "Run Sign In first to populate auth_token for all subsequent requests.",
+			"item": [
+				{
+					"name": "Sign In (saves auth_token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has data with session', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property('data');",
+									"    pm.expect(json.data).to.have.property('session');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data && json.data.session && json.data.session.access_token) {",
+									"    pm.environment.set('auth_token', json.data.session.access_token);",
+									"    console.log('auth_token saved to environment.');",
+									"}",
+									"if (json.data && json.data.user && json.data.user.id) {",
+									"    pm.collectionVariables.set('user_id', json.data.user.id);",
+									"    pm.collectionVariables.set('profile_id', json.data.user.id);",
+									"    console.log('user_id and profile_id saved to collection variables.');",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"your-password-here\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signin",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "signin"]
+						},
+						"description": "Signs in and saves the access_token to the environment variable `auth_token`. Update the email and password in the body before running."
+					}
+				}
+			]
+		},
+		{
+			"name": "1. Auth",
+			"description": "Authentication routes: signup, signin, signout, profile, password management, Google OAuth.",
+			"item": [
+				{
+					"name": "Sign Up",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"newuser@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"first_name\": \"Jean\",\n    \"last_name\": \"Dupont\",\n    \"role\": \"collector\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signup",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "signup"]
+						}
+					}
+				},
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has session', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.data).to.have.property('session');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"your-password-here\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signin",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "signin"]
+						}
+					}
+				},
+				{
+					"name": "Sign Out",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response confirms sign out', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.data.signedOut).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "signout"]
+						}
+					}
+				},
+				{
+					"name": "Get Current User (me)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has user data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "me"]
+						}
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Email sent', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.data.sent).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/forgot-password",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "forgot-password"]
+						}
+					}
+				},
+				{
+					"name": "Reset Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Password reset confirmed', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.data.reset).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"access_token\": \"token-from-reset-email\",\n    \"new_password\": \"NewSecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/reset-password",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "reset-password"]
+						}
+					}
+				},
+				{
+					"name": "Change Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Password changed', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.data.changed).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"current_password\": \"OldPass123!\",\n    \"new_password\": \"NewSecurePass456!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/change-password",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "change-password"]
+						}
+					}
+				},
+				{
+					"name": "Google OAuth Callback",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"access_token\": \"google-oauth-access-token\",\n    \"refresh_token\": \"google-oauth-refresh-token\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/google-callback",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "google-callback"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Artworks",
+			"description": "CRUD operations on artworks. Includes public verification by Kucibok ID.",
+			"item": [
+				{
+					"name": "List Artworks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data array', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property('data');",
+									"    pm.expect(json.data).to.be.an('array');",
+									"});",
+									"",
+									"// Save first artwork ID for subsequent requests",
+									"const json = pm.response.json();",
+									"if (json.data && json.data.length > 0) {",
+									"    const id = json.data[0].id || json.data[0]._id;",
+									"    if (id) pm.collectionVariables.set('artwork_id', id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/artworks?page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artworks"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "approved",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "painting",
+									"disabled": true
+								},
+								{
+									"key": "for_sale",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Artwork",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data) {",
+									"    const id = json.data.id || json.data._id;",
+									"    if (id) pm.collectionVariables.set('artwork_id', id);",
+									"    if (json.data.kucibok_id) pm.collectionVariables.set('kucibok_id', json.data.kucibok_id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Soleil de Dakar\",\n    \"description\": \"Peinture acrylique sur toile representant le coucher de soleil sur la corniche.\",\n    \"category\": \"painting\",\n    \"medium\": \"Acrylic on canvas\",\n    \"dimensions\": {\n        \"height\": 120,\n        \"width\": 80,\n        \"unit\": \"cm\"\n    },\n    \"year\": 2025,\n    \"price\": 500000,\n    \"currency\": \"XOF\",\n    \"for_sale\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/artworks",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artworks"]
+						}
+					}
+				},
+				{
+					"name": "Get Artwork by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/artworks/{{artwork_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artworks", "{{artwork_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Artwork (PUT)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Soleil de Dakar (updated)\",\n    \"price\": 600000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/artworks/{{artwork_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artworks", "{{artwork_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Patch Artwork",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"approved\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/artworks/{{artwork_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artworks", "{{artwork_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Artwork",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 204', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/api/artworks/{{artwork_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artworks", "{{artwork_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Verify Artwork by Kucibok ID (public)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/artworks/verify/{{kucibok_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artworks", "verify", "{{kucibok_id}}"]
+						},
+						"description": "Public endpoint. No authentication required. Verifies an artwork by its Kucibok Standard ID (KCB-XXXXXXXX)."
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Artists & Profiles",
+			"description": "Artist CRUD and user profile management.",
+			"item": [
+				{
+					"name": "List Artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data && Array.isArray(json.data) && json.data.length > 0) {",
+									"    const id = json.data[0].id || json.data[0]._id;",
+									"    if (id) pm.collectionVariables.set('artist_id', id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/artist",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artist"]
+						}
+					}
+				},
+				{
+					"name": "Create Artist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data) {",
+									"    const id = json.data.id || json.data._id;",
+									"    if (id) pm.collectionVariables.set('artist_id', id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ousmane Sow\",\n    \"bio\": \"Sculpteur senegalais de renommee internationale.\",\n    \"country\": \"Senegal\",\n    \"city\": \"Dakar\",\n    \"medium\": \"Sculpture\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/artist",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artist"]
+						}
+					}
+				},
+				{
+					"name": "Get Artist by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/artist/{{artist_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artist", "{{artist_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Artist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bio\": \"Updated biography text.\",\n    \"city\": \"Saint-Louis\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/artist/{{artist_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "artist", "{{artist_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Profile by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{profile_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{profile_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Jean\",\n    \"last_name\": \"Dupont\",\n    \"phone\": \"+221770001234\",\n    \"country\": \"Senegal\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{profile_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{profile_id}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Delivery",
+			"description": "Delivery request management and public shipment tracking.",
+			"item": [
+				{
+					"name": "List Delivery Requests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data && Array.isArray(json.data) && json.data.length > 0) {",
+									"    const d = json.data[0];",
+									"    if (d.id) pm.collectionVariables.set('delivery_id', d.id);",
+									"    if (d.tracking_id) pm.collectionVariables.set('tracking_id', d.tracking_id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/delivery",
+							"host": ["{{base_url}}"],
+							"path": ["api", "delivery"]
+						}
+					}
+				},
+				{
+					"name": "Create Delivery Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data) {",
+									"    if (json.data.id) pm.collectionVariables.set('delivery_id', json.data.id);",
+									"    if (json.data.tracking_id) pm.collectionVariables.set('tracking_id', json.data.tracking_id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"artwork_ids\": [\"{{artwork_id}}\"],\n    \"origin_country\": \"SN\",\n    \"origin_city\": \"Dakar\",\n    \"destination_country\": \"FR\",\n    \"destination_city\": \"Paris\",\n    \"sender_name\": \"Galerie Dakar\",\n    \"receiver_name\": \"Collecteur Paris\",\n    \"receiver_email\": \"collector@example.com\",\n    \"insurance_requested\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/delivery",
+							"host": ["{{base_url}}"],
+							"path": ["api", "delivery"]
+						}
+					}
+				},
+				{
+					"name": "Track Delivery (public)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/delivery/track/{{tracking_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "delivery", "track", "{{tracking_id}}"]
+						},
+						"description": "Public endpoint. No authentication required. Track a shipment by its tracking ID."
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Sourcing",
+			"description": "B2B sourcing inquiries for galleries and professionals.",
+			"item": [
+				{
+					"name": "List Sourcing Inquiries",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/sourcing",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sourcing"]
+						}
+					}
+				},
+				{
+					"name": "Create Sourcing Inquiry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"artwork_id\": \"{{artwork_id}}\",\n    \"message\": \"Interested in acquiring this piece for our gallery exhibition in Paris.\",\n    \"budget_min\": 300000,\n    \"budget_max\": 800000,\n    \"currency\": \"XOF\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sourcing",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sourcing"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Payments",
+			"description": "PayDunya payment initiation and callback (West Africa). Stripe planned for Phase 2.",
+			"item": [
+				{
+					"name": "PayDunya Init",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"artwork_id\": \"{{artwork_id}}\",\n    \"amount\": 500000,\n    \"currency\": \"XOF\",\n    \"description\": \"Achat oeuvre - Soleil de Dakar\",\n    \"customer_name\": \"Jean Dupont\",\n    \"customer_email\": \"jean@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payments/paydunya-init",
+							"host": ["{{base_url}}"],
+							"path": ["api", "payments", "paydunya-init"]
+						}
+					}
+				},
+				{
+					"name": "PayDunya Callback",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"invoice\": {\n            \"token\": \"paydunya-invoice-token\",\n            \"status\": \"completed\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payments/paydunya-callback",
+							"host": ["{{base_url}}"],
+							"path": ["api", "payments", "paydunya-callback"]
+						},
+						"description": "Webhook callback from PayDunya. Usually called by PayDunya servers, not manually."
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Contact & Support",
+			"description": "Contact form submission and client-side error reporting.",
+			"item": [
+				{
+					"name": "Send Contact Message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Message sent', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.data.sent).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Marie Diop\",\n    \"email\": \"marie@example.com\",\n    \"subject\": \"Question about certification\",\n    \"message\": \"I would like to learn more about the Kucibok certification process for my artworks.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/contact",
+							"host": ["{{base_url}}"],
+							"path": ["api", "contact"]
+						}
+					}
+				},
+				{
+					"name": "Report Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Error reported', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.data.reported).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"error\": \"TypeError: Cannot read properties of undefined\",\n    \"stack\": \"at ArtworkCard (ArtworkCard.jsx:42)\",\n    \"url\": \"/artworks\",\n    \"user_agent\": \"Mozilla/5.0\",\n    \"user_id\": \"{{user_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/report-error",
+							"host": ["{{base_url}}"],
+							"path": ["api", "report-error"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Other",
+			"description": "Health check, blog, categories, plans, subscriptions, logs, campaigns, certificates.",
+			"item": [
+				{
+					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('API is healthy', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": ["{{base_url}}"],
+							"path": ["api", "health"]
+						},
+						"description": "Public health check endpoint. No authentication required."
+					}
+				},
+				{
+					"name": "List Blog Posts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data && Array.isArray(json.data) && json.data.length > 0) {",
+									"    const id = json.data[0].id || json.data[0]._id;",
+									"    if (id) pm.collectionVariables.set('blog_id', id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/blog",
+							"host": ["{{base_url}}"],
+							"path": ["api", "blog"]
+						}
+					}
+				},
+				{
+					"name": "Create Blog Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data) {",
+									"    const id = json.data.id || json.data._id;",
+									"    if (id) pm.collectionVariables.set('blog_id', id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"L'art contemporain africain en 2026\",\n    \"content\": \"<p>Un panorama des tendances actuelles...</p>\",\n    \"excerpt\": \"Decouvrez les tendances de l'art contemporain africain.\",\n    \"status\": \"draft\",\n    \"tags\": [\"art contemporain\", \"afrique\", \"tendances\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/blog",
+							"host": ["{{base_url}}"],
+							"path": ["api", "blog"]
+						}
+					}
+				},
+				{
+					"name": "List Categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						}
+					}
+				},
+				{
+					"name": "List Plans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/plans",
+							"host": ["{{base_url}}"],
+							"path": ["api", "plans"]
+						}
+					}
+				},
+				{
+					"name": "Get Subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/subscription",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription"]
+						}
+					}
+				},
+				{
+					"name": "Create Subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.data && json.data.id) {",
+									"    pm.collectionVariables.set('subscription_id', json.data.id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"plan_id\": \"plan-uuid-here\",\n    \"payment_method\": \"paydunya\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/subscription",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription"]
+						}
+					}
+				},
+				{
+					"name": "Get Logs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/log",
+							"host": ["{{base_url}}"],
+							"path": ["api", "log"]
+						}
+					}
+				},
+				{
+					"name": "Create Log Entry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"artwork_viewed\",\n    \"resource_type\": \"artwork\",\n    \"resource_id\": \"{{artwork_id}}\",\n    \"metadata\": {\n        \"source\": \"marketplace\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/log",
+							"host": ["{{base_url}}"],
+							"path": ["api", "log"]
+						}
+					}
+				},
+				{
+					"name": "Send Campaign",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"Nouvelle collection disponible\",\n    \"html_content\": \"<h1>Decouvrez notre nouvelle collection</h1><p>Des oeuvres exceptionnelles vous attendent.</p>\",\n    \"recipient_emails\": [\"collector1@example.com\", \"collector2@example.com\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/campaigns/send",
+							"host": ["{{base_url}}"],
+							"path": ["api", "campaigns", "send"]
+						}
+					}
+				},
+				{
+					"name": "Generate Certificate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response has data', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"artwork_id\": \"{{artwork_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/certificates/generate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "certificates", "generate"]
+						},
+						"description": "Generates a Kucibok Standard certificate (PDF) for the specified artwork."
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { utils } from '../../api/useAPI';
-import { fmtMoney } from '../../lib/currency';
+import { useState, useEffect } from 'react'
+import { utils } from '../../api/useAPI'
+import { fmtMoney, XOF_PER_EUR } from '../../lib/currency'
+import { SkeletonKPI, SkeletonChart } from '../ui'
 import {
   TrendingUp,
   Users,
@@ -17,34 +18,48 @@ import {
   ZoomIn,
   AlertTriangle,
   Zap,
-} from 'lucide-react';
+  Check,
+  Pause,
+} from 'lucide-react'
 
 export function Analytics({ currency = 'EUR' }) {
-  const [data, setData] = useState(null);
-  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [data, setData] = useState(null)
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  // Les valeurs de defaultData sont en EUR — fmtMoney attend du XOF, on convertit avant affichage
+  const fmt = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
 
   // Données complètes par défaut
   const defaultData = {
-    // Revenue & Finance
-    mrr: 12500,
-    arr: 150000,
+    // Revenue & Finance — valeurs en EUR
+    mrr: 4303,
+    arr: 51636,    // = MRR × 12 ✓
     mrrGrowth: 12.5,
     arr_growth: 18.2,
-    revenue_mix: { marketplace: 65, artworks: 25, subscriptions: 10 },
-    cac: 45,
-    ltv: 1250,
-    payback_period: 2.1,
-    revenue_projection_3m: 165000,
+    // Mix: Marketplace 20% / SaaS 40% / Numérisation 10% / Logistique 30%
+    revenue_mix: { marketplace: 20, subscriptions: 40, artworks: 10, logistique: 30 },
+    cac: 190,      // Budget marketing 12 700 € ÷ 67 nouveaux abonnés
+    ltv: 600,      // ARPA ÷ churn mensuel 4,5 % = 27 ÷ 0,045
+    payback_period: 7, // CAC ÷ ARPA = 190 ÷ 27
+    revenue_projection_3m: 4820, // MRR mois prochain = MRR × 1,12
+
+    // SaaS — Sous-segments abonnements
+    saas_subscribers: 159,
+    arpa: 27,
+    saas_segments: {
+      collectionneur: { count: 34,  mrr: 909,  share: 22 },
+      curateur:       { count: 87,  mrr: 2272, share: 55 },
+      galerie:        { count: 43,  mrr: 1117, share: 27 }, // 909+2272+1117 = 4 298 ≈ 4 303 €
+    },
 
     // Utilisateurs & Croissance
-    totalUsers: 23,
-    mau: 18,
-    dau: 12,
+    totalUsers: 7154,
+    mau: 5500,     // MAU = DAU ÷ 66,7 % = 3 668 ÷ 0,667
+    dau: 3668,     // NE PAS MODIFIER — DAU/MAU 66,7 %
     acquisition_growth: 15,
     channels: {
-      organic: { users: 8, roi: 3.2 },
-      paid: { users: 10, roi: 1.8 },
-      referral: { users: 5, roi: 4.1 },
+      organic:  { users: 8,  roi: 3.2 },
+      paid:     { users: 10, roi: 1.8 },
+      referral: { users: 5,  roi: 4.1 },
     },
 
     // Contenu & Inventaire
@@ -59,9 +74,9 @@ export function Analytics({ currency = 'EUR' }) {
     quality_score: 87,
     artworks_with_cert: 215,
 
-    // Marketplace & Ventes
-    gmv: 285000,
-    aov: 1250,
+    // Marketplace & Ventes — valeurs en EUR
+    gmv: 1707,           // GMV mensuel
+    aov: 279,            // = round(GMV / sales) ✓
     conversion_rate: 3.8,
     views_total: 12450,
     favorites: 856,
@@ -71,14 +86,23 @@ export function Analytics({ currency = 'EUR' }) {
       { title: 'Artwork 1', sales: 45, revenue: 22500 },
       { title: 'Artwork 2', sales: 32, revenue: 16000 },
     ],
-    commission_revenue: 28500,
+    commission_revenue: 341, // = round(GMV × 0,20) ✓
+
+    // Logistique — valeurs en EUR
+    logistics: {
+      envois_2025: 110,
+      envois_mensuels: 9,
+      panier_moyen: 279,
+      revenu_mensuel: 2561,
+      marge: 71.4,
+    },
 
     // Engagement & Rétention
     dau_mau_ratio: 66.7,
     retention_30d: 72,
     retention_7d: 89,
     feature_adoption: { bidding: 78, favorites: 92, messaging: 65 },
-    at_risk_users: 3,
+    at_risk_users: 7,
 
     // Technique & Performance
     uptime: 99.8,
@@ -101,40 +125,71 @@ export function Analytics({ currency = 'EUR' }) {
       general: 15,
     },
 
-    // Prédictions
-    mrr_projection: 14200,
-    churn_risk_users: 2,
+    // Prédictions — valeurs en EUR
+    mrr_projection: 4820,
+    churn_risk_users: 7,
     upsell_opportunities: 7,
     alerts: [
-      { type: 'warning', message: '3 utilisateurs à risque de churn' },
-      { type: 'info', message: '7 opportunités d\'upsell identifiées' },
+      { type: 'warning', message: '7 utilisateurs à risque de churn' },
+      { type: 'info', message: "7 opportunités d'upsell identifiées" },
     ],
-  };
-
-  useEffect(() => {
-    setData(defaultData);
-    loadData();
-    if (autoRefresh) {
-      const interval = setInterval(() => loadData(), 30000);
-      return () => clearInterval(interval);
-    }
-  }, [autoRefresh]);
+  }
 
   const loadData = async () => {
     try {
       const response = await fetch(`${utils.api}/analytics/latest`, {
         headers: utils.options.headers,
-      });
-      const result = await response.json();
+      })
+      const result = await response.json()
       if (result.success && result.data) {
-        setData(result.data);
+        setData(result.data)
       }
-    } catch (err) {
+    } catch (_err) {
       // Fallback to default data
     }
-  };
+  }
 
-  if (!data) return <div className="text-white">Chargement...</div>;
+  useEffect(() => {
+    setData(defaultData) // eslint-disable-line react-hooks/set-state-in-effect
+    loadData()
+    if (autoRefresh) {
+      const interval = setInterval(() => loadData(), 30000)
+      return () => clearInterval(interval)
+    }
+  }, [autoRefresh]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!data)
+    return (
+      <div className="space-y-6 pb-10">
+        {/* Header skeleton */}
+        <div className="flex items-center justify-between mb-8 animate-pulse">
+          <div className="space-y-2">
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-64 h-9" />
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-48 h-4" />
+          </div>
+          <div className="flex gap-2">
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-28 h-9" />
+            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-20 h-9" />
+          </div>
+        </div>
+        {/* KPI grid skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonKPI key={i} />
+          ))}
+        </div>
+        {/* Chart skeleton */}
+        <SkeletonChart height="h-48" />
+        {/* Second KPI grid skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonKPI key={i} />
+          ))}
+        </div>
+        {/* Second chart skeleton */}
+        <SkeletonChart height="h-48" />
+      </div>
+    )
 
   return (
     <div className="space-y-6 pb-10">
@@ -142,7 +197,7 @@ export function Analytics({ currency = 'EUR' }) {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-4xl font-bold text-white">Dashboard Principal</h1>
-          <p className="text-gray-400 mt-2">Vue d'ensemble complète de la plateforme</p>
+          <p className="text-kcb-pierre mt-2">Vue d'ensemble complète de la plateforme</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -150,10 +205,18 @@ export function Analytics({ currency = 'EUR' }) {
             className={`px-4 py-2 rounded text-sm font-medium transition ${
               autoRefresh
                 ? 'bg-green-600/20 text-green-300 border border-green-600/30'
-                : 'bg-gray-700 text-gray-300'
+                : 'bg-kcb-ardoise text-kcb-sable'
             }`}
           >
-            {autoRefresh ? '✓ Auto-refresh' : '⏸ Paused'}
+            {autoRefresh ? (
+              <>
+                <Check className="w-4 h-4 inline mr-1" /> Auto-refresh
+              </>
+            ) : (
+              <>
+                <Pause className="w-4 h-4 inline mr-1" /> Paused
+              </>
+            )}
           </button>
           <button
             onClick={loadData}
@@ -170,10 +233,10 @@ export function Analytics({ currency = 'EUR' }) {
           {data.alerts.map((alert, idx) => (
             <div
               key={idx}
-              className={`p-4 rounded-lg border ${
+              className={`p-4 rounded-[4px] border ${
                 alert.type === 'warning'
                   ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300'
-                  : 'bg-blue-500/10 border-blue-500/30 text-blue-300'
+                  : 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable'
               }`}
             >
               <div className="flex items-start gap-2">
@@ -194,28 +257,28 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="MRR"
-            value={fmtMoney(data.mrr, currency)}
+            value={fmt(data.mrr)}
             change={`+${data.mrrGrowth}% MoM`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="ARR"
-            value={fmtMoney(data.arr, currency)}
+            value={fmt(data.arr)}
             change={`+${data.arr_growth}% YoY`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="CAC"
-            value={fmtMoney(data.cac, currency)}
+            value={fmt(data.cac)}
             change="Coût d'acquisition"
             trend="down"
             color="blue"
           />
           <MetricCard
             label="LTV"
-            value={fmtMoney(data.ltv, currency)}
+            value={fmt(data.ltv)}
             change={`Ratio LTV:CAC = ${(data.ltv / data.cac).toFixed(1)}x`}
             trend="up"
             color="purple"
@@ -225,7 +288,7 @@ export function Analytics({ currency = 'EUR' }) {
           <RevenueBreakdown
             title="Mix de revenu"
             data={data.revenue_mix}
-            colors={['#10b981', '#3b82f6', '#a855f7']}
+            colors={['#2D6A4F', '#C9A84C', '#8B6914']}
           />
           <MetricCard
             label="Payback Period"
@@ -234,11 +297,31 @@ export function Analytics({ currency = 'EUR' }) {
             color="indigo"
           />
           <MetricCard
-            label="Projection 3M"
-            value={fmtMoney(data.revenue_projection_3m, currency)}
-            change="Revenu estimé"
+            label="MRR M+1"
+            value={fmt(data.revenue_projection_3m)}
+            change={`+12% MoM — MRR × 1,12`}
             color="emerald"
           />
+        </div>
+      </Section>
+
+      {/* Section 1b: SaaS — Sous-segments */}
+      <Section title="SaaS — Sous-segments Abonnements">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <MetricCard
+            label="Abonnés payants"
+            value={data.saas_subscribers}
+            change={`ARPA moyen : ${data.arpa} €/mois`}
+            trend="up"
+            color="green"
+          />
+          {data.saas_segments && Object.entries(data.saas_segments).map(([seg, info]) => (
+            <div key={seg} className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+              <p className="text-kcb-pierre text-sm mb-1 capitalize">{seg} <span className="text-kcb-or">({info.share}%)</span></p>
+              <p className="text-2xl font-bold text-white">{info.count} <span className="text-base font-normal text-kcb-pierre">abonnés</span></p>
+              <p className="text-green-300 font-semibold mt-1">{fmt(info.mrr)} MRR</p>
+            </div>
+          ))}
         </div>
       </Section>
 
@@ -264,12 +347,12 @@ export function Analytics({ currency = 'EUR' }) {
             change="Utilisateurs actifs quotidiens"
             color="violet"
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm mb-2">Canaux d'acquisition</p>
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <p className="text-kcb-pierre text-sm mb-2">Canaux d'acquisition</p>
             <div className="space-y-2">
               {Object.entries(data.channels).map(([channel, metrics]) => (
                 <div key={channel} className="flex justify-between text-sm">
-                  <span className="text-gray-300 capitalize">{channel}</span>
+                  <span className="text-kcb-sable capitalize">{channel}</span>
                   <span className="text-white font-semibold">
                     {metrics.users} (ROI: {metrics.roi}x)
                   </span>
@@ -290,12 +373,12 @@ export function Analytics({ currency = 'EUR' }) {
             trend="up"
             color="purple"
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm mb-2">Par catégorie</p>
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <p className="text-kcb-pierre text-sm mb-2">Par catégorie</p>
             <div className="space-y-1">
               {Object.entries(data.artworks_by_category).map(([cat, count]) => (
                 <div key={cat} className="flex justify-between text-sm">
-                  <span className="text-gray-300 capitalize">{cat}</span>
+                  <span className="text-kcb-sable capitalize">{cat}</span>
                   <span className="text-white font-semibold">{count}</span>
                 </div>
               ))}
@@ -308,13 +391,15 @@ export function Analytics({ currency = 'EUR' }) {
             trend="up"
             color="green"
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm mb-2">Top Artistes</p>
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <p className="text-kcb-pierre text-sm mb-2">Top Artistes</p>
             <div className="space-y-1">
               {data.top_artists.slice(0, 3).map((artist, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
-                  <span className="text-gray-300">{artist.name}</span>
-                  <span className="text-green-300 font-semibold">{fmtMoney(artist.revenue, currency, { compact: true })}</span>
+                  <span className="text-kcb-sable">{artist.name}</span>
+                  <span className="text-green-300 font-semibold">
+                    {fmt(artist.revenue, { compact: true })}
+                  </span>
                 </div>
               ))}
             </div>
@@ -327,13 +412,13 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="GMV"
-            value={fmtMoney(data.gmv, currency, { compact: true })}
+            value={fmt(data.gmv, { compact: true })}
             change="Volume marchand brut"
             color="green"
           />
           <MetricCard
             label="AOV"
-            value={fmtMoney(data.aov, currency)}
+            value={fmt(data.aov)}
             change="Valeur moyenne par commande"
             color="blue"
           />
@@ -345,7 +430,7 @@ export function Analytics({ currency = 'EUR' }) {
           />
           <MetricCard
             label="Commission"
-            value={fmtMoney(data.commission_revenue, currency, { compact: true })}
+            value={fmt(data.commission_revenue, { compact: true })}
             change="Revenu commission"
             color="amber"
           />
@@ -360,22 +445,57 @@ export function Analytics({ currency = 'EUR' }) {
               { label: 'Ventes', value: data.sales, color: 'green' },
             ]}
           />
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-white font-semibold mb-3">Meilleures ventes</p>
             <div className="space-y-2">
               {data.best_sellers.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-start">
                   <div>
                     <p className="text-white text-sm font-medium">{item.title}</p>
-                    <p className="text-gray-400 text-xs">{item.sales} ventes</p>
+                    <p className="text-kcb-pierre text-xs">{item.sales} ventes</p>
                   </div>
-                  <span className="text-green-300 font-semibold">{fmtMoney(item.revenue, currency, { compact: true })}</span>
+                  <span className="text-green-300 font-semibold">
+                    {fmt(item.revenue, { compact: true })}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </Section>
+
+      {/* Section 4b: Logistique */}
+      {data.logistics && (
+        <Section title="Logistique">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard
+              label="Envois 2025 (total)"
+              value={data.logistics.envois_2025}
+              change={`${data.logistics.envois_mensuels} envois/mois en moyenne`}
+              color="blue"
+            />
+            <MetricCard
+              label="Panier moyen logistique"
+              value={fmt(data.logistics.panier_moyen)}
+              change="Par envoi"
+              color="indigo"
+            />
+            <MetricCard
+              label="Revenu logistique/mois"
+              value={fmt(data.logistics.revenu_mensuel)}
+              trend="up"
+              color="green"
+            />
+            <MetricCard
+              label="Marge logistique"
+              value={`${data.logistics.marge}%`}
+              change="Marge nette"
+              trend="up"
+              color="emerald"
+            />
+          </div>
+        </Section>
+      )}
 
       {/* Section 5: Engagement & Rétention */}
       <Section title="Engagement & Rétention">
@@ -407,7 +527,7 @@ export function Analytics({ currency = 'EUR' }) {
             color="red"
           />
         </div>
-        <div className="mt-4 bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+        <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
           <p className="text-white font-semibold mb-3">Adoption des features</p>
           <div className="space-y-2">
             {Object.entries(data.feature_adoption).map(([feature, adoption]) => (
@@ -451,7 +571,7 @@ export function Analytics({ currency = 'EUR' }) {
             color="purple"
           />
         </div>
-        <div className="mt-4 bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+        <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
           <p className="text-white font-semibold mb-3">Web Vitals</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <VitalCard label="LCP" value={`${data.lcp}s`} target="< 2.5s" status="good" />
@@ -491,12 +611,12 @@ export function Analytics({ currency = 'EUR' }) {
           />
         </div>
         <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-white font-semibold mb-3">Catégories de problèmes</p>
             <div className="space-y-2">
               {Object.entries(data.ticket_categories).map(([category, count]) => (
                 <div key={category} className="flex justify-between text-sm">
-                  <span className="text-gray-300 capitalize">{category}</span>
+                  <span className="text-kcb-sable capitalize">{category}</span>
                   <span className="text-white font-semibold">{count} tickets</span>
                 </div>
               ))}
@@ -516,7 +636,7 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             label="MRR Projection"
-            value={fmtMoney(data.mrr_projection, currency)}
+            value={fmt(data.mrr_projection)}
             change="Estimé le mois prochain"
             color="green"
           />
@@ -560,34 +680,34 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
     </div>
-  );
+  )
 }
 
 function Section({ title, children }) {
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-white">{title}</h2>
+      <h2 className="text-2xl font-bold text-white font-playfair">{title}</h2>
       {children}
     </div>
-  );
+  )
 }
 
 function MetricCard({ label, value, change, trend, color = 'gray' }) {
   const colorClasses = {
     green: 'bg-green-500/10 border-green-500/30 text-green-300',
-    blue: 'bg-blue-500/10 border-blue-500/30 text-blue-300',
-    purple: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
-    indigo: 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300',
-    violet: 'bg-violet-500/10 border-violet-500/30 text-violet-300',
-    amber: 'bg-amber-500/10 border-amber-500/30 text-amber-300',
-    emerald: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
-    orange: 'bg-orange-500/10 border-orange-500/30 text-orange-300',
+    blue: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    purple: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
+    indigo: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    violet: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
+    amber: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    emerald: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
+    orange: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
     red: 'bg-red-500/10 border-red-500/30 text-red-300',
-  };
+  }
 
   return (
-    <div className={`border rounded-lg p-4 ${colorClasses[color]}`}>
-      <p className="text-gray-400 text-sm mb-2">{label}</p>
+    <div className={`border rounded-[4px] p-4 ${colorClasses[color]}`}>
+      <p className="text-kcb-pierre text-sm mb-2">{label}</p>
       <div className="flex items-end justify-between">
         <div className="text-3xl font-bold text-white">{value}</div>
         {trend && (
@@ -602,22 +722,24 @@ function MetricCard({ label, value, change, trend, color = 'gray' }) {
       </div>
       {change && <p className="text-xs mt-2 opacity-75">{change}</p>}
     </div>
-  );
+  )
 }
 
 function RevenueBreakdown({ title, data, colors }) {
-  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  const total = Object.values(data).reduce((a, b) => a + b, 0)
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+    <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
       <p className="text-white font-semibold mb-3">{title}</p>
       <div className="space-y-2">
         {Object.entries(data).map(([key, value], idx) => (
           <div key={key}>
             <div className="flex justify-between text-sm mb-1">
-              <span className="text-gray-300 capitalize">{key}</span>
-              <span className="text-white font-semibold">{((value / total) * 100).toFixed(0)}%</span>
+              <span className="text-kcb-sable capitalize">{key}</span>
+              <span className="text-white font-semibold">
+                {((value / total) * 100).toFixed(0)}%
+              </span>
             </div>
-            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+            <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
               <div
                 className="h-full"
                 style={{ width: `${(value / total) * 100}%`, backgroundColor: colors[idx] }}
@@ -627,68 +749,76 @@ function RevenueBreakdown({ title, data, colors }) {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 function FunnelChart({ title, stages }) {
-  const maxValue = Math.max(...stages.map((s) => s.value));
+  const maxValue = Math.max(...stages.map((s) => s.value))
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
+    <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
       <p className="text-white font-semibold mb-4">{title}</p>
       <div className="space-y-3">
         {stages.map((stage, idx) => {
-          const width = (stage.value / maxValue) * 100;
-          const colorMap = { blue: '#3b82f6', purple: '#a855f7', indigo: '#6366f1', green: '#10b981' };
+          const width = (stage.value / maxValue) * 100
+          const colorMap = {
+            blue: '#C9A84C',
+            purple: '#8B6914',
+            indigo: '#C9A84C',
+            green: '#10b981',
+          }
           return (
             <div key={idx}>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-300">{stage.label}</span>
+                <span className="text-kcb-sable">{stage.label}</span>
                 <span className="text-white font-semibold">{stage.value.toLocaleString()}</span>
               </div>
-              <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
+              <div className="h-3 bg-kcb-ardoise rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${width}%`, backgroundColor: colorMap[stage.color] }}
                 />
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
 
 function ProgressBar({ label, value }) {
   return (
     <div>
       <div className="flex justify-between text-sm mb-1">
-        <span className="text-gray-300">{label}</span>
+        <span className="text-kcb-sable">{label}</span>
         <span className="text-white font-semibold">{value}%</span>
       </div>
-      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500" style={{ width: `${value}%` }} />
+      <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-kcb-or to-kcb-bronze"
+          style={{ width: `${value}%` }}
+        />
       </div>
     </div>
-  );
+  )
 }
 
 function VitalCard({ label, value, target, status }) {
-  const statusColor = status === 'good' ? 'text-green-400' : 'text-yellow-400';
+  const statusColor = status === 'good' ? 'text-green-400' : 'text-yellow-400'
   return (
-    <div className="bg-gray-800/50 rounded-lg p-3 text-center">
-      <p className="text-gray-400 text-xs mb-1">{label}</p>
+    <div className="bg-kcb-ardoise/50 rounded-[4px] p-3 text-center border border-white/[0.06]">
+      <p className="text-kcb-pierre text-xs mb-1">{label}</p>
       <p className={`text-2xl font-bold ${statusColor}`}>{value}</p>
-      <p className="text-gray-500 text-xs mt-1">{target}</p>
+      <p className="text-kcb-pierre text-xs mt-1">{target}</p>
     </div>
-  );
+  )
 }
 
 function ActionButton({ icon, label, badge, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="bg-gray-900/50 border border-gray-800 hover:border-kcb-or/50 rounded-lg p-4 text-left transition group"
+      className="bg-kcb-ardoise/50 border border-white/[0.06] hover:border-kcb-or/50 rounded-[4px] p-4 text-left transition group"
     >
       <div className="flex items-start justify-between mb-2">
         <span className="text-2xl">{icon}</span>
@@ -700,5 +830,5 @@ function ActionButton({ icon, label, badge, onClick }) {
       </div>
       <p className="text-white font-semibold group-hover:text-kcb-or transition">{label}</p>
     </button>
-  );
+  )
 }

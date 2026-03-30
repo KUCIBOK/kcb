@@ -97,7 +97,7 @@ export function CrmGalerie() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">CRM Galerie</h1>
-          <p className="text-gray-400">
+          <p className="text-kcb-pierre">
             Gérez vos clients, suivez vos ventes et optimisez les relations
           </p>
         </div>
@@ -105,21 +105,21 @@ export function CrmGalerie() {
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="flex items-center gap-2 bg-blue-900/80 hover:bg-blue-800 text-white px-4 py-2 rounded-lg transition disabled:opacity-50"
+            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir px-4 py-2 rounded-[4px] transition disabled:opacity-50"
           >
             <RefreshCw className="w-4 h-4" />
             {syncing ? "Synchronisation..." : "Syncer"}
           </button>
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 bg-green-900/80 hover:bg-green-800 text-white px-4 py-2 rounded-lg transition"
+            className="flex items-center gap-2 bg-kcb-ardoise border border-kcb-or/30 hover:bg-kcb-pierre text-white px-4 py-2 rounded-[4px] transition"
           >
             <Download className="w-4 h-4" />
             Exporter CSV
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir text-white px-4 py-2 rounded-lg transition"
+            className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-4 py-2 rounded-[4px] transition"
           >
             <Plus className="w-4 h-4" />
             Ajouter un client
@@ -134,11 +134,11 @@ export function CrmGalerie() {
       {view === "list" && (
         <div className="space-y-4">
           {/* Filtres */}
-          <div className="bg-card rounded-lg p-4 space-y-4">
+          <div className="bg-kcb-ardoise rounded-[4px] p-4 space-y-4">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 top-3 w-4 h-4 text-kcb-pierre" />
                   <input
                     type="text"
                     placeholder="Rechercher par nom, email ou téléphone..."
@@ -147,7 +147,7 @@ export function CrmGalerie() {
                       setSearch(e.target.value);
                       setPage(1);
                     }}
-                    className="w-full pl-10 pr-4 py-2 bg-background border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-kcb-or"
+                    className="w-full pl-10 pr-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white placeholder-kcb-pierre focus:outline-none focus:border-kcb-or"
                   />
                 </div>
               </div>
@@ -158,7 +158,7 @@ export function CrmGalerie() {
                   setStatus(e.target.value);
                   setPage(1);
                 }}
-                className="px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:outline-none focus:border-kcb-or"
+                className="px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:outline-none focus:border-kcb-or"
               >
                 <option value="">Tous les statuts</option>
                 <option value="prospect">Prospect</option>
@@ -173,7 +173,7 @@ export function CrmGalerie() {
                   setSegment(e.target.value);
                   setPage(1);
                 }}
-                className="px-4 py-2 bg-background border border-gray-700 rounded-lg text-white focus:outline-none focus:border-kcb-or"
+                className="px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:outline-none focus:border-kcb-or"
               >
                 <option value="">Tous les segments</option>
                 <option value="art-collector">Collectionneur</option>
@@ -203,7 +203,7 @@ export function CrmGalerie() {
         <div>
           <button
             onClick={() => setView("list")}
-            className="mb-4 text-gray-400 hover:text-white flex items-center gap-2"
+            className="mb-4 text-kcb-pierre hover:text-white flex items-center gap-2"
           >
             ← Retour
           </button>

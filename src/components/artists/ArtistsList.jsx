@@ -21,10 +21,10 @@ export const ArtistList = memo(({ artists }) => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 border border-border border-dashed rounded-lg w-full">
-          <Search className="h-12 w-12 mx-auto mb-4 text-white" />
-          <h3 className="font-medium text-lg mb-1">Aucun artiste trouvé</h3>
-          <p className="text-white">Nous n'avons trouvé aucun artiste.</p>
+        <div className="text-center py-16 border border-white/[0.06] border-dashed rounded-[4px] w-full bg-kcb-ardoise/30">
+          <Search className="h-12 w-12 mx-auto mb-4 text-kcb-pierre" />
+          <h3 className="font-medium text-lg text-white mb-1">Aucun artiste trouvé</h3>
+          <p className="text-kcb-pierre">Nous n'avons trouvé aucun artiste.</p>
         </div>
       )}
     </>

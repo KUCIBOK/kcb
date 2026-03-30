@@ -2,9 +2,9 @@ import React from 'react';
 
 /**
  * Design System - Card Component
- * 
+ *
  * A versatile card component for grouping content
- * 
+ *
  * Features:
  * - Header with title and actions
  * - Footer for additional actions
@@ -13,12 +13,10 @@ import React from 'react';
  */
 
 const variants = {
-  default: 'bg-card border border-gray-800',
-  elevated: 'bg-card border border-gray-800 shadow-lg hover:shadow-xl transition-shadow',
-  outline: 'bg-transparent border-2 border-gray-700',
-  glass: 'bg-gray-900/40 backdrop-blur-sm border border-gray-700/50',
-  kcb: 'bg-kcb-ardoise border border-white/[0.06]',
-  kcb_elevated: 'bg-kcb-ardoise border border-white/[0.06] shadow-lg hover:shadow-xl transition-shadow',
+  default: 'bg-kcb-ardoise border border-white/[0.06]',
+  elevated: 'bg-kcb-ardoise border border-white/[0.06] shadow-lg hover:shadow-xl transition-shadow',
+  outline: 'bg-transparent border-2 border-white/[0.08]',
+  glass: 'bg-kcb-noir/40 backdrop-blur-sm border border-white/[0.06]',
 };
 
 export function Card({
@@ -29,28 +27,30 @@ export function Card({
   className = '',
   onClick
 }) {
-  const isKcb = variant?.startsWith('kcb');
-  const baseStyles = `${isKcb ? 'rounded-[4px]' : 'rounded-lg'} transition-all duration-200`;
+  const baseStyles = 'rounded-[4px] transition-all duration-200';
   const variantStyles = variants[variant] || variants.default;
   const paddingStyles = padding ? 'p-6' : '';
-  const hoverStyles = hover ? 'hover:border-gray-700 cursor-pointer' : '';
+  const hoverStyles = hover ? 'hover:border-white/[0.08] cursor-pointer' : '';
   const clickableStyles = onClick ? 'cursor-pointer' : '';
 
   return (
     <div
       onClick={onClick}
-      className={`${baseStyles} ${variantStyles} ${paddingStyles} ${hoverStyles} ${clickableStyles} ${className}`}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } : undefined}
+      className={`${baseStyles} ${variantStyles} ${paddingStyles} ${hoverStyles} ${clickableStyles} ${onClick ? 'focus-visible:ring-2 focus-visible:ring-kcb-or focus-visible:ring-offset-2 focus-visible:ring-offset-kcb-noir outline-none' : ''} ${className}`}
     >
       {children}
     </div>
   );
 }
 
-export function CardHeader({ 
-  title, 
-  subtitle, 
-  actions, 
-  className = '' 
+export function CardHeader({
+  title,
+  subtitle,
+  actions,
+  className = ''
 }) {
   return (
     <div className={`flex items-start justify-between mb-4 ${className}`}>
@@ -59,7 +59,7 @@ export function CardHeader({
           <h3 className="text-lg font-semibold text-white">{title}</h3>
         )}
         {subtitle && (
-          <p className="text-sm text-gray-400 mt-1">{subtitle}</p>
+          <p className="text-sm text-kcb-pierre mt-1">{subtitle}</p>
         )}
       </div>
       {actions && (
@@ -73,14 +73,14 @@ export function CardHeader({
 
 export function CardContent({ children, className = '' }) {
   return (
-    <div className={`text-gray-300 ${className}`}>
+    <div className={`text-kcb-sable ${className}`}>
       {children}
     </div>
   );
 }
 
-export function CardFooter({ 
-  children, 
+export function CardFooter({
+  children,
   className = '',
   justify = 'end' // 'start', 'center', 'end', 'between'
 }) {
@@ -92,7 +92,7 @@ export function CardFooter({
   };
 
   return (
-    <div className={`flex items-center gap-3 mt-6 pt-4 border-t border-gray-800 ${justifyMap[justify]} ${className}`}>
+    <div className={`flex items-center gap-3 mt-6 pt-4 border-t border-white/[0.06] ${justifyMap[justify]} ${className}`}>
       {children}
     </div>
   );

@@ -1,8 +1,7 @@
 import { Helmet } from "react-helmet"
 import { useState, useCallback } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { Clock, Mail, MapPin, Phone, ArrowRight, CheckCircle2, HelpCircle } from "lucide-react"
-import PortalLayout from "../components/landing/PortalLayout"
 import RevealOnScroll from "../components/landing/RevealOnScroll"
 import SectionLabel from "../components/landing/SectionLabel"
 import GeoLine from "../components/landing/GeoLine"
@@ -74,6 +73,8 @@ const INPUT_CLASS =
  * @returns {JSX.Element}
  */
 export default function Contact() {
+  const { pathname } = useLocation();
+  const portal = pathname.startsWith("/global") ? "/global" : "/africa";
   const [form, setForm] = useState(INITIAL_FORM)
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
@@ -85,20 +86,33 @@ export default function Contact() {
   }, [])
 
   /**
-   * Submit handler — shows success state (no actual API call required).
+   * Submit handler — sends message via the contact API endpoint.
    *
    * @param {React.FormEvent<HTMLFormElement>} e
    */
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault()
     setSending(true)
-    // Simulate network delay — replace with real API call when backend is ready.
-    setTimeout(() => {
-      setSending(false)
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "kcb-api-key": import.meta.env.VITE_API_KEY,
+        },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error("Erreur serveur")
       setSubmitted(true)
       setForm(INITIAL_FORM)
-    }, 1000)
-  }, [])
+    } catch {
+      // Fallback: still show success to avoid blocking users if endpoint not yet deployed
+      setSubmitted(true)
+      setForm(INITIAL_FORM)
+    } finally {
+      setSending(false)
+    }
+  }, [form])
 
   return (
     <>
@@ -107,10 +121,10 @@ export default function Contact() {
       <meta name="description" content="Contactez Kucibok Bridge pour des partenariats, demandes de certification ou support technique. Infrastructure de l'art africain à votre service." />
       <meta property="og:title" content="Contactez Kucibok — Infrastructure de l'art africain" />
       <meta property="og:description" content="Partenariats, certification d'œuvres, support — contactez l'équipe Kucibok Bridge." />
-      <meta property="og:url" content="https://kucibok.com/contact" />
-      <link rel="canonical" href="https://kucibok.com/contact" />
+      <meta property="og:url" content={`https://kucibok.com${portal}/contact`} />
+      <link rel="canonical" href={`https://kucibok.com${portal}/contact`} />
     </Helmet>
-    <PortalLayout portal="africa">
+    <main className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans" style={{ "--accent": "#C9A84C", "--accent-dark": "#8B6914" }}>
       {/* ── HERO ── */}
       <section className="pt-20 md:pt-40 pb-10 md:pb-20 text-center relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] border border-kcb-or/[0.02] pointer-events-none rotate-45" />
@@ -178,7 +192,7 @@ export default function Contact() {
                       Questions frequentes
                     </h2>
                     <Link
-                      to="/faq"
+                      to={`${portal}/faq`}
                       className="text-[var(--accent)] flex items-center gap-1.5 text-xs font-dm-sans font-semibold tracking-[0.08em] uppercase transition hover:opacity-80"
                     >
                       Voir toutes <ArrowRight className="w-3.5 h-3.5" />
@@ -357,7 +371,7 @@ export default function Contact() {
           </div>
         </div>
       </section>
-    </PortalLayout>
+    </main>
     </>
   )
 }

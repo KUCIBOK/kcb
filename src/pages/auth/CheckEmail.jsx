@@ -6,6 +6,7 @@ export default function CheckEmail() {
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email || "";
+  const enrichFailed = location.state?.enrichFailed ?? false;
   if (!email) {
     navigate("/sign-in");
     return null;
@@ -23,6 +24,11 @@ export default function CheckEmail() {
           Nous avons envoyé un lien de vérification à <span className="font-semibold text-white">{email}</span>.<br />
           <span className="text-kcb-pierre">Consultez votre boîte de réception (ou les spams) et cliquez sur le lien pour activer votre compte.</span>
         </p>
+        {enrichFailed && (
+          <p className="text-xs text-amber-400 bg-amber-900/20 border border-amber-700/40 rounded-[4px] px-3 py-2 mb-4 text-center">
+            Certaines informations de profil n’ont pas pu être enregistrées. Vous pourrez les compléter depuis votre espace après connexion.
+          </p>
+        )}
         <Link
           to="/sign-in"
           className="inline-block mt-2 px-5 py-2 rounded-[4px] bg-kcb-or text-white font-medium text-sm shadow hover:bg-kcb-bronze transition-all focus:outline-none focus:ring-2 focus:ring-kcb-or"

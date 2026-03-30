@@ -14,10 +14,10 @@ import { useAuth } from './AuthContext';
 
 /** @type {Record<string, string>} Mapping rôle → route dashboard */
 const DASHBOARD_BY_ROLE = {
-  artist: '/dashboard/artist',
-  collector: '/dashboard/collector',
-  professional: '/dashboard/professional',
-  admin: '/dashboard/admin',
+  artist:  '/dashboard/artist',
+  curator: '/dashboard/curator',
+  buyer:   '/account',
+  admin:   '/dashboard/admin',
 };
 
 /**

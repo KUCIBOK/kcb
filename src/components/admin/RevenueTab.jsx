@@ -3,20 +3,6 @@ import { DollarSign, TrendingUp, ShoppingBag, ArrowUpRight, Filter, Loader2, Ref
 import { utils } from "../../api/useAPI";
 import { KPICard } from "../ui";
 
-/** @type {Array<{_id: string, amount: number, currency: string, status: string, type: string, createdAt: string, artworkTitle?: string, buyerId?: string, sellerId?: string, commission?: number}>} */
-const FALLBACK_TRANSACTIONS = [
-  { _id: "t1", amount: 450000, currency: "XOF", status: "completed", type: "artwork_sale", createdAt: "2026-03-01T10:00:00Z", artworkTitle: "Masque Dogon", buyerId: "buyer1", sellerId: "artist1", commission: 22500 },
-  { _id: "t2", amount: 120000, currency: "XOF", status: "completed", type: "subscription", createdAt: "2026-03-02T14:30:00Z", artworkTitle: null, buyerId: "buyer2", sellerId: null, commission: 0 },
-  { _id: "t3", amount: 890000, currency: "XOF", status: "completed", type: "artwork_sale", createdAt: "2026-03-03T09:15:00Z", artworkTitle: "Statuette Baoulé", buyerId: "buyer3", sellerId: "artist2", commission: 44500 },
-  { _id: "t4", amount: 75000, currency: "XOF", status: "pending", type: "artwork_sale", createdAt: "2026-03-04T16:45:00Z", artworkTitle: "Tissu Kente", buyerId: "buyer4", sellerId: "artist3", commission: 3750 },
-  { _id: "t5", amount: 310000, currency: "XOF", status: "completed", type: "artwork_sale", createdAt: "2026-03-05T11:00:00Z", artworkTitle: "Bronze du Bénin", buyerId: "buyer5", sellerId: "artist4", commission: 15500 },
-  { _id: "t6", amount: 60000, currency: "XOF", status: "failed", type: "subscription", createdAt: "2026-03-06T08:20:00Z", artworkTitle: null, buyerId: "buyer6", sellerId: null, commission: 0 },
-  { _id: "t7", amount: 520000, currency: "XOF", status: "completed", type: "artwork_sale", createdAt: "2026-03-07T13:10:00Z", artworkTitle: "Peinture Tingatinga", buyerId: "buyer7", sellerId: "artist5", commission: 26000 },
-  { _id: "t8", amount: 95000, currency: "XOF", status: "completed", type: "subscription", createdAt: "2026-03-08T17:00:00Z", artworkTitle: null, buyerId: "buyer8", sellerId: null, commission: 0 },
-  { _id: "t9", amount: 680000, currency: "XOF", status: "pending", type: "artwork_sale", createdAt: "2026-02-15T10:00:00Z", artworkTitle: "Sculpture Sénoufo", buyerId: "buyer9", sellerId: "artist6", commission: 34000 },
-  { _id: "t10", amount: 150000, currency: "XOF", status: "completed", type: "artwork_sale", createdAt: "2026-02-20T14:00:00Z", artworkTitle: "Boubou brodé", buyerId: "buyer10", sellerId: "artist7", commission: 7500 },
-];
-
 /** Libellés lisibles pour les types de transaction */
 const TYPE_LABELS = {
   artwork_sale: "Vente d'œuvre",
@@ -84,7 +70,7 @@ function computeKPIs(transactions) {
   const completed = transactions.filter((t) => t.status === "completed");
   const gmv = completed.reduce((sum, t) => sum + t.amount, 0);
   const commissions = completed.reduce((sum, t) => {
-    return sum + (t.commission != null ? t.commission : t.amount * 0.05);
+    return sum + (t.commission != null ? t.commission : t.amount * 0.10);
   }, 0);
   const countThisMonth = transactions.filter((t) => toYearMonth(t.createdAt) === thisMonth).length;
   const avgValue = completed.length > 0 ? Math.round(gmv / completed.length) : 0;
@@ -113,7 +99,7 @@ function computeMonthlyData(transactions) {
     if (!entry) return;
     if (t.status === "completed") {
       entry.gmv += t.amount;
-      entry.commissions += t.commission != null ? t.commission : t.amount * 0.05;
+      entry.commissions += t.commission != null ? t.commission : t.amount * 0.10;
     }
     entry.count += 1;
   });
@@ -137,13 +123,13 @@ export function RevenueTab() {
   const loadTransactions = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${utils.api}/transaction`, { ...utils.options });
+      const res = await fetch(`${utils.api}/transactions`, { ...utils.options });
       if (!res.ok) throw new Error("API error");
       const data = await res.json();
       const list = Array.isArray(data) ? data : data?.data ?? [];
-      setTransactions(list.length > 0 ? list : FALLBACK_TRANSACTIONS);
+      setTransactions(list);
     } catch {
-      setTransactions(FALLBACK_TRANSACTIONS);
+      setTransactions([]);
     } finally {
       setLoading(false);
     }
@@ -165,6 +151,12 @@ export function RevenueTab() {
 
   const kpis = computeKPIs(transactions);
   const monthlyData = computeMonthlyData(transactions);
+
+  // Calcul du MoM réel à partir des données mensuelles
+  const lastTwoMonths = monthlyData.slice(-2);
+  const prevGmv = lastTwoMonths[0]?.gmv ?? 0;
+  const currGmv = lastTwoMonths[1]?.gmv ?? 0;
+  const momPct = prevGmv > 0 ? Math.round(((currGmv - prevGmv) / prevGmv) * 100) : null;
   const maxGmv = Math.max(...monthlyData.map((m) => m.gmv), 1);
 
   return (
@@ -173,12 +165,12 @@ export function RevenueTab() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">Revenus & Finance</h1>
-          <p className="text-gray-400 mt-1">Suivi des transactions et performances financières</p>
+          <p className="text-kcb-pierre mt-1">Suivi des transactions et performances financières</p>
         </div>
         <button
           onClick={loadTransactions}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 rounded-lg text-kcb-noir text-sm font-medium transition"
+          className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 rounded-[4px] text-kcb-noir text-sm font-medium transition"
         >
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
           Actualiser
@@ -193,24 +185,24 @@ export function RevenueTab() {
           value={formatAmount(kpis.gmv)}
           iconColor="text-green-400"
           iconBgColor="bg-green-900/20"
-          trend={{ value: "+12% MoM", direction: "up" }}
+          trend={momPct !== null ? { value: `${momPct >= 0 ? '+' : ''}${momPct}% MoM`, direction: momPct >= 0 ? "up" : "down" } : undefined}
           loading={loading}
         />
         <KPICard
           icon={TrendingUp}
           label="Commissions perçues"
           value={formatAmount(Math.round(kpis.commissions))}
-          iconColor="text-indigo-400"
-          iconBgColor="bg-indigo-900/20"
-          subtitle="5% sur ventes complétées"
+          iconColor="text-kcb-or"
+          iconBgColor="bg-kcb-or/10"
+          subtitle="10% sur ventes complétées"
           loading={loading}
         />
         <KPICard
           icon={ShoppingBag}
           label="Transactions ce mois"
           value={kpis.countThisMonth}
-          iconColor="text-purple-400"
-          iconBgColor="bg-purple-900/20"
+          iconColor="text-kcb-bronze"
+          iconBgColor="bg-kcb-bronze/10"
           loading={loading}
         />
         <KPICard
@@ -225,12 +217,12 @@ export function RevenueTab() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-center bg-[#13161e] border border-gray-800 rounded-lg p-4">
-        <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
+      <div className="flex flex-wrap gap-3 items-center bg-[#13161e] border border-white/[0.06] rounded-[4px] p-4">
+        <Filter className="w-4 h-4 text-kcb-pierre flex-shrink-0" />
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
+          className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
         >
           <option value="all">Tous les types</option>
           <option value="artwork_sale">Ventes d'œuvres</option>
@@ -241,7 +233,7 @@ export function RevenueTab() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
+          className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
         >
           <option value="all">Tous les statuts</option>
           <option value="completed">Complétées</option>
@@ -252,7 +244,7 @@ export function RevenueTab() {
         <select
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
-          className="bg-gray-800 border border-gray-700 rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
+          className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-white text-sm px-3 py-2 focus:outline-none focus:border-kcb-or transition"
         >
           <option value="all">Tous les mois</option>
           {availableMonths.map((m) => (
@@ -260,25 +252,25 @@ export function RevenueTab() {
           ))}
         </select>
 
-        <span className="text-gray-500 text-sm ml-auto">
+        <span className="text-kcb-pierre text-sm ml-auto">
           {filtered.length} transaction{filtered.length !== 1 ? "s" : ""}
         </span>
       </div>
 
       {/* Transactions table */}
-      <div className="bg-[#13161e] border border-gray-800 rounded-lg overflow-hidden">
+      <div className="bg-[#13161e] border border-white/[0.06] rounded-[4px] overflow-hidden">
         <div className="overflow-x-auto">
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
-              <span className="ml-3 text-gray-400">Chargement des transactions...</span>
+              <Loader2 className="w-8 h-8 text-kcb-or animate-spin" />
+              <span className="ml-3 text-kcb-pierre">Chargement des transactions...</span>
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16 text-gray-500">Aucune transaction correspondant aux filtres.</div>
+            <div className="text-center py-16 text-kcb-pierre">Aucune transaction correspondant aux filtres.</div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-800 text-gray-400 text-left">
+                <tr className="border-b border-white/[0.06] text-kcb-pierre text-left">
                   <th className="px-4 py-3 font-medium">Date</th>
                   <th className="px-4 py-3 font-medium">Type</th>
                   <th className="px-4 py-3 font-medium">Œuvre / Objet</th>
@@ -291,28 +283,28 @@ export function RevenueTab() {
                 {filtered.map((t) => {
                   const commission = t.commission != null
                     ? t.commission
-                    : t.status === "completed" ? Math.round(t.amount * 0.05) : 0;
+                    : t.status === "completed" ? Math.round(t.amount * 0.10) : 0;
                   return (
-                    <tr key={t._id} className="border-b border-gray-800/60 hover:bg-gray-800/30 transition">
-                      <td className="px-4 py-3 text-gray-300 whitespace-nowrap">
+                    <tr key={t._id} className="border-b border-white/[0.06]/60 hover:bg-kcb-ardoise/30 transition">
+                      <td className="px-4 py-3 text-kcb-sable whitespace-nowrap">
                         {new Date(t.createdAt).toLocaleDateString("fr-FR", {
                           day: "2-digit", month: "short", year: "numeric"
                         })}
                       </td>
-                      <td className="px-4 py-3 text-gray-300">
+                      <td className="px-4 py-3 text-kcb-sable">
                         {TYPE_LABELS[t.type] ?? t.type}
                       </td>
-                      <td className="px-4 py-3 text-gray-300 max-w-[160px] truncate">
-                        {t.artworkTitle ?? <span className="text-gray-600 italic">—</span>}
+                      <td className="px-4 py-3 text-kcb-sable max-w-[160px] truncate">
+                        {t.artworkTitle ?? <span className="text-kcb-pierre italic">—</span>}
                       </td>
                       <td className="px-4 py-3 text-white font-semibold text-right whitespace-nowrap">
                         {formatAmount(t.amount, t.currency)}
                       </td>
                       <td className="px-4 py-3 text-green-300 text-right whitespace-nowrap">
-                        {commission > 0 ? formatAmount(commission, t.currency) : <span className="text-gray-600">—</span>}
+                        {commission > 0 ? formatAmount(commission, t.currency) : <span className="text-kcb-pierre">—</span>}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[t.status] ?? "bg-gray-700 text-gray-300"}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[t.status] ?? "bg-kcb-ardoise text-kcb-sable"}`}>
                           {STATUS_LABELS[t.status] ?? t.status}
                         </span>
                       </td>
@@ -326,20 +318,20 @@ export function RevenueTab() {
       </div>
 
       {/* Monthly revenue history (CSS bars — no Chart.js dependency) */}
-      <div className="bg-[#13161e] border border-gray-800 rounded-lg p-6">
+      <div className="bg-[#13161e] border border-white/[0.06] rounded-[4px] p-6">
         <h2 className="text-white font-semibold text-lg mb-5">Revenus mensuels — 6 derniers mois</h2>
         <div className="space-y-4">
           {monthlyData.map((m) => (
             <div key={m.month}>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-gray-300 w-24">{m.label}</span>
-                <span className="text-gray-400 text-xs">{m.count} tx</span>
+                <span className="text-kcb-sable w-24">{m.label}</span>
+                <span className="text-kcb-pierre text-xs">{m.count} tx</span>
                 <span className="text-white font-medium ml-auto">{formatAmount(m.gmv)}</span>
                 <span className="text-green-300 text-xs ml-4 w-28 text-right">
                   {m.commissions > 0 ? `+${formatAmount(Math.round(m.commissions))}` : "—"}
                 </span>
               </div>
-              <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-kcb-or to-kcb-bronze rounded-full transition-all duration-500"
                   style={{ width: `${(m.gmv / maxGmv) * 100}%` }}
@@ -349,7 +341,7 @@ export function RevenueTab() {
           ))}
         </div>
         {/* Legend */}
-        <div className="flex gap-6 mt-5 text-xs text-gray-500">
+        <div className="flex gap-6 mt-5 text-xs text-kcb-pierre">
           <span className="flex items-center gap-1">
             <span className="w-3 h-3 rounded-full bg-kcb-or inline-block" /> GMV
           </span>

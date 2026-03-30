@@ -13,8 +13,8 @@ export function PlansList({ plans, title, icon }) {
                 ))
                 :
                 (
-                    <div className="col-span-3 text-center p-4 border rounded-lg">
-                        <p className="text-gray-600">Pas de plan disponible</p>
+                    <div className="col-span-3 text-center p-4 border rounded-[4px]">
+                        <p className="text-kcb-pierre">Pas de plan disponible</p>
                     </div>
                 )
             }

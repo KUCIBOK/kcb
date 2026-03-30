@@ -1,8 +1,8 @@
 # KUCIBOK — Roadmap
 
-**Version** 2.0 — Mars 2026
+**Version** 2.2 — Mars 2026
 **Horizon** 24 mois (Mars 2026 -> Mars 2028)
-**Aligne sur** PRD V2.1 · TECH-SPEC V2.0
+**Aligne sur** PRD V2.2 · TECH_SPEC V2.1
 
 ---
 
@@ -74,6 +74,38 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 - [x] Explore : RevealOnScroll + SectionLabel header
 - [x] Routes standalone hors Layout : About, Contact, Faq, 4 legales (PortalLayout avec propre nav/footer)
 
+### Audit UX/UI complet (Mars 2026)
+
+- [x] P0 — Bugs fonctionnels (7 items) : typos CSS (`pp-2`, double opacite), `Link to={-1}` → `navigate(-1)`, liens morts `/explore` → `/africa/catalogue`, `useId()` pour inputs
+- [x] P1 — Couleurs bannies purgees (18 items) : violet, orange, gradients → tokens KCB (or, bronze, ardoise)
+- [x] P2 — Typographie + radius (20 items) : `font-serif` → `font-playfair`, `rounded-md/lg` → `rounded-[4px]`, liens morts `/dashboard/buyer`
+- [x] P3 — Accessibilite (11 items) : ARIA `role="dialog"`, `aria-expanded`, focus trap Modal, keyboard nav Select/Tabs, `focus-visible:ring` sidebar, Card keyboard support
+- [x] P4 — SEO (6 items) : Helmet sur Africa/Global landing, `og:image`, `og:type`, canonicals portal-prefixes
+- [x] P5 — Polish UX (17 items) : skeletons loading, null guards dates, dead code cleanup, chart colors on-palette, contact form API route, placeholder artwork image
+
+### Refactor roles (collector→buyer, professional→curator)
+
+- [x] Migration `007_role_refactor.sql` : renommage donnees + trigger
+- [x] Migration `008_rls_role_refactor.sql` : correction fonction RLS `is_professional()`
+- [x] Protected routes : `BuyerProtectedRoute`, `CuratorProtectedRoute`
+- [x] Dashboard buyer a `/account`
+- [x] Page catalogue Africa : `/africa/catalogue`
+- [x] Code frontend : PortalNav, UserLinks, GuestProtectedRoute, admin views, CRM, profils
+- [x] Code backend : VALID_ROLES, requireCurator, email templates, IDOR, XSS, ownership checks
+
+### Audit securite (Mars 2026)
+
+- [x] XSS : DOMPurify client + sanitisation serveur (blog comments)
+- [x] IDOR : ownership checks transactions et abonnements
+- [x] Escalade role : suppression fallback user_metadata dans requireRole
+- [x] Oeuvres non-approuvees : cachees aux non-proprietaires/non-admins
+- [x] GET → POST : endpoints mutation convertis (fail/activate)
+- [x] DoS : remplacement listUsers() par requete ciblee
+- [x] SQL injection : echappement wildcards ilike
+- [x] Mot de passe : validation longueur minimum 8 caracteres
+- [ ] Rate limiting : a implementer (Upstash Redis ou Cloudflare)
+- [ ] CSRF tokens : a implementer
+
 ### Scorecard Phase 0
 
 | Critere | Cible | Statut |
@@ -81,6 +113,12 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 | VPS eteint, Supabase operationnel | 19 mars 2026 | En cours |
 | Zero erreur Sentry post-migration | 1 semaine sans incident | Pas commence |
 | Repo propre (plus de legacy) | Aucun fichier backend/ ou frontend/ | Done |
+| Audit UX/UI (80+ items) | 0 violations design system | Done |
+| Accessibilite (ARIA, clavier, contraste) | Composants UI conformes | Done |
+| SEO (Helmet, OG tags, canonicals) | Pages publiques couvertes | Done |
+| Audit securite (10 correctifs) | 0 vulnerabilite critique | Done |
+| Refactor roles (4 roles finaux) | collector→buyer, professional→curator | Done |
+| Tests unitaires (Vitest) | 12 fichiers, 299 tests | Done |
 
 ---
 
@@ -104,7 +142,7 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 ### M2 — Mai 2026 : Portail Africa V1
 
 **Backend**
-- [ ] Nouveau role `gallery_africa` dans la table `users`
+- [ ] Nouveau role `gallery_africa` (ajout CHECK constraint + dashboard)
 - [ ] Onboarding galeries : validation manuelle admin
 - [ ] Endpoint import CSV oeuvres batch
 
@@ -130,7 +168,7 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 ### M4 — Juillet 2026 : Portail Global V1
 
 **Backend**
-- [ ] Nouveaux roles `curator_global` + `gallery_global`
+- [ ] Nouveaux roles `gallery_global` (curator existe deja)
 - [ ] Onboarding international : validation + abonnement payant
 - [ ] Catalogue certifie : endpoint filtrable (acces restreint)
 - [ ] Systeme demande sourcing privee (anonymisee)
@@ -233,7 +271,7 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 
 - [ ] Signature partenariat assureur (1 acteur majeur)
 - [ ] Integration catalogue dans 1 maison de vente
-- [ ] Refonte design institutionnel (palette noir/ivoire/or — `docs/DESIGN.md`)
+- [ ] Refonte design institutionnel (palette noir/ivoire/or — `docs/DESIGN_SYSTEM.md`)
 - [ ] Migration routing vers sous-domaines (africa.kucibok.com / global.kucibok.com)
 - [ ] Reactivation encheres (si pertinent)
 
@@ -289,7 +327,14 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 | Corriger `setVisitTime` non importe | 0 | Done |
 | Supprimer `pdfkit` + `resend` du frontend | 0 | Done |
 | Vitest + Testing Library : setup initial | 0 | Done |
-| Ecrire tests unitaires : hooks API, utils, stores | 1 | A faire |
+| Audit UX/UI complet (80+ corrections) | 0 | Done |
+| Accessibilite composants UI (ARIA, clavier) | 0 | Done |
+| SEO pages publiques (Helmet, OG tags) | 0 | Done |
+| Route `/api/contact` (formulaire → Resend) | 0 | Done |
+| Roles buyer + curator + protected routes | 0 | Done |
+| Audit securite (XSS, IDOR, escalade) | 0 | Done |
+| Migration 007 + 008 (roles SQL) | 0 | A appliquer en production |
+| ~~Ecrire tests unitaires : hooks API, utils, stores~~ | 0 | Done (12 fichiers, 299 tests) |
 | Ecrire tests composants : pages critiques (auth, checkout) | 1 | A faire |
 | Migrer Context providers -> React Query | 2 | A faire |
 | Decouper `api/[...path].js` en modules | 2 | A faire |
@@ -297,4 +342,4 @@ Nettoyage     Minimal        Operationnel       Institutionnelle   Extension
 
 ---
 
-*Kucibok ROADMAP V2.0 — Mars 2026 — Confidentiel*
+*Kucibok ROADMAP V2.2 — Mars 2026 — Confidentiel*

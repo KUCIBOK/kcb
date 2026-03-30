@@ -44,12 +44,12 @@ export default function AuctionBidForm({
   };
 
   return (
-    <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700/50">
+    <div className="bg-kcb-ardoise/50 p-4 rounded-[4px] border border-white/[0.06]/50">
       <form onSubmit={handlePlaceBid} className="space-y-3">
         <div>
           <label
             htmlFor="bidAmount"
-            className="block text-sm font-medium text-gray-400 mb-1"
+            className="block text-sm font-medium text-kcb-pierre mb-1"
           >
             Votre enchère (min. {currentPrice + 1000} FCFA)
           </label>
@@ -59,7 +59,7 @@ export default function AuctionBidForm({
             min={currentPrice + 1000}
             value={bidAmount}
             onChange={(e) => setBidAmount(Number(e.target.value))}
-            className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white"
+            className="w-full bg-kcb-ardoise border border-white/[0.08] rounded-md px-3 py-2 text-white"
             required
           />
         </div>

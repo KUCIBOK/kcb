@@ -24,9 +24,9 @@ export function ToastProvider({ children }) {
         theme="dark"
         toastOptions={{
           style: {
-            background: '#1f2937',
-            border: '1px solid #374151',
-            color: '#f9fafb',
+            background: 'var(--kcb-ardoise)',
+            border: '1px solid var(--kcb-pierre)',
+            color: 'var(--kcb-ivoire)',
           },
           className: 'custom-toast',
         }}

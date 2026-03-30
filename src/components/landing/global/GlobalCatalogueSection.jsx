@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import { ArrowRight, ShieldCheck } from "lucide-react"
-import RevealOnScroll from "../RevealOnScroll"
-import SectionLabel from "../SectionLabel"
-import { useLang } from "../../../store/LangContext"
-import { globalT } from "../../../i18n/global"
-import { getApprovedArtworks } from "../../../api/useArtworks"
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, ShieldCheck } from 'lucide-react'
+import RevealOnScroll from '../RevealOnScroll'
+import SectionLabel from '../SectionLabel'
+import { useLang } from '../../../store/LangContext'
+import { globalT } from '../../../i18n/global'
+import { getApprovedArtworks } from '../../../api/useArtworks'
+import { SkeletonCard } from '../../ui'
 
 /** Fallback pattern backgrounds for artworks without images */
 const PATTERNS = [
-  "repeating-linear-gradient(45deg, var(--kcb-silver-dark, #2a2f36) 0px, var(--kcb-silver-dark, #2a2f36) 1px, transparent 1px, transparent 16px), #141618",
-  "radial-gradient(circle at 40% 40%, #2a2f36 0%, transparent 60%), #141618",
-  "repeating-conic-gradient(#2a2f36 0% 25%, transparent 0% 50%) 0 0 / 32px 32px, #141618",
-  "linear-gradient(160deg, #2a2f36 0%, #0a0a0b 100%)",
+  'repeating-linear-gradient(45deg, var(--kcb-silver-dark, #2a2f36) 0px, var(--kcb-silver-dark, #2a2f36) 1px, transparent 1px, transparent 16px), #141618',
+  'radial-gradient(circle at 40% 40%, #2a2f36 0%, transparent 60%), #141618',
+  'repeating-conic-gradient(#2a2f36 0% 25%, transparent 0% 50%) 0 0 / 32px 32px, #141618',
+  'linear-gradient(160deg, #2a2f36 0%, #0a0a0b 100%)',
 ]
 
 /**
@@ -24,20 +25,18 @@ export default function GlobalCatalogueSection() {
   const t = globalT[lang].catalogue
 
   const [artworks, setArtworks] = useState([])
-  const [loading, setLoading]   = useState(true)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     getApprovedArtworks({ limit: 200 }).then((result) => {
-      const list = Array.isArray(result?.data) ? result.data
-                 : Array.isArray(result)        ? result
-                 : []
+      const list = Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : []
       // Prefer certified artworks with image, shuffle randomly, take 4 unique
-      const withImage = list.filter(a => a.image)
-      const certified = withImage.filter(a => a.kucibok_id)
+      const withImage = list.filter((a) => a.image)
+      const certified = withImage.filter((a) => a.kucibok_id)
       const pool = certified.length >= 4 ? certified : withImage
       // Deduplicate by title
       const seen = new Set()
-      const unique = pool.filter(a => {
+      const unique = pool.filter((a) => {
         const key = (a.title || '').toLowerCase().trim()
         if (seen.has(key)) return false
         seen.add(key)
@@ -45,7 +44,7 @@ export default function GlobalCatalogueSection() {
       })
       // Shuffle and pick 4
       const shuffled = unique.sort(() => Math.random() - 0.5)
-      setArtworks(shuffled.slice(0, 4).map(a => ({ ...a, _id: a._id ?? a.id })))
+      setArtworks(shuffled.slice(0, 4).map((a) => ({ ...a, _id: a._id ?? a.id })))
       setLoading(false)
     })
   }, [])
@@ -69,7 +68,7 @@ export default function GlobalCatalogueSection() {
           </RevealOnScroll>
           <RevealOnScroll>
             <Link
-              to="/explore"
+              to="/global/catalogue"
               className="inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase transition-colors hover:text-[var(--accent)] no-underline"
             >
               {t.linkLabel} <ArrowRight className="w-3.5 h-3.5" />
@@ -77,15 +76,18 @@ export default function GlobalCatalogueSection() {
           </RevealOnScroll>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1.4fr_1fr_1fr] gap-0.5" style={{ gridAutoRows: "clamp(220px, 35vw, 340px)" }}>
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1.4fr_1fr_1fr] gap-0.5"
+          style={{ gridAutoRows: 'clamp(220px, 35vw, 340px)' }}
+        >
           {items.map((item, i) => (
             <RevealOnScroll key={item._id} delay={i * 0.1}>
               {item.skeleton ? (
-                /* Loading skeleton */
-                <div className="relative h-full bg-kcb-noir animate-pulse" />
+                /* Loading skeleton — full-height card with image area */
+                <SkeletonCard hasImage className="h-full rounded-none" />
               ) : (
                 <Link
-                  to={item.fallback ? "/explore" : `/artwork/${item.id ?? item._id}`}
+                  to={item.fallback ? '/global/catalogue' : `/artwork/${item.id ?? item._id}`}
                   className="block relative overflow-hidden cursor-pointer bg-kcb-noir h-full group no-underline"
                 >
                   {/* Image or pattern background */}
@@ -105,21 +107,23 @@ export default function GlobalCatalogueSection() {
                   {/* Info overlay */}
                   <div
                     className="absolute inset-0 flex flex-col justify-end p-7 transition-all duration-400 group-hover:[background:linear-gradient(to_top,rgba(5,5,5,0.96)_0%,rgba(5,5,5,0.2)_60%)]"
-                    style={{ background: "linear-gradient(to top, rgba(5,5,5,0.92) 0%, transparent 50%)" }}
+                    style={{
+                      background: 'linear-gradient(to top, rgba(5,5,5,0.92) 0%, transparent 50%)',
+                    }}
                   >
                     <div className="flex items-start justify-between gap-2 mb-2.5">
                       <span className="inline-block bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-[9px] tracking-[0.1em] uppercase px-2 py-0.5">
-                        {item.fallback ? "Certified" : "Certified"}
+                        {'Certified'}
                       </span>
                       {item.kucibok_id && (
                         <ShieldCheck className="w-4 h-4 text-[var(--accent)] shrink-0" />
                       )}
                     </div>
                     <div className="font-playfair font-semibold text-[17px] text-white mb-1 line-clamp-2">
-                      {item.fallback ? "—" : item.title}
+                      {item.fallback ? '—' : item.title}
                     </div>
                     <div className="text-xs text-kcb-sable">
-                      {item.fallback ? "—" : (item.artist ?? "Unknown artist")}
+                      {item.fallback ? '—' : (item.artist ?? 'Unknown artist')}
                     </div>
                     {item.kucibok_id && (
                       <div className="font-jetbrains text-[10px] text-[var(--accent)] mt-2 tracking-[0.06em]">

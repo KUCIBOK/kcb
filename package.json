@@ -12,7 +12,10 @@
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:api": "newman run postman/kucibok.postman_collection.json -e postman/kucibok.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export reports/api-test-report.html",
+    "test:api:ci": "newman run postman/kucibok.postman_collection.json -e postman/kucibok.postman_environment.json --reporters cli",
+    "prepare": "husky"
   },
   "dependencies": {
     "@sentry/react": "^10.7.0",
@@ -47,9 +50,22 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^17.4.0",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.0",
+    "lint-staged": "^16.4.0",
+    "newman": "^6.2.2",
+    "newman-reporter-htmlextra": "^1.23.1",
     "prettier": "^3.8.1",
     "vite": "^6.3.2",
     "vitest": "^4.0.18"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{css,json,md}": [
+      "prettier --write"
+    ]
   }
 }

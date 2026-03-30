@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useId } from 'react';
 import { AlertCircle, CheckCircle, Info, HelpCircle } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 
@@ -15,7 +15,7 @@ import { Tooltip } from './Tooltip';
  * - KCB variant for migrated pages
  *
  * @param {object} props
- * @param {string} [props.variant='default'] - Visual variant ('default' | 'kcb')
+ * @param {string} [props.variant='kcb'] - Visual variant ('kcb')
  * @param {string} [props.label] - Label text
  * @param {string} [props.tooltip] - Tooltip content
  * @param {string} [props.tooltipPlacement='top'] - Tooltip placement
@@ -42,14 +42,6 @@ const sizes = {
 
 /** @type {Record<string, {base: string, border: string, label: string, helper: string, icon: string, placeholder: string}>} */
 const VARIANT_STYLES = {
-  default: {
-    base: 'bg-gray-800 rounded-lg text-white placeholder-gray-500',
-    border: 'border-gray-700 focus:border-indigo-500 focus:ring-indigo-500',
-    label: 'text-gray-300',
-    helper: 'text-gray-400',
-    icon: 'text-gray-400',
-    placeholder: 'placeholder-gray-500',
-  },
   kcb: {
     base: 'bg-kcb-noir rounded-[4px] text-white placeholder-kcb-pierre',
     border: 'border-white/[0.08] focus:border-kcb-or focus:ring-kcb-or',
@@ -80,8 +72,9 @@ export const Input = forwardRef(({
   className = '',
   ...props
 }, ref) => {
-  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
-  const v = VARIANT_STYLES[variant] || VARIANT_STYLES.default;
+  const reactId = useId();
+  const inputId = id || reactId;
+  const v = VARIANT_STYLES[variant] || VARIANT_STYLES.kcb;
 
   const baseStyles = `${v.base} border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-kcb-noir disabled:opacity-50 disabled:cursor-not-allowed`;
 

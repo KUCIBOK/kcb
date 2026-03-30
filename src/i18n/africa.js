@@ -1,9 +1,10 @@
 export const africaT = {
   fr: {
     nav: {
-      services: "Services",
-      howItWorks: "Comment ça marche",
-      testimonials: "Témoignages",
+      home: "Accueil",
+      catalogue: "Catalogue",
+      artists: "Artistes",
+      blog: "Blog",
       cta: "Inscription",
       switchPortal: "Global Portal",
     },
@@ -70,6 +71,13 @@ export const africaT = {
         { quote: "Mon portfolio digital KCB m'a ouvert des portes que je n'imaginais pas. Un collectionneur genevois a scanné le QR code d'une de mes toiles en galerie — le lendemain, il m'écrivait. Le certificat imprimable, c'est ma carte de visite internationale.", author: "Gaëtan Rappacioli", role: "Artiste peintre, Cotonou" },
       ],
     },
+    catalogue: {
+      label: "Catalogue Certifié",
+      title: "L'Art Africain, Certifié et Traçable",
+      desc: "Chaque œuvre vérifiée. Chaque artiste documenté. Chaque pièce traçable via le standard KCB.",
+      ctaLabel: "Créer mon compte artiste",
+      ctaDesc: "Vous êtes artiste ? Soumettez vos œuvres gratuitement et rejoignez le catalogue certifié.",
+    },
     cta: {
       heading: "Prêt à certifier votre art ?",
       sub: "Inscription gratuite. Première certification en moins de 48h. Rejoignez les 340 artistes du réseau.",
@@ -79,8 +87,8 @@ export const africaT = {
     footer: {
       description: "Infrastructure de standardisation et de circulation sécurisée de l'art africain. Certification gratuite pour les artistes d'Afrique.",
       columns: [
-        { title: "Plateforme", links: [{ label: "Services", hash: "services" }, { label: "Comment ça marche", hash: "timeline" }, { label: "Témoignages", hash: "testimonials" }, { label: "Artistes", to: "/artists" }] },
-        { title: "Ressources", links: [{ label: "Blog", to: "/blog" }, { label: "FAQ", to: "/faq" }, { label: "Contact", to: "/contact" }, { label: "Explorer", to: "/explore" }] },
+        { title: "Plateforme", links: [{ label: "Accueil", to: "/africa" }, { label: "Catalogue", to: "/africa/catalogue" }, { label: "Artistes", to: "/africa/artists" }, { label: "Blog", to: "/africa/blog" }] },
+        { title: "Ressources", links: [{ label: "À propos", to: "/africa/about" }, { label: "FAQ", to: "/africa/faq" }, { label: "Contact", to: "/africa/contact" }] },
         { title: "Légal", links: [{ label: "Confidentialité", to: "/privacy-policy" }, { label: "CGV", to: "/sales-conditions" }, { label: "CGU", to: "/terms-and-conditions" }, { label: "Charte éthique", to: "/ethic-chart" }] },
       ],
       copyright: "Kucibok — Art africain certifié",
@@ -91,9 +99,10 @@ export const africaT = {
 
   en: {
     nav: {
-      services: "Services",
-      howItWorks: "How it works",
-      testimonials: "Testimonials",
+      home: "Home",
+      catalogue: "Catalogue",
+      artists: "Artists",
+      blog: "Blog",
       cta: "Sign Up",
       switchPortal: "Global Portal",
     },
@@ -160,6 +169,13 @@ export const africaT = {
         { quote: "My KCB digital portfolio opened doors I never imagined. A Geneva collector scanned the QR code on one of my paintings in a gallery — the next day, he was writing to me. The printable certificate is my international business card.", author: "Gaëtan Rappacioli", role: "Painter, Cotonou" },
       ],
     },
+    catalogue: {
+      label: "Certified Catalogue",
+      title: "African Art, Certified and Traceable",
+      desc: "Every artwork verified. Every artist documented. Every piece traceable via the KCB standard.",
+      ctaLabel: "Create my artist account",
+      ctaDesc: "You're an artist? Submit your works for free and join the certified catalogue.",
+    },
     cta: {
       heading: "Ready to certify your art?",
       sub: "Free sign-up. First certification in under 48h. Join 340 artists in the network.",
@@ -169,8 +185,8 @@ export const africaT = {
     footer: {
       description: "Infrastructure for the standardisation and secure circulation of African art. Free certification for artists across Africa.",
       columns: [
-        { title: "Platform", links: [{ label: "Services", hash: "services" }, { label: "How it works", hash: "timeline" }, { label: "Testimonials", hash: "testimonials" }, { label: "Artists", to: "/artists" }] },
-        { title: "Resources", links: [{ label: "Blog", to: "/blog" }, { label: "FAQ", to: "/faq" }, { label: "Contact", to: "/contact" }, { label: "Explore", to: "/explore" }] },
+        { title: "Platform", links: [{ label: "Home", to: "/africa" }, { label: "Catalogue", to: "/africa/catalogue" }, { label: "Artists", to: "/africa/artists" }, { label: "Blog", to: "/africa/blog" }] },
+        { title: "Resources", links: [{ label: "About", to: "/africa/about" }, { label: "FAQ", to: "/africa/faq" }, { label: "Contact", to: "/africa/contact" }] },
         { title: "Legal", links: [{ label: "Privacy", to: "/privacy-policy" }, { label: "Sales T&C", to: "/sales-conditions" }, { label: "Terms", to: "/terms-and-conditions" }, { label: "Ethics Charter", to: "/ethic-chart" }] },
       ],
       copyright: "Kucibok — Certified African Art",

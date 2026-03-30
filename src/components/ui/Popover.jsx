@@ -172,7 +172,7 @@ export function Popover({
           {/* Popover content */}
           <div
             ref={popoverRef}
-            className={`fixed z-[9999] bg-card border border-gray-700 rounded-lg shadow-xl
+            className={`fixed z-[9999] bg-kcb-ardoise border border-white/[0.08] rounded-[4px] shadow-xl
               ${typeof width === 'number' ? '' : widths[width]}
               animate-in fade-in slide-in-from-top-2 duration-200`}
             style={{
@@ -186,12 +186,12 @@ export function Popover({
           >
             {/* Header */}
             {(title || showCloseButton) && (
-              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
                 {title && <h3 className="font-semibold text-white">{title}</h3>}
                 {showCloseButton && (
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-1 hover:bg-gray-700 rounded transition"
+                    className="p-1 hover:bg-white/[0.06] rounded-[4px] transition"
                     aria-label="Close"
                   >
                     <X className="w-4 h-4" />

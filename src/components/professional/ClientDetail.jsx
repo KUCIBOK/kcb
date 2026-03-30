@@ -114,7 +114,7 @@ export function ClientDetail({ client, onClientUpdated }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-card rounded-lg p-6">
+      <div className="bg-kcb-ardoise rounded-[4px] p-6">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="flex-1">
             {editing ? (
@@ -123,7 +123,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="text-2xl font-bold bg-background border border-gray-700 rounded-lg px-3 py-1 text-white w-full md:w-auto"
+                className="text-2xl font-bold bg-kcb-noir border border-white/[0.06] rounded-[4px] px-3 py-1 text-white w-full md:w-auto"
               />
             ) : (
               <h1 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -135,7 +135,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             )}
 
             <div className="flex flex-wrap gap-4 mt-3">
-              <div className="flex items-center gap-2 text-gray-400">
+              <div className="flex items-center gap-2 text-kcb-pierre">
                 <Mail className="w-4 h-4" />
                 {editing ? (
                   <input
@@ -143,13 +143,13 @@ export function ClientDetail({ client, onClientUpdated }) {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="bg-background border border-gray-700 rounded px-2 py-1 text-white text-sm"
+                    className="bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm"
                   />
                 ) : (
                   <span>{client.email || "Non renseigné"}</span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-gray-400">
+              <div className="flex items-center gap-2 text-kcb-pierre">
                 <Phone className="w-4 h-4" />
                 {editing ? (
                   <input
@@ -157,13 +157,13 @@ export function ClientDetail({ client, onClientUpdated }) {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="bg-background border border-gray-700 rounded px-2 py-1 text-white text-sm"
+                    className="bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm"
                   />
                 ) : (
                   <span>{client.phone || "Non renseigné"}</span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-gray-400">
+              <div className="flex items-center gap-2 text-kcb-pierre">
                 <MapPin className="w-4 h-4" />
                 {editing ? (
                   <div className="flex gap-2">
@@ -173,7 +173,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                       placeholder="Ville"
                       value={formData.city}
                       onChange={handleChange}
-                      className="bg-background border border-gray-700 rounded px-2 py-1 text-white text-sm w-24"
+                      className="bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm w-24"
                     />
                     <input
                       type="text"
@@ -181,7 +181,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                       placeholder="Pays"
                       value={formData.country}
                       onChange={handleChange}
-                      className="bg-background border border-gray-700 rounded px-2 py-1 text-white text-sm w-24"
+                      className="bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm w-24"
                     />
                   </div>
                 ) : (
@@ -200,7 +200,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                 <button
                   onClick={() => setEditing(false)}
                   disabled={loading}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition"
+                  className="flex items-center gap-2 px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white rounded-[4px] transition"
                 >
                   <X className="w-4 h-4" />
                   Annuler
@@ -208,7 +208,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg transition disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-[4px] transition disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" />
                   {loading ? "Sauvegarde..." : "Enregistrer"}
@@ -217,7 +217,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             ) : (
               <button
                 onClick={() => setEditing(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg transition"
+                className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition"
               >
                 <Edit className="w-4 h-4" />
                 Modifier
@@ -227,15 +227,15 @@ export function ClientDetail({ client, onClientUpdated }) {
         </div>
 
         {/* Status & Segment */}
-        <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-gray-700">
+        <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-white/[0.06]">
           <div>
-            <label className="text-xs text-gray-500">Statut</label>
+            <label className="text-xs text-kcb-pierre">Statut</label>
             {editing ? (
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="mt-1 bg-background border border-gray-700 rounded px-2 py-1 text-white text-sm"
+                className="mt-1 bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm"
               >
                 <option value="prospect">Prospect</option>
                 <option value="client">Client</option>
@@ -251,8 +251,8 @@ export function ClientDetail({ client, onClientUpdated }) {
                       : client.status === "client"
                       ? "bg-green-900/50 text-green-200"
                       : client.status === "prospect"
-                      ? "bg-blue-900/50 text-blue-200"
-                      : "bg-gray-700/50 text-gray-300"
+                      ? "bg-kcb-or/20 text-kcb-sable"
+                      : "bg-kcb-ardoise/50 text-kcb-sable"
                   }`}
                 >
                   {client.status.charAt(0).toUpperCase() +
@@ -263,13 +263,13 @@ export function ClientDetail({ client, onClientUpdated }) {
           </div>
 
           <div>
-            <label className="text-xs text-gray-500">Segment</label>
+            <label className="text-xs text-kcb-pierre">Segment</label>
             {editing ? (
               <select
                 name="segment"
                 value={formData.segment}
                 onChange={handleChange}
-                className="mt-1 bg-background border border-gray-700 rounded px-2 py-1 text-white text-sm"
+                className="mt-1 bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm"
               >
                 <option value="art-collector">Collectionneur</option>
                 <option value="corporate">Corporate</option>
@@ -290,14 +290,14 @@ export function ClientDetail({ client, onClientUpdated }) {
           </div>
 
           <div>
-            <label className="text-xs text-gray-500">Prochaine relance</label>
+            <label className="text-xs text-kcb-pierre">Prochaine relance</label>
             {editing ? (
               <input
                 type="datetime-local"
                 name="nextFollowUp"
                 value={formData.nextFollowUp}
                 onChange={handleChange}
-                className="mt-1 bg-background border border-gray-700 rounded px-2 py-1 text-white text-sm"
+                className="mt-1 bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm"
               />
             ) : (
               <p className="mt-1 text-white">
@@ -312,20 +312,20 @@ export function ClientDetail({ client, onClientUpdated }) {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-card rounded-lg p-4">
-          <h3 className="text-gray-400 text-sm font-medium">Total achats</h3>
+        <div className="bg-kcb-ardoise rounded-[4px] p-4">
+          <h3 className="text-kcb-pierre text-sm font-medium">Total achats</h3>
           <p className="text-2xl font-bold text-white mt-1">
             {client.totalPurchases}
           </p>
         </div>
-        <div className="bg-card rounded-lg p-4">
-          <h3 className="text-gray-400 text-sm font-medium">Dépenses totales</h3>
+        <div className="bg-kcb-ardoise rounded-[4px] p-4">
+          <h3 className="text-kcb-pierre text-sm font-medium">Dépenses totales</h3>
           <p className="text-2xl font-bold text-white mt-1">
             {client.totalSpent?.toLocaleString("fr-FR")} CFA
           </p>
         </div>
-        <div className="bg-card rounded-lg p-4">
-          <h3 className="text-gray-400 text-sm font-medium">Dernière interaction</h3>
+        <div className="bg-kcb-ardoise rounded-[4px] p-4">
+          <h3 className="text-kcb-pierre text-sm font-medium">Dernière interaction</h3>
           <p className="text-white mt-1">
             {client.lastInteraction
               ? new Date(client.lastInteraction).toLocaleDateString("fr-FR")
@@ -336,7 +336,7 @@ export function ClientDetail({ client, onClientUpdated }) {
 
       {/* Purchase History */}
       {client.purchaseHistory?.length > 0 && (
-        <div className="bg-card rounded-lg p-6">
+        <div className="bg-kcb-ardoise rounded-[4px] p-6">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />
             Historique d'achats
@@ -345,11 +345,11 @@ export function ClientDetail({ client, onClientUpdated }) {
             {client.purchaseHistory.map((purchase, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-background/50 rounded-lg"
+                className="flex items-center justify-between p-3 bg-kcb-noir/50 rounded-[4px]"
               >
                 <div>
                   <p className="text-white font-medium">{purchase.title}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-kcb-pierre">
                     {new Date(purchase.date).toLocaleDateString("fr-FR")}
                   </p>
                 </div>
@@ -363,7 +363,7 @@ export function ClientDetail({ client, onClientUpdated }) {
       )}
 
       {/* Interactions */}
-      <div className="bg-card rounded-lg p-6">
+      <div className="bg-kcb-ardoise rounded-[4px] p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <MessageSquare className="w-5 h-5" />
@@ -373,7 +373,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             onClick={() => {
               document.getElementById("add-interaction-modal").showModal();
             }}
-            className="flex items-center gap-2 px-3 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-lg text-sm transition"
+            className="flex items-center gap-2 px-3 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] text-sm transition"
           >
             <Plus className="w-4 h-4" />
             Ajouter
@@ -385,15 +385,15 @@ export function ClientDetail({ client, onClientUpdated }) {
             client.interactions.map((interaction) => (
               <div
                 key={interaction._id}
-                className="p-4 bg-background/50 rounded-lg border border-gray-700"
+                className="p-4 bg-kcb-noir/50 rounded-[4px] border border-white/[0.06]"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-1 bg-blue-900/50 text-blue-200 rounded-full text-xs">
+                      <span className="px-2 py-1 bg-kcb-or/20 text-kcb-sable rounded-full text-xs">
                         {interaction.type}
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-kcb-pierre">
                         {new Date(interaction.date).toLocaleDateString("fr-FR")}
                       </span>
                     </div>
@@ -401,7 +401,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                       {interaction.description}
                     </p>
                     {interaction.notes && (
-                      <p className="text-gray-400 text-sm mt-1">
+                      <p className="text-kcb-pierre text-sm mt-1">
                         {interaction.notes}
                       </p>
                     )}
@@ -416,7 +416,7 @@ export function ClientDetail({ client, onClientUpdated }) {
               </div>
             ))
           ) : (
-            <p className="text-gray-500 text-center py-8">
+            <p className="text-kcb-pierre text-center py-8">
               Aucune interaction enregistrée
             </p>
           )}
@@ -424,7 +424,7 @@ export function ClientDetail({ client, onClientUpdated }) {
       </div>
 
       {/* Notes */}
-      <div className="bg-card rounded-lg p-6">
+      <div className="bg-kcb-ardoise rounded-[4px] p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <MessageSquare className="w-5 h-5" />
@@ -438,12 +438,12 @@ export function ClientDetail({ client, onClientUpdated }) {
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
             placeholder="Ajouter une note..."
-            className="flex-1 px-4 py-2 bg-background border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-kcb-or"
+            className="flex-1 px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white placeholder-kcb-pierre focus:outline-none focus:border-kcb-or"
           />
           <button
             onClick={handleAddNote}
             disabled={!newNote.trim()}
-            className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 text-kcb-noir rounded-lg transition"
+            className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 text-kcb-noir rounded-[4px] transition"
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -454,12 +454,12 @@ export function ClientDetail({ client, onClientUpdated }) {
             client.notes.map((note) => (
               <div
                 key={note._id}
-                className="p-4 bg-background/50 rounded-lg border border-gray-700"
+                className="p-4 bg-kcb-noir/50 rounded-[4px] border border-white/[0.06]"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <p className="text-white">{note.content}</p>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-kcb-pierre mt-2">
                       Par {note.author?.name} •{" "}
                       {new Date(note.createdAt).toLocaleDateString("fr-FR")}
                     </p>
@@ -474,7 +474,7 @@ export function ClientDetail({ client, onClientUpdated }) {
               </div>
             ))
           ) : (
-            <p className="text-gray-500 text-center py-8">
+            <p className="text-kcb-pierre text-center py-8">
               Aucune note enregistrée
             </p>
           )}
@@ -483,13 +483,13 @@ export function ClientDetail({ client, onClientUpdated }) {
 
       {/* Add Interaction Modal */}
       <dialog id="add-interaction-modal" className="modal">
-        <div className="modal-box bg-card border border-gray-700">
+        <div className="modal-box bg-kcb-ardoise border border-white/[0.06]">
           <h3 className="font-bold text-lg text-white mb-4">
             Ajouter une interaction
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-300 mb-2">Type</label>
+              <label className="block text-sm text-kcb-sable mb-2">Type</label>
               <select
                 value={newInteraction.type}
                 onChange={(e) =>
@@ -498,7 +498,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                     type: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 bg-background border border-gray-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white"
               >
                 <option value="email">Email</option>
                 <option value="call">Appel</option>
@@ -509,7 +509,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             </div>
 
             <div>
-              <label className="block text-sm text-gray-300 mb-2">
+              <label className="block text-sm text-kcb-sable mb-2">
                 Description
               </label>
               <input
@@ -521,13 +521,13 @@ export function ClientDetail({ client, onClientUpdated }) {
                     description: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 bg-background border border-gray-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white"
                 placeholder="Ex: Appel de suivi"
               />
             </div>
 
             <div>
-              <label className="block text-sm text-gray-300 mb-2">Notes</label>
+              <label className="block text-sm text-kcb-sable mb-2">Notes</label>
               <textarea
                 value={newInteraction.notes}
                 onChange={(e) =>
@@ -536,7 +536,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                     notes: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 bg-background border border-gray-700 rounded-lg text-white"
+                className="w-full px-3 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white"
                 placeholder="Détails supplémentaires..."
                 rows={3}
               />
@@ -547,11 +547,11 @@ export function ClientDetail({ client, onClientUpdated }) {
               <button
                 onClick={handleAddInteraction}
                 disabled={!newInteraction.description.trim()}
-                className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 text-kcb-noir rounded-lg transition"
+                className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze disabled:opacity-50 text-kcb-noir rounded-[4px] transition"
               >
                 Ajouter
               </button>
-              <button className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition">
+              <button className="px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white rounded-[4px] transition">
                 Annuler
               </button>
             </form>

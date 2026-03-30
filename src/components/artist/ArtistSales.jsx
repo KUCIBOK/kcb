@@ -1,80 +1,85 @@
-import { useState, useEffect } from 'react';
-import {
-  DollarSign,
-  TrendingUp,
-  ShoppingBag,
-  CreditCard,
-  ArrowUpRight,
-  ArrowDownRight,
-  Clock,
-} from 'lucide-react';
-import { utils } from '../../api/useAPI';
+import { useState, useEffect } from 'react'
+import { DollarSign, TrendingUp, ShoppingBag, CreditCard, Clock, AlertTriangle } from 'lucide-react'
+import { SkeletonKPI, SkeletonTable } from '../ui'
+import { utils } from '../../api/useAPI'
 
 const fmt = (amount, currency = 'XOF') =>
   new Intl.NumberFormat('fr-FR', {
     style: 'currency',
     currency,
     minimumFractionDigits: 0,
-  }).format(amount ?? 0);
+  }).format(amount ?? 0)
 
 const relativeDate = (iso) => {
-  if (!iso) return '';
-  const diff = Date.now() - new Date(iso).getTime();
-  const d = Math.floor(diff / 86400000);
-  if (d === 0) return "Aujourd'hui";
-  if (d === 1) return 'Il y a 1 jour';
-  return `Il y a ${d} jours`;
-};
+  if (!iso) return ''
+  const diff = Date.now() - new Date(iso).getTime()
+  const d = Math.floor(diff / 86400000)
+  if (d === 0) return "Aujourd'hui"
+  if (d === 1) return 'Il y a 1 jour'
+  return `Il y a ${d} jours`
+}
 
 export default function ArtistSales() {
-  const [data, setData]     = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]   = useState(null);
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
-        const res = await fetch(`${utils.api}/transactions/artist`, utils.options);
-        const body = await res.json();
-        if (!res.ok) { setError(body?.error ?? 'Erreur'); return; }
-        setData(body?.data ?? body);
+        const res = await fetch(`${utils.api}/transactions/artist`, utils.options)
+        const body = await res.json()
+        if (!res.ok) {
+          setError(body?.error ?? 'Erreur')
+          return
+        }
+        setData(body?.data ?? body)
       } catch (e) {
-        setError(e.message);
+        setError(e.message)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" />
+      <div className="space-y-6">
+        <div>
+          <div className="h-8 w-56 bg-white/[0.08] animate-pulse rounded-[4px] mb-2" />
+          <div className="h-4 w-72 bg-white/[0.05] animate-pulse rounded-[4px]" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <SkeletonKPI />
+          <SkeletonKPI />
+          <SkeletonKPI />
+          <SkeletonKPI />
+        </div>
+        <SkeletonTable rows={6} cols={3} />
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 text-red-400 text-sm">
-        {error}
+      <div className="flex items-start gap-3 p-4 rounded-[4px] border border-red-500/30 bg-red-500/10 text-red-300 text-sm">
+        <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+        <span>{error}</span>
       </div>
-    );
+    )
   }
 
-  const stats = data?.stats ?? {};
-  const transactions = data?.transactions ?? [];
-  const currency = stats.currency ?? 'XOF';
-  const recent = transactions.slice(0, 6);
+  const stats = data?.stats ?? {}
+  const transactions = data?.transactions ?? []
+  const currency = stats.currency ?? 'XOF'
+  const recent = transactions.slice(0, 6)
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white">Mes Ventes & Revenus</h1>
-        <p className="text-kcb-pierre text-sm mt-1">
-          Revenus nets après commission Kucibok (10%)
-        </p>
+        <p className="text-kcb-pierre text-sm mt-1">Revenus nets après commission Kucibok (10%)</p>
       </div>
 
       {/* KPIs */}
@@ -102,7 +107,7 @@ export default function ArtistSales() {
           value={stats.completedSales ?? 0}
           change={stats.pendingSales ? `${stats.pendingSales} en cours` : null}
           icon={<ShoppingBag className="w-5 h-5" />}
-          color="purple"
+          color="kcb"
         />
       </div>
 
@@ -110,9 +115,7 @@ export default function ArtistSales() {
       <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-6">
         <h3 className="text-base font-semibold text-white mb-4">Transactions récentes</h3>
         {recent.length === 0 ? (
-          <p className="text-kcb-pierre text-sm text-center py-8">
-            Aucune vente pour l'instant.
-          </p>
+          <p className="text-kcb-pierre text-sm text-center py-8">Aucune vente pour l'instant.</p>
         ) : (
           <div className="space-y-3">
             {recent.map((tx) => (
@@ -143,7 +146,9 @@ export default function ArtistSales() {
                   <p className="text-white font-semibold text-sm">
                     {fmt(tx.net_amount, tx.currency)}
                   </p>
-                  <span className={`text-xs ${tx.status === 'completed' ? 'text-green-400' : 'text-yellow-400'}`}>
+                  <span
+                    className={`text-xs ${tx.status === 'completed' ? 'text-green-400' : 'text-yellow-400'}`}
+                  >
                     {tx.status === 'completed' ? 'Reçu' : 'En attente'}
                   </span>
                 </div>
@@ -181,16 +186,16 @@ export default function ArtistSales() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 function KPICard({ label, value, change, icon, color }) {
   const colors = {
-    green:  'bg-green-500/10  border-green-500/30  text-green-300',
-    blue:   'bg-blue-500/10   border-blue-500/30   text-blue-300',
+    green: 'bg-green-500/10  border-green-500/30  text-green-300',
+    blue: 'bg-kcb-or/10     border-kcb-or/30     text-kcb-sable',
     yellow: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300',
-    purple: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
-  };
+    kcb: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
+  }
   return (
     <div className={`border rounded-lg p-4 ${colors[color]}`}>
       <div className="flex items-center justify-between mb-2">
@@ -198,9 +203,7 @@ function KPICard({ label, value, change, icon, color }) {
         {icon}
       </div>
       <div className="text-2xl font-bold text-white">{value}</div>
-      {change && (
-        <div className="text-xs mt-1 opacity-75">{change}</div>
-      )}
+      {change && <div className="text-xs mt-1 opacity-75">{change}</div>}
     </div>
-  );
+  )
 }

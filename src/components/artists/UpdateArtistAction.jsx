@@ -13,7 +13,7 @@ export function UpdateArtistAction({ artist }) {
     <>
       <button
         onClick={() => setState({ ...state, updateArtist: true })}
-        className="flex p-2 gap-2 items-center border bg-green-600 border-border rounded-lg"
+        className="flex p-2 gap-2 items-center border bg-green-600 border-border rounded-[4px]"
       >
         <PenBox className="w-4 h-4 text-white font-bold mx-auto" />
         <p className="mx-auto text-sm">Modifier</p>
@@ -88,7 +88,7 @@ function Modal({ closeModal, artist }) {
   return (
     <>
       <div className="w-screen h-screen flex z-999 justify-center items-center bg-stone-950/80 fixed top-0 left-0">
-        <div className="rounded-xl border border-border bg-background h-7/9 py-6 px-4 w-13/15 xl:w-4/9 animate-scale-up overflow-auto">
+        <div className="rounded-[4px] border border-border bg-kcb-noir h-7/9 py-6 px-4 w-13/15 xl:w-4/9 animate-scale-up overflow-auto">
           <div className="flex justify-between items-start mb-4">
             <p className="text-lg font-serif font-bold">
               Mettre l'artiste à jour
@@ -115,8 +115,8 @@ function Modal({ closeModal, artist }) {
                   className="w-32 h-32 object-cover rounded-full mb-4 mx-auto"
                 />
               ) : (
-                <div className="w-32 h-32 rounded-full bg-indigo-kcb/30 mb-4 flex justify-center items-center mx-auto">
-                  <Camera className="w-10 text-indigo-kcb h-10 " />
+                <div className="w-32 h-32 rounded-full bg-kcb-or/30 mb-4 flex justify-center items-center mx-auto">
+                  <Camera className="w-10 text-kcb-or h-10 " />
                 </div>
               )}
               <div className="mx-auto text-center flex flex-col">
@@ -125,7 +125,7 @@ function Modal({ closeModal, artist }) {
                   onClick={() =>
                     document.getElementById("profile-image").click()
                   }
-                  className="border border-border bg-gray-900 w-1/2 mx-auto rounded-md text-sm text-white font-medium px-4 py-2 my-2"
+                  className="border border-border bg-kcb-ardoise w-1/2 mx-auto rounded-md text-sm text-white font-medium px-4 py-2 my-2"
                 >
                   Modifier la photo
                 </button>
@@ -188,7 +188,7 @@ function Modal({ closeModal, artist }) {
                 }
                 value={state.country}
                 id="country"
-                className="w-full border border-gray-700/70  bg-gray-900 rounded-md mt-[5px] py-[7px] px-2"
+                className="w-full border border-white/[0.06]/70  bg-kcb-ardoise rounded-md mt-[5px] py-[7px] px-2"
                 required
               >
                 {state?.countries?.map((country, index) => (
@@ -230,7 +230,7 @@ function Modal({ closeModal, artist }) {
                 id="portfolio"
                 cols="30"
                 rows="5"
-                className="w-full border border-border rounded-md bg-background px-3 py-2 text-white mt-2"
+                className="w-full border border-border rounded-md bg-kcb-noir px-3 py-2 text-white mt-2"
                 placeholder="Lien de votre portfolio"
               />
             </div>

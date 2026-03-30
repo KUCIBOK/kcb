@@ -15,10 +15,10 @@ export const Marketplace = memo(({ artworks }) => {
                     ))}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-gray-800 rounded-xl bg-gray-900/70 w-full min-h-[300px]">
-                    <Search className="h-10 w-10 mb-4 text-gray-500" />
-                    <h3 className="font-serif text-lg font-semibold text-gray-200 mb-1">Aucune œuvre trouvée</h3>
-                    <p className="text-gray-400 text-sm max-w-xs text-center">
+                <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-white/[0.06] rounded-[4px] bg-kcb-ardoise/30 w-full min-h-[300px]">
+                    <Search className="h-10 w-10 mb-4 text-kcb-pierre" />
+                    <h3 className="font-serif text-lg font-semibold text-white mb-1">Aucune œuvre trouvée</h3>
+                    <p className="text-kcb-pierre text-sm max-w-xs text-center">
                         Nous n'avons trouvé aucune œuvre correspondant à votre recherche.
                     </p>
                 </div>
