@@ -7,6 +7,7 @@ import { Step4Essential } from '../../components/auth/Step4Essential'
 import { Step5Artist } from '../../components/auth/Step5Artist'
 import { Step5Curator } from '../../components/auth/Step5Curator'
 import { SignUpUser, loginWithGoogle, updateProfile } from '../../api/useAuth'
+import { friendlyAuthError } from '../../lib/authErrors'
 import { Helmet } from 'react-helmet'
 import { Check } from 'lucide-react'
 
@@ -132,21 +133,22 @@ export default function SignUp() {
           uploadedImageUrl: data.imageUrl ?? null, // URL Supabase Storage de la photo
         }))
       } else if (data?.error) {
-        setFormState((p) => ({ ...p, error: data.error, loading: false }))
+        setFormState((p) => ({ ...p, error: friendlyAuthError(data.error), loading: false }))
       } else {
         setFormState((p) => ({ ...p, error: 'Erreur inconnue.', loading: false }))
       }
     } catch (err) {
-      setFormState((p) => ({ ...p, error: err?.message || 'Erreur serveur.', loading: false }))
+      setFormState((p) => ({ ...p, error: friendlyAuthError(err?.message), loading: false }))
     }
   }
 
   /** Step 5 — Sauvegarde l'enrichissement puis redirige */
   const handleEnrich = async () => {
     setFormState((p) => ({ ...p, loading: true }))
+    let enrichFailed = false
     try {
       if (formState.createdUserId) {
-        await updateProfile(formState.createdUserId, {
+        const result = await updateProfile(formState.createdUserId, {
           // Essentiels Step 4 — indispensables pour créer le row artists
           name: formState.name,
           country: formState.country,
@@ -162,12 +164,13 @@ export default function SignUp() {
           twitter: formState.socials.twitter,
           instagram: formState.socials.instagram,
         })
+        if (result?.error) enrichFailed = true
       }
     } catch {
-      // Enrichissement non bloquant — on continue même en cas d'erreur
+      enrichFailed = true
     }
     setFormState((p) => ({ ...p, loading: false }))
-    navigate('/check-email', { state: { email: formState.email } })
+    navigate('/check-email', { state: { email: formState.email, enrichFailed } })
   }
 
   /** Step 5 — Passer l'enrichissement directement */

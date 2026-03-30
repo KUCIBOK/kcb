@@ -97,6 +97,16 @@ const supabaseAdmin = createClient(
 
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://kucibok.com';
 
+// ─── Rate limiting (in-memory, par instance Vercel) ─────────────────────────
+const _rlMap = new Map();
+function rateLimit(ip, windowMs = 60_000, max = 5) {
+  const now = Date.now();
+  const hits = (_rlMap.get(ip) ?? []).filter(t => now - t < windowMs);
+  hits.push(now);
+  _rlMap.set(ip, hits);
+  return hits.length <= max;
+}
+
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':      CORS_ORIGIN,
   'Access-Control-Allow-Methods':     'GET, POST, PUT, PATCH, DELETE, OPTIONS',
@@ -611,6 +621,9 @@ async function routeReportError(req, res) {
  */
 async function routeContact(req, res) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown';
+  if (!rateLimit(ip, 60_000, 5)) return fail(res, 'Trop de requêtes. Réessayez dans une minute.', 429);
 
   const { name, email, subject, message } = req.body ?? {};
   if (!name || !email || !message) return fail(res, 'Nom, email et message requis');
@@ -2085,13 +2098,17 @@ async function routeGalleriesImport(req, res) {
   const galleries = req.body?.galleries;
   if (!Array.isArray(galleries) || !galleries.length) return fail(res, 'galleries[] requis');
 
+  const FIELD_MAX = { name: 255, description: 2000, location: 255, website: 500, image: 500 };
   const rows = galleries.map(g => ({
-    name: g.name ?? '',
-    description: g.description ?? null,
-    location: g.location ?? null,
-    website: g.website ?? null,
-    image: g.image ?? null,
+    name:        String(g.name ?? '').trim().slice(0, FIELD_MAX.name),
+    description: g.description ? String(g.description).trim().slice(0, FIELD_MAX.description) : null,
+    location:    g.location    ? String(g.location).trim().slice(0, FIELD_MAX.location)    : null,
+    website:     g.website     ? String(g.website).trim().slice(0, FIELD_MAX.website)     : null,
+    image:       g.image       ? String(g.image).trim().slice(0, FIELD_MAX.image)         : null,
   }));
+
+  const invalid = rows.find(r => !r.name);
+  if (invalid) return fail(res, 'Chaque galerie doit avoir un nom non vide');
 
   const { data, error } = await supabaseAdmin.from('galleries').insert(rows).select();
   if (error) return fail(res, error.message);
@@ -2108,6 +2125,8 @@ async function routeGalleriesImport(req, res) {
  */
 async function routeVisitor(req, res) {
   if (req.method === 'POST') {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown';
+    if (!rateLimit(ip, 10_000, 10)) return ok(res, { throttled: true }, 200);
     const { ipAddress, userAgent, pageVisited, sessionId } = req.body ?? {};
     const { data, error } = await supabaseAdmin
       .from('visitors')
@@ -3188,6 +3207,13 @@ async function routeBlogPublish(req, res, id) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  const { data: existing } = await supabaseAdmin
+    .from('blog_posts').select('user_id').eq('id', id).single();
+  if (!existing) return notFound(res, 'Article');
+  if (role !== 'admin' && existing.user_id !== userId) return fail(res, 'Accès refusé', 403);
 
   const { data, error } = await supabaseAdmin
     .from('blog_posts')
@@ -3206,6 +3232,13 @@ async function routeBlogArchive(req, res, id) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  const { data: existing } = await supabaseAdmin
+    .from('blog_posts').select('user_id').eq('id', id).single();
+  if (!existing) return notFound(res, 'Article');
+  if (role !== 'admin' && existing.user_id !== userId) return fail(res, 'Accès refusé', 403);
 
   const { data, error } = await supabaseAdmin
     .from('blog_posts')

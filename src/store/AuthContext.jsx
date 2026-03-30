@@ -69,14 +69,17 @@ export function AuthContextProvider({ children }) {
   // ── Chargement du profil étendu (Supabase — artists / profiles) ─────────────
   const loadProfile = useCallback(async (kcbUser) => {
     if (!kcbUser?._id) return;
-    const profileData = await getUserProfile(kcbUser._id);
-    if (!profileData?._id && !profileData?.userId) return;
-
-    const key = profileKeyForRole(kcbUser.role);
-    if (key === 'artistProfile') setArtistProfile(profileData);
-    else if (key === 'buyerProfile') setBuyerProfile(profileData);
-    else if (key === 'curatorProfile') setCuratorProfile(profileData);
-    else if (key === 'adminProfile') setAdminProfile(profileData);
+    try {
+      const profileData = await getUserProfile(kcbUser._id);
+      if (!profileData?._id && !profileData?.userId) return;
+      const key = profileKeyForRole(kcbUser.role);
+      if (key === 'artistProfile') setArtistProfile(profileData);
+      else if (key === 'buyerProfile') setBuyerProfile(profileData);
+      else if (key === 'curatorProfile') setCuratorProfile(profileData);
+      else if (key === 'adminProfile') setAdminProfile(profileData);
+    } catch {
+      // Profil étendu non critique — ne pas bloquer l'authentification
+    }
   }, []);
 
   /**
