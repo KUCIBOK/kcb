@@ -846,7 +846,7 @@ async function authSignup(req, res) {
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    email_confirm:  false,
+    email_confirm:  true, // auto-confirme pour éviter les erreurs SMTP Supabase — on gère l'email nous-mêmes
     user_metadata:  { role, name: name ?? null, country: country ?? null, username: username ?? null },
   });
 
@@ -862,7 +862,62 @@ async function authSignup(req, res) {
     is_active:    true,
   }).then(null, () => {}); // ignorer si déjà créé par le trigger
 
-  // L'email de confirmation est envoyé automatiquement par Supabase via le SMTP Resend configuré.
+  // Envoyer un magic link de bienvenue via Resend (indépendant du SMTP Supabase)
+  try {
+    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type:    'magiclink',
+      email,
+      options: { redirectTo: `${BASE_URL}/auth/callback` },
+    });
+
+    if (!linkError && linkData?.properties?.action_link) {
+      const { Resend } = await import('resend');
+      const resend     = new Resend(process.env.RESEND_API_KEY);
+      const fromEmail  = `Kucibok <${process.env.ADMIN_EMAIL ?? 'noreply@kucibok.com'}>`;
+      const firstName  = name ? name.split(' ')[0] : null;
+
+      await resend.emails.send({
+        from:    fromEmail,
+        to:      email,
+        subject: 'Bienvenue sur Kucibok — Accédez à votre compte',
+        html: `
+          <!DOCTYPE html>
+          <html lang="fr">
+          <body style="margin:0;padding:0;background:#0f0f0f;font-family:'DM Sans',Arial,sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f0f0f;padding:40px 16px;">
+              <tr><td align="center">
+                <table width="480" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:4px;overflow:hidden;max-width:480px;width:100%;">
+                  <tr><td style="height:4px;background:#c49b46;"></td></tr>
+                  <tr><td style="padding:40px 40px 32px;">
+                    <p style="margin:0 0 24px;font-size:13px;color:#888;letter-spacing:2px;text-transform:uppercase;">Kucibok Bridge</p>
+                    <h1 style="margin:0 0 16px;font-size:22px;font-weight:600;color:#ffffff;font-family:Georgia,serif;">
+                      ${firstName ? `Bienvenue, ${firstName} !` : 'Bienvenue sur Kucibok !'}
+                    </h1>
+                    <p style="margin:0 0 28px;font-size:15px;color:#aaa;line-height:1.6;">
+                      Votre compte est créé. Cliquez sur le bouton ci-dessous pour accéder à votre espace.
+                    </p>
+                    <a href="${linkData.properties.action_link}"
+                       style="display:inline-block;padding:14px 28px;background:#c49b46;color:#0f0f0f;text-decoration:none;font-weight:700;font-size:14px;border-radius:4px;letter-spacing:0.5px;">
+                      Accéder à mon compte
+                    </a>
+                    <p style="margin:32px 0 0;font-size:12px;color:#555;line-height:1.6;">
+                      Ce lien expire dans 24h. Si vous n'avez pas créé de compte sur kucibok.com, ignorez cet email.
+                    </p>
+                  </td></tr>
+                  <tr><td style="padding:16px 40px;border-top:1px solid #2a2a2a;">
+                    <p style="margin:0;font-size:11px;color:#444;">© Kucibok — Infrastructure de l'art africain</p>
+                  </td></tr>
+                </table>
+              </td></tr>
+            </table>
+          </body>
+          </html>
+        `,
+      });
+    }
+  } catch (_) {
+    // Ne pas bloquer l'inscription si l'envoi échoue
+  }
 
   return ok(res, {
     user: {
