@@ -60,43 +60,33 @@ export async function loginUser(email, password) {
  */
 export async function SignUpUser(charge) {
   try {
-    const { email, password, role, name, image, ...rest } = charge
+    const { email, password, role, name, country, institution, image } = charge
 
-    // Inscription Supabase d'abord — l'image est uploadée APRÈS auth pour avoir un vrai userId
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          role: role ?? 'buyer',
-          name: name ?? '',
-          ...rest,
-        },
+    // Appel backend — admin.createUser + envoi magic link via Resend (pas de SMTP Supabase)
+    const res = await fetch(`${utils.api}/auth/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'kcb-api-key': import.meta.env.VITE_API_KEY,
       },
+      body: JSON.stringify({ email, password, role, name, country, institution }),
     })
 
-    if (error) {
-      if (error.message.toLowerCase().includes('already registered')) {
-        return { error: "L'utilisateur existe déjà. Essayez de vous connecter." }
-      }
-      return { error: error.message }
-    }
+    const body = await res.json()
+    if (!res.ok) return { error: body?.error ?? 'Erreur inscription' }
 
-    // Upload de la photo de profil avec le vrai userId Supabase
+    const userId = body?.data?.user?.id ?? body?.user?.id
+    if (!userId) return { error: 'Erreur inconnue' }
+
+    // Upload de la photo de profil avec le vrai userId
     let imageUrl = null
-    const userId = data.user?.id
-    if (role === 'artist' && image instanceof File && userId) {
+    if (role === 'artist' && image instanceof File) {
       const uploadResult = await uploadProfileImage(userId, image)
-      // En cas d'échec upload, on ne bloque pas l'inscription — l'image peut être ajoutée plus tard
-      if (!uploadResult.error) {
-        imageUrl = uploadResult.url
-        // Mettre à jour les metadata avec l'URL de l'image
-        await supabase.auth.updateUser({ data: { imageUrl } })
-      }
+      if (!uploadResult.error) imageUrl = uploadResult.url
     }
 
     return {
-      user: toKcbUser(data.user),
+      user: { _id: userId, id: userId, email, role, name },
       imageUrl,
       message: 'Inscription réussie. Vérifiez votre adresse email pour continuer.',
     }
