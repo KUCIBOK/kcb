@@ -778,7 +778,13 @@ async function authListUsers(req, res) {
     for (const u of authData.users) emailMap[u.id] = u.email;
   }
 
-  const users = profiles.map(p => ({ ...p, _id: p.id, email: emailMap[p.id] || null }));
+  const users = profiles.map(p => ({
+    ...p,
+    _id:       p.id,
+    email:     emailMap[p.id] || null,
+    isActive:  p.is_active,
+    createdAt: p.created_at,
+  }));
   return ok(res, users);
 }
 
