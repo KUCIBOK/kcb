@@ -42,10 +42,6 @@ const AfricaLanding = lazy(() => import('../pages/AfricaLanding'))
 const AfricaCataloguePage = lazy(() => import('../pages/AfricaCataloguePage'))
 import PortalLayout from '../components/landing/PortalLayout'
 
-/**
- * Wraps any page component inside the Africa PortalLayout (gold nav + footer).
- * Adds top padding to compensate for the fixed PortalNav.
- */
 function AfricaWrap({ children }) {
   return (
     <PortalLayout portal="africa">
@@ -54,10 +50,6 @@ function AfricaWrap({ children }) {
   )
 }
 
-/**
- * Wraps any page component inside the Global PortalLayout (silver nav + footer).
- * Adds top padding to compensate for the fixed PortalNav.
- */
 function GlobalWrap({ children }) {
   return (
     <PortalLayout portal="global">
@@ -66,10 +58,6 @@ function GlobalWrap({ children }) {
   )
 }
 
-/**
- * Redirect helper for routes with dynamic :id params.
- * Replaces :id in the target path with the actual param value.
- */
 function NavigateWithParams({ to }) {
   const params = useParams()
   let target = to
@@ -81,7 +69,6 @@ function NavigateWithParams({ to }) {
 
 /**
  * Redirect vers le portail courant (africa ou global) selon le contexte de navigation.
- * Évite de toujours renvoyer vers /africa quand l'utilisateur vient de /global.
  */
 function PortalNavigate({ africaPath, globalPath }) {
   const location = useLocation()
@@ -104,12 +91,14 @@ function PortalNavigateWithParams({ africaTo, globalTo }) {
   }
   return <Navigate to={target} replace />
 }
+
 const GatewayPage = lazy(() => import('../pages/GatewayPage'))
 const GlobalPage = lazy(() => import('../pages/GlobalPage'))
 const GlobalCataloguePage = lazy(() => import('../pages/GlobalCataloguePage'))
 const GlobalSourcingPage = lazy(() => import('../pages/GlobalSourcingPage'))
 const VerifyArtwork = lazy(() => import('../pages/VerifyArtwork'))
 const CataloguePro = lazy(() => import('../pages/CataloguePro'))
+
 // Protected Routes
 import { GuestProtectedRoute } from '../utils/GuestProtectedRoute'
 import { ArtistProtectedRoute } from '../utils/ArtistProtectedRoute'
@@ -141,597 +130,189 @@ import Error500 from '../components/fallback/Error500'
 
 export function Router() {
   return (
-    <>
-      <Routes>
+    <Routes>
+      {/* ═══════════════════════════════════════════════════════════════
+          NIVEAU 1 — Auth seul (toutes les routes)
+          Seul AuthContextProvider monte ici : 0 appel API superflu
+          sur sign-up / sign-in / pages légales.
+          ═══════════════════════════════════════════════════════════════ */}
+      <Route
+        element={
+          <ErrorBoundary FallbackComponent={Error500}>
+            <AuthContextProvider>
+              <AutoAuth />
+              <Outlet />
+            </AuthContextProvider>
+          </ErrorBoundary>
+        }
+      >
+        {/* ── Routes guest (sign-in / sign-up / reset) ── */}
+        <Route element={<GuestProtectedRoute />}>
+          <Route path="/sign-in" element={<Suspense fallback={<PageLoader />}><SignIn /></Suspense>} />
+          <Route path="/sign-up" element={<Suspense fallback={<PageLoader />}><SignUp /></Suspense>} />
+          <Route path="/forgot-password" element={<Suspense fallback={<PageLoader />}><ForgotPasswordForm /></Suspense>} />
+          <Route path="/reset-password" element={<Suspense fallback={<PageLoader />}><ResetPasswordForm /></Suspense>} />
+          <Route path="/reset-password/:token" element={<Suspense fallback={<PageLoader />}><ResetPasswordForm /></Suspense>} />
+          <Route path="/verify-email/:token" element={<Suspense fallback={<PageLoader />}><VerifyEmail /></Suspense>} />
+          <Route path="/check-email" element={<Suspense fallback={<PageLoader />}><CheckEmail /></Suspense>} />
+        </Route>
+
+        {/* ── OAuth ── */}
+        <Route path="/auth/callback" element={<Suspense fallback={<PageLoader />}><OAuthCallback /></Suspense>} />
+        <Route element={<AuthProtectedRoute />}>
+          <Route path="/auth/role-selection" element={<Suspense fallback={<PageLoader />}><GoogleRoleSelection /></Suspense>} />
+        </Route>
+
+        {/* ── Redirections portail-aware (pas de rendu, pas d'API) ── */}
+        <Route path="/explore" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
+        <Route path="/explore/:category" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
+        <Route path="/marketplace" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
+        <Route path="/artists" element={<PortalNavigate africaPath="/africa/artists" globalPath="/global/artists" />} />
+        <Route path="/artist/:id" element={<PortalNavigateWithParams africaTo="/africa/artist/:id" globalTo="/global/artist/:id" />} />
+        <Route path="/artwork/:id" element={<PortalNavigateWithParams africaTo="/africa/artwork/:id" globalTo="/global/artwork/:id" />} />
+        <Route path="/blog" element={<PortalNavigate africaPath="/africa/blog" globalPath="/africa/blog" />} />
+        <Route path="/blog/:id" element={<PortalNavigateWithParams africaTo="/africa/blog/:id" globalTo="/africa/blog/:id" />} />
+        <Route path="/about" element={<PortalNavigate africaPath="/africa/about" globalPath="/global/about" />} />
+        <Route path="/contact" element={<PortalNavigate africaPath="/africa/contact" globalPath="/africa/contact" />} />
+        <Route path="/faq" element={<PortalNavigate africaPath="/africa/faq" globalPath="/africa/faq" />} />
+
+        {/* ── Pages légales (contenu statique, pas de providers de contenu) ── */}
+        <Route element={<Layout />}>
+          <Route path="/privacy-policy" element={<Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense>} />
+          <Route path="/terms-and-conditions" element={<Suspense fallback={<PageLoader />}><TermsAndConditions /></Suspense>} />
+          <Route path="/sales-conditions" element={<Suspense fallback={<PageLoader />}><SalesConditions /></Suspense>} />
+          <Route path="/ethic-chart" element={<Suspense fallback={<PageLoader />}><EthicChart /></Suspense>} />
+        </Route>
+        <Route path="/unsubscribe" element={<Suspense fallback={<PageLoader />}><Unsubscribe /></Suspense>} />
+
+        {/* ── 404 ── */}
+        <Route path="*" element={<Suspense fallback={<PageLoader />}><Error404 /></Suspense>} />
+        <Route path="/404" element={<Suspense fallback={<PageLoader />}><Error404 /></Suspense>} />
+
+        {/* ═══════════════════════════════════════════════════════════════
+            NIVEAU 2 — Contenu public + paiements
+            Monte : Artist, Artworks, Blog, Plan, Category, Delivery.
+            Ces providers ne s'initialisent PAS sur les pages auth/légales.
+            ═══════════════════════════════════════════════════════════════ */}
         <Route
           element={
-            <ErrorBoundary FallbackComponent={Error500}>
-              <AuthContextProvider>
-                <ArtistContextProvider>
-                  <ArtworksContextProvider>
-                    <BlogContextProvider>
-                      <UserProvider>
-                        <PlanProvider>
-                          <CategoryProvider>
-                            <CollectionProvider>
-                              <DeliveryContextProvider>
-                                <NumerisationProvider>
-                                  <ClientProvider>
-                                    <GalleryContextProvider>
-                                      <AutoAuth />
-                                      <Outlet />
-                                    </GalleryContextProvider>
-                                  </ClientProvider>
-                                </NumerisationProvider>
-                              </DeliveryContextProvider>
-                            </CollectionProvider>
-                          </CategoryProvider>
-                        </PlanProvider>
-                      </UserProvider>
-                    </BlogContextProvider>
-                  </ArtworksContextProvider>
-                </ArtistContextProvider>
-              </AuthContextProvider>
-            </ErrorBoundary>
+            <ArtistContextProvider>
+              <ArtworksContextProvider>
+                <BlogContextProvider>
+                  <PlanProvider>
+                    <CategoryProvider>
+                      <DeliveryContextProvider>
+                        <Outlet />
+                      </DeliveryContextProvider>
+                    </CategoryProvider>
+                  </PlanProvider>
+                </BlogContextProvider>
+              </ArtworksContextProvider>
+            </ArtistContextProvider>
           }
         >
-          {/* Gateway — standalone split-screen entry */}
+          {/* Gateway */}
           <Route
             path="/"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GatewayPage />
-              </Suspense>
-            }
+            element={<Suspense fallback={<PageLoader />}><GatewayPage /></Suspense>}
           />
 
-          {/* Layout — pages utilitaires (paiement, tracking, legal) */}
+          {/* Paiement + résultats + tracking */}
           <Route element={<Layout />}>
-            {/* Routes de paiement — protégées par authentification */}
             <Route element={<AuthProtectedRoute />}>
-              <Route
-                path="/artwork-checkout/:id"
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    <ArtworkCheckout />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/subscription-checkout/:id"
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    <SubscriptionPlanCheckout />
-                  </Suspense>
-                }
-              />
+              <Route path="/artwork-checkout/:id" element={<Suspense fallback={<PageLoader />}><ArtworkCheckout /></Suspense>} />
+              <Route path="/subscription-checkout/:id" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanCheckout /></Suspense>} />
             </Route>
-            {/* Résultats de paiement — accessibles pour afficher confirmation/erreur */}
-            <Route
-              path="/artwork-purchase-success/:transactionId"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <ArtworkPurchaseSuccess />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/artwork-purchase-failed/:transactionId"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <ArtworkPurchaseFailed />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/artwork-success/:transactionId"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <PayDunyaSuccess />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/artwork-failed/:transactionId"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <PayDunyaFailed />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/subscription-success/:subscriptionId"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SubscriptionPlanSuccess />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/subscription-failed/:subscriptionId"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SubscriptionPlanFailed />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/tracking/:trackingId"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <TrackingPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/privacy-policy"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <PrivacyPolicy />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/terms-and-conditions"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <TermsAndConditions />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/sales-conditions"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SalesConditions />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/ethic-chart"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <EthicChart />
-                </Suspense>
-              }
-            />
+            <Route path="/artwork-purchase-success/:transactionId" element={<Suspense fallback={<PageLoader />}><ArtworkPurchaseSuccess /></Suspense>} />
+            <Route path="/artwork-purchase-failed/:transactionId" element={<Suspense fallback={<PageLoader />}><ArtworkPurchaseFailed /></Suspense>} />
+            <Route path="/artwork-success/:transactionId" element={<Suspense fallback={<PageLoader />}><PayDunyaSuccess /></Suspense>} />
+            <Route path="/artwork-failed/:transactionId" element={<Suspense fallback={<PageLoader />}><PayDunyaFailed /></Suspense>} />
+            <Route path="/subscription-success/:subscriptionId" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanSuccess /></Suspense>} />
+            <Route path="/subscription-failed/:subscriptionId" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanFailed /></Suspense>} />
+            <Route path="/tracking/:trackingId" element={<Suspense fallback={<PageLoader />}><TrackingPage /></Suspense>} />
           </Route>
 
-          {/* Redirections — portail détecté via sessionStorage kcb_portal */}
-          <Route path="/explore" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
-          <Route path="/explore/:category" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
-          <Route path="/marketplace" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
-          <Route path="/artists" element={<PortalNavigate africaPath="/africa/artists" globalPath="/global/artists" />} />
-          <Route path="/artist/:id" element={<PortalNavigateWithParams africaTo="/africa/artist/:id" globalTo="/global/artist/:id" />} />
-          <Route path="/artwork/:id" element={<PortalNavigateWithParams africaTo="/africa/artwork/:id" globalTo="/global/artwork/:id" />} />
-          <Route path="/blog" element={<PortalNavigate africaPath="/africa/blog" globalPath="/africa/blog" />} />
-          <Route path="/blog/:id" element={<PortalNavigateWithParams africaTo="/africa/blog/:id" globalTo="/africa/blog/:id" />} />
-          <Route path="/about" element={<PortalNavigate africaPath="/africa/about" globalPath="/global/about" />} />
-          <Route path="/contact" element={<PortalNavigate africaPath="/africa/contact" globalPath="/africa/contact" />} />
-          <Route path="/faq" element={<PortalNavigate africaPath="/africa/faq" globalPath="/africa/faq" />} />
+          {/* ── Portail Africa ── */}
+          <Route path="/africa" element={<Suspense fallback={<PageLoader />}><AfricaLanding /></Suspense>} />
+          <Route path="/africa/catalogue" element={<Suspense fallback={<PageLoader />}><AfricaCataloguePage /></Suspense>} />
+          <Route path="/africa/artists" element={<Suspense fallback={<PageLoader />}><AfricaWrap><Artists /></AfricaWrap></Suspense>} />
+          <Route path="/africa/artist/:id" element={<Suspense fallback={<PageLoader />}><AfricaWrap><ArtistDetails /></AfricaWrap></Suspense>} />
+          <Route path="/africa/artwork/:id" element={<Suspense fallback={<PageLoader />}><AfricaWrap><Artwork /></AfricaWrap></Suspense>} />
+          <Route path="/africa/blog" element={<Suspense fallback={<PageLoader />}><AfricaWrap><Blog /></AfricaWrap></Suspense>} />
+          <Route path="/africa/blog/:id" element={<Suspense fallback={<PageLoader />}><AfricaWrap><BlogPostDetails /></AfricaWrap></Suspense>} />
+          <Route path="/africa/about" element={<Suspense fallback={<PageLoader />}><AfricaWrap><About /></AfricaWrap></Suspense>} />
+          <Route path="/africa/faq" element={<Suspense fallback={<PageLoader />}><AfricaWrap><Faq /></AfricaWrap></Suspense>} />
+          <Route path="/africa/contact" element={<Suspense fallback={<PageLoader />}><AfricaWrap><Contact /></AfricaWrap></Suspense>} />
 
-          {/* Pages standalone — avec leur propre header/footer, hors Layout */}
-          <Route
-            path="/africa"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaLanding />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/catalogue"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaCataloguePage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/artists"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <Artists />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/artist/:id"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <ArtistDetails />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/artwork/:id"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <Artwork />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/blog"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <Blog />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/blog/:id"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <BlogPostDetails />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/about"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <About />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/faq"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <Faq />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/africa/contact"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AfricaWrap>
-                  <Contact />
-                </AfricaWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/catalogue"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalCataloguePage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/sourcing"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalSourcingPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/artists"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <Artists />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/artist/:id"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <ArtistDetails />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/artwork/:id"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <Artwork />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/blog"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <Blog />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/blog/:id"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <BlogPostDetails />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/about"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <About />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/faq"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <Faq />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/global/contact"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <GlobalWrap>
-                  <Contact />
-                </GlobalWrap>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/unsubscribe"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <Unsubscribe />
-              </Suspense>
-            }
-          />
-          {/* Standard Kucibok — vérification publique (scannable via QR, sans auth) */}
-          <Route
-            path="/verify/:kucibokId"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <VerifyArtwork />
-              </Suspense>
-            }
-          />
+          {/* ── Portail Global ── */}
+          <Route path="/global" element={<Suspense fallback={<PageLoader />}><GlobalPage /></Suspense>} />
+          <Route path="/global/catalogue" element={<Suspense fallback={<PageLoader />}><GlobalCataloguePage /></Suspense>} />
+          <Route path="/global/sourcing" element={<Suspense fallback={<PageLoader />}><GlobalSourcingPage /></Suspense>} />
+          <Route path="/global/artists" element={<Suspense fallback={<PageLoader />}><GlobalWrap><Artists /></GlobalWrap></Suspense>} />
+          <Route path="/global/artist/:id" element={<Suspense fallback={<PageLoader />}><GlobalWrap><ArtistDetails /></GlobalWrap></Suspense>} />
+          <Route path="/global/artwork/:id" element={<Suspense fallback={<PageLoader />}><GlobalWrap><Artwork /></GlobalWrap></Suspense>} />
+          <Route path="/global/blog" element={<Suspense fallback={<PageLoader />}><GlobalWrap><Blog /></GlobalWrap></Suspense>} />
+          <Route path="/global/blog/:id" element={<Suspense fallback={<PageLoader />}><GlobalWrap><BlogPostDetails /></GlobalWrap></Suspense>} />
+          <Route path="/global/about" element={<Suspense fallback={<PageLoader />}><GlobalWrap><About /></GlobalWrap></Suspense>} />
+          <Route path="/global/faq" element={<Suspense fallback={<PageLoader />}><GlobalWrap><Faq /></GlobalWrap></Suspense>} />
+          <Route path="/global/contact" element={<Suspense fallback={<PageLoader />}><GlobalWrap><Contact /></GlobalWrap></Suspense>} />
 
-          {/* Artist protected routes */}
-          <Route path="/dashboard/artist" element={<ArtistProtectedRoute />}>
-            <Route
-              path=""
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <Artist />
-                </Suspense>
-              }
-            />
-            <Route
-              path="submit-artwork"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SubmitArtwork />
-                </Suspense>
-              }
-            />
+          {/* ── Vérification QR public ── */}
+          <Route path="/verify/:kucibokId" element={<Suspense fallback={<PageLoader />}><VerifyArtwork /></Suspense>} />
+
+          {/* ═══════════════════════════════════════════════════════════════
+              NIVEAU 3 — Dashboards authentifiés uniquement
+              Monte en plus : User, Collection, Numerisation, Client, Gallery.
+              Ces providers ne s'initialisent PAS sur les pages publiques.
+              ═══════════════════════════════════════════════════════════════ */}
+          <Route
+            element={
+              <UserProvider>
+                <CollectionProvider>
+                  <NumerisationProvider>
+                    <ClientProvider>
+                      <GalleryContextProvider>
+                        <Outlet />
+                      </GalleryContextProvider>
+                    </ClientProvider>
+                  </NumerisationProvider>
+                </CollectionProvider>
+              </UserProvider>
+            }
+          >
+            {/* Artist dashboard */}
+            <Route path="/dashboard/artist" element={<ArtistProtectedRoute />}>
+              <Route path="" element={<Suspense fallback={<PageLoader />}><Artist /></Suspense>} />
+              <Route path="submit-artwork" element={<Suspense fallback={<PageLoader />}><SubmitArtwork /></Suspense>} />
+            </Route>
+
+            {/* Buyer account */}
+            <Route path="/account" element={<BuyerProtectedRoute />}>
+              <Route path="" element={<Suspense fallback={<PageLoader />}><BuyerAccount /></Suspense>} />
+            </Route>
+            <Route path="/dashboard/collector" element={<Navigate to="/account" replace />} />
+
+            {/* Curator dashboard */}
+            <Route path="/dashboard/curator" element={<CuratorProtectedRoute />}>
+              <Route path="" element={<Suspense fallback={<PageLoader />}><Professional /></Suspense>} />
+              <Route path="add-artwork" element={<Suspense fallback={<PageLoader />}><SubmitArtwork /></Suspense>} />
+            </Route>
+            <Route path="/dashboard/professional" element={<Navigate to="/dashboard/curator" replace />} />
+
+            {/* Catalogue certifié (curator + admin) */}
+            <Route path="/catalogue" element={<CuratorProtectedRoute />}>
+              <Route path="" element={<Suspense fallback={<PageLoader />}><CataloguePro /></Suspense>} />
+            </Route>
+
+            {/* Admin + enchères */}
+            <Route element={<AdminProtectedRoute />}>
+              <Route path="/dashboard/admin" element={<Suspense fallback={<PageLoader />}><Admin /></Suspense>} />
+              <Route path="/auction" element={<Suspense fallback={<PageLoader />}><Auctions /></Suspense>} />
+              <Route path="/auction/:id" element={<Suspense fallback={<PageLoader />}><AuctionDetails /></Suspense>} />
+            </Route>
           </Route>
-
-          {/* Buyer account — lightweight page */}
-          <Route path="/account" element={<BuyerProtectedRoute />}>
-            <Route
-              path=""
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <BuyerAccount />
-                </Suspense>
-              }
-            />
-          </Route>
-
-          {/* Redirect old collector dashboard to /account */}
-          <Route path="/dashboard/collector" element={<Navigate to="/account" replace />} />
-
-          {/* Curator protected routes (replaces professional) */}
-          <Route path="/dashboard/curator" element={<CuratorProtectedRoute />}>
-            <Route
-              path=""
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <Professional />
-                </Suspense>
-              }
-            />
-            <Route
-              path="add-artwork"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SubmitArtwork />
-                </Suspense>
-              }
-            />
-          </Route>
-
-          {/* Redirect old professional dashboard to curator */}
-          <Route
-            path="/dashboard/professional"
-            element={<Navigate to="/dashboard/curator" replace />}
-          />
-
-          {/* F3 — Catalogue certifié (curator + admin) */}
-          <Route path="/catalogue" element={<CuratorProtectedRoute />}>
-            <Route
-              path=""
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <CataloguePro />
-                </Suspense>
-              }
-            />
-          </Route>
-
-          {/* Admin protected routes */}
-          <Route element={<AdminProtectedRoute />}>
-            <Route
-              path="/dashboard/admin"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <Admin />
-                </Suspense>
-              }
-            />
-            {/* Enchères — masquées du nav public, accessibles admin uniquement (Phase 3+) */}
-            <Route
-              path="/auction"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <Auctions />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/auction/:id"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <AuctionDetails />
-                </Suspense>
-              }
-            />
-          </Route>
-
-          {/* Guest protected routes */}
-          <Route element={<GuestProtectedRoute />}>
-            <Route
-              path="/sign-in"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SignIn />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/sign-up"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <SignUp />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/forgot-password"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <ForgotPasswordForm />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/reset-password"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <ResetPasswordForm />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/reset-password/:token"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <ResetPasswordForm />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/verify-email/:token"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <VerifyEmail />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/check-email"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <CheckEmail />
-                </Suspense>
-              }
-            />
-          </Route>
-
-          {/* Callback OAuth Google — Supabase redirige ici après signInWithOAuth */}
-          <Route
-            path="/auth/callback"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <OAuthCallback />
-              </Suspense>
-            }
-          />
-
-          {/* Route sélection de rôle après inscription Google */}
-          <Route element={<AuthProtectedRoute />}>
-            <Route
-              path="/auth/role-selection"
-              element={
-                <Suspense fallback={<PageLoader />}>
-                  <GoogleRoleSelection />
-                </Suspense>
-              }
-            />
-          </Route>
-
-          {/* Route 404 */}
-          <Route
-            path="*"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <Error404 />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/404"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <Error404 />
-              </Suspense>
-            }
-          />
         </Route>
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   )
 }
