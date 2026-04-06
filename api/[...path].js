@@ -112,15 +112,16 @@ function rateLimit(ip, windowMs = 60_000, max = 5) {
 // SEC-008 : Content-Security-Policy
 const CSP = [
   "default-src 'self'",
-  // 'unsafe-eval' requis par Google Tag Manager (eval interne)
-  // 'unsafe-inline' requis par GTM et scripts inline index.html
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com",
+  // 'unsafe-eval' requis par GTM ; 'unsafe-inline' requis par GTM et scripts inline index.html
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://googleads.g.doubleclick.net https://www.googleadservices.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https:",
-  "font-src 'self' https://fonts.gstatic.com",
-  // Supabase, Sentry, GTM, GA, Logidoo, PayDunya, Resend
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://www.google-analytics.com https://www.googletagmanager.com https://app.paydunya.com https://logidoo.africa",
-  "frame-src 'none'",
+  // data: requis pour les polices base64 (ex: icônes inline)
+  "font-src 'self' data: https://fonts.gstatic.com",
+  // Supabase, Sentry, Google (GA4 + Ads + GTM), PayDunya, Logidoo, HIBP, ipify
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://www.google-analytics.com https://www.googletagmanager.com https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://app.paydunya.com https://logidoo.africa https://api.pwnedpasswords.com https://api.ipify.org",
+  // GTM iframe (noscript)
+  "frame-src https://www.googletagmanager.com",
   "object-src 'none'",
   "base-uri 'self'",
 ].join('; ');
