@@ -5,11 +5,15 @@ import apiService from './ApiService';
  */
 class PaymentService {
   /**
-   * Initialiser un paiement PayDunya pour un artwork
+   * Initialiser un paiement PayDunya pour un artwork.
+   * Route backend : POST /api/payments/paydunya-init { type, artwork_id }
    */
   async initArtworkPayment(artworkId) {
     try {
-      const response = await apiService.post(`/payments/paydunya/artwork/${artworkId}`);
+      const response = await apiService.post('/payments/paydunya-init', {
+        type: 'artwork',
+        artwork_id: artworkId,
+      });
       return {
         success: true,
         data: response
@@ -23,11 +27,15 @@ class PaymentService {
   }
 
   /**
-   * Initialiser un paiement PayDunya pour un abonnement
+   * Initialiser un paiement PayDunya pour un abonnement.
+   * Route backend : POST /api/payments/paydunya-init { type, plan_id }
    */
-  async initSubscriptionPayment(subscriptionId) {
+  async initSubscriptionPayment(planId) {
     try {
-      const response = await apiService.post(`/payments/paydunya/subscription/${subscriptionId}`);
+      const response = await apiService.post('/payments/paydunya-init', {
+        type: 'plan',
+        plan_id: planId,
+      });
       return {
         success: true,
         data: response
@@ -41,11 +49,12 @@ class PaymentService {
   }
 
   /**
-   * Vérifier le statut d'un paiement PayDunya
+   * Vérifier le statut d'un paiement PayDunya.
+   * Route backend : POST /api/payments/paydunya-callback { token }
    */
   async verifyPayment(token) {
     try {
-      const response = await apiService.get(`/payments/paydunya/verify/${token}`);
+      const response = await apiService.post('/payments/paydunya-callback', { token });
       return {
         success: true,
         data: response
