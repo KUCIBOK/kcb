@@ -955,13 +955,18 @@ async function authSignup(req, res) {
       options: { redirectTo: `${BASE_URL}/auth/callback` },
     });
 
+    if (linkError) {
+      console.error('[signup] generateLink error:', linkError.message);
+    }
+
     if (!linkError && linkData?.properties?.action_link) {
       const { Resend } = await import('resend');
-      const resend     = new Resend(process.env.RESEND_API_KEY);
-      const fromEmail  = `Kucibok <${process.env.ADMIN_EMAIL ?? 'noreply@kucibok.com'}>`;
-      const firstName  = name ? name.split(' ')[0] : null;
+      const resend    = new Resend(process.env.RESEND_API_KEY);
+      // Toujours envoyer depuis un domaine vérifié sur Resend (@kucibok.com)
+      const fromEmail = 'Kucibok <noreply@kucibok.com>';
+      const firstName = name ? name.split(' ')[0] : null;
 
-      await resend.emails.send({
+      const { error: sendError } = await resend.emails.send({
         from:    fromEmail,
         to:      email,
         subject: 'Bienvenue sur Kucibok — Accédez à votre compte',
@@ -999,8 +1004,15 @@ async function authSignup(req, res) {
           </html>
         `,
       });
+
+      if (sendError) {
+        console.error('[signup] Resend send error:', sendError.message ?? JSON.stringify(sendError));
+      } else {
+        console.log('[signup] Welcome email sent to:', email);
+      }
     }
-  } catch (_) {
+  } catch (err) {
+    console.error('[signup] Email flow exception:', err?.message ?? err);
     // Ne pas bloquer l'inscription si l'envoi échoue
   }
 
