@@ -84,17 +84,33 @@ export function AuthContextProvider({ children }) {
 
   /**
    * Récupère le rôle autoritatif depuis public.users (source de vérité DB).
-   * Ne jamais lire le rôle depuis user_metadata côté client.
+   * Timeout 4s : si Supabase ne répond pas, on utilise le rôle user_metadata.
    */
   const loadDbRole = useCallback(async (userId) => {
     if (!userId) return null;
-    const { data } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', userId)
-      .single();
-    return data?.role ?? null;
+    try {
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('loadDbRole timeout')), 4000)
+      );
+      const query = supabase
+        .from('users')
+        .select('role')
+        .eq('id', userId)
+        .single();
+      const { data } = await Promise.race([query, timeout]);
+      return data?.role ?? null;
+    } catch {
+      return null;
+    }
   }, []);
+
+  // ── Failsafe : si loading est encore true après 5s, forcer false ──────────
+  // Protège contre les cas où Supabase est totalement inaccessible.
+  useEffect(() => {
+    if (!loading) return;
+    const id = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(id);
+  }, [loading]);
 
   // ── Écoute les changements de session Supabase ────────────────────────────
   const loadedRef = useRef(false);

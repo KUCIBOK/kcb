@@ -148,7 +148,7 @@ export const ArtworksContextProvider = ({ children }) => {
       }
       getProfileArtworks()
     }
-  }, [user?._id, artistProfile?._id, curatorProfile?._id])
+  }, [user?._id, user?.role, artistProfile?._id, curatorProfile?._id])
   const contextValue = useMemo(() => ({
         artworks: state.artworks,
         forSale: state.forSale,

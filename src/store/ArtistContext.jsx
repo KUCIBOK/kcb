@@ -56,28 +56,16 @@ export const ArtistContextProvider = memo(({ children }) => {
     })
   }, [])
   useEffect(() => {
-    if (user?.role == 'curator' || user?.role == 'buyer') {
-      const getMyArtists = async () => {
-        try {
-          const artists = await getManagedArtists(user?._id)
-          if (artists?.length >= 1) {
-            setState((prev) => ({
-              ...prev,
-              myArtists: artists,
-            }))
+    if (user?.role === 'curator' || user?.role === 'buyer') {
+      getManagedArtists(user?._id)
+        .then((artists) => {
+          if (Array.isArray(artists) && artists.length >= 1) {
+            setState((prev) => ({ ...prev, myArtists: artists }))
           }
-          return {
-            error: artists?.error,
-          }
-        } catch (error) {
-          return {
-            error: error.message,
-          }
-        }
-      }
-      getMyArtists()
+        })
+        .catch(() => {})
     }
-  }, [user])
+  }, [user?._id, user?.role])
   return (
     <>
       <ArtistContext.Provider
