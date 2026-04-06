@@ -36,7 +36,7 @@ const ArtworkModal = memo(({ setShow, artwork, user }) => {
                 </div>
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="bg-zinc-800/70 rounded-[4px] shadow-md p-0 flex items-center justify-center w-full lg:w-1/2">
-                        <img src={artwork.image} alt={artwork.title} className="w-full max-h-72 object-contain rounded-[4px]" />
+                        <img src={artwork.image} alt={artwork.title} className="w-full max-h-72 object-contain rounded-[4px]" loading="lazy" onError={(e) => { e.currentTarget.src = '/images/placeholder-artwork.svg'; }} />
                     </div>
                     <div className="lg:w-1/2 flex flex-col gap-2">
                         <div className="mb-2">

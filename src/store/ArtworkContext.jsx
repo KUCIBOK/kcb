@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
   getAllArtworks,
   getApprovedArtworks,
@@ -16,6 +16,15 @@ import {
   updateArtwork,
   updateEtherscan,
 } from '../api/useArtworks'
+
+/** Fisher-Yates — identique à useArtworks.js */
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
 import { useToast } from './ToastContext'
 import { useAuth } from './AuthContext'
 import { createLog } from '../api/useLog'
@@ -44,7 +53,7 @@ export const ArtworksContextProvider = ({ children }) => {
       try {
         const forSale = await getForSaleArtworks()
         if (forSale?.length > 0) {
-          forSale.sort(() => Math.random() - 0.5)
+          shuffleArray(forSale)
           setState((prev) => ({
             ...prev,
             forSale: forSale?.filter(
@@ -93,22 +102,23 @@ export const ArtworksContextProvider = ({ children }) => {
     if (user?._id) {
       const getProfileArtworks = async () => {
         if (user?.role == 'admin') {
-          const artworks = await getAllArtworks()
+          // Fetch par statut séparément pour éviter la limite de pagination
+          const [pending, approved, rejected] = await Promise.all([
+            getPendingArtworks(),
+            getApprovedArtworks(),
+            getRejectedArtworks(),
+          ])
+          const allArtworks = [
+            ...(Array.isArray(pending)  ? pending  : []),
+            ...(Array.isArray(approved) ? approved : []),
+            ...(Array.isArray(rejected) ? rejected : []),
+          ]
           setState((prev) => ({
             ...prev,
-            artworks: artworks,
-            pending:
-              artworks?.length > 0
-                ? artworks.filter((item) => item.status == 'pending')?.reverse()
-                : [],
-            approved:
-              artworks?.length > 0
-                ? artworks.filter((item) => item.status == 'approved')?.reverse()
-                : [],
-            rejected:
-              artworks?.length > 0
-                ? artworks.filter((item) => item.status == 'rejected')?.reverse()
-                : [],
+            artworks:  allArtworks,
+            pending:   Array.isArray(pending)  ? [...pending].reverse()  : [],
+            approved:  Array.isArray(approved) ? [...approved].reverse() : [],
+            rejected:  Array.isArray(rejected) ? [...rejected].reverse() : [],
           }))
         }
         if (user?.role == 'artist' && artistProfile?._id) {
@@ -139,9 +149,7 @@ export const ArtworksContextProvider = ({ children }) => {
       getProfileArtworks()
     }
   }, [user?._id, artistProfile?._id, curatorProfile?._id])
-  return (
-    <ArtworksContext.Provider
-      value={{
+  const contextValue = useMemo(() => ({
         artworks: state.artworks,
         forSale: state.forSale,
         buyed: state.buyed,
@@ -303,8 +311,11 @@ export const ArtworksContextProvider = ({ children }) => {
             }
           }
         },
-      }}
-    >
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [state, user, makeToast])
+
+  return (
+    <ArtworksContext.Provider value={contextValue}>
       {children}
     </ArtworksContext.Provider>
   )

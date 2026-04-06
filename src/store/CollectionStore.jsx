@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { createCollection, getCollections } from '../api/useCollection'
 import { useToast } from './ToastContext'
+import { useAuth } from './AuthContext'
 
 //États initial pour le contexte des collections
 const initialState = {
@@ -17,7 +18,12 @@ const CollectionContext = createContext(initialState)
 export function CollectionProvider({ children }) {
   const [state, setState] = useState(initialState)
   const { makeToast } = useToast()
+  const { user } = useAuth()
   useEffect(() => {
+    if (!user?._id) {
+      setState((prev) => ({ ...prev, loading: false }))
+      return
+    }
     // Single API call — assign result to both myCollections and collections
     const fetchCollections = async function () {
       try {
@@ -34,7 +40,7 @@ export function CollectionProvider({ children }) {
     fetchCollections().finally(() => {
       setState((prev) => ({ ...prev, loading: false }))
     })
-  }, [])
+  }, [user?._id])
   return (
     <CollectionContext.Provider
       value={{

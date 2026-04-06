@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { PageLoader } from '../components/loaders/PageLoader'
-import { Navigate, Outlet, Route, Routes, useParams } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { Layout } from '../pages/Layout'
 const SignUp = lazy(() => import('../pages/auth/SignUp'))
 const SignIn = lazy(() => import('../pages/auth/SignIn'))
@@ -72,6 +72,32 @@ function GlobalWrap({ children }) {
  */
 function NavigateWithParams({ to }) {
   const params = useParams()
+  let target = to
+  for (const [key, value] of Object.entries(params)) {
+    if (key !== '*') target = target.replace(`:${key}`, value)
+  }
+  return <Navigate to={target} replace />
+}
+
+/**
+ * Redirect vers le portail courant (africa ou global) selon le contexte de navigation.
+ * Évite de toujours renvoyer vers /africa quand l'utilisateur vient de /global.
+ */
+function PortalNavigate({ africaPath, globalPath }) {
+  const location = useLocation()
+  const isGlobal = location.state?.fromPortal === 'global'
+    || document.referrer.includes('/global')
+    || sessionStorage.getItem('kcb_portal') === 'global'
+  return <Navigate to={isGlobal ? globalPath : africaPath} replace />
+}
+
+function PortalNavigateWithParams({ africaTo, globalTo }) {
+  const params = useParams()
+  const location = useLocation()
+  const isGlobal = location.state?.fromPortal === 'global'
+    || document.referrer.includes('/global')
+    || sessionStorage.getItem('kcb_portal') === 'global'
+  const to = isGlobal ? globalTo : africaTo
   let target = to
   for (const [key, value] of Object.entries(params)) {
     if (key !== '*') target = target.replace(`:${key}`, value)
@@ -271,18 +297,18 @@ export function Router() {
             />
           </Route>
 
-          {/* Redirections — anciennes routes vers le portail Africa par défaut */}
-          <Route path="/explore" element={<Navigate to="/africa/catalogue" replace />} />
-          <Route path="/explore/:category" element={<Navigate to="/africa/catalogue" replace />} />
-          <Route path="/marketplace" element={<Navigate to="/africa/catalogue" replace />} />
-          <Route path="/artists" element={<Navigate to="/africa/artists" replace />} />
-          <Route path="/artist/:id" element={<NavigateWithParams to="/africa/artist/:id" />} />
-          <Route path="/artwork/:id" element={<NavigateWithParams to="/africa/artwork/:id" />} />
-          <Route path="/blog" element={<Navigate to="/africa/blog" replace />} />
-          <Route path="/blog/:id" element={<NavigateWithParams to="/africa/blog/:id" />} />
-          <Route path="/about" element={<Navigate to="/africa/about" replace />} />
-          <Route path="/contact" element={<Navigate to="/africa/contact" replace />} />
-          <Route path="/faq" element={<Navigate to="/africa/faq" replace />} />
+          {/* Redirections — portail détecté via sessionStorage kcb_portal */}
+          <Route path="/explore" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
+          <Route path="/explore/:category" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
+          <Route path="/marketplace" element={<PortalNavigate africaPath="/africa/catalogue" globalPath="/global/catalogue" />} />
+          <Route path="/artists" element={<PortalNavigate africaPath="/africa/artists" globalPath="/global/artists" />} />
+          <Route path="/artist/:id" element={<PortalNavigateWithParams africaTo="/africa/artist/:id" globalTo="/global/artist/:id" />} />
+          <Route path="/artwork/:id" element={<PortalNavigateWithParams africaTo="/africa/artwork/:id" globalTo="/global/artwork/:id" />} />
+          <Route path="/blog" element={<PortalNavigate africaPath="/africa/blog" globalPath="/africa/blog" />} />
+          <Route path="/blog/:id" element={<PortalNavigateWithParams africaTo="/africa/blog/:id" globalTo="/africa/blog/:id" />} />
+          <Route path="/about" element={<PortalNavigate africaPath="/africa/about" globalPath="/global/about" />} />
+          <Route path="/contact" element={<PortalNavigate africaPath="/africa/contact" globalPath="/africa/contact" />} />
+          <Route path="/faq" element={<PortalNavigate africaPath="/africa/faq" globalPath="/africa/faq" />} />
 
           {/* Pages standalone — avec leur propre header/footer, hors Layout */}
           <Route

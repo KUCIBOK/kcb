@@ -1,4 +1,4 @@
-import { createContext, useContext, memo } from "react";
+import { createContext, useCallback, useContext, memo } from "react";
 import { toast as sonnerToast } from "sonner";
 
 const ToastContext = createContext({
@@ -28,12 +28,11 @@ const LEVEL_MAP = {
  * @returns {JSX.Element}
  */
 export const ToastContextProvider = memo(({ children }) => {
-  const makeToast = (title, level = "info", text = "") => {
+  const makeToast = useCallback((title, level = "info", text = "") => {
     const method = LEVEL_MAP[level] || "info";
     const options = text ? { description: text } : {};
-
     sonnerToast[method](title, options);
-  };
+  }, []);
 
   return (
     <ToastContext.Provider value={{ makeToast }}>

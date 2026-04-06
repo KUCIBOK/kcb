@@ -95,13 +95,17 @@ export default function BlogPostDetails(){
                         </div>
                     </div>
                     {state?.post?.image && (
-                        <img src={state?.post?.image} alt={state?.post?.title} className="w-full object-cover rounded-[4px] h-56 sm:h-72 md:h-80 lg:h-96 mb-6 border border-white/[0.06]" />
+                        <img src={state?.post?.image} alt={state?.post?.title} className="w-full object-cover rounded-[4px] h-56 sm:h-72 md:h-80 lg:h-96 mb-6 border border-white/[0.06]" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     )}
                     <div className="flex flex-col gap-6 mt-6">
                         <div className="border-b border-white/[0.06] pb-6">
                             <span
                                 className="text-base text-white leading-relaxed"
-                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(state?.post?.content ?? '') }}
+                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(state?.post?.content ?? '', {
+                                    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'ol', 'ul', 'li', 'blockquote', 'a', 'h1', 'h2', 'h3', 'h4', 'img', 'figure', 'figcaption'],
+                                    ALLOWED_ATTR: ['href', 'title', 'target', 'rel', 'src', 'alt', 'class'],
+                                    FORCE_BODY: true,
+                                }) }}
                             />
                         </div>
                         {state?.post?.tags?.length > 0 && (

@@ -95,7 +95,9 @@ const supabaseAdmin = createClient(
 
 // ─── Response Helpers ─────────────────────────────────────────────────────────
 
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://kucibok.com';
+// SEC-009 : whitelist multi-origines (CORS_ORIGIN peut être une liste séparée par virgules)
+const _allowedOrigins = (process.env.CORS_ORIGIN || 'https://kucibok.com')
+  .split(',').map(o => o.trim()).filter(Boolean);
 
 // ─── Rate limiting (in-memory, par instance Vercel) ─────────────────────────
 const _rlMap = new Map();
@@ -107,20 +109,36 @@ function rateLimit(ip, windowMs = 60_000, max = 5) {
   return hits.length <= max;
 }
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin':      CORS_ORIGIN,
-  'Access-Control-Allow-Methods':     'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers':     'Content-Type, Authorization, kcb-api-key',
-  'Access-Control-Allow-Credentials': 'true',
-};
+// SEC-008 : Content-Security-Policy
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: https:",
+  "font-src 'self'",
+  "connect-src 'self' https:",
+  "frame-src 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+].join('; ');
 
 /**
- * Applique les headers CORS sur la réponse.
+ * Applique les headers CORS dynamiques sur la réponse (whitelist multi-origines).
  *
+ * @param {import('@vercel/node').VercelRequest}  req
  * @param {import('@vercel/node').VercelResponse} res
  */
-function setCors(res) {
-  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+function setCors(req, res) {
+  const origin = req.headers.origin ?? '';
+  if (_allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin',      origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, kcb-api-key');
+  res.setHeader('Content-Security-Policy',      CSP);
+  res.setHeader('X-Content-Type-Options',       'nosniff');
+  res.setHeader('X-Frame-Options',              'DENY');
 }
 
 /**
@@ -131,7 +149,7 @@ function setCors(res) {
  * @returns {boolean} true si preflight (le handler doit return immédiatement)
  */
 function handleCors(req, res) {
-  setCors(res);
+  setCors(req, res);
   if (req.method === 'OPTIONS') { res.status(204).end(); return true; }
   return false;
 }
@@ -145,7 +163,7 @@ function handleCors(req, res) {
  * @param {{ page?: number, limit?: number, total?: number }} [pagination]
  */
 function ok(res, data, status = 200, pagination) {
-  setCors(res);
+  // CORS déjà posé par handleCors() en début de requête
   const body = { data };
   if (pagination) body.pagination = pagination;
   return res.status(status).json(body);
@@ -159,7 +177,7 @@ function ok(res, data, status = 200, pagination) {
  * @param {number} [status=400]
  */
 function fail(res, message, status = 400) {
-  setCors(res);
+  // CORS déjà posé par handleCors() en début de requête
   return res.status(status).json({ error: message });
 }
 
@@ -310,15 +328,20 @@ export default async function handler(req, res) {
     if (s0 === 'artworks' && s1 === 'verify' && s2) return await routeVerifyArtwork(req, res, s2);
     if (s0 === 'delivery' && s1 === 'track'  && s2) return await routeTrackDelivery(req, res, s2);
 
-    // Clé API obligatoire pour toutes les routes suivantes
-    const apiKeyCheck = requireApiKey(req);
-    if (!apiKeyCheck.ok) return fail(res, apiKeyCheck.error, apiKeyCheck.status);
-
-    // ── /api/contact ──────────────────────────────────────────────────────────
-    if (s0 === 'contact' && req.method === 'POST') return await routeContact(req, res);
+    // ── /api/contact ─────────────────────────────────────────────────────────
+    // Clé API comme frein anti-spam basique (non authentifié mais semi-protégé)
+    if (s0 === 'contact' && req.method === 'POST') {
+      const apiKeyCheck = requireApiKey(req);
+      if (!apiKeyCheck.ok) return fail(res, apiKeyCheck.error, apiKeyCheck.status);
+      return await routeContact(req, res);
+    }
 
     // ── /api/report-error ────────────────────────────────────────────────────
-    if (s0 === 'report-error') return await routeReportError(req, res);
+    if (s0 === 'report-error') {
+      const apiKeyCheck = requireApiKey(req);
+      if (!apiKeyCheck.ok) return fail(res, apiKeyCheck.error, apiKeyCheck.status);
+      return await routeReportError(req, res);
+    }
 
     // ── /api/auth/* ──────────────────────────────────────────────────────────
     if (s0 === 'auth' && s1 === 'status' && s2) return await authSetStatus(req, res, s2);
@@ -1501,6 +1524,21 @@ async function routeArtworkById(req, res, id) {
 
     const { status } = req.body ?? {};
     if (!['approved', 'rejected', 'pending'].includes(status)) return fail(res, 'Statut invalide');
+
+    // Valider la transition depuis le statut courant
+    const { data: current } = await supabaseAdmin
+      .from('artworks').select('status').eq('id', id).single();
+    if (!current) return notFound(res, 'Œuvre');
+    if (current.status === status) return fail(res, `L'œuvre est déjà en statut "${status}"`, 409);
+
+    const VALID_TRANSITIONS = {
+      pending:  ['approved', 'rejected'],
+      approved: ['rejected'],
+      rejected: ['approved', 'pending'],
+    };
+    if (!VALID_TRANSITIONS[current.status]?.includes(status)) {
+      return fail(res, `Transition invalide : "${current.status}" → "${status}"`, 409);
+    }
 
     const { data, error } = await supabaseAdmin
       .from('artworks').update({ status }).eq('id', id).select().single();
@@ -3734,7 +3772,7 @@ async function routeCrmExport(req, res) {
   const rows = (data ?? []).map(c => `"${c.name ?? ''}","${c.email ?? ''}","${c.phone ?? ''}","${c.company ?? ''}","${c.type ?? ''}"`);
   const csv = ['name,email,phone,company,type', ...rows].join('\n');
 
-  setCors(res);
+  // CORS déjà posé par handleCors() en début de requête
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', 'attachment; filename=crm-clients.csv');
   return res.status(200).send(csv);

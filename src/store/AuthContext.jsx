@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { setSupabaseToken } from '../api/useAPI';
@@ -241,7 +241,7 @@ export function AuthContextProvider({ children }) {
   }, [user]);
 
   // ─────────────────────────────────────────────────────────────────────────
-  const value = {
+  const value = useMemo(() => ({
     user,
     artistProfile,
     buyerProfile,
@@ -256,7 +256,7 @@ export function AuthContextProvider({ children }) {
     updateArtist: updateArtistCtx,
     updateProfile: updateProfileCtx,
     changePassword: changePasswordCtx,
-  };
+  }), [user, artistProfile, buyerProfile, curatorProfile, adminProfile, subscription, plan, loading, logout, setProfile, updateUserCtx, updateArtistCtx, updateProfileCtx, changePasswordCtx]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
