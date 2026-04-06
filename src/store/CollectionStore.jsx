@@ -18,8 +18,10 @@ const CollectionContext = createContext(initialState)
 export function CollectionProvider({ children }) {
   const [state, setState] = useState(initialState)
   const { makeToast } = useToast()
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   useEffect(() => {
+    // Attendre que AuthContext ait fini de résoudre la session
+    if (authLoading) return
     if (!user?._id) {
       setState((prev) => ({ ...prev, loading: false }))
       return
@@ -40,7 +42,7 @@ export function CollectionProvider({ children }) {
     fetchCollections().finally(() => {
       setState((prev) => ({ ...prev, loading: false }))
     })
-  }, [user?._id])
+  }, [user?._id, authLoading])
   return (
     <CollectionContext.Provider
       value={{
