@@ -106,16 +106,23 @@ export function AuthContextProvider({ children }) {
       supabase.auth.getSession().then(async ({ data: { session } }) => {
         setSupabaseToken(session?.access_token ?? null);
         const kcbUser = toKcbUser(session?.user ?? null);
-        if (kcbUser) {
-          const dbRole = await loadDbRole(kcbUser._id);
-          if (dbRole) kcbUser.role = dbRole;
-          setUser(kcbUser);
-          loadProfile(kcbUser);
-        } else {
-          setUser(null);
+        try {
+          if (kcbUser) {
+            const dbRole = await loadDbRole(kcbUser._id);
+            if (dbRole) kcbUser.role = dbRole;
+            setUser(kcbUser);
+            loadProfile(kcbUser);
+          } else {
+            setUser(null);
+          }
+        } catch {
+          // Ne jamais bloquer l'app sur une erreur de profil DB
+          if (kcbUser) setUser(kcbUser);
+          else setUser(null);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
-      });
+      }).catch(() => setLoading(false));
     }
 
     // S'abonne aux changements (login, logout, refresh token, OAuth callback)
@@ -126,32 +133,37 @@ export function AuthContextProvider({ children }) {
 
         const kcbUser = toKcbUser(session?.user ?? null);
 
-        if (kcbUser) {
-          const dbRole = await loadDbRole(kcbUser._id);
-          if (dbRole) kcbUser.role = dbRole;
-          setUser(kcbUser);
-        } else {
-          setUser(null);
-        }
+        try {
+          if (kcbUser) {
+            const dbRole = await loadDbRole(kcbUser._id);
+            if (dbRole) kcbUser.role = dbRole;
+            setUser(kcbUser);
+          } else {
+            setUser(null);
+          }
 
-        if (event === 'SIGNED_IN' && kcbUser) {
-          loadProfile(kcbUser);
-          createLog({
-            description: `L'utilisateur ${kcbUser.name || kcbUser.email} s'est connecté`,
-            userId: kcbUser._id,
-          }).catch(() => {});
-        }
+          if (event === 'SIGNED_IN' && kcbUser) {
+            loadProfile(kcbUser);
+            createLog({
+              description: `L'utilisateur ${kcbUser.name || kcbUser.email} s'est connecté`,
+              userId: kcbUser._id,
+            }).catch(() => {});
+          }
 
-        if (event === 'SIGNED_OUT') {
-          setArtistProfile(null);
-          setBuyerProfile(null);
-          setCuratorProfile(null);
-          setAdminProfile(null);
-          setSubscription(null);
-          setPlan(null);
+          if (event === 'SIGNED_OUT') {
+            setArtistProfile(null);
+            setBuyerProfile(null);
+            setCuratorProfile(null);
+            setAdminProfile(null);
+            setSubscription(null);
+            setPlan(null);
+          }
+        } catch {
+          if (kcbUser) setUser(kcbUser);
+          else setUser(null);
+        } finally {
+          setLoading(false);
         }
-
-        setLoading(false);
       }
     );
 
