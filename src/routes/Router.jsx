@@ -190,22 +190,32 @@ export function Router() {
         <Route path="/404" element={<Suspense fallback={<PageLoader />}><Error404 /></Suspense>} />
 
         {/* ═══════════════════════════════════════════════════════════════
-            NIVEAU 2 — Contenu public + paiements
-            Monte : Artist, Artworks, Blog, Plan, Category, Delivery.
-            Ces providers ne s'initialisent PAS sur les pages auth/légales.
+            NIVEAU 2 — Contenu public + dashboards
+            Tous les providers de contenu et dashboard montent ici.
+            Ne s'initialisent PAS sur les pages auth/légales/redirections.
             ═══════════════════════════════════════════════════════════════ */}
         <Route
           element={
             <ArtistContextProvider>
               <ArtworksContextProvider>
                 <BlogContextProvider>
-                  <PlanProvider>
-                    <CategoryProvider>
-                      <DeliveryContextProvider>
-                        <Outlet />
-                      </DeliveryContextProvider>
-                    </CategoryProvider>
-                  </PlanProvider>
+                  <UserProvider>
+                    <PlanProvider>
+                      <CategoryProvider>
+                        <CollectionProvider>
+                          <DeliveryContextProvider>
+                            <NumerisationProvider>
+                              <ClientProvider>
+                                <GalleryContextProvider>
+                                  <Outlet />
+                                </GalleryContextProvider>
+                              </ClientProvider>
+                            </NumerisationProvider>
+                          </DeliveryContextProvider>
+                        </CollectionProvider>
+                      </CategoryProvider>
+                    </PlanProvider>
+                  </UserProvider>
                 </BlogContextProvider>
               </ArtworksContextProvider>
             </ArtistContextProvider>
@@ -260,56 +270,37 @@ export function Router() {
           {/* ── Vérification QR public ── */}
           <Route path="/verify/:kucibokId" element={<Suspense fallback={<PageLoader />}><VerifyArtwork /></Suspense>} />
 
-          {/* ═══════════════════════════════════════════════════════════════
-              NIVEAU 3 — Dashboards authentifiés uniquement
-              Monte en plus : User, Collection, Numerisation, Client, Gallery.
-              Ces providers ne s'initialisent PAS sur les pages publiques.
-              ═══════════════════════════════════════════════════════════════ */}
-          <Route
-            element={
-              <UserProvider>
-                <CollectionProvider>
-                  <NumerisationProvider>
-                    <ClientProvider>
-                      <GalleryContextProvider>
-                        <Outlet />
-                      </GalleryContextProvider>
-                    </ClientProvider>
-                  </NumerisationProvider>
-                </CollectionProvider>
-              </UserProvider>
-            }
-          >
-            {/* Artist dashboard */}
-            <Route path="/dashboard/artist" element={<ArtistProtectedRoute />}>
-              <Route path="" element={<Suspense fallback={<PageLoader />}><Artist /></Suspense>} />
-              <Route path="submit-artwork" element={<Suspense fallback={<PageLoader />}><SubmitArtwork /></Suspense>} />
-            </Route>
+          {/* ── Dashboards authentifiés ── */}
 
-            {/* Buyer account */}
-            <Route path="/account" element={<BuyerProtectedRoute />}>
-              <Route path="" element={<Suspense fallback={<PageLoader />}><BuyerAccount /></Suspense>} />
-            </Route>
-            <Route path="/dashboard/collector" element={<Navigate to="/account" replace />} />
+          {/* Artist dashboard */}
+          <Route path="/dashboard/artist" element={<ArtistProtectedRoute />}>
+            <Route path="" element={<Suspense fallback={<PageLoader />}><Artist /></Suspense>} />
+            <Route path="submit-artwork" element={<Suspense fallback={<PageLoader />}><SubmitArtwork /></Suspense>} />
+          </Route>
 
-            {/* Curator dashboard */}
-            <Route path="/dashboard/curator" element={<CuratorProtectedRoute />}>
-              <Route path="" element={<Suspense fallback={<PageLoader />}><Professional /></Suspense>} />
-              <Route path="add-artwork" element={<Suspense fallback={<PageLoader />}><SubmitArtwork /></Suspense>} />
-            </Route>
-            <Route path="/dashboard/professional" element={<Navigate to="/dashboard/curator" replace />} />
+          {/* Buyer account */}
+          <Route path="/account" element={<BuyerProtectedRoute />}>
+            <Route path="" element={<Suspense fallback={<PageLoader />}><BuyerAccount /></Suspense>} />
+          </Route>
+          <Route path="/dashboard/collector" element={<Navigate to="/account" replace />} />
 
-            {/* Catalogue certifié (curator + admin) */}
-            <Route path="/catalogue" element={<CuratorProtectedRoute />}>
-              <Route path="" element={<Suspense fallback={<PageLoader />}><CataloguePro /></Suspense>} />
-            </Route>
+          {/* Curator dashboard */}
+          <Route path="/dashboard/curator" element={<CuratorProtectedRoute />}>
+            <Route path="" element={<Suspense fallback={<PageLoader />}><Professional /></Suspense>} />
+            <Route path="add-artwork" element={<Suspense fallback={<PageLoader />}><SubmitArtwork /></Suspense>} />
+          </Route>
+          <Route path="/dashboard/professional" element={<Navigate to="/dashboard/curator" replace />} />
 
-            {/* Admin + enchères */}
-            <Route element={<AdminProtectedRoute />}>
-              <Route path="/dashboard/admin" element={<Suspense fallback={<PageLoader />}><Admin /></Suspense>} />
-              <Route path="/auction" element={<Suspense fallback={<PageLoader />}><Auctions /></Suspense>} />
-              <Route path="/auction/:id" element={<Suspense fallback={<PageLoader />}><AuctionDetails /></Suspense>} />
-            </Route>
+          {/* Catalogue certifié (curator + admin) */}
+          <Route path="/catalogue" element={<CuratorProtectedRoute />}>
+            <Route path="" element={<Suspense fallback={<PageLoader />}><CataloguePro /></Suspense>} />
+          </Route>
+
+          {/* Admin + enchères */}
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/dashboard/admin" element={<Suspense fallback={<PageLoader />}><Admin /></Suspense>} />
+            <Route path="/auction" element={<Suspense fallback={<PageLoader />}><Auctions /></Suspense>} />
+            <Route path="/auction/:id" element={<Suspense fallback={<PageLoader />}><AuctionDetails /></Suspense>} />
           </Route>
         </Route>
       </Route>
