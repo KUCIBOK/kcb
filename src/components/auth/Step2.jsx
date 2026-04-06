@@ -1,5 +1,6 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState, useMemo } from "react";
+import { isPasswordLeaked } from "../../lib/hibp";
 
 /** Calcule la force du mot de passe : 0-4 */
 function passwordStrength(pwd) {
@@ -26,10 +27,28 @@ const INPUT = "w-full border border-white/[0.08] bg-kcb-noir px-3 py-3 pr-10 tex
 export const Step2 = ({ formState, setFormState }) => {
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [checking, setChecking] = useState(false);
 
   const strength = useMemo(() => passwordStrength(formState.password), [formState.password]);
   const mismatch = formState.confirmPassword && formState.confirmPassword !== formState.password;
   const canSubmit = formState.email && formState.password?.length >= 8 && formState.confirmPassword && !mismatch;
+
+  const handleNext = async (e) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    setChecking(true);
+    setFormState(p => ({ ...p, error: null }));
+    const leaked = await isPasswordLeaked(formState.password);
+    setChecking(false);
+    if (leaked) {
+      setFormState(p => ({
+        ...p,
+        error: 'Ce mot de passe a été compromis dans une fuite de données. Choisissez-en un autre.',
+      }));
+      return;
+    }
+    setFormState(p => ({ ...p, step: 2 }));
+  };
 
   return (
     <div className="bg-kcb-ardoise border border-white/[0.06] p-8 relative overflow-hidden">
@@ -45,7 +64,7 @@ export const Step2 = ({ formState, setFormState }) => {
       <p className="text-xs text-kcb-pierre mb-8">Email et mot de passe sécurisé</p>
 
       <form
-        onSubmit={e => { e.preventDefault(); if (canSubmit) setFormState(p => ({ ...p, step: 2 })); }}
+        onSubmit={handleNext}
         className="space-y-5"
         method="post"
       >
@@ -132,10 +151,10 @@ export const Step2 = ({ formState, setFormState }) => {
 
         <button
           type="submit"
-          disabled={!canSubmit}
+          disabled={!canSubmit || checking}
           className="w-full py-3 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase transition-all duration-200 hover:-translate-y-px disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 mt-2"
         >
-          Suivant
+          {checking ? 'Vérification…' : 'Suivant'}
         </button>
       </form>
 

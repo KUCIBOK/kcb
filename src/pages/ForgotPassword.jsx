@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet";
 import { DataLoader } from "../components/loaders/PageLoader";
 import { supabase } from "../lib/supabase";
 import RevealOnScroll from "../components/landing/RevealOnScroll";
+import { isPasswordLeaked } from "../lib/hibp";
 
 // Parse le hash Supabase (#access_token=... ou #error=...)
 function parseHash() {
@@ -52,6 +53,15 @@ export default function ResetPasswordForm() {
     }
     setState(s => ({ ...s, error: '', loading: true }));
     try {
+      const leaked = await isPasswordLeaked(state.password);
+      if (leaked) {
+        setState(s => ({
+          ...s,
+          loading: false,
+          error: 'Ce mot de passe a été compromis dans une fuite de données. Choisissez-en un autre.',
+        }));
+        return;
+      }
       const { error } = await supabase.auth.updateUser({ password: state.password });
       if (error) { setState(s => ({ ...s, error: error.message, loading: false })); return; }
       setState(s => ({ ...s, success: true, loading: false }));
