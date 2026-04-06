@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react"
 import { useAuth } from "../../store/AuthContext"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { dislikeArtwork, likeArtwork } from "../../api/useArtworks"
 import { RegisterOrConnect } from "../decoratives/RegisterOrConnect"
 
@@ -27,52 +27,59 @@ export function LikeHeart({artwork}){
     const {user} = useAuth()
     const artworkId = artwork?._id || artwork?.id;
     const likedArtworks = readLikedIds();
+    const isPending = useRef(false);
     const [state, setState] = useState({
         likesCount : artwork?.likesCount || 0,
         isLiked : likedArtworks.includes(artworkId),
         showModal: false
     })
     const handleLike = async () => {
+        if (isPending.current) return;
         if (!user) {
             setState(prev => ({ ...prev, showModal: true }));
             return;
         }
-        if (state?.isLiked) {
-            const updated = readLikedIds().filter((id) => id !== artworkId);
-            writeLikedIds(updated);
-            setState((prevState) => ({
-                ...prevState,
-                isLiked: false,
-                likesCount: Math.max(0, prevState.likesCount - 1),
-            }));
-            const res = await dislikeArtwork(artworkId);
-            if (res.error) {
-                const reverted = [...readLikedIds(), artworkId];
-                writeLikedIds(reverted);
-                setState((prevState) => ({
-                    ...prevState,
-                    isLiked: true,
-                    likesCount: res.likesCount ?? prevState.likesCount + 1,
-                }));
-            }
-        } else {
-            const updated = [...readLikedIds(), artworkId];
-            writeLikedIds(updated);
-            setState((prevState) => ({
-                ...prevState,
-                isLiked: true,
-                likesCount: prevState.likesCount + 1,
-            }));
-            const res = await likeArtwork(artworkId);
-            if (res.error) {
-                const reverted = readLikedIds().filter((id) => id !== artworkId);
-                writeLikedIds(reverted);
+        isPending.current = true;
+        try {
+            if (state?.isLiked) {
+                const updated = readLikedIds().filter((id) => id !== artworkId);
+                writeLikedIds(updated);
                 setState((prevState) => ({
                     ...prevState,
                     isLiked: false,
-                    likesCount: res.likesCount ?? Math.max(0, prevState.likesCount - 1),
+                    likesCount: Math.max(0, prevState.likesCount - 1),
                 }));
+                const res = await dislikeArtwork(artworkId);
+                if (res.error) {
+                    const reverted = [...readLikedIds(), artworkId];
+                    writeLikedIds(reverted);
+                    setState((prevState) => ({
+                        ...prevState,
+                        isLiked: true,
+                        likesCount: res.likesCount ?? prevState.likesCount + 1,
+                    }));
+                }
+            } else {
+                const updated = [...readLikedIds(), artworkId];
+                writeLikedIds(updated);
+                setState((prevState) => ({
+                    ...prevState,
+                    isLiked: true,
+                    likesCount: prevState.likesCount + 1,
+                }));
+                const res = await likeArtwork(artworkId);
+                if (res.error) {
+                    const reverted = readLikedIds().filter((id) => id !== artworkId);
+                    writeLikedIds(reverted);
+                    setState((prevState) => ({
+                        ...prevState,
+                        isLiked: false,
+                        likesCount: res.likesCount ?? Math.max(0, prevState.likesCount - 1),
+                    }));
+                }
             }
+        } finally {
+            isPending.current = false;
         }
     };
 

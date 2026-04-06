@@ -45,6 +45,7 @@ export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
             alt={artwork?.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
             loading="lazy"
+            onError={(e) => { e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
           />
 
           {/* Gradient overlay on hover */}
@@ -85,12 +86,10 @@ export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
               <div className="w-5 h-5 rounded-full overflow-hidden border border-kcb-or/20 shrink-0">
                 <img
                   loading="lazy"
-                  src={
-                    artist?.image ||
-                    "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
-                  }
+                  src={artist?.image || '/images/placeholder-artwork.svg'}
                   alt={artist?.name}
                   className="w-full h-full object-cover"
+                  onError={(e) => { e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
                 />
               </div>
               <span className="text-xs text-kcb-pierre truncate">

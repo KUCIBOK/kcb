@@ -3,39 +3,43 @@ import { useState } from "react"
 import { useAuth } from "../../store/AuthContext"
 import { usePlanStore } from "../../store/PlanContext"
 import { DataLoader } from "../loaders/PageLoader"
+import { ConfirmDialog } from "../ui"
 import { Link } from "react-router-dom"
 
 
 export function PlansListItemActions({ plan }) {
     const {user } = useAuth()
-    const { deletePlan } = usePlanStore() 
+    const { deletePlan } = usePlanStore()
     const [state, setState] = useState({
         updatePlan: false,
+        confirmDelete: false,
         loading: false,
         error: ""
     })
     const handleDeletePlan = async () => {
         try {
-            setState({ ...state, loading: true })
+            setState(prev => ({ ...prev, loading: true, confirmDelete: false }))
             const deletedPlan = await deletePlan(plan?._id)
             if (deletedPlan?._id) {
-                setState({ ...state, loading: false })
+                setState(prev => ({ ...prev, loading: false }))
+            } else {
+                setState(prev => ({ ...prev, loading: false }))
             }
         } catch (error) {
-            setState({ ...state, loading: false })
+            setState(prev => ({ ...prev, loading: false }))
         }
     }
     return (
         <>
         <div className="flex gap-2 items-center w-full mx-auto mx-auto justify-center p-4">
             {(user?.role === "admin") ? ( <>
-                <button 
-                    onClick={() => setState({ ...state, updatePlan: true })} 
+                <button
+                    onClick={() => setState(prev => ({ ...prev, updatePlan: true }))}
                     className="justify-center w-8/10 border rounded-md bg-kcb-noir text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-kcb-ardoise transition-colors duration-200">
                      <PenBoxIcon className="w-4 h-4 mr-2 text-white"/> Modifier
                 </button>
-                <button 
-                    onClick={async () => await handleDeletePlan()} 
+                <button
+                    onClick={() => setState(prev => ({ ...prev, confirmDelete: true }))}
                     className=" justify-center w-2/10 border rounded-md bg-red-900/90 text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-red-700/90 transition-colors duration-200">
                     {state.loading ? <DataLoader/> : (<Trash2 className=" text-white w-4 h-4" />)}
                 </button>
@@ -46,7 +50,17 @@ export function PlansListItemActions({ plan }) {
                 </Link>)
             }
         </div>
-        {state?.updatePlan && <UpdatePlanModal plan={plan} closeModal={() => setState({ ...state, updatePlan: false })} />}
+        {state?.updatePlan && <UpdatePlanModal plan={plan} closeModal={() => setState(prev => ({ ...prev, updatePlan: false }))} />}
+        <ConfirmDialog
+            isOpen={state.confirmDelete}
+            onClose={() => setState(prev => ({ ...prev, confirmDelete: false }))}
+            onConfirm={handleDeletePlan}
+            title="Supprimer le plan"
+            message={`Supprimer définitivement le plan "${plan?.name}" ? Cette action est irréversible.`}
+            confirmText="Supprimer"
+            variant="danger"
+            loading={state.loading}
+        />
         </>
     )
 }

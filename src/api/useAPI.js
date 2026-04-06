@@ -13,6 +13,26 @@
 let _currentToken = '';
 
 /**
+ * fetch() avec timeout automatique.
+ * Rejette avec une erreur lisible si le serveur ne répond pas dans le délai.
+ *
+ * @param {string} url
+ * @param {RequestInit} options
+ * @param {number} [timeoutMs=12000]
+ * @returns {Promise<Response>}
+ */
+export function fetchWithTimeout(url, options = {}, timeoutMs = 12_000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal })
+    .finally(() => clearTimeout(timer))
+    .catch((err) => {
+      if (err.name === 'AbortError') throw new Error('Délai d\'attente dépassé — réessayez');
+      throw err;
+    });
+}
+
+/**
  * Met à jour le token Supabase utilisé par utils.options.
  * À appeler depuis AuthContext à chaque événement onAuthStateChange.
  *

@@ -131,6 +131,7 @@ export default function ArtistDetails() {
                   src={artwork.image}
                   alt={artwork.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => { e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
                 />
               </div>
             ))}

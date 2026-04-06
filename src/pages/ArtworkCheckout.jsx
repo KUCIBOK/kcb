@@ -26,22 +26,22 @@ export default function ArtworkCheckout(){
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        const fetchArtwork = async () =>{
-            const data = await getArtworkById(id)
-            if(data?._id){
-                setArtwork(prev => ({...data, loading : false}))
-                if(data?.artist_id){
-                    const artistData = await getArtistById(data?.artist_id);
-                    if(artistData?._id){
-                        setArtwork(prev => ({...prev, artist : artistData}))
-                    }
+        const fetchArtwork = async () => {
+            try {
+                const data = await getArtworkById(id)
+                if (data?._id) {
+                    const artistData = data?.artist_id ? await getArtistById(data.artist_id) : null;
+                    setArtwork({ ...data, artist: artistData?._id ? artistData : null, loading: false })
+                    return
                 }
-                return
+                setArtwork(prev => ({ ...prev, loading: false, error: data?.error || 'Œuvre introuvable' }))
+                toast.error(data?.error || 'Erreur lors du chargement de l\'œuvre')
+            } catch {
+                setArtwork(prev => ({ ...prev, loading: false, error: 'Erreur de connexion' }))
+                toast.error('Erreur de connexion')
             }
-            toast.error(data?.error || 'Erreur lors du chargement de l\'œuvre')
         }
         fetchArtwork()
-        
     }, [id]);
 
     const handlePayment = async () => {
@@ -52,6 +52,16 @@ export default function ArtworkCheckout(){
 
         if (!artwork?._id) {
             toast.error("Œuvre introuvable");
+            return;
+        }
+
+        if (!artwork?.price || artwork.price <= 0) {
+            toast.error("Prix invalide — impossible de finaliser l'achat");
+            return;
+        }
+
+        if (artwork?.sold) {
+            toast.error("Cette œuvre a déjà été vendue");
             return;
         }
 

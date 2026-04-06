@@ -23,6 +23,11 @@ export default function PortalLayout({ portal, children }) {
   const { hash } = useLocation()
 
   useEffect(() => {
+    // Mémorise le portail courant pour les redirections intelligentes (UX-006)
+    sessionStorage.setItem('kcb_portal', portal)
+  }, [portal])
+
+  useEffect(() => {
     if (hash) {
       const id = hash.replace("#", "")
       // Small delay to let sections mount before scrolling

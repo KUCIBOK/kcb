@@ -32,7 +32,7 @@ export function PlanProvider({ children }) {
           }))
         }
       } catch (error) {
-        console.error('[PlanContext] fetchPlans failed:', error)
+        makeToast('Erreur', 'danger', 'Impossible de charger les plans')
       }
     }
 
@@ -67,7 +67,8 @@ export function PlanProvider({ children }) {
               return newPlan
             }
           } catch (error) {
-            console.error('[PlanContext] addPlan failed:', error)
+            makeToast('Erreur', 'danger', "Impossible d'ajouter le plan")
+            return { error: error.message }
           }
         },
         updatePlan: async (id, payload) => {
@@ -94,7 +95,8 @@ export function PlanProvider({ children }) {
               return plan
             }
           } catch (error) {
-            console.error('[PlanContext] updatePlan failed:', error)
+            makeToast('Erreur', 'danger', 'Impossible de mettre à jour le plan')
+            return { error: error.message }
           }
         },
         deletePlan: async (id) => {
@@ -115,7 +117,8 @@ export function PlanProvider({ children }) {
               return plan
             }
           } catch (error) {
-            console.error('[PlanContext] deletePlan failed:', error)
+            makeToast('Erreur', 'danger', 'Impossible de supprimer le plan')
+            return { error: error.message }
           }
         },
       }}

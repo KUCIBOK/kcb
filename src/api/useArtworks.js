@@ -7,7 +7,16 @@
  * @module useArtworks
  */
 
-import { utils } from './useAPI';
+import { fetchWithTimeout, utils } from './useAPI';
+
+/** Mélange un tableau en place avec l'algorithme Fisher-Yates (non biaisé). */
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 const { api } = utils;
 
@@ -24,7 +33,7 @@ const { api } = utils;
 async function fetchArtworks(params = {}) {
   try {
     const qs = new URLSearchParams(params).toString();
-    const response = await fetch(`${api}/artworks${qs ? `?${qs}` : ''}`, { ...utils.options });
+    const response = await fetchWithTimeout(`${api}/artworks${qs ? `?${qs}` : ''}`, { ...utils.options });
     const body = await response.json();
     if (!response.ok) return { error: body?.error || 'Erreur serveur' };
     return body?.data ?? body;
@@ -173,8 +182,8 @@ export async function getRejectedArtworks() {
 export async function getRandomArtworks() {
   const result = await fetchArtworks({ for_sale: true, limit: 20 });
   if (result.error) return result;
-  const items = Array.isArray(result) ? result : [];
-  return items.sort(() => Math.random() - 0.5).slice(0, 8);
+  const items = Array.isArray(result) ? [...result] : [];
+  return shuffleArray(items).slice(0, 8);
 }
 
 /**
@@ -186,8 +195,8 @@ export async function getRandomArtworks() {
 export async function getRandomArtworksByCategories(category) {
   const result = await fetchArtworks({ category, for_sale: true, limit: 20 });
   if (result.error) return result;
-  const items = Array.isArray(result) ? result : [];
-  return items.sort(() => Math.random() - 0.5).slice(0, 8);
+  const items = Array.isArray(result) ? [...result] : [];
+  return shuffleArray(items).slice(0, 8);
 }
 
 /**
