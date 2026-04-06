@@ -714,6 +714,7 @@ async function routeAuth(req, res, action) {
     case 'google-callback': return await authGoogleCallback(req, res);
     case 'send-access':     return await authSendAccess(req, res);
     case 'create-buyer':    return await authCreateBuyer(req, res);
+    case 'set-role':        return await authSetRole(req, res);
     default:                return fail(res, 'Action auth inconnue', 404);
   }
 }
@@ -745,6 +746,57 @@ async function authGetById(req, res, id) {
     created_at: u.created_at,
     confirmed:  !!u.email_confirmed_at,
   });
+}
+
+/**
+ * POST /api/auth/set-role — Attribution du rôle initial après inscription Google OAuth.
+ * Sécurité : uniquement autorisé si le rôle actuel est 'buyer' (défaut post-inscription).
+ * Rôles autorisés : 'artist', 'curator' uniquement.
+ *
+ * @param {import('@vercel/node').VercelRequest}  req
+ * @param {import('@vercel/node').VercelResponse} res
+ */
+async function authSetRole(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+
+  const { role } = req.body ?? {};
+  const ALLOWED_ROLES = ['artist', 'curator'];
+  if (!role || !ALLOWED_ROLES.includes(role)) {
+    return fail(res, `Rôle invalide. Valeurs acceptées : ${ALLOWED_ROLES.join(', ')}`, 400);
+  }
+
+  // Vérifier que le rôle actuel est 'buyer' (empêche l'escalade de privilèges)
+  const { data: dbUser, error: dbErr } = await supabaseAdmin
+    .from('users')
+    .select('role')
+    .eq('id', userId)
+    .single();
+
+  if (dbErr || !dbUser) return fail(res, 'Utilisateur introuvable', 404);
+  if (dbUser.role !== 'buyer') {
+    return fail(res, 'Le rôle ne peut être modifié qu\'à l\'inscription initiale', 403);
+  }
+
+  // Mettre à jour public.users
+  const { data, error } = await supabaseAdmin
+    .from('users')
+    .update({ role })
+    .eq('id', userId)
+    .select()
+    .single();
+
+  if (error) return fail(res, error.message);
+
+  // Synchroniser user_metadata Supabase Auth
+  await supabaseAdmin.auth.admin.updateUserById(userId, {
+    user_metadata: { role },
+  });
+
+  return ok(res, { _id: data.id, ...data });
 }
 
 /**

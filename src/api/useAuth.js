@@ -294,6 +294,29 @@ export async function updateProfile(id, payload) {
 }
 
 /**
+ * Définit le rôle initial après inscription Google OAuth.
+ * Endpoint dédié — autorisé uniquement si le rôle actuel est 'buyer'.
+ *
+ * @param {'artist' | 'curator'} role
+ * @returns {Promise<object | { error: string }>}
+ */
+export async function setInitialRole(role) {
+  try {
+    const response = await fetch(`${api}/auth/set-role`, {
+      ...utils.options,
+      method: 'POST',
+      body: JSON.stringify({ role }),
+    })
+    const body = await response.json()
+    const user = body?.data ?? body
+    if (user?._id) return user
+    return { error: body?.error ?? body?.message ?? 'Erreur attribution du rôle' }
+  } catch (err) {
+    return { error: err.message }
+  }
+}
+
+/**
  * Change le mot de passe de l'utilisateur connecté.
  * Vérifie l'ancien mot de passe côté serveur avant la mise à jour.
  *

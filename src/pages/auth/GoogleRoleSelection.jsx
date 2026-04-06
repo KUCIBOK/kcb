@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Award, Brush } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { useAuth } from "../../store/AuthContext";
+import { setInitialRole } from "../../api/useAuth";
 import { DataLoader } from "../../components/loaders/PageLoader";
 import RevealOnScroll from "../../components/landing/RevealOnScroll";
 
@@ -14,9 +15,9 @@ const ROLE_DASHBOARDS = {
 };
 
 export default function GoogleRoleSelection() {
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [role, setRole] = useState(user?.role || "");
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,8 +26,7 @@ export default function GoogleRoleSelection() {
     setLoading(true);
     setError("");
     try {
-      // updateUser (AuthContext) met à jour public.users + user_metadata + déclenche onAuthStateChange
-      const updated = await updateUser({ role });
+      const updated = await setInitialRole(role);
       if (updated?.error) {
         setError(updated.error);
         setLoading(false);
