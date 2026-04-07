@@ -326,6 +326,7 @@ export default async function handler(req, res) {
 
   try {
     // ── Routes entièrement publiques (pas de clé API requise) ─────────────────
+    if (s0 === 'health' && s1 === 'payment') return await routeHealthPayment(req, res);
     if (s0 === 'health') return await routeHealth(req, res);
 
     // QR code et tracking publics — accessibles sans authentification
@@ -580,6 +581,53 @@ export default async function handler(req, res) {
  * @param {import('@vercel/node').VercelRequest}  req
  * @param {import('@vercel/node').VercelResponse} res
  */
+/**
+ * GET /api/health/payment — Diagnostic PayDunya (clés + connectivité).
+ * Public, sans auth. Ne crée aucun paiement.
+ */
+async function routeHealthPayment(req, res) {
+  const mode     = PAYDUNYA_MODE;
+  const endpoint = PAYDUNYA_ENDPOINTS[mode];
+  const keysPresent = {
+    master:  !!PAYDUNYA_MASTER_KEY,
+    private: !!PAYDUNYA_PRIVATE_KEY,
+    token:   !!PAYDUNYA_TOKEN,
+  };
+
+  // Tester la connectivité PayDunya avec un ping minimal
+  let pdReachable = false;
+  let pdStatus    = null;
+  let pdBody      = null;
+  try {
+    const testRes = await fetch(endpoint, {
+      method:  'POST',
+      headers: {
+        'Content-Type':         'application/json',
+        'PAYDUNYA-MASTER-KEY':  PAYDUNYA_MASTER_KEY  ?? '',
+        'PAYDUNYA-PRIVATE-KEY': PAYDUNYA_PRIVATE_KEY ?? '',
+        'PAYDUNYA-TOKEN':       PAYDUNYA_TOKEN        ?? '',
+      },
+      body: JSON.stringify({ invoice: { total_amount: 1, description: 'test', currency: 'XOF' }, store: { name: 'test' } }),
+    });
+    pdStatus    = testRes.status;
+    pdReachable = true;
+    const raw   = await testRes.text();
+    try { pdBody = JSON.parse(raw); } catch { pdBody = raw.slice(0, 200); }
+  } catch (err) {
+    pdBody = err.message;
+  }
+
+  return res.status(200).json({
+    mode,
+    endpoint:    endpoint ?? 'INVALIDE',
+    keys:        keysPresent,
+    pd_reachable: pdReachable,
+    pd_status:   pdStatus,
+    pd_response: pdBody,
+    timestamp:   new Date().toISOString(),
+  });
+}
+
 async function routeHealth(req, res) {
   let dbOk = false;
   try {
@@ -2560,9 +2608,9 @@ async function routePaydunyaInit(req, res) {
     return fail(res, 'Impossible de joindre PayDunya — réessayez', 502);
   }
 
-  if (pdResult.response_code !== '00') {
-    console.error('[PayDunya] Erreur :', pdResult.response_code, pdResult.response_text);
-    return fail(res, pdResult.response_text ?? 'Erreur PayDunya');
+  if (!pdResult || typeof pdResult !== 'object' || pdResult.response_code !== '00') {
+    console.error('[PayDunya] Réponse invalide :', JSON.stringify(pdResult)?.slice(0, 200));
+    return fail(res, pdResult?.response_text ?? 'Erreur PayDunya — paiement non initié');
   }
 
   return ok(res, { payment_url: pdResult.response_text, token: pdResult.token, ref });
