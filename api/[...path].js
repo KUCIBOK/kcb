@@ -2484,13 +2484,13 @@ const PAYDUNYA_TOKEN       = process.env.PAYDUNYA_TOKEN;
 const PAYMENT_BASE_URL     = process.env.CORS_ORIGIN ?? 'https://kucibok.com';
 
 const PAYDUNYA_ENDPOINTS = {
-  test: 'https://app.paydunya.com/sandbox-api/v1/softorder/create',
-  live: 'https://app.paydunya.com/api/v1/softorder/create',
+  test: 'https://app.paydunya.com/sandbox-api/v1/checkout-invoice/create',
+  live: 'https://app.paydunya.com/api/v1/checkout-invoice/create',
 };
 
 const PAYDUNYA_VERIFY_ENDPOINTS = {
-  test: 'https://app.paydunya.com/sandbox-api/v1/payment/details',
-  live: 'https://app.paydunya.com/api/v1/payment/details',
+  test: 'https://app.paydunya.com/sandbox-api/v1/checkout-invoice/confirm/',
+  live: 'https://app.paydunya.com/api/v1/checkout-invoice/confirm/',
 };
 
 /**
