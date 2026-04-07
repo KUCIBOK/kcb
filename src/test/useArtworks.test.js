@@ -16,6 +16,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('../api/useAPI', () => ({
+  // fetchWithTimeout délègue à global.fetch (mocké dans beforeEach)
+  fetchWithTimeout: (url, options) => global.fetch(url, options),
   utils: {
     api: '/api',
     get options() {

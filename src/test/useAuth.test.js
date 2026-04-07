@@ -96,7 +96,8 @@ const KCB_USER = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 beforeEach(() => {
-  vi.clearAllMocks()
+  // resetAllMocks vide aussi les queues mockResolvedValueOnce — évite les fuites entre describes
+  vi.resetAllMocks()
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -190,48 +191,48 @@ describe('loginUser', () => {
 
 describe('SignUpUser', () => {
   beforeEach(() => {
-    vi.restoreAllMocks()
+    global.fetch = vi.fn()
   })
 
   it('succès — retourne { user, message }', async () => {
-    supabase.auth.signUp.mockResolvedValueOnce({
-      data: { user: SUPABASE_USER },
-      error: null,
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: { user: { id: 'uuid-1234', email: 'nouveau@kcb.com', role: 'artist' } } }),
     })
 
     const result = await SignUpUser({
       email: 'nouveau@kcb.com',
       password: 'password123',
-      role: 'buyer',
+      role: 'artist',
       name: 'Amara Diallo',
     })
 
-    expect(result.user).toMatchObject(KCB_USER)
+    expect(result.user).toMatchObject({ _id: 'uuid-1234', id: 'uuid-1234', email: 'nouveau@kcb.com' })
     expect(result.message).toBe('Inscription réussie. Vérifiez votre adresse email pour continuer.')
     expect(result.error).toBeUndefined()
   })
 
-  it('utilisateur déjà inscrit — retourne le message français spécifique', async () => {
-    supabase.auth.signUp.mockResolvedValueOnce({
-      data: {},
-      error: { message: 'User already registered' },
+  it('email déjà utilisé — retourne le message brut de l\'API', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: 'Un compte existe déjà avec cet email.' }),
     })
 
     const result = await SignUpUser({
       email: 'existant@kcb.com',
       password: 'password123',
-      role: 'buyer',
+      role: 'artist',
       name: 'Dupont',
     })
 
-    expect(result.error).toBe("L'utilisateur existe déjà. Essayez de vous connecter.")
+    expect(result.error).toBe('Un compte existe déjà avec cet email.')
     expect(result.user).toBeUndefined()
   })
 
-  it('erreur générique Supabase — retourne { error: message }', async () => {
-    supabase.auth.signUp.mockResolvedValueOnce({
-      data: {},
-      error: { message: 'Signup is disabled' },
+  it('erreur générique backend — retourne { error: message }', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: 'Rôle invalide' }),
     })
 
     const result = await SignUpUser({
@@ -241,23 +242,14 @@ describe('SignUpUser', () => {
       name: 'Test',
     })
 
-    expect(result.error).toBe('Signup is disabled')
+    expect(result.error).toBe('Rôle invalide')
     expect(result.user).toBeUndefined()
   })
 
   it('artiste avec image — appelle uploadProfileImage et retourne imageUrl', async () => {
-    const artistUser = {
-      ...SUPABASE_USER,
-      id: 'artist-uuid',
-      user_metadata: { role: 'artist', name: 'Kofi Mensah' },
-    }
-    supabase.auth.signUp.mockResolvedValueOnce({
-      data: { user: artistUser },
-      error: null,
-    })
-    supabase.auth.updateUser.mockResolvedValueOnce({
-      data: { user: artistUser },
-      error: null,
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: { user: { id: 'artist-uuid', email: 'artiste@kcb.com', role: 'artist' } } }),
     })
     uploadProfileImage.mockResolvedValueOnce({
       url: 'https://cdn.kcb.com/profiles/artist-uuid/avatar.jpg',
@@ -281,14 +273,9 @@ describe('SignUpUser', () => {
   })
 
   it("artiste avec échec upload — retourne quand même l'utilisateur (non-bloquant)", async () => {
-    const artistUser = {
-      ...SUPABASE_USER,
-      id: 'artist-uuid-2',
-      user_metadata: { role: 'artist', name: 'Fatou Sow' },
-    }
-    supabase.auth.signUp.mockResolvedValueOnce({
-      data: { user: artistUser },
-      error: null,
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: { user: { id: 'artist-uuid-2', email: 'artiste2@kcb.com', role: 'artist' } } }),
     })
     uploadProfileImage.mockResolvedValueOnce({ error: 'Stockage indisponible' })
 
@@ -308,17 +295,17 @@ describe('SignUpUser', () => {
   })
 
   it("n'appelle pas uploadProfileImage si le rôle n'est pas artiste", async () => {
-    supabase.auth.signUp.mockResolvedValueOnce({
-      data: { user: SUPABASE_USER },
-      error: null,
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: { user: { id: 'uuid-1234', email: 'curator@kcb.com', role: 'curator' } } }),
     })
 
     const fakeFile = new File(['contenu'], 'photo.jpg', { type: 'image/jpeg' })
 
     await SignUpUser({
-      email: 'buyer@kcb.com',
+      email: 'curator@kcb.com',
       password: 'password123',
-      role: 'buyer',
+      role: 'curator',
       name: 'Collector',
       image: fakeFile,
     })
@@ -327,12 +314,12 @@ describe('SignUpUser', () => {
   })
 
   it('exception réseau — retourne { error }', async () => {
-    supabase.auth.signUp.mockRejectedValueOnce(new Error('Connexion impossible'))
+    global.fetch.mockRejectedValueOnce(new Error('Connexion impossible'))
 
     const result = await SignUpUser({
       email: 'test@kcb.com',
       password: 'password123',
-      role: 'buyer',
+      role: 'artist',
       name: 'Test',
     })
 
