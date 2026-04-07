@@ -2477,7 +2477,7 @@ async function routeNumerisationStatus(req, res, id) {
 // PAYMENTS — PAYDUNYA
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const PAYDUNYA_MODE        = process.env.PAYDUNYA_MODE ?? 'test';
+const PAYDUNYA_MODE        = (process.env.PAYDUNYA_MODE ?? 'test').toLowerCase();
 const PAYDUNYA_MASTER_KEY  = process.env.PAYDUNYA_MASTER_KEY;
 const PAYDUNYA_PRIVATE_KEY = process.env.PAYDUNYA_PRIVATE_KEY;
 const PAYDUNYA_TOKEN       = process.env.PAYDUNYA_TOKEN;
