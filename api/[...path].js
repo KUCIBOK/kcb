@@ -2464,22 +2464,30 @@ async function routePaydunyaInit(req, res) {
     return fail(res, 'Type de paiement invalide');
   }
 
-  let amount, description, returnUrl, cancelUrl, ref;
+  // Valider le mode PayDunya
+  const pdEndpoint = PAYDUNYA_ENDPOINTS[PAYDUNYA_MODE];
+  if (!pdEndpoint) return fail(res, `Mode PayDunya invalide : ${PAYDUNYA_MODE}`, 500);
+
+  let amount, description, returnUrl, cancelUrl, ref, artworkCurrency;
 
   if (type === 'artwork') {
     if (!artwork_id) return fail(res, 'artwork_id requis');
 
-    const { data: artwork } = await supabaseAdmin
+    const { data: artwork, error: artworkError } = await supabaseAdmin
       .from('artworks')
       .select('id, title, price, currency, status, sold')
       .eq('id', artwork_id)
       .single();
 
-    if (!artwork)                    return fail(res, 'Œuvre introuvable', 404);
-    if (artwork.sold)                return fail(res, 'Œuvre déjà vendue', 409);
-    if (artwork.status !== 'approved') return fail(res, 'Œuvre non disponible', 409);
+    if (artworkError || !artwork) return fail(res, 'Œuvre introuvable', 404);
+    if (artwork.sold)             return fail(res, 'Œuvre déjà vendue', 409);
+    if (artwork.status !== 'approved') return fail(res, 'Œuvre non disponible à la vente', 409);
 
-    amount      = artwork.price;
+    // NUMERIC PostgreSQL → string côté JS ; on force en number pour PayDunya
+    amount          = Number(artwork.price);
+    artworkCurrency = artwork.currency ?? 'XOF';
+    if (!amount || amount <= 0) return fail(res, 'Prix de l\'œuvre invalide');
+
     description = `Achat : ${artwork.title}`;
     ref         = `ART-${artwork_id}-${Date.now()}`;
     returnUrl   = `${PAYMENT_BASE_URL}/artwork-purchase-success?ref=${ref}`;
@@ -2487,14 +2495,17 @@ async function routePaydunyaInit(req, res) {
   } else {
     if (!plan_id) return fail(res, 'plan_id requis');
 
-    const { data: plan } = await supabaseAdmin
+    const { data: plan, error: planError } = await supabaseAdmin
       .from('plans')
       .select('id, name, price, currency')
       .eq('id', plan_id).eq('is_active', true).single();
 
-    if (!plan) return fail(res, 'Plan introuvable', 404);
+    if (planError || !plan) return fail(res, 'Plan introuvable', 404);
 
-    amount      = plan.price;
+    amount          = Number(plan.price);
+    artworkCurrency = plan.currency ?? 'XOF';
+    if (!amount || amount <= 0) return fail(res, 'Prix du plan invalide');
+
     description = `Abonnement : ${plan.name}`;
     ref         = `PLAN-${plan_id}-${Date.now()}`;
     returnUrl   = `${PAYMENT_BASE_URL}/subscription-success?ref=${ref}`;
@@ -2502,7 +2513,7 @@ async function routePaydunyaInit(req, res) {
   }
 
   const payload = {
-    invoice: { total_amount: amount, description, currency: currency ?? 'XOF' },
+    invoice: { total_amount: amount, description, currency: currency ?? artworkCurrency ?? 'XOF' },
     store: {
       name:     'Kucibok',
       tagline:  "La marketplace d'art africain",
@@ -2524,21 +2535,37 @@ async function routePaydunyaInit(req, res) {
     },
   };
 
-  const pdRes  = await fetch(PAYDUNYA_ENDPOINTS[PAYDUNYA_MODE], {
-    method:  'POST',
-    headers: {
-      'Content-Type':         'application/json',
-      'PAYDUNYA-MASTER-KEY':  PAYDUNYA_MASTER_KEY,
-      'PAYDUNYA-PRIVATE-KEY': PAYDUNYA_PRIVATE_KEY,
-      'PAYDUNYA-TOKEN':       PAYDUNYA_TOKEN,
-    },
-    body: JSON.stringify(payload),
-  });
+  let pdResult;
+  try {
+    const pdRes = await fetch(pdEndpoint, {
+      method:  'POST',
+      headers: {
+        'Content-Type':         'application/json',
+        'PAYDUNYA-MASTER-KEY':  PAYDUNYA_MASTER_KEY,
+        'PAYDUNYA-PRIVATE-KEY': PAYDUNYA_PRIVATE_KEY,
+        'PAYDUNYA-TOKEN':       PAYDUNYA_TOKEN,
+      },
+      body: JSON.stringify(payload),
+    });
 
-  const result = await pdRes.json();
-  if (result.response_code !== '00') return fail(res, result.response_text ?? 'Erreur PayDunya');
+    const rawText = await pdRes.text();
+    try {
+      pdResult = JSON.parse(rawText);
+    } catch {
+      console.error('[PayDunya] Réponse non-JSON :', rawText.slice(0, 300));
+      return fail(res, 'Réponse inattendue de PayDunya — vérifiez les clés API', 502);
+    }
+  } catch (fetchErr) {
+    console.error('[PayDunya] Erreur réseau :', fetchErr?.message);
+    return fail(res, 'Impossible de joindre PayDunya — réessayez', 502);
+  }
 
-  return ok(res, { payment_url: result.response_text, token: result.token, ref });
+  if (pdResult.response_code !== '00') {
+    console.error('[PayDunya] Erreur :', pdResult.response_code, pdResult.response_text);
+    return fail(res, pdResult.response_text ?? 'Erreur PayDunya');
+  }
+
+  return ok(res, { payment_url: pdResult.response_text, token: pdResult.token, ref });
 }
 
 /**

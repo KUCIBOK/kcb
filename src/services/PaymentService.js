@@ -10,13 +10,20 @@ class PaymentService {
    */
   async initArtworkPayment(artworkId) {
     try {
+      // apiService retourne { data: { payment_url, token, ref } }
       const response = await apiService.post('/payments/paydunya-init', {
         type: 'artwork',
         artwork_id: artworkId,
       });
+      const inner = response?.data ?? response;
       return {
         success: true,
-        data: response
+        data: {
+          paymentUrl:  inner.payment_url,
+          token:       inner.token,
+          ref:         inner.ref,
+          transaction: inner,
+        },
       };
     } catch (error) {
       return {
@@ -36,9 +43,15 @@ class PaymentService {
         type: 'plan',
         plan_id: planId,
       });
+      const inner = response?.data ?? response;
       return {
         success: true,
-        data: response
+        data: {
+          paymentUrl:   inner.payment_url,
+          token:        inner.token,
+          ref:          inner.ref,
+          subscription: inner,
+        },
       };
     } catch (error) {
       return {
