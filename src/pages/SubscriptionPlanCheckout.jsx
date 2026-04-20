@@ -114,7 +114,7 @@ export default function SubscriptionPlanCheckout(){
                             <h2 className="font-playfair text-lg text-white mb-2"> {state?.plan?.name} </h2>
                             <ul className="list-none pb-4 border-b border-white/[0.06]">
                                 {state?.plan?.features?.map((item, idx) => (
-                                    <li className="py-2 text-sm  text-white flex items-center gap-2"> <Check className="text-green-500 w-4 h-4" /> {item} </li>
+                                    <li key={idx} className="py-2 text-sm  text-white flex items-center gap-2"> <Check className="text-green-500 w-4 h-4" /> {item} </li>
                                 ))}
                             </ul>
                             {(() => {

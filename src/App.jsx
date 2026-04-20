@@ -45,12 +45,9 @@ function MaintenancePage() {
   );
 }
 
-function App() {
-  // M4 — Maintenance planifiée : VITE_MAINTENANCE_MODE=true coupe l'accès public
-  if (import.meta.env.VITE_MAINTENANCE_MODE === 'true') {
-    return <MaintenancePage />;
-  }
-
+// Composant principal extrait pour respecter les règles des hooks React
+// (pas de hook après un return conditionnel).
+function AppContent() {
   const [visitor, setVisitor] = useState(null);
   // null = pas encore décidé, true = accepté, false = refusé
   const [consent, setConsent] = useState(() => {
@@ -184,6 +181,14 @@ function App() {
       )}
     </>
   );
+}
+
+function App() {
+  // M4 — Maintenance planifiée : VITE_MAINTENANCE_MODE=true coupe l'accès public
+  if (import.meta.env.VITE_MAINTENANCE_MODE === 'true') {
+    return <MaintenancePage />;
+  }
+  return <AppContent />;
 }
 
 export default App;

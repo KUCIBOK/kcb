@@ -41,7 +41,7 @@ export async function importGalleries(payload) {
   try {
     // Use FormData correctly: do NOT send "Content-Type: application/json"
     // Copy auth headers but drop Content-Type so the browser sets the multipart boundary
-    const headers = { ...options.headers };
+    const headers = { ...utils.options.headers };
     delete headers["Content-Type"]; // critical for multer
 
     const response = await fetch(`${api}/galleries/import`, {

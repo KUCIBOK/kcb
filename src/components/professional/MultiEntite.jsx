@@ -6,6 +6,8 @@ import {
   Trash2,
   Users,
   ChevronDown,
+  Save,
+  X,
 } from "lucide-react";
 import {
   getEntities,
@@ -28,6 +30,7 @@ export function MultiEntite() {
   const [showDeleteEntityConfirm, setShowDeleteEntityConfirm] = useState(false);
   const [entityToDelete, setEntityToDelete] = useState(null);
   const [showDeleteMemberConfirm, setShowDeleteMemberConfirm] = useState(false);
+  const [view, setView] = useState("list");
   const [memberToDelete, setMemberToDelete] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
