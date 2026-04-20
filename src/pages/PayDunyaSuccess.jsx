@@ -18,6 +18,9 @@ const PayDunyaSuccess = () => {
   });
 
   useEffect(() => {
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY_MS = 2000;
+
     const verifyTransaction = async () => {
       if (!transactionId) {
         setStatus({
@@ -29,31 +32,46 @@ const PayDunyaSuccess = () => {
         return;
       }
 
-      try {
-        const result = await verifyPayment(transactionId);
-        
-        if (result.success) {
-          setStatus({
-            loading: false,
-            verified: true,
-            error: null,
-            transaction: result.data
-          });
-        } else {
+      // Le webhook PayDunya peut arriver quelques secondes après la redirection.
+      // On retente jusqu'à MAX_RETRIES fois avant d'afficher une erreur.
+      for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+        try {
+          const result = await verifyPayment(transactionId);
+
+          if (result.success) {
+            setStatus({
+              loading: false,
+              verified: true,
+              error: null,
+              transaction: result.data
+            });
+            return;
+          }
+
+          if (attempt < MAX_RETRIES) {
+            await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+            continue;
+          }
+
+          // Toutes les tentatives épuisées — message neutre (le webhook peut encore arriver)
           setStatus({
             loading: false,
             verified: false,
-            error: result.error,
+            error: 'Votre paiement est en cours de traitement. Un email de confirmation vous sera envoyé sous peu.',
+            transaction: null
+          });
+        } catch (err) {
+          if (attempt < MAX_RETRIES) {
+            await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+            continue;
+          }
+          setStatus({
+            loading: false,
+            verified: false,
+            error: 'Erreur de connexion. Votre paiement sera confirmé par email.',
             transaction: null
           });
         }
-      } catch (error) {
-        setStatus({
-          loading: false,
-          verified: false,
-          error: error.message,
-          transaction: null
-        });
       }
     };
 

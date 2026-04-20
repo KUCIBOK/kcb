@@ -84,7 +84,8 @@ export function AuthContextProvider({ children }) {
 
   /**
    * Récupère le rôle autoritatif depuis public.users (source de vérité DB).
-   * Timeout 4s : si Supabase ne répond pas, on utilise le rôle user_metadata.
+   * Timeout 4s : si Supabase ne répond pas, on applique le principe du moindre
+   * privilège — le rôle retombe à 'buyer' au lieu de faire confiance à user_metadata.
    */
   const loadDbRole = useCallback(async (userId) => {
     if (!userId) return null;
@@ -125,7 +126,9 @@ export function AuthContextProvider({ children }) {
         try {
           if (kcbUser) {
             const dbRole = await loadDbRole(kcbUser._id);
-            if (dbRole) kcbUser.role = dbRole;
+            // Moindre privilège : si DB injoignable (null), on force 'buyer'
+            // plutôt que de faire confiance à user_metadata (contrôlé par l'utilisateur).
+            kcbUser.role = dbRole ?? 'buyer';
             setUser(kcbUser);
             loadProfile(kcbUser);
           } else {
@@ -133,7 +136,7 @@ export function AuthContextProvider({ children }) {
           }
         } catch {
           // Ne jamais bloquer l'app sur une erreur de profil DB
-          if (kcbUser) setUser(kcbUser);
+          if (kcbUser) { kcbUser.role = 'buyer'; setUser(kcbUser); }
           else setUser(null);
         } finally {
           setLoading(false);
@@ -152,7 +155,7 @@ export function AuthContextProvider({ children }) {
         try {
           if (kcbUser) {
             const dbRole = await loadDbRole(kcbUser._id);
-            if (dbRole) kcbUser.role = dbRole;
+            kcbUser.role = dbRole ?? 'buyer';
             setUser(kcbUser);
           } else {
             setUser(null);
@@ -175,7 +178,7 @@ export function AuthContextProvider({ children }) {
             setPlan(null);
           }
         } catch {
-          if (kcbUser) setUser(kcbUser);
+          if (kcbUser) { kcbUser.role = 'buyer'; setUser(kcbUser); }
           else setUser(null);
         } finally {
           setLoading(false);
