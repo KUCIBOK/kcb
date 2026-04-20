@@ -30,6 +30,10 @@ export default function ArtworkCheckout(){
             try {
                 const data = await getArtworkById(id)
                 if (data?._id) {
+                    if (data.sold) {
+                        setArtwork(prev => ({ ...prev, loading: false, error: 'Cette œuvre a déjà été vendue.' }))
+                        return
+                    }
                     const artistData = data?.artist_id ? await getArtistById(data.artist_id) : null;
                     setArtwork({ ...data, artist: artistData?._id ? artistData : null, loading: false })
                     return

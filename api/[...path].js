@@ -109,6 +109,27 @@ function rateLimit(ip, windowMs = 60_000, max = 5) {
   return hits.length <= max;
 }
 
+// ─── HTML Sanitizer (serveur) ────────────────────────────────────────────────
+// Défense en profondeur : le frontend sanitise via DOMPurify, mais on filtre
+// aussi côté serveur avant stockage en base pour les contenus HTML (blogs).
+// Pas de dépendance externe — regex ciblée sur les vecteurs XSS classiques.
+function stripDangerousHtml(html) {
+  if (typeof html !== 'string') return html;
+  return html
+    // Supprime les balises dangereux (avec tout leur contenu pour <script>)
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+    .replace(/<object[\s\S]*?<\/object>/gi, '')
+    .replace(/<embed[^>]*>/gi, '')
+    .replace(/<form[\s\S]*?<\/form>/gi, '')
+    // Supprime les handlers d'événements inline (on*)
+    .replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/\s+on\w+\s*=\s*[^\s>]*/gi, '')
+    // Neutralise les hrefs/src javascript:
+    .replace(/href\s*=\s*["']\s*javascript:[^"']*/gi, 'href="#"')
+    .replace(/src\s*=\s*["']\s*javascript:[^"']*/gi, 'src=""');
+}
+
 // SEC-008 : Content-Security-Policy
 const CSP = [
   "default-src 'self'",
@@ -1891,7 +1912,7 @@ async function routeBlog(req, res) {
       .from('blog_posts')
       .insert({
         user_id:   authResult.user.id,
-        title, content, image,
+        title, content: stripDangerousHtml(content), image,
         category:  category ?? null,
         tags:      Array.isArray(tags) ? tags : [],
         published: !!published,
@@ -2673,7 +2694,7 @@ async function routePaydunyaCallback(req, res) {
         .from('artworks').select('price, currency, user_id').eq('id', artwork_id).single();
 
       if (artwork) {
-        await supabaseAdmin.from('transactions').insert({
+        const { error: txError } = await supabaseAdmin.from('transactions').insert({
           artwork_id,
           buyer_id:       user_id,
           seller_id:      artwork.user_id,
@@ -2683,6 +2704,10 @@ async function routePaydunyaCallback(req, res) {
           payment_method: 'paydunya',
           payment_ref:    token,
         });
+        // Code 23505 = unique_violation — webhook traité deux fois simultanément, ignorer
+        if (txError && txError.code !== '23505') {
+          console.error('[PAYDUNYA] Erreur INSERT transaction', txError.message);
+        }
       }
     }
 
@@ -3373,7 +3398,7 @@ async function routeBlogById(req, res, id) {
     const { title, content, image, category, tags, published } = req.body ?? {};
     const updates = {};
     if (title !== undefined)     updates.title = title;
-    if (content !== undefined)   updates.content = content;
+    if (content !== undefined)   updates.content = stripDangerousHtml(content);
     if (image !== undefined)     updates.image = image;
     if (category !== undefined)  updates.category = category;
     if (tags !== undefined)      updates.tags = Array.isArray(tags) ? tags : [];
