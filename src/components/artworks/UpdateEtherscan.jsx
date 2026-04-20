@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useArtworks } from "../../store/ArtworkContext"
 import { Pen } from "lucide-react"
 import { Modal, Input, Button, toast } from "../ui"
+import { DataLoader } from "../loaders/PageLoader"
 
 export function UpdateEtherscan({artwork}){
     const [state, setState] = useState({

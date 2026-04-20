@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useAuth } from "../../store/AuthContext"
 import { usePlanStore } from "../../store/PlanContext"
 import { DataLoader } from "../loaders/PageLoader"
-import { ConfirmDialog } from "../ui"
+import { ConfirmDialog, toast, Modal, Input, Select, Button } from "../ui"
 import { Link } from "react-router-dom"
 
 
@@ -188,7 +188,7 @@ function UpdatePlanModal({closeModal, plan}){
                                 if (state?.feature) {
                                     setState({ 
                                         ...state, 
-                                        features: [...state?.features, state?.feature], 
+                                        features: [...(state?.features || []), state?.feature],
                                         feature: "" 
                                     });
                                 }

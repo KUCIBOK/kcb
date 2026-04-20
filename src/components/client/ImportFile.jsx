@@ -8,6 +8,7 @@ const ImportFile = ({ onUpload }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [result, setResult] = useState(null);
 
   const handleUpload = async () => {
     if (!file) return;

@@ -10,7 +10,13 @@ export function GuestProtectedRoute() {
   const isRecoveryFlow = !!hashParams.get('access_token') || !!hashParams.get('error_code')
   if (loading) return <PageLoader />
   if (user?.role && !isRecoveryFlow) {
-    const dest = user.role === 'buyer' ? '/account' : `/dashboard/${user.role}`
+    const DASHBOARD_ROUTES = {
+      buyer:   '/account',
+      artist:  '/dashboard/artist',
+      curator: '/dashboard/curator',
+      admin:   '/dashboard/admin',
+    }
+    const dest = DASHBOARD_ROUTES[user.role] ?? '/account'
     return <Navigate to={dest} />
   }
   return <Outlet />

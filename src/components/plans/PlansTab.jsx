@@ -165,7 +165,7 @@ function AddPlanModal({ closeModal }) {
                                 if (state?.feature) {
                                     setState({ 
                                         ...state, 
-                                        features: [...state?.features, state?.feature], 
+                                        features: [...(state?.features || []), state?.feature],
                                         feature: "" 
                                     });
                                 }
@@ -183,7 +183,7 @@ function AddPlanModal({ closeModal }) {
                                     type="button"
                                     onClick={() => setState({ 
                                         ...state, 
-                                        features: state?.features.filter((f, i) => i !== index) 
+                                        features: (state?.features || []).filter((f, i) => i !== index)
                                     })} 
                                     className="text-red-400 hover:text-red-300"
                                 >

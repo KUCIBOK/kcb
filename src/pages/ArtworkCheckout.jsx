@@ -99,7 +99,7 @@ export default function ArtworkCheckout(){
                         <div className="flex-1 bg-kcb-noir-deep border border-white/[0.06] rounded-[4px] p-4 md:p-6 flex flex-col gap-4 md:gap-6 shadow-md">
                             <h2 className="font-playfair text-xl text-white font-semibold mb-2">Résumé de la commande</h2>
                             <div className="flex gap-4 items-center">
-                                <img src={artwork?.image} alt={artwork?.title} className="rounded-[4px] w-24 h-24 object-cover border border-white/[0.06]" />
+                                <img src={artwork?.image || '/images/placeholder-artwork.svg'} alt={artwork?.title} className="rounded-[4px] w-24 h-24 object-cover border border-white/[0.06]" />
                                 <div className="flex flex-col gap-1">
                                     <span className="font-semibold text-white text-lg">{artwork?.title}</span>
                                     {artwork?.edition && (

@@ -45,7 +45,7 @@ export default function BlogPostDetails(){
                 setState(prev => ({
                     ...prev,
                     loading : false,
-                    error : post?.error
+                    error : error?.message || 'Erreur lors du chargement de l\'article'
                 }))
             }
         }
