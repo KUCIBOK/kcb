@@ -4,12 +4,10 @@ import { useAuth } from '../../store/AuthContext'
 import { useArtworks } from '../../store/ArtworkContext'
 import { Link } from 'react-router-dom'
 import {
-  Award,
   Briefcase,
   Clock,
   Building,
   CreditCard,
-  Gavel,
   Image,
   Menu,
   Palette,
@@ -31,7 +29,6 @@ import DashboardSidebar from '../../components/shared/DashboardSidebar'
 import { Profile } from '../../components/professional/Profile'
 import { ArtistTab } from '../../components/professional/ArtistTab'
 import { Synthesis } from '../../components/professional/Synthesis'
-import { AuctionTab } from '../../components/professional/AuctionTab'
 
 import { DeliveryTab } from '../../components/delivery/DeliveryTab'
 import { InsuranceTab } from '../../components/insurance/InsuranceTab'

@@ -5,6 +5,7 @@ import { setSupabaseToken } from '../api/useAPI';
 import { changePassword, getUserProfile, updateProfile, updateUser } from '../api/useAuth';
 import { updateArtist } from '../api/useArtists';
 import { createLog } from '../api/useLog';
+import { getMySubscription } from '../api/useSubscriptions';
 
 /** @type {React.Context} */
 export const AuthContext = createContext(null);
@@ -65,6 +66,17 @@ export function AuthContextProvider({ children }) {
   const [subscription, setSubscription] = useState(null);
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // ── Chargement de l'abonnement actif ─────────────────────────────────────────
+  const loadSubscription = useCallback(async () => {
+    try {
+      const sub = await getMySubscription();
+      setSubscription(sub ?? null);
+      setPlan(sub?.plan ?? null);
+    } catch {
+      // Abonnement non critique — ne pas bloquer l'auth
+    }
+  }, []);
 
   // ── Chargement du profil étendu (Supabase — artists / profiles) ─────────────
   const loadProfile = useCallback(async (kcbUser) => {
@@ -131,6 +143,7 @@ export function AuthContextProvider({ children }) {
             kcbUser.role = dbRole ?? 'buyer';
             setUser(kcbUser);
             loadProfile(kcbUser);
+            loadSubscription();
           } else {
             setUser(null);
           }
@@ -163,6 +176,7 @@ export function AuthContextProvider({ children }) {
 
           if (event === 'SIGNED_IN' && kcbUser) {
             loadProfile(kcbUser);
+            loadSubscription();
             createLog({
               description: `L'utilisateur ${kcbUser.name || kcbUser.email} s'est connecté`,
               userId: kcbUser._id,
@@ -187,7 +201,7 @@ export function AuthContextProvider({ children }) {
     );
 
     return () => authListener.unsubscribe();
-  }, [loadProfile, loadDbRole]);
+  }, [loadProfile, loadDbRole, loadSubscription]);
 
   // ── Actions exposées ──────────────────────────────────────────────────────
 

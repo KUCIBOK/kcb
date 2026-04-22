@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Award, Brush } from "lucide-react";
+import { Award, Brush, ShoppingBag } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { useAuth } from "../../store/AuthContext";
 import { setInitialRole } from "../../api/useAuth";
@@ -104,6 +104,22 @@ export default function GoogleRoleSelection() {
                 </span>
                 <span className="text-white text-base font-medium">
                   Curateur
+                </span>
+              </div>
+              <div
+                onClick={() => setRole("buyer")}
+                className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
+                  role === "buyer"
+                    ? "border-kcb-or bg-kcb-or/10"
+                    : "border-white/[0.06] hover:border-kcb-or/40"
+                }`}
+                style={{ userSelect: "none" }}
+              >
+                <span className="rounded-full bg-kcb-or/10 p-2">
+                  <ShoppingBag className="text-kcb-or/80" />
+                </span>
+                <span className="text-white text-base font-medium">
+                  Collectionneur
                 </span>
               </div>
               <button
