@@ -109,7 +109,7 @@ export const ArtworksList = ({ artworks, user }) => {
     },
     {
       header: 'Certificat',
-      accessor: 'certificatePath',
+      accessor: 'certificate_path',
       render: (value, row) => <GenerateCertificateAction artwork={row} user={user} />,
     },
     {

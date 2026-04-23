@@ -571,6 +571,9 @@ export default async function handler(req, res) {
     // ── /api/certificates/generate ───────────────────────────────────────────
     if (s0 === 'certificates' && s1 === 'generate') return await routeCertificateGenerate(req, res);
 
+    // ── /api/certificates/url/:artworkId ─────────────────────────────────────
+    if (s0 === 'certificates' && s1 === 'url' && s2) return await routeCertificateUrl(req, res, s2);
+
     // ── /api/profile/:id ─────────────────────────────────────────────────────
     if (s0 === 'profile' && s1) return await routeProfile(req, res, s1);
 
@@ -3068,6 +3071,34 @@ async function routeCertificateGenerate(req, res) {
     filename,
     kucibok_id: artwork.kucibok_id,
   });
+}
+
+/**
+ * GET /api/certificates/url/:artworkId — Retourne une signed URL (1h) pour le certificat PDF.
+ * Nécessite que le certificat ait déjà été généré (certificate_path présent sur l'œuvre).
+ */
+async function routeCertificateUrl(req, res, artworkId) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { data: artwork, error } = await supabaseAdmin
+    .from('artworks')
+    .select('id, certificate_path, status')
+    .eq('id', artworkId)
+    .single();
+
+  if (error || !artwork) return fail(res, 'Œuvre introuvable', 404);
+  if (!artwork.certificate_path) return fail(res, 'Certificat non encore généré', 404);
+
+  const { data: signedData, error: signErr } = await supabaseAdmin.storage
+    .from('certificates')
+    .createSignedUrl(artwork.certificate_path, 3600);
+
+  if (signErr || !signedData?.signedUrl) return fail(res, 'Impossible de générer le lien de téléchargement');
+
+  return ok(res, { certificate_url: signedData.signedUrl });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
