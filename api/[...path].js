@@ -1528,6 +1528,7 @@ async function routeArtworks(req, res) {
       ...a,
       _id: a.id,
       artist: a.artists?.name ?? a.artist ?? null,
+      image: a.image?.includes('backend.kucibok.com') ? null : (a.image ?? null),
     }));
     return ok(res, normalized, 200, { page, limit, total: count });
   }
@@ -1620,7 +1621,8 @@ async function routeArtworkById(req, res, id) {
 
     // Incrémenter les visites en arrière-plan (non bloquant)
     (async () => { try { await supabaseAdmin.rpc('increment_artwork_visited', { artwork_id: id }); } catch {} })();
-    return ok(res, { ...data, _id: data.id, artist: data.artists?.name ?? data.artist ?? null });
+    const image = data.image?.includes('backend.kucibok.com') ? null : (data.image ?? null);
+    return ok(res, { ...data, _id: data.id, artist: data.artists?.name ?? data.artist ?? null, image });
   }
 
   if (req.method === 'PUT') {

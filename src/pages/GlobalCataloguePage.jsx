@@ -11,6 +11,12 @@ import { globalT } from "../i18n/global"
 
 const PAGE_SIZE = 12
 
+function validImageUrl(url) {
+  if (!url) return null;
+  if (url.includes('backend.kucibok.com')) return null;
+  return url;
+}
+
 const SORT_FNS = {
   recent:     (a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0),
   price_asc:  (a, b) => (Number(a.price) || 0) - (Number(b.price) || 0),
@@ -25,12 +31,13 @@ function ArtworkCard({ artwork }) {
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden bg-kcb-ardoise">
-        {artwork.image ? (
+        {validImageUrl(artwork.image) ? (
           <img
-            src={artwork.image}
+            src={validImageUrl(artwork.image)}
             alt={artwork.title}
             loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-kcb-pierre/30 text-5xl">

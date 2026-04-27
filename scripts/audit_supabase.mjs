@@ -187,6 +187,52 @@ if (migErr) {
   console.log(`  ✅ Migrations appliquées: ${migData?.length ?? 0}`);
 }
 
+// ─── 7. Audit URLs images artworks ──────────────────────────
+console.log('\n── 7. IMAGES ARTWORKS — ÉTAT DES URLs ───────────────────────');
+const { data: artworkImages } = await supabase
+  .from('artworks')
+  .select('id, title, image')
+  .limit(1000);
+
+if (!artworkImages || artworkImages.length === 0) {
+  console.log('  ℹ️  Aucune œuvre trouvée');
+} else {
+  let nullCount = 0, supabaseCount = 0, cloudinaryCount = 0, vpsCount = 0, otherCount = 0;
+  const brokenSamples = [];
+
+  for (const a of artworkImages) {
+    if (!a.image) { nullCount++; continue; }
+    if (a.image.includes('.supabase.co/storage')) supabaseCount++;
+    else if (a.image.includes('cloudinary.com'))   cloudinaryCount++;
+    else if (a.image.includes('backend.kucibok'))  { vpsCount++; if (brokenSamples.length < 3) brokenSamples.push(a.image); }
+    else { otherCount++; if (brokenSamples.length < 3) brokenSamples.push(a.image); }
+  }
+
+  const total = artworkImages.length;
+  console.log(`  Total analysé  : ${total} œuvres`);
+  console.log(`  ✅ Supabase    : ${supabaseCount} (URLs en ordre)`);
+  console.log(`  🔶 Cloudinary  : ${cloudinaryCount} (à migrer → node scripts/migrate_cloudinary.js)`);
+  console.log(`  ❌ VPS mort    : ${vpsCount} (backend.kucibok.com expiré — images perdues)`);
+  console.log(`  ⬜ Null/vide   : ${nullCount}`);
+  console.log(`  ℹ️  Autres     : ${otherCount}`);
+  if (brokenSamples.length) {
+    console.log(`\n  Exemples d'URLs non-Supabase :`);
+    brokenSamples.forEach(u => console.log(`    ${u}`));
+  }
+
+  // Test de connectivité sur une URL Supabase Storage (si présente)
+  const supabaseSample = artworkImages.find(a => a.image?.includes('.supabase.co/storage'));
+  if (supabaseSample) {
+    try {
+      const r = await fetch(supabaseSample.image, { method: 'HEAD' });
+      if (r.ok) console.log(`\n  ✅ Bucket public OK  — ${r.status} sur ${supabaseSample.image.slice(0, 80)}…`);
+      else      console.log(`\n  ❌ Bucket inaccessible — ${r.status} sur ${supabaseSample.image.slice(0, 80)}…`);
+    } catch (e) {
+      console.log(`\n  ❌ Fetch échoué : ${e.message}`);
+    }
+  }
+}
+
 // ─── RÉSUMÉ ──────────────────────────────────────────────────
 console.log(`\n${'═'.repeat(60)}`);
 console.log(`  RÉSUMÉ`);
