@@ -1541,7 +1541,7 @@ async function routeArtworks(req, res) {
     const {
       title, description, image, medium, condition, provenance,
       height, width, weight, price, currency, category, tags,
-      artistId, for_sale, edition_number, edition_total,
+      artistId, for_sale, availability_status, edition_number, edition_total,
     } = req.body ?? {};
 
     if (!title) return fail(res, 'Le titre est requis');
@@ -1574,8 +1574,9 @@ async function routeArtworks(req, res) {
         currency:       currency ?? 'XOF',
         category:       category ?? null,
         tags:           (() => { if (!tags) return []; if (Array.isArray(tags)) return tags; try { const p = JSON.parse(tags); return Array.isArray(p) ? p : [String(p)]; } catch { return String(tags).split(',').map(t => t.trim()).filter(Boolean); } })(),
-        for_sale:       !!for_sale,
-        edition_number: edition_number ? Number(edition_number) : 1,
+        for_sale:            !!for_sale,
+        availability_status: availability_status ?? 'available',
+        edition_number:      edition_number ? Number(edition_number) : 1,
         edition_total:  edition_total  ? Number(edition_total)  : 1,
         status:         'pending',
       })
