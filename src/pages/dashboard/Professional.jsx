@@ -9,6 +9,7 @@ import {
   Building,
   CreditCard,
   Image,
+  Lock,
   Menu,
   Palette,
   Plus,
@@ -26,6 +27,7 @@ import {
   Settings,
 } from 'lucide-react'
 import DashboardSidebar from '../../components/shared/DashboardSidebar'
+import { EmailVerificationBanner } from '../../components/shared/EmailVerificationBanner'
 import { Profile } from '../../components/professional/Profile'
 import { ArtistTab } from '../../components/professional/ArtistTab'
 import { Synthesis } from '../../components/professional/Synthesis'
@@ -40,11 +42,32 @@ import Abonnement from '../../components/professional/Abonnement'
 import EmailComposer from '../../components/professional/EmailComposer'
 import ContactsLists from '../../components/professional/ContactsLists'
 
+function SubscriptionGate() {
+  return (
+    <div className="flex flex-col items-center justify-center h-64 rounded-[4px] border border-kcb-or/20 bg-kcb-or/5 p-8 text-center gap-4">
+      <Lock className="w-10 h-10 text-kcb-or/60" />
+      <div>
+        <p className="text-white font-semibold text-lg mb-1">Fonctionnalité Premium</p>
+        <p className="text-kcb-pierre text-sm max-w-md">
+          Cette fonctionnalité nécessite un abonnement actif. Choisissez un plan pour débloquer l'accès.
+        </p>
+      </div>
+      <Link
+        to="/global#pricing"
+        className="flex items-center gap-2 bg-kcb-or text-kcb-noir px-5 py-2 rounded-[4px] text-sm font-semibold hover:bg-kcb-bronze transition"
+      >
+        Voir les plans
+      </Link>
+    </div>
+  )
+}
+
 export default function Professional() {
   const { myArtworks } = useArtworks()
   const [toggle, setToggle] = useState(false)
   const { user, curatorProfile, subscription, loading } = useAuth()
   const [tab, setTab] = useState(0)
+  const isSubscriptionActive = subscription?.status === 'active'
 
   // Menu structure with categories
   const menuStructure = [
@@ -118,17 +141,17 @@ export default function Professional() {
       case 5:
         return <InsuranceTab />
       case 6: // CRM Galerie
-        return <CrmGalerie />
+        return isSubscriptionActive ? <CrmGalerie /> : <SubscriptionGate />
       case 7: // Multi-entité
-        return <MultiEntite />
+        return isSubscriptionActive ? <MultiEntite /> : <SubscriptionGate />
       case 8: // Intégrations
-        return <Integrations />
+        return isSubscriptionActive ? <Integrations /> : <SubscriptionGate />
       case 9: // Email Marketing
-        return <EmailComposer />
+        return isSubscriptionActive ? <EmailComposer /> : <SubscriptionGate />
       case 10: // Contacts & Listes
-        return <ContactsLists />
+        return isSubscriptionActive ? <ContactsLists /> : <SubscriptionGate />
       case 11: // Analytique Pro
-        return <AnalytiquePro />
+        return isSubscriptionActive ? <AnalytiquePro /> : <SubscriptionGate />
       case 12:
         return <Profile />
       case 13:
@@ -198,6 +221,18 @@ export default function Professional() {
         />
         {/* Main content */}
         <main className="flex-1 px-4 md:px-8 py-6 overflow-y-auto min-w-0">
+          <EmailVerificationBanner />
+          {!isSubscriptionActive && (
+            <div className="flex items-center gap-3 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] px-4 py-3 mb-6 text-sm">
+              <Lock className="w-4 h-4 text-kcb-or flex-shrink-0" />
+              <p className="text-kcb-sable flex-1">
+                Certaines fonctionnalités nécessitent un abonnement actif.{' '}
+                <Link to="/global#pricing" className="text-kcb-or underline hover:text-kcb-bronze">
+                  Voir les plans
+                </Link>
+              </p>
+            </div>
+          )}
           {/* Breadcrumb — desktop only */}
           <div className="hidden lg:flex items-center gap-2 text-sm text-kcb-pierre mb-6">
             <span>{getCurrentPageInfo().category}</span>

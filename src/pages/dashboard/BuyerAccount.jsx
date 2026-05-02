@@ -3,6 +3,7 @@ import { useAuth } from "../../store/AuthContext";
 import { useArtworks } from "../../store/ArtworkContext";
 import { Menu, ShoppingBag, ChevronRight, Package, ShieldCheck, Truck, User } from "lucide-react";
 import DashboardSidebar from "../../components/shared/DashboardSidebar";
+import { EmailVerificationBanner } from "../../components/shared/EmailVerificationBanner";
 import { Profile } from "../../components/collector/Profile";
 import { Link } from "react-router-dom";
 import { ArtworksList } from "../../components/artworks/ArtworksList";
@@ -96,6 +97,7 @@ export default function BuyerAccount() {
 
       {/* Main content */}
       <main className="flex-1 px-4 md:px-8 py-6 overflow-y-auto min-w-0">
+        <EmailVerificationBanner />
         {/* Breadcrumb — desktop only */}
         <div className="hidden lg:flex items-center gap-2 text-sm text-kcb-pierre mb-6">
           <span>{getCurrentPageInfo().category}</span>
