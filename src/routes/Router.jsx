@@ -170,11 +170,11 @@ export function Router() {
         <Route path="/artists" element={<PortalNavigate africaPath="/africa/artists" globalPath="/global/artists" />} />
         <Route path="/artist/:id" element={<PortalNavigateWithParams africaTo="/africa/artist/:id" globalTo="/global/artist/:id" />} />
         <Route path="/artwork/:id" element={<PortalNavigateWithParams africaTo="/africa/artwork/:id" globalTo="/global/artwork/:id" />} />
-        <Route path="/blog" element={<PortalNavigate africaPath="/africa/blog" globalPath="/africa/blog" />} />
-        <Route path="/blog/:id" element={<PortalNavigateWithParams africaTo="/africa/blog/:id" globalTo="/africa/blog/:id" />} />
+        <Route path="/blog" element={<PortalNavigate africaPath="/africa/blog" globalPath="/global/blog" />} />
+        <Route path="/blog/:id" element={<PortalNavigateWithParams africaTo="/africa/blog/:id" globalTo="/global/blog/:id" />} />
         <Route path="/about" element={<PortalNavigate africaPath="/africa/about" globalPath="/global/about" />} />
-        <Route path="/contact" element={<PortalNavigate africaPath="/africa/contact" globalPath="/africa/contact" />} />
-        <Route path="/faq" element={<PortalNavigate africaPath="/africa/faq" globalPath="/africa/faq" />} />
+        <Route path="/contact" element={<PortalNavigate africaPath="/africa/contact" globalPath="/global/contact" />} />
+        <Route path="/faq" element={<PortalNavigate africaPath="/africa/faq" globalPath="/global/faq" />} />
 
         {/* ── Pages légales (contenu statique, pas de providers de contenu) ── */}
         <Route element={<Layout />}>
@@ -237,8 +237,8 @@ export function Router() {
             <Route path="/artwork-purchase-failed/:transactionId" element={<Suspense fallback={<PageLoader />}><ArtworkPurchaseFailed /></Suspense>} />
             <Route path="/artwork-success/:transactionId" element={<Suspense fallback={<PageLoader />}><PayDunyaSuccess /></Suspense>} />
             <Route path="/artwork-failed/:transactionId" element={<Suspense fallback={<PageLoader />}><PayDunyaFailed /></Suspense>} />
-            <Route path="/subscription-success/:subscriptionId" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanSuccess /></Suspense>} />
-            <Route path="/subscription-failed/:subscriptionId" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanFailed /></Suspense>} />
+            <Route path="/subscription-success" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanSuccess /></Suspense>} />
+            <Route path="/subscription-failed" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanFailed /></Suspense>} />
             <Route path="/tracking/:trackingId" element={<Suspense fallback={<PageLoader />}><TrackingPage /></Suspense>} />
           </Route>
 

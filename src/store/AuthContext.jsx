@@ -99,11 +99,11 @@ export function AuthContextProvider({ children }) {
    * Timeout 4s : si Supabase ne répond pas, on applique le principe du moindre
    * privilège — le rôle retombe à 'buyer' au lieu de faire confiance à user_metadata.
    */
-  const loadDbRole = useCallback(async (userId) => {
-    if (!userId) return null;
+  const loadDbRole = useCallback(async (userId, fallbackRole) => {
+    if (!userId) return fallbackRole ?? null;
     try {
       const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('loadDbRole timeout')), 4000)
+        setTimeout(() => reject(new Error('loadDbRole timeout')), 6000)
       );
       const query = supabase
         .from('users')
@@ -111,9 +111,10 @@ export function AuthContextProvider({ children }) {
         .eq('id', userId)
         .single();
       const { data } = await Promise.race([query, timeout]);
-      return data?.role ?? null;
+      return data?.role ?? fallbackRole ?? null;
     } catch {
-      return null;
+      // Timeout ou erreur réseau — on conserve le rôle user_metadata (posé par le serveur)
+      return fallbackRole ?? null;
     }
   }, []);
 
@@ -137,9 +138,7 @@ export function AuthContextProvider({ children }) {
         const kcbUser = toKcbUser(session?.user ?? null);
         try {
           if (kcbUser) {
-            const dbRole = await loadDbRole(kcbUser._id);
-            // Moindre privilège : si DB injoignable (null), on force 'buyer'
-            // plutôt que de faire confiance à user_metadata (contrôlé par l'utilisateur).
+            const dbRole = await loadDbRole(kcbUser._id, kcbUser.role);
             kcbUser.role = dbRole ?? 'buyer';
             setUser(kcbUser);
             loadProfile(kcbUser);
@@ -167,7 +166,7 @@ export function AuthContextProvider({ children }) {
 
         try {
           if (kcbUser) {
-            const dbRole = await loadDbRole(kcbUser._id);
+            const dbRole = await loadDbRole(kcbUser._id, kcbUser.role);
             kcbUser.role = dbRole ?? 'buyer';
             setUser(kcbUser);
           } else {
