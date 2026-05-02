@@ -571,6 +571,9 @@ export default async function handler(req, res) {
     // ── /api/certificates/generate ───────────────────────────────────────────
     if (s0 === 'certificates' && s1 === 'generate') return await routeCertificateGenerate(req, res);
 
+    // ── /api/certificates/url/:artworkId ─────────────────────────────────────
+    if (s0 === 'certificates' && s1 === 'url' && s2) return await routeCertificateUrl(req, res, s2);
+
     // ── /api/profile/:id ─────────────────────────────────────────────────────
     if (s0 === 'profile' && s1) return await routeProfile(req, res, s1);
 
@@ -1525,6 +1528,7 @@ async function routeArtworks(req, res) {
       ...a,
       _id: a.id,
       artist: a.artists?.name ?? a.artist ?? null,
+      image: a.image?.includes('backend.kucibok.com') ? null : (a.image ?? null),
     }));
     return ok(res, normalized, 200, { page, limit, total: count });
   }
@@ -1537,7 +1541,7 @@ async function routeArtworks(req, res) {
     const {
       title, description, image, medium, condition, provenance,
       height, width, weight, price, currency, category, tags,
-      artistId, for_sale, edition_number, edition_total,
+      artistId, for_sale, availability_status, edition_number, edition_total,
     } = req.body ?? {};
 
     if (!title) return fail(res, 'Le titre est requis');
@@ -1570,8 +1574,9 @@ async function routeArtworks(req, res) {
         currency:       currency ?? 'XOF',
         category:       category ?? null,
         tags:           (() => { if (!tags) return []; if (Array.isArray(tags)) return tags; try { const p = JSON.parse(tags); return Array.isArray(p) ? p : [String(p)]; } catch { return String(tags).split(',').map(t => t.trim()).filter(Boolean); } })(),
-        for_sale:       !!for_sale,
-        edition_number: edition_number ? Number(edition_number) : 1,
+        for_sale:            !!for_sale,
+        availability_status: availability_status ?? 'available',
+        edition_number:      edition_number ? Number(edition_number) : 1,
         edition_total:  edition_total  ? Number(edition_total)  : 1,
         status:         'pending',
       })
@@ -1617,7 +1622,8 @@ async function routeArtworkById(req, res, id) {
 
     // Incrémenter les visites en arrière-plan (non bloquant)
     (async () => { try { await supabaseAdmin.rpc('increment_artwork_visited', { artwork_id: id }); } catch {} })();
-    return ok(res, { ...data, _id: data.id, artist: data.artists?.name ?? data.artist ?? null });
+    const image = data.image?.includes('backend.kucibok.com') ? null : (data.image ?? null);
+    return ok(res, { ...data, _id: data.id, artist: data.artists?.name ?? data.artist ?? null, image });
   }
 
   if (req.method === 'PUT') {
@@ -3068,6 +3074,34 @@ async function routeCertificateGenerate(req, res) {
     filename,
     kucibok_id: artwork.kucibok_id,
   });
+}
+
+/**
+ * GET /api/certificates/url/:artworkId — Retourne une signed URL (1h) pour le certificat PDF.
+ * Nécessite que le certificat ait déjà été généré (certificate_path présent sur l'œuvre).
+ */
+async function routeCertificateUrl(req, res, artworkId) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { data: artwork, error } = await supabaseAdmin
+    .from('artworks')
+    .select('id, certificate_path, status')
+    .eq('id', artworkId)
+    .single();
+
+  if (error || !artwork) return fail(res, 'Œuvre introuvable', 404);
+  if (!artwork.certificate_path) return fail(res, 'Certificat non encore généré', 404);
+
+  const { data: signedData, error: signErr } = await supabaseAdmin.storage
+    .from('certificates')
+    .createSignedUrl(artwork.certificate_path, 3600);
+
+  if (signErr || !signedData?.signedUrl) return fail(res, 'Impossible de générer le lien de téléchargement');
+
+  return ok(res, { certificate_url: signedData.signedUrl });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

@@ -23,7 +23,6 @@ export function DeliveryRequestList({ deliveries, loading = false }) {
       filtered = deliveries
     }
     setState((prev) => ({
-      // eslint-disable-line react-hooks/set-state-in-effect
       ...prev,
       set: filtered,
     }))

@@ -12,7 +12,7 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
       let data = { ...formState }
       if (user?.role == 'artist') {
         data.artist = profile?.name
-        data.artistId = profile?._id
+        data.artistId = profile?.id
       } else {
         data.artist = formState.artist
         data.artistId = null
@@ -35,7 +35,7 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
         setFormState({ ...formState, loading: false })
         return
       }
-      if (artwork?._id) {
+      if (artwork?.id) {
         user?.role == 'artist' ? navigate('/dashboard/artist') : navigate('/dashboard/curator')
       }
       setFormState({ ...formState, loading: false })
@@ -102,7 +102,7 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
             {formState?.tags.map((tag, index) => (
               <span
                 key={tag}
-                className="bg-purple-700/70 flex items-center gap-1 text-white rounded-full px-3 py-1 text-xs font-semibold animate-fade-in shadow-sm group cursor-pointer hover:bg-purple-800 transition-all"
+                className="bg-kcb-ardoise border border-kcb-or/30 flex items-center gap-1 text-kcb-or rounded-[4px] px-3 py-1 text-xs font-semibold animate-fade-in shadow-sm group cursor-pointer transition-all"
               >
                 {tag}
               </span>

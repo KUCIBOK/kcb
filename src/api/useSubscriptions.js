@@ -98,3 +98,23 @@ export async function getAllSubscriptions() {
     }
   }
 }
+
+/**
+ * Récupère l'abonnement actif de l'utilisateur connecté.
+ * Retourne null si aucun abonnement actif ou en cas d'erreur.
+ *
+ * @returns {Promise<object|null>}
+ */
+export async function getMySubscription() {
+  try {
+    const response = await fetch(`${api}/subscription`, { ...utils.options })
+    const body = await response.json()
+    const sub = body?.data
+    if (!sub) return null
+    // Normalise la jointure Supabase : plans -> plan
+    if (sub.plans && !sub.plan) sub.plan = sub.plans
+    return sub
+  } catch {
+    return null
+  }
+}

@@ -201,15 +201,15 @@ export const ArtworksContextProvider = ({ children }) => {
         submitArtwork: async (artwork) => {
           try {
             const data = await submitArtwork(artwork)
-            if (data?._id) {
+            if (data?.id) {
               setState((prev) => ({
                 ...prev,
                 myArtworks: [...prev.myArtworks, { ...data, status: 'pending' }],
               }))
               makeToast('Félicitations ', 'success', `L'oeuvre a été soumise avec succès`)
               await createLog({
-                description: `L'oeuvre ${data?._id} a été soumise`,
-                userId: user?._id,
+                description: `L'oeuvre ${data?.id} a été soumise`,
+                userId: user?.id,
               })
               return data
             }
@@ -225,16 +225,15 @@ export const ArtworksContextProvider = ({ children }) => {
         updateArtwork: async (id, payload) => {
           try {
             const artwork = await updateArtwork(id, payload)
-            if (artwork?._id) {
+            if (artwork?.id) {
               setState((prev) => ({
                 ...prev,
-                // myArtworks : [artwork, ...prev.myArtworks.filter(item => item?._id != artwork?._id)]
-                myArtworks: prev.myArtworks?.map((d) => (d._id === id ? artwork : d)),
+                myArtworks: prev.myArtworks?.map((d) => (d.id === id ? artwork : d)),
               }))
               makeToast('Succès', 'success', 'Oeuvre mise à jour avec succès')
               await createLog({
-                description: `L'oeuvre ${artwork?._id} a été mise à jour`,
-                userId: user?._id,
+                description: `L'oeuvre ${artwork?.id} a été mise à jour`,
+                userId: user?.id,
               })
               return artwork
             }

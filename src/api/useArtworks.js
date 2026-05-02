@@ -231,6 +231,9 @@ export async function submitArtwork(data) {
     const fields = {};
     for (const [key, value] of data.entries()) fields[key] = value;
 
+    if ('forSale' in fields) { fields.for_sale = fields.forSale; delete fields.forSale; }
+    if ('availabilityStatus' in fields) { fields.availability_status = fields.availabilityStatus; delete fields.availabilityStatus; }
+
     if (fields.image instanceof File && userId) {
       const upload = await uploadArtworkImage(userId, fields.image);
       if (upload.error) return { error: upload.error };

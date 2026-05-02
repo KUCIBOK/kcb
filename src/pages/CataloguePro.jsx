@@ -20,6 +20,12 @@ const AVAILABILITY_OPTIONS = [
   { value: "unavailable", label: "Indisponible" },
 ];
 
+function validImageUrl(url) {
+  if (!url) return null;
+  if (url.includes('backend.kucibok.com')) return null;
+  return url;
+}
+
 const INITIAL_FILTERS = {
   category: "",
   availabilityStatus: "",
@@ -228,11 +234,12 @@ export default function CataloguePro() {
                 >
                   {/* Image */}
                   <div className="relative aspect-square overflow-hidden bg-kcb-noir">
-                    {artwork.image ? (
+                    {validImageUrl(artwork.image) ? (
                       <img
-                        src={artwork.image}
+                        src={validImageUrl(artwork.image)}
                         alt={artwork.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-kcb-pierre text-xs">
