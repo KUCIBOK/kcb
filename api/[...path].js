@@ -869,6 +869,26 @@ async function authSetRole(req, res) {
     user_metadata: { role },
   });
 
+  // Créer le profil métier si inexistant (inscription OAuth)
+  const profileName = data.name ?? null;
+  if (role === 'artist') {
+    const { data: existing } = await supabaseAdmin
+      .from('artists').select('id').eq('user_id', userId).maybeSingle();
+    if (!existing) {
+      await supabaseAdmin.from('artists')
+        .insert({ user_id: userId, name: profileName })
+        .then(null, () => {});
+    }
+  } else if (role === 'curator') {
+    const { data: existing } = await supabaseAdmin
+      .from('profiles').select('id').eq('user_id', userId).maybeSingle();
+    if (!existing) {
+      await supabaseAdmin.from('profiles')
+        .insert({ user_id: userId, name: profileName })
+        .then(null, () => {});
+    }
+  }
+
   return ok(res, { _id: data.id, ...data });
 }
 
@@ -1018,6 +1038,23 @@ async function authSignup(req, res) {
     auth_provider: 'email',
     is_active:    true,
   }).then(null, () => {}); // ignorer si déjà créé par le trigger
+
+  // Créer le profil métier selon le rôle
+  if (role === 'artist') {
+    await supabaseAdmin.from('artists').insert({
+      user_id:  data.user.id,
+      name:     name ?? null,
+      country:  country ?? null,
+      username: username ?? null,
+    }).then(null, () => {});
+  } else if (role === 'curator') {
+    await supabaseAdmin.from('profiles').insert({
+      user_id:  data.user.id,
+      name:     name ?? null,
+      country:  country ?? null,
+      username: username ?? null,
+    }).then(null, () => {});
+  }
 
   // Envoyer un magic link de bienvenue via Resend (indépendant du SMTP Supabase)
   try {
@@ -2583,7 +2620,7 @@ async function routePaydunyaInit(req, res) {
 
     description = `Abonnement : ${plan.name}`;
     ref         = `PLAN-${plan_id}-${Date.now()}`;
-    returnUrl   = `${PAYMENT_BASE_URL}/subscription-success?ref=${ref}`;
+    returnUrl   = `${PAYMENT_BASE_URL}/subscription-success?plan_id=${plan_id}&ref=${ref}`;
     cancelUrl   = `${PAYMENT_BASE_URL}/subscription-failed`;
   }
 

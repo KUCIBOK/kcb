@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import {getPlanById} from "../api/usePlans"
 import { AlertCircle, ArrowLeft, Check, Lock, ShieldCheck, ShoppingCart } from "lucide-react"
 import { DataLoader } from "../components/loaders/PageLoader"
-import { createSubscription } from "../api/useSubscriptions"
 import { usePayment } from "../hooks/usePayment"
 import PaymentMethodSelector from "../components/PaymentMethodSelector"
 import { toast } from "sonner"
@@ -49,32 +48,14 @@ export default function SubscriptionPlanCheckout(){
         }
 
         try {
-            // Créer d'abord l'abonnement
-            const subscription = await createSubscription({ planId: id })
-            
-            if (subscription.error) {
-                toast.error(subscription.error)
-                return
-            }
-
-            if (!subscription._id) {
-                toast.error("Erreur lors de la création de l'abonnement")
-                return
-            }
-
-            // Initier le paiement selon la méthode choisie
             if (state.paymentMethod === 'paydunya') {
-                const result = await payForSubscription(subscription._id, {
-                    usePopup: false // Redirection directe pour les abonnements
-                })
-
+                const result = await payForSubscription(id, { usePopup: false })
                 if (!result.success) {
                     toast.error(result.error || "Erreur lors de l'initialisation du paiement")
                 }
             } else {
                 toast.info("Méthode de paiement non encore disponible")
             }
-
         } catch (error) {
             toast.error("Erreur lors du traitement du paiement")
         }

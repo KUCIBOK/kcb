@@ -1,79 +1,49 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { CheckCircle, ArrowLeft, Download, Calendar, CreditCard } from 'lucide-react'
-import { activateSubscription, getSubscriptionById } from '../api/useSubscriptions'
+import { useSearchParams, Link } from 'react-router-dom'
+import { CheckCircle, ArrowLeft, Calendar, CreditCard } from 'lucide-react'
+import { getMySubscription } from '../api/useSubscriptions'
 import { DataLoader } from '../components/loaders/PageLoader'
 import { toast } from 'sonner'
 import RevealOnScroll from '../components/landing/RevealOnScroll'
 import { useAuth } from '../store/AuthContext'
 
 export default function SubscriptionSuccess() {
-  const { subscriptionId } = useParams()
+  const [searchParams] = useSearchParams()
   const { user } = useAuth()
-  const [state, setState] = useState({
-    subscription: null,
-    plan: null,
-    loading: true,
-    error: null,
-  })
+  const [state, setState] = useState({ subscription: null, plan: null, loading: true, error: null })
 
   useEffect(() => {
-    const activateAndFetchSubscription = async () => {
-      try {
-        // Activer l'abonnement
-        const activationResult = await activateSubscription(subscriptionId)
+    const load = async () => {
+      // Le webhook PayDunya active l'abonnement côté serveur.
+      // On sonde jusqu'à 5× (toutes les 2s) le temps que le webhook soit traité.
+      let sub = null
+      for (let i = 0; i < 5; i++) {
+        await new Promise((r) => setTimeout(r, i === 0 ? 500 : 2000))
+        sub = await getMySubscription()
+        if (sub?.id) break
+      }
 
-        if (activationResult.error) {
-          setState((prev) => ({
-            ...prev,
-            error: activationResult.error,
-            loading: false,
-          }))
-          toast.error(activationResult.error)
-          return
-        }
-
-        // Récupérer les détails de l'abonnement
-        const subscriptionDetails = await getSubscriptionById(subscriptionId)
-
-        if (subscriptionDetails.error) {
-          setState((prev) => ({
-            ...prev,
-            error: subscriptionDetails.error,
-            loading: false,
-          }))
-          return
-        }
-
-        setState((prev) => ({
-          ...prev,
-          subscription: activationResult.sub,
-          plan: activationResult.plan,
-          loading: false,
-        }))
-
+      if (sub?.id) {
+        const plan = sub.plan ?? sub.plans ?? null
+        setState({ subscription: sub, plan, loading: false, error: null })
         toast.success('Abonnement activé avec succès !')
-      } catch (error) {
+      } else {
         setState((prev) => ({
           ...prev,
-          error: "Erreur lors de l'activation de l'abonnement",
+          error: 'Abonnement introuvable. Si vous venez de payer, patientez quelques secondes puis rechargez la page.',
           loading: false,
         }))
-        toast.error("Erreur lors de l'activation de l'abonnement")
       }
     }
-
-    if (subscriptionId) {
-      activateAndFetchSubscription()
-    }
-  }, [subscriptionId])
+    load()
+  }, [])
 
   if (state.loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-kcb-noir-deep">
         <div className="text-center">
           <DataLoader />
-          <p className="text-kcb-pierre mt-4">Activation de votre abonnement...</p>
+          <p className="text-kcb-pierre mt-4">Vérification de votre abonnement...</p>
         </div>
       </div>
     )
@@ -100,11 +70,12 @@ export default function SubscriptionSuccess() {
     )
   }
 
+  const fmt = (dateStr) => dateStr ? new Date(dateStr).toLocaleDateString('fr-FR') : '—'
+
   return (
     <div className="min-h-screen bg-kcb-noir-deep py-12 px-4">
       <RevealOnScroll>
         <div className="max-w-2xl mx-auto">
-          {/* Header de succès */}
           <div className="text-center mb-8">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-10 h-10 text-green-600" />
@@ -115,48 +86,34 @@ export default function SubscriptionSuccess() {
             </p>
           </div>
 
-          {/* Détails de l'abonnement */}
           <div className="bg-kcb-ardoise rounded-[4px] p-6 mb-6">
             <h2 className="text-xl font-semibold text-white mb-4">Détails de votre abonnement</h2>
-
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span className="text-kcb-pierre">Plan</span>
-                <span className="text-white font-medium">{state.plan?.name}</span>
+                <span className="text-white font-medium">{state.plan?.name ?? '—'}</span>
               </div>
-
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span className="text-kcb-pierre">Montant</span>
                 <span className="text-white font-medium">
-                  {state.subscription?.amount?.toLocaleString('fr-FR')}{' '}
-                  {state.subscription?.currency}
+                  {state.subscription?.amount?.toLocaleString('fr-FR')} {state.subscription?.currency}
                 </span>
               </div>
-
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span className="text-kcb-pierre">Date de début</span>
-                <span className="text-white font-medium">
-                  {new Date(state.subscription?.startDate).toLocaleDateString('fr-FR')}
-                </span>
+                <span className="text-white font-medium">{fmt(state.subscription?.start_date)}</span>
               </div>
-
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span className="text-kcb-pierre">Date de fin</span>
-                <span className="text-white font-medium">
-                  {new Date(state.subscription?.endDate).toLocaleDateString('fr-FR')}
-                </span>
+                <span className="text-white font-medium">{fmt(state.subscription?.end_date)}</span>
               </div>
-
               <div className="flex justify-between items-center py-2">
                 <span className="text-kcb-pierre">Prochain paiement</span>
-                <span className="text-white font-medium">
-                  {new Date(state.subscription?.nextPaymentDate).toLocaleDateString('fr-FR')}
-                </span>
+                <span className="text-white font-medium">{fmt(state.subscription?.next_payment_date)}</span>
               </div>
             </div>
           </div>
 
-          {/* Fonctionnalités du plan */}
           {state.plan?.features && (
             <div className="bg-kcb-ardoise rounded-[4px] p-6 mb-6">
               <h3 className="text-lg font-semibold text-white mb-4">Fonctionnalités incluses</h3>
@@ -171,7 +128,6 @@ export default function SubscriptionSuccess() {
             </div>
           )}
 
-          {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               to={user?.role === 'buyer' ? '/account' : `/dashboard/${user?.role || 'buyer'}`}
@@ -180,7 +136,6 @@ export default function SubscriptionSuccess() {
               <Calendar className="w-4 h-4" />
               Accéder au tableau de bord
             </Link>
-
             <Link
               to="/global#pricing"
               className="flex-1 flex items-center justify-center gap-2 bg-kcb-ardoise hover:bg-white/[0.03] text-white px-6 py-3 rounded-[4px] font-medium transition-colors"
@@ -190,12 +145,9 @@ export default function SubscriptionSuccess() {
             </Link>
           </div>
 
-          {/* Note importante */}
           <div className="mt-8 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] p-4">
             <p className="text-kcb-or text-sm">
-              <strong>Note :</strong> Vous recevrez un email de confirmation avec les détails de
-              votre abonnement. Votre abonnement sera automatiquement renouvelé à la date indiquée
-              ci-dessus.
+              <strong>Note :</strong> Vous recevrez un email de confirmation avec les détails de votre abonnement.
             </p>
           </div>
         </div>

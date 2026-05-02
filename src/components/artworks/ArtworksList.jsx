@@ -1,5 +1,6 @@
-import { CheckCircle, ChevronLeft, ChevronRight, Clock, Image, Search, XCircle } from 'lucide-react'
+import { CheckCircle, ChevronLeft, ChevronRight, Clock, Image, Plus, Search, XCircle } from 'lucide-react'
 import { Fragment, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { SeeAction } from './SeeAction'
 import { ApproveAction } from './ApproveAction'
 import { DownloadAction } from './DownloadAction'
@@ -129,11 +130,19 @@ export const ArtworksList = ({ artworks, user }) => {
 
   if (!artworks || artworks.length === 0) {
     return (
-      <EmptyState
-        icon={Image}
-        title="Aucune œuvre trouvée"
-        description="Il n'y a aucune œuvre à afficher pour le moment."
-      />
+      <div className="flex flex-col items-center justify-center py-16 gap-4">
+        <Image className="w-12 h-12 text-kcb-pierre/40" />
+        <p className="text-kcb-pierre text-sm">Vous n'avez pas encore soumis d'œuvre.</p>
+        {user?.role === 'artist' && (
+          <Link
+            to="/dashboard/artist/submit-artwork"
+            className="flex items-center gap-2 bg-kcb-or text-kcb-noir px-4 py-2 rounded-[4px] text-sm font-semibold hover:bg-kcb-bronze transition"
+          >
+            <Plus className="w-4 h-4" />
+            Soumettre une première œuvre
+          </Link>
+        )}
+      </div>
     )
   }
 
