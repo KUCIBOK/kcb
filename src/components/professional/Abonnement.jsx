@@ -126,8 +126,8 @@ export function Abonnement() {
   const recommendedPlan = getRecommendedUpgrade();
   const recommendedPlanData = recommendedPlan ? PLAN_LIMITS[recommendedPlan] : null;
 
-  const monthsSubscribed = subscription?.createdAt 
-    ? Math.floor((new Date() - new Date(subscription.createdAt)) / (1000 * 60 * 60 * 24 * 30))
+  const monthsSubscribed = subscription?.created_at
+    ? Math.floor((new Date() - new Date(subscription.created_at)) / (1000 * 60 * 60 * 24 * 30))
     : 0;
   const currentSpent = monthsSubscribed * currentPlan.price;
 
@@ -184,11 +184,11 @@ export function Abonnement() {
               }
             </p>
           </div>
-          {subscription?.currentPeriodEnd && (
+          {subscription?.end_date && (
             <div className="text-right">
-              <p className="text-sm text-kcb-pierre">Prochaine facturation</p>
+              <p className="text-sm text-kcb-pierre">Expire le</p>
               <p className="text-white font-medium">
-                {new Date(subscription.currentPeriodEnd).toLocaleDateString('fr-FR')}
+                {new Date(subscription.end_date).toLocaleDateString('fr-FR')}
               </p>
             </div>
           )}
@@ -360,33 +360,51 @@ export function Abonnement() {
         </div>
       </div>
 
-      {/* Subscription History */}
+      {/* Billing details */}
       {subscription && (
         <div className="bg-kcb-ardoise rounded-[4px] p-6 border border-white/[0.06]">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <Clock className="w-5 h-5 text-kcb-or" />
-            Historique
+            Facturation
           </h3>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
-              <div>
-                <p className="text-white">Abonnement started</p>
-                <p className="text-sm text-kcb-pierre">
-                  {new Date(subscription.createdAt).toLocaleDateString('fr-FR')}
-                </p>
-              </div>
-              <span className="px-3 py-1 bg-green-700 text-white text-sm rounded-full">
-                Actif
+          <div className="space-y-0 divide-y divide-white/[0.06]">
+            <div className="flex justify-between items-center py-3">
+              <span className="text-kcb-pierre text-sm">Statut</span>
+              <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                subscription.status === 'active' ? 'bg-green-700 text-white' : 'bg-red-800 text-red-200'
+              }`}>
+                {subscription.status === 'active' ? 'Actif' : 'Inactif'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-kcb-pierre text-sm">Plan</span>
+              <span className="text-white text-sm font-medium">
+                {subscription.plans?.name ?? subscription.plan?.name ?? '—'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-kcb-pierre text-sm">Montant</span>
+              <span className="text-white text-sm font-medium">
+                {subscription.amount?.toLocaleString('fr-FR')} {subscription.currency}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-kcb-pierre text-sm">Début</span>
+              <span className="text-white text-sm">
+                {subscription.start_date ? new Date(subscription.start_date).toLocaleDateString('fr-FR') : '—'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-kcb-pierre text-sm">Fin / Renouvellement</span>
+              <span className="text-white text-sm">
+                {subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—'}
               </span>
             </div>
             {currentSpent > 0 && (
-              <div className="flex justify-between items-center py-2">
-                <div>
-                  <p className="text-white">Total dépensé</p>
-                  <p className="text-sm text-kcb-pierre">{monthsSubscribed} mois d'abonnement</p>
-                </div>
-                <span className="text-xl font-bold text-white">
-                  {currentSpent.toLocaleString()} CFA
+              <div className="flex justify-between items-center py-3">
+                <span className="text-kcb-pierre text-sm">Total versé ({monthsSubscribed} mois)</span>
+                <span className="text-white text-sm font-semibold">
+                  {currentSpent.toLocaleString('fr-FR')} {subscription.currency ?? 'XOF'}
                 </span>
               </div>
             )}

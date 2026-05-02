@@ -19,6 +19,7 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import DashboardSidebar from "../../components/shared/DashboardSidebar";
+import { EmailVerificationBanner } from "../../components/shared/EmailVerificationBanner";
 import { ArtworksList } from "../../components/artworks/ArtworksList";
 import { useAuth } from "../../store/AuthContext";
 import { useArtworks } from "../../store/ArtworkContext";
@@ -175,6 +176,7 @@ export default function Artist() {
 
         {/* Main content */}
         <main className="flex-1 px-4 md:px-8 py-6 overflow-y-auto min-w-0">
+          <EmailVerificationBanner />
           {/* Breadcrumb — desktop only */}
           <div className="hidden lg:flex items-center gap-2 text-sm text-kcb-pierre mb-6">
             <span>{getCurrentPageInfo().category}</span>
