@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ShieldCheck, SlidersHorizontal, Search, X, Loader2, ArrowLeft } from "lucide-react";
+import { ShieldCheck, SlidersHorizontal, Search, X, Loader2, ArrowLeft, Lock } from "lucide-react";
 import { getCataloguePro } from "../api/useSourcing";
 import { SourcingInquiryModal } from "../components/artworks/SourcingInquiryModal";
 import { Helmet } from "react-helmet";
+import { useAuth } from "../store/AuthContext";
 
 const AVAILABILITY_LABELS = {
   available: { label: "Disponible", color: "text-green-400 bg-green-900/30 border-green-800/40" },
@@ -40,7 +41,38 @@ const INITIAL_FILTERS = {
  * Permet aux galeries et curateurs de consulter le catalogue B2B
  * et de soumettre des demandes de mise en relation.
  */
+function SubscriptionGate() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-kcb-noir px-4">
+      <div className="flex flex-col items-center gap-6 text-center max-w-md">
+        <div className="w-16 h-16 rounded-full bg-kcb-or/10 flex items-center justify-center">
+          <Lock className="w-8 h-8 text-kcb-or/70" />
+        </div>
+        <div>
+          <p className="text-white font-semibold text-xl mb-2">Catalogue B2B — Accès réservé</p>
+          <p className="text-kcb-pierre text-sm">
+            Le catalogue professionnel est accessible aux curateurs et galeries disposant d'un abonnement actif.
+          </p>
+        </div>
+        <Link
+          to="/global#pricing"
+          className="flex items-center gap-2 bg-kcb-or text-kcb-noir px-6 py-2.5 rounded-[4px] text-sm font-semibold hover:bg-kcb-bronze transition"
+        >
+          Voir les plans
+        </Link>
+        <Link to="/dashboard/curator" className="text-sm text-kcb-pierre hover:text-white transition flex items-center gap-1">
+          <ArrowLeft className="w-4 h-4" />
+          Retour au tableau de bord
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function CataloguePro() {
+  const { subscription } = useAuth();
+  const isSubscriptionActive = subscription?.status === 'active';
+
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [pending, setPending] = useState(INITIAL_FILTERS);
   const [catalogue, setCatalogue] = useState({ data: [], total: 0, pages: 1 });
@@ -83,6 +115,8 @@ export default function CataloguePro() {
     filters.priceMin,
     filters.priceMax,
   ].filter(Boolean).length;
+
+  if (!isSubscriptionActive) return <SubscriptionGate />;
 
   return (
     <>

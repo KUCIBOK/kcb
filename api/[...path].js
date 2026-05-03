@@ -469,6 +469,9 @@ export default async function handler(req, res) {
     // ── /api/subscription/activate/:id ─────────────────────────────────────────
     if (s0 === 'subscription' && s1 === 'activate' && s2) return await routeSubscriptionStatus(req, res, s2, 'active');
 
+    // ── /api/subscription/cancel ─────────────────────────────────────────────
+    if (s0 === 'subscription' && s1 === 'cancel') return await routeSubscriptionCancel(req, res);
+
     // ── /api/subscription/:id ──────────────────────────────────────────────────
     if (s0 === 'subscription' && s1) return await routeSubscriptionById(req, res, s1);
 
@@ -3736,6 +3739,27 @@ async function routeSubscriptionStatus(req, res, id, status) {
     .single();
 
   if (error || !data) return notFound(res, 'Abonnement');
+  return ok(res, { ...data, _id: data.id });
+}
+
+/**
+ * POST /api/subscription/cancel — Annule l'abonnement actif de l'utilisateur.
+ */
+async function routeSubscriptionCancel(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const { user } = authResult;
+
+  const { data, error } = await supabaseAdmin
+    .from('subscriptions')
+    .update({ status: 'cancelled' })
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .select('*, plans(*)')
+    .single();
+
+  if (error || !data) return notFound(res, 'Abonnement actif');
   return ok(res, { ...data, _id: data.id });
 }
 

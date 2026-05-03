@@ -28,6 +28,7 @@ import {
 } from 'lucide-react'
 import DashboardSidebar from '../../components/shared/DashboardSidebar'
 import { EmailVerificationBanner } from '../../components/shared/EmailVerificationBanner'
+import { ProfileCompletionBanner } from '../../components/shared/ProfileCompletionBanner'
 import { Profile } from '../../components/professional/Profile'
 import { ArtistTab } from '../../components/professional/ArtistTab'
 import { Synthesis } from '../../components/professional/Synthesis'
@@ -222,6 +223,7 @@ export default function Professional() {
         {/* Main content */}
         <main className="flex-1 px-4 md:px-8 py-6 overflow-y-auto min-w-0">
           <EmailVerificationBanner />
+          <ProfileCompletionBanner setTab={setTab} />
           {!isSubscriptionActive && (
             <div className="flex items-center gap-3 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] px-4 py-3 mb-6 text-sm">
               <Lock className="w-4 h-4 text-kcb-or flex-shrink-0" />

@@ -100,6 +100,24 @@ export async function getAllSubscriptions() {
 }
 
 /**
+ * Annule l'abonnement actif de l'utilisateur connecté.
+ * @returns {Promise<{data?: object, error?: string}>}
+ */
+export async function cancelMySubscription() {
+  try {
+    const response = await fetch(`${api}/subscription/cancel`, {
+      ...utils.options,
+      method: 'POST',
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur annulation' }
+    return { data: body?.data }
+  } catch (error) {
+    return { error: error.message }
+  }
+}
+
+/**
  * Récupère l'abonnement actif de l'utilisateur connecté.
  * Retourne null si aucun abonnement actif ou en cas d'erreur.
  *
