@@ -162,9 +162,16 @@ export async function forgotPassword({ email }) {
  */
 export async function resetPassword({ password }) {
   try {
-    const { data, error } = await supabase.auth.updateUser({ password })
-    if (error) return { error: error.message }
-    return { ok: true, user: toKcbUser(data.user) }
+    // Route via backend (service_role) — le token de récupération est déjà dans utils.options
+    // (setSupabaseToken est appelé lors du PASSWORD_RECOVERY event)
+    const response = await fetch(`${api}/auth/reset-password`, {
+      ...utils.options,
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    });
+    const body = await response.json();
+    if (!response.ok) return { error: body?.error || 'Erreur réinitialisation' };
+    return { ok: true };
   } catch (err) {
     return { error: err.message }
   }
