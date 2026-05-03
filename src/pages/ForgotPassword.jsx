@@ -5,6 +5,7 @@ import { DataLoader } from "../components/loaders/PageLoader";
 import { supabase } from "../lib/supabase";
 import RevealOnScroll from "../components/landing/RevealOnScroll";
 import { isPasswordLeaked } from "../lib/hibp";
+import { resetPassword } from "../api/useAuth";
 
 // Parse le hash Supabase (#access_token=... ou #error=...)
 function parseHash() {
@@ -62,8 +63,8 @@ export default function ResetPasswordForm() {
         }));
         return;
       }
-      const { error } = await supabase.auth.updateUser({ password: state.password });
-      if (error) { setState(s => ({ ...s, error: error.message, loading: false })); return; }
+      const result = await resetPassword({ password: state.password });
+      if (result.error) { setState(s => ({ ...s, error: result.error, loading: false })); return; }
       setState(s => ({ ...s, success: true, loading: false }));
       setTimeout(() => navigate('/sign-in'), 3000);
     } catch {

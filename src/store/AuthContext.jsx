@@ -147,8 +147,8 @@ export function AuthContextProvider({ children }) {
             setUser(null);
           }
         } catch {
-          // Ne jamais bloquer l'app sur une erreur de profil DB
-          if (kcbUser) { kcbUser.role = 'buyer'; setUser(kcbUser); }
+          // Préserve le rôle user_metadata (posé par le serveur) plutôt que de rétrograder à buyer
+          if (kcbUser) { kcbUser.role = kcbUser.role ?? 'buyer'; setUser(kcbUser); }
           else setUser(null);
         } finally {
           setLoading(false);
@@ -191,7 +191,7 @@ export function AuthContextProvider({ children }) {
             setPlan(null);
           }
         } catch {
-          if (kcbUser) { kcbUser.role = 'buyer'; setUser(kcbUser); }
+          if (kcbUser) { kcbUser.role = kcbUser.role ?? 'buyer'; setUser(kcbUser); }
           else setUser(null);
         } finally {
           setLoading(false);
