@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { 
-  CreditCard, Check, X, Zap, Crown, Shield, Users, 
+import {
+  CreditCard, Check, X, Zap, Crown, Shield, Users,
   Image, HardDrive, BarChart3, ArrowUp, AlertTriangle,
-  Package, Clock, TrendingUp
+  Package, Clock, TrendingUp, Bell
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../store/AuthContext";
 import { useArtworks } from "../../store/ArtworkContext";
 import { useArtist } from "../../store/ArtistContext";
+import { cancelMySubscription } from "../../api/useSubscriptions";
 
 // Plan features limits
 const PLAN_LIMITS = {
@@ -87,14 +88,35 @@ function getPlanKey(planName) {
 }
 
 export function Abonnement() {
-  const { subscription, user } = useAuth();
+  const { subscription, loadSubscription } = useAuth();
   const { myArtworks } = useArtworks();
   const { myArtists } = useArtist();
   const [loading, setLoading] = useState(true);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [cancelError, setCancelError] = useState('');
 
   useEffect(() => {
     setLoading(false);
   }, []);
+
+  const daysLeft = subscription?.end_date
+    ? Math.ceil((new Date(subscription.end_date) - new Date()) / (1000 * 60 * 60 * 24))
+    : null;
+  const isExpiringSoon = daysLeft !== null && daysLeft <= 7 && daysLeft > 0;
+
+  const handleCancel = async () => {
+    setCancelLoading(true);
+    setCancelError('');
+    const { error } = await cancelMySubscription();
+    setCancelLoading(false);
+    if (error) {
+      setCancelError(error);
+      return;
+    }
+    setShowCancelConfirm(false);
+    if (typeof loadSubscription === 'function') await loadSubscription();
+  };
 
   const planKey = getPlanKey(subscription?.plan?.name);
   const currentPlan = PLAN_LIMITS[planKey] || PLAN_LIMITS.free;
@@ -156,6 +178,19 @@ export function Abonnement() {
           </Link>
         )}
       </div>
+
+      {/* Renewal alert */}
+      {isExpiringSoon && (
+        <div className="flex items-start gap-3 bg-amber-900/30 border border-amber-700/40 rounded-[4px] px-4 py-3 text-sm">
+          <Bell className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+          <p className="text-amber-200 flex-1">
+            Votre abonnement expire dans <strong>{daysLeft} jour{daysLeft > 1 ? 's' : ''}</strong>.{' '}
+            <Link to="/global#pricing" className="text-amber-300 underline hover:text-amber-200">
+              Renouveler maintenant
+            </Link>
+          </p>
+        </div>
+      )}
 
       {/* Current Plan Card */}
       <div className="bg-gradient-to-r from-kcb-or/10 to-kcb-bronze/10 rounded-[4px] p-6 border border-kcb-or/30">
@@ -409,6 +444,41 @@ export function Abonnement() {
               </div>
             )}
           </div>
+          {subscription.status === 'active' && (
+            <div className="mt-4 pt-4 border-t border-white/[0.06]">
+              {!showCancelConfirm ? (
+                <button
+                  onClick={() => setShowCancelConfirm(true)}
+                  className="text-sm text-red-400 hover:text-red-300 transition"
+                >
+                  Annuler l'abonnement
+                </button>
+              ) : (
+                <div className="bg-red-900/20 border border-red-700/40 rounded-[4px] p-4 space-y-3">
+                  <p className="text-sm text-red-200 font-medium">Confirmer l'annulation ?</p>
+                  <p className="text-xs text-red-300/80">
+                    Votre accès restera actif jusqu'au {subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—'}. Cette action est irréversible.
+                  </p>
+                  {cancelError && <p className="text-xs text-red-400">{cancelError}</p>}
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleCancel}
+                      disabled={cancelLoading}
+                      className="px-4 py-1.5 bg-red-700 hover:bg-red-600 text-white text-sm rounded-[4px] transition disabled:opacity-50"
+                    >
+                      {cancelLoading ? 'En cours…' : 'Confirmer l\'annulation'}
+                    </button>
+                    <button
+                      onClick={() => { setShowCancelConfirm(false); setCancelError(''); }}
+                      className="px-4 py-1.5 border border-white/10 text-kcb-pierre hover:text-white text-sm rounded-[4px] transition"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

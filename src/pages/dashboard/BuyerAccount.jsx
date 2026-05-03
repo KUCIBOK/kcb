@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../store/AuthContext";
 import { useArtworks } from "../../store/ArtworkContext";
 import { Menu, ShoppingBag, ChevronRight, Package, ShieldCheck, Truck, User } from "lucide-react";
 import DashboardSidebar from "../../components/shared/DashboardSidebar";
 import { EmailVerificationBanner } from "../../components/shared/EmailVerificationBanner";
+import { ProfileCompletionBanner } from "../../components/shared/ProfileCompletionBanner";
 import { Profile } from "../../components/collector/Profile";
 import { Link } from "react-router-dom";
 import { ArtworksList } from "../../components/artworks/ArtworksList";
@@ -19,6 +20,13 @@ export default function BuyerAccount() {
   const [toggle, setToggle] = useState(false);
   const { user, buyerProfile, loading } = useAuth();
   const [tab, setTab] = useState(0);
+  const [cataloguePath, setCataloguePath] = useState('/africa/catalogue');
+
+  useEffect(() => {
+    const lastPortal = sessionStorage.getItem('kcb_portal');
+    if (lastPortal === 'global') setCataloguePath('/global/catalogue');
+    else setCataloguePath('/africa/catalogue');
+  }, []);
 
   const menuStructure = [
     {
@@ -74,7 +82,7 @@ export default function BuyerAccount() {
           </button>
           <span className="text-white text-sm font-medium truncate">{getCurrentPageInfo().page}</span>
         </div>
-        <Link to="/africa/catalogue">
+        <Link to={cataloguePath}>
           <ShoppingBag className="w-5 h-5 text-kcb-or" />
         </Link>
       </header>
@@ -88,7 +96,7 @@ export default function BuyerAccount() {
         toggle={toggle}
         setToggle={setToggle}
         cta={{
-          to: "/africa/catalogue",
+          to: cataloguePath,
           label: "Catalogue",
           icon: <ShoppingBag className="w-4 h-4" />,
           className: "bg-kcb-or text-kcb-noir hover:bg-kcb-bronze justify-center",
@@ -98,6 +106,7 @@ export default function BuyerAccount() {
       {/* Main content */}
       <main className="flex-1 px-4 md:px-8 py-6 overflow-y-auto min-w-0">
         <EmailVerificationBanner />
+        <ProfileCompletionBanner setTab={setTab} />
         {/* Breadcrumb — desktop only */}
         <div className="hidden lg:flex items-center gap-2 text-sm text-kcb-pierre mb-6">
           <span>{getCurrentPageInfo().category}</span>

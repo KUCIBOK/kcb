@@ -296,11 +296,12 @@ export function AuthContextProvider({ children }) {
     loading,
     logout,
     setProfile,
+    loadSubscription,
     updateUser: updateUserCtx,
     updateArtist: updateArtistCtx,
     updateProfile: updateProfileCtx,
     changePassword: changePasswordCtx,
-  }), [user, artistProfile, buyerProfile, curatorProfile, adminProfile, subscription, plan, loading, logout, setProfile, updateUserCtx, updateArtistCtx, updateProfileCtx, changePasswordCtx]);
+  }), [user, artistProfile, buyerProfile, curatorProfile, adminProfile, subscription, plan, loading, logout, setProfile, loadSubscription, updateUserCtx, updateArtistCtx, updateProfileCtx, changePasswordCtx]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
