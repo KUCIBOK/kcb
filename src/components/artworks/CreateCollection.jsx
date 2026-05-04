@@ -440,9 +440,9 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
             >
               <option>Catégorie</option>
               {categories.map((category, index) => (
-                <option key={index} value={category.title}>
+                <option key={index} value={category.name}>
                   {' '}
-                  {category.title}{' '}
+                  {category.name}{' '}
                 </option>
               ))}
             </select>

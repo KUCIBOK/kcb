@@ -86,8 +86,8 @@ export const Step1 = memo(({ formState, setFormState }) => {
               ...formState,
               category: e.target.value,
               categoryId: categories.find(
-                (item) => item.title === e.target.value
-              )?._id,
+                (item) => item.name === e.target.value
+              )?.id,
             })
           }
           value={formState.category}
@@ -97,8 +97,8 @@ export const Step1 = memo(({ formState, setFormState }) => {
         >
           <option>Catégorie</option>
           {categories.map((category, index) => (
-            <option key={index} value={category.title}>
-              {category.title}
+            <option key={index} value={category.name}>
+              {category.name}
             </option>
           ))}
         </select>

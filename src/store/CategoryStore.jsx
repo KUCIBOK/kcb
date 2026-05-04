@@ -40,7 +40,7 @@ export const CategoryProvider = ({ children }) => {
         addCategory: async (payload) => {
           try {
             const category = await createCategory(payload)
-            if (category?._id) {
+            if (category?.id) {
               setState((prev) => ({
                 categories: [category, ...prev.categories],
               }))
@@ -60,9 +60,9 @@ export const CategoryProvider = ({ children }) => {
         deleteCategory: async (id) => {
           try {
             const category = await deleteCategory(id)
-            if (category?._id) {
+            if (category?.id) {
               setState((prev) => ({
-                categories: prev.categories.filter((cat) => cat._id !== id),
+                categories: prev.categories.filter((cat) => cat.id !== id),
               }))
               makeToast('Succès', 'success', 'La catégorie a été supprimée avec succès')
               await createLog({

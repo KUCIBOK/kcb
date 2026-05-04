@@ -21,11 +21,11 @@ export function CategoryList({ categories }) {
           {categories?.length > 0 ? (
             categories.map((category, index) => (
               <tr key={index} className="border-b border-white/[0.06] last:border-0 hover:bg-kcb-ardoise/60 transition">
-                <td className="py-2 px-4 text-white/90">{category.title}</td>
-                <td className="py-2 px-4 text-white/50">{new Date(category.createdAt).toLocaleDateString()}</td>
+                <td className="py-2 px-4 text-white/90">{category.name}</td>
+                <td className="py-2 px-4 text-white/50">{new Date(category.created_at).toLocaleDateString()}</td>
                 <td className="py-2 px-4 text-right">
                   <button
-                    onClick={async () => await handleDeleteCategory(category._id)}
+                    onClick={async () => await handleDeleteCategory(category.id)}
                     className="bg-red-700/80 hover:bg-red-700 text-white p-2 rounded-sm transition"
                     aria-label="Supprimer la catégorie"
                   >

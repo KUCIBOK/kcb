@@ -415,6 +415,9 @@ export default async function handler(req, res) {
     // ── /api/blog ────────────────────────────────────────────────────────────
     if (s0 === 'blog') return await routeBlog(req, res);
 
+    // ── /api/categories/:id (+ alias /api/category/:id) ─────────────────────
+    if ((s0 === 'categories' || s0 === 'category') && s1) return await routeCategoryById(req, res, s1);
+
     // ── /api/categories (+ alias /api/category) ──────────────────────────────
     if (s0 === 'categories' || s0 === 'category') return await routeCategories(req, res);
 
@@ -2008,6 +2011,23 @@ async function routeCategories(req, res) {
   }
 
   return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * DELETE /api/categories/:id — Supprime une catégorie (admin).
+ */
+async function routeCategoryById(req, res, id) {
+  if (req.method !== 'DELETE') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const { data, error } = await supabaseAdmin
+    .from('categories').delete().eq('id', id).select().single();
+  if (error) return fail(res, error.message);
+  return ok(res, data);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
