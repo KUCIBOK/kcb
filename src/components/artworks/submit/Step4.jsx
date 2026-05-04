@@ -11,8 +11,8 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
       setFormState({ ...formState, loading: true })
       let data = { ...formState }
       if (user?.role == 'artist') {
-        data.artist = profile?.name
-        data.artistId = profile?.id
+        data.artist = profile?.name || ''
+        data.artistId = profile?.id || ''
       } else {
         data.artist = formState.artist
         data.artistId = null
@@ -32,7 +32,7 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
       })
       const artwork = await submitArtwork(formData)
       if (artwork?.error) {
-        setFormState({ ...formState, loading: false })
+        setFormState({ ...formState, loading: false, error: artwork.error })
         return
       }
       if (artwork?.id) {
@@ -110,6 +110,11 @@ export const Step4 = ({ formState, setFormState, user, profile }) => {
           </div>
         </div>
       </div>
+      {formState?.error && (
+        <p className="mt-6 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-[4px] px-3 py-2">
+          {formState.error}
+        </p>
+      )}
       <div className="flex justify-between mt-10">
         <button
           onClick={() => {
