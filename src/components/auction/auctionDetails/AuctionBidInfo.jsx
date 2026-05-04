@@ -1,12 +1,7 @@
-import { Clock } from "lucide-react";
-import { CountdownTimer } from "../CountdownTimer";
+import { Clock } from 'lucide-react'
+import { CountdownTimer } from '../CountdownTimer'
 
-export default function AuctionBidInfo({
-  currentPrice,
-  endTime,
-  winner,
-  bidCount,
-}) {
+export default function AuctionBidInfo({ currentPrice, endTime, winner, bidCount }) {
   return (
     <div className="bg-kcb-ardoise/50 p-4 rounded-[4px] border border-white/[0.06]/50">
       <div className="mb-4">
@@ -24,7 +19,7 @@ export default function AuctionBidInfo({
 
       <div className="mb-4">
         <p className="text-kcb-pierre text-sm">Enchérisseur actuel</p>
-        <p className="text-white">{winner?.name || "Aucun"}</p>
+        <p className="text-white">{winner?.name || 'Aucun'}</p>
       </div>
 
       <div>
@@ -32,5 +27,5 @@ export default function AuctionBidInfo({
         <p className="text-white">{bidCount}</p>
       </div>
     </div>
-  );
+  )
 }

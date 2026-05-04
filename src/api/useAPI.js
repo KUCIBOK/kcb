@@ -10,7 +10,7 @@
  */
 
 /** Token Supabase courant, mis à jour par setSupabaseToken(). */
-let _currentToken = '';
+let _currentToken = ''
 
 /**
  * fetch() avec timeout automatique.
@@ -22,14 +22,14 @@ let _currentToken = '';
  * @returns {Promise<Response>}
  */
 export function fetchWithTimeout(url, options = {}, timeoutMs = 12_000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
   return fetch(url, { ...options, signal: controller.signal })
     .finally(() => clearTimeout(timer))
     .catch((err) => {
-      if (err.name === 'AbortError') throw new Error('Délai d\'attente dépassé — réessayez');
-      throw err;
-    });
+      if (err.name === 'AbortError') throw new Error("Délai d'attente dépassé — réessayez")
+      throw err
+    })
 }
 
 /**
@@ -39,7 +39,7 @@ export function fetchWithTimeout(url, options = {}, timeoutMs = 12_000) {
  * @param {string | null} token - access_token Supabase ou null si déconnecté
  */
 export function setSupabaseToken(token) {
-  _currentToken = token ?? '';
+  _currentToken = token ?? ''
 }
 
 /**
@@ -65,6 +65,6 @@ export const utils = {
         'kcb-api-key': import.meta.env.VITE_API_KEY,
         Authorization: `Bearer ${_currentToken}`,
       },
-    };
+    }
   },
-};
+}

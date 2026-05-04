@@ -1,9 +1,9 @@
-﻿import { ChevronLeft, ChevronRight, Plus, Search } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
-import { useClients } from "../../store/ClientContext";
-import ImportFile from "../client/ImportFile";
-import AddClient from "../client/AddClient";
-import ClientActions from "../client/ClientActions";
+﻿import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
+import { Fragment, useEffect, useState } from 'react'
+import { useClients } from '../../store/ClientContext'
+import ImportFile from '../client/ImportFile'
+import AddClient from '../client/AddClient'
+import ClientActions from '../client/ClientActions'
 
 export const ClientsTab = ({ user }) => {
   const {
@@ -13,79 +13,77 @@ export const ClientsTab = ({ user }) => {
     updateClient: updateClientInStore,
     deleteClient: deleteClientFromStore,
     uploadClients: uploadClientsToStore,
-  } = useClients();
-  const [filteredClients, setFilteredClients] = useState([]);
-  const [currentSet, setCurrentSet] = useState([]);
-  const [search, setSearch] = useState("");
-  const [showAddForm, setShowAddForm] = useState(false);
+  } = useClients()
+  const [filteredClients, setFilteredClients] = useState([])
+  const [currentSet, setCurrentSet] = useState([])
+  const [search, setSearch] = useState('')
+  const [showAddForm, setShowAddForm] = useState(false)
 
   // Initialiser les clients filtrés quand les clients changent
   useEffect(() => {
     if (clients.length > 0) {
       const sortedClients = [...clients].sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
-      setFilteredClients(sortedClients);
-      setCurrentSet(sortedClients.slice(0, 40));
+      )
+      setFilteredClients(sortedClients)
+      setCurrentSet(sortedClients.slice(0, 40))
     }
-  }, [clients]);
+  }, [clients])
 
   // Gestion de la recherche
   useEffect(() => {
-    const query = search.trim().toLowerCase();
-    let filtered = clients;
-    if (query !== "") {
+    const query = search.trim().toLowerCase()
+    let filtered = clients
+    if (query !== '') {
       filtered = clients.filter((client) => {
-        const nomMatch = client.nom?.toLowerCase().includes(query);
-        const prenomMatch = client.prenom?.toLowerCase().includes(query);
-        const emailMatch = client.email?.toLowerCase().includes(query);
-        const villeMatch = client.ville?.toLowerCase().includes(query);
-        return nomMatch || prenomMatch || emailMatch || villeMatch;
-      });
+        const nomMatch = client.nom?.toLowerCase().includes(query)
+        const prenomMatch = client.prenom?.toLowerCase().includes(query)
+        const emailMatch = client.email?.toLowerCase().includes(query)
+        const villeMatch = client.ville?.toLowerCase().includes(query)
+        return nomMatch || prenomMatch || emailMatch || villeMatch
+      })
     }
-    setFilteredClients(filtered);
-    setCurrentSet(filtered.slice(0, 40));
-  }, [search, clients]);
+    setFilteredClients(filtered)
+    setCurrentSet(filtered.slice(0, 40))
+  }, [search, clients])
 
   const handleAddClient = async (clientData) => {
-    const result = await addClientToStore(clientData);
+    const result = await addClientToStore(clientData)
     if (!result.error) {
-      setShowAddForm(false);
-      return result;
+      setShowAddForm(false)
+      return result
     }
-    return result;
-  };
+    return result
+  }
 
   const handleClientUpdated = async (id, clientData) => {
-    const result = await updateClientInStore(id, clientData);
-    return result;
-  };
+    const result = await updateClientInStore(id, clientData)
+    return result
+  }
 
   const handleClientDeleted = async (deletedClientId) => {
-    const result = await deleteClientFromStore(deletedClientId);
-    return result;
-  };
+    const result = await deleteClientFromStore(deletedClientId)
+    return result
+  }
 
   const handleCSVUpload = async (file) => {
-    const result = await uploadClientsToStore(file);
-    return result;
-  };
+    const result = await uploadClientsToStore(file)
+    return result
+  }
 
   const handlePrevPage = () => {
     if (currentSet[0] !== filteredClients[0]) {
-      const startIndex = filteredClients.indexOf(currentSet[0]) - 40;
-      setCurrentSet(filteredClients.slice(startIndex, startIndex + 40));
+      const startIndex = filteredClients.indexOf(currentSet[0]) - 40
+      setCurrentSet(filteredClients.slice(startIndex, startIndex + 40))
     }
-  };
+  }
 
   const handleNextPage = () => {
-    const lastIndex = filteredClients.indexOf(
-      currentSet[currentSet.length - 1]
-    );
+    const lastIndex = filteredClients.indexOf(currentSet[currentSet.length - 1])
     if (lastIndex < filteredClients.length - 1) {
-      setCurrentSet(filteredClients.slice(lastIndex + 1, lastIndex + 41));
+      setCurrentSet(filteredClients.slice(lastIndex + 1, lastIndex + 41))
     }
-  };
+  }
 
   return (
     <div>
@@ -134,17 +132,11 @@ export const ClientsTab = ({ user }) => {
               {currentSet?.map((client, index) => (
                 <Fragment key={index}>
                   <tr className="border-b border-white/[0.06] hover:bg-white/[0.04] transition">
-                    <td className="py-2 font-semibold text-white">
-                      {client.nom}
-                    </td>
+                    <td className="py-2 font-semibold text-white">{client.nom}</td>
                     <td className="py-2 text-kcb-sable">{client.prenom}</td>
                     <td className="py-2 text-kcb-sable">{client.email}</td>
-                    <td className="py-2 text-kcb-pierre">
-                      {client.telephone || "-"}
-                    </td>
-                    <td className="py-2 text-kcb-pierre">
-                      {client.ville || "-"}
-                    </td>
+                    <td className="py-2 text-kcb-pierre">{client.telephone || '-'}</td>
+                    <td className="py-2 text-kcb-pierre">{client.ville || '-'}</td>
                     <td className="py-2 text-kcb-pierre">
                       {new Date(client.created_at).toLocaleDateString()}
                     </td>
@@ -162,13 +154,9 @@ export const ClientsTab = ({ user }) => {
           </table>
         ) : (
           <div className="text-center py-16 border border-white/[0.06] border-dashed rounded-[4px] w-full bg-white/[0.04]">
-            <h3 className="font-medium text-base text-kcb-pierre mb-1">
-              Aucun client trouvé
-            </h3>
+            <h3 className="font-medium text-base text-kcb-pierre mb-1">Aucun client trouvé</h3>
             <p className="text-sm text-kcb-pierre">
-              {search
-                ? "Essayez une autre recherche"
-                : "Commencez par ajouter un client"}
+              {search ? 'Essayez une autre recherche' : 'Commencez par ajouter un client'}
             </p>
           </div>
         )}
@@ -185,15 +173,14 @@ export const ClientsTab = ({ user }) => {
             <ChevronLeft className="w-4 h-4 mr-1 inline-block" /> Précédent
           </button>
           <span className="text-xs text-kcb-pierre flex items-center px-2">
-            Page {Math.floor(filteredClients.indexOf(currentSet[0]) / 40) + 1} /{" "}
+            Page {Math.floor(filteredClients.indexOf(currentSet[0]) / 40) + 1} /{' '}
             {Math.ceil(filteredClients.length / 40)}
           </span>
           <button
             className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
             onClick={handleNextPage}
             disabled={
-              currentSet[currentSet.length - 1] ===
-              filteredClients[filteredClients.length - 1]
+              currentSet[currentSet.length - 1] === filteredClients[filteredClients.length - 1]
             }
           >
             Suivant <ChevronRight className="w-4 h-4 ml-1 inline-block" />
@@ -203,11 +190,8 @@ export const ClientsTab = ({ user }) => {
 
       {/* Formulaire d'ajout */}
       {showAddForm && (
-        <AddClient
-          onAddClient={handleAddClient}
-          onClose={() => setShowAddForm(false)}
-        />
+        <AddClient onAddClient={handleAddClient} onClose={() => setShowAddForm(false)} />
       )}
     </div>
-  );
-};
+  )
+}

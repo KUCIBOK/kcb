@@ -1,6 +1,6 @@
-import { utils } from "./useAPI";
+import { utils } from './useAPI'
 
-const ENTITY_API = `${utils.api}/entities`;
+const ENTITY_API = `${utils.api}/entities`
 
 /**
  * Cree une nouvelle entite.
@@ -13,16 +13,16 @@ export const createEntity = async (entityData) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(entityData),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere toutes les entites.
@@ -32,16 +32,16 @@ export const getEntities = async () => {
   try {
     const response = await fetch(ENTITY_API, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere une entite par ID.
@@ -52,16 +52,16 @@ export const getEntityById = async (id) => {
   try {
     const response = await fetch(`${ENTITY_API}/${id}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour une entite.
@@ -75,16 +75,16 @@ export const updateEntity = async (id, updates) => {
       method: 'PUT',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Supprime une entite.
@@ -96,16 +96,16 @@ export const deleteEntity = async (id) => {
     const response = await fetch(`${ENTITY_API}/${id}`, {
       method: 'DELETE',
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Bascule vers une autre entite active.
@@ -118,16 +118,16 @@ export const switchEntity = async (id) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Ajoute un membre a une entite.
@@ -136,25 +136,22 @@ export const switchEntity = async (id) => {
  * @param {string} role - Role du membre (defaut: "artist")
  * @returns {Promise<object>} Resultat ou objet erreur
  */
-export const addMember = async (entityId, userId, role = "artist") => {
+export const addMember = async (entityId, userId, role = 'artist') => {
   try {
-    const response = await fetch(
-      `${ENTITY_API}/${entityId}/members`,
-      {
-        method: 'POST',
-        headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, role }),
-      }
-    );
+    const response = await fetch(`${ENTITY_API}/${entityId}/members`, {
+      method: 'POST',
+      headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, role }),
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour le role d'un membre dans une entite.
@@ -165,23 +162,20 @@ export const addMember = async (entityId, userId, role = "artist") => {
  */
 export const updateMemberRole = async (entityId, memberId, role) => {
   try {
-    const response = await fetch(
-      `${ENTITY_API}/${entityId}/members/${memberId}`,
-      {
-        method: 'PUT',
-        headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role }),
-      }
-    );
+    const response = await fetch(`${ENTITY_API}/${entityId}/members/${memberId}`, {
+      method: 'PUT',
+      headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Retire un membre d'une entite.
@@ -191,19 +185,16 @@ export const updateMemberRole = async (entityId, memberId, role) => {
  */
 export const removeMember = async (entityId, memberId) => {
   try {
-    const response = await fetch(
-      `${ENTITY_API}/${entityId}/members/${memberId}`,
-      {
-        method: 'DELETE',
-        headers: utils.options.headers,
-      }
-    );
+    const response = await fetch(`${ENTITY_API}/${entityId}/members/${memberId}`, {
+      method: 'DELETE',
+      headers: utils.options.headers,
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}

@@ -8,17 +8,17 @@
  * Il ne fait rien de visible — retourne un fragment vide.
  */
 
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from './AuthContext'
 
 /** @type {Record<string, string>} Mapping rôle → route dashboard */
 const DASHBOARD_BY_ROLE = {
-  artist:  '/dashboard/artist',
+  artist: '/dashboard/artist',
   curator: '/dashboard/curator',
-  buyer:   '/account',
-  admin:   '/dashboard/admin',
-};
+  buyer: '/account',
+  admin: '/dashboard/admin',
+}
 
 /**
  * Gère les redirections OAuth. La session est déjà restaurée par AuthContext.
@@ -27,16 +27,16 @@ const DASHBOARD_BY_ROLE = {
  * @returns {React.ReactElement}
  */
 export function AutoAuth() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
+  const navigate = useNavigate()
+  const { user } = useAuth()
 
   useEffect(() => {
     // Redirige vers le dashboard uniquement après un callback OAuth
-    const isOAuthCallback = window.location.hash.includes('access_token');
+    const isOAuthCallback = window.location.hash.includes('access_token')
     if (isOAuthCallback && user?.role && DASHBOARD_BY_ROLE[user.role]) {
-      navigate(DASHBOARD_BY_ROLE[user.role]);
+      navigate(DASHBOARD_BY_ROLE[user.role])
     }
-  }, [navigate, user]);
+  }, [navigate, user])
 
-  return <></>;
+  return <></>
 }

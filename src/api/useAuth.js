@@ -168,10 +168,10 @@ export async function resetPassword({ password }) {
       ...utils.options,
       method: 'POST',
       body: JSON.stringify({ password }),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur réinitialisation' };
-    return { ok: true };
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur réinitialisation' }
+    return { ok: true }
   } catch (err) {
     return { error: err.message }
   }

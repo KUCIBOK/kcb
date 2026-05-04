@@ -1,7 +1,7 @@
-import { Award, Download, Eye, Loader2 } from "lucide-react"
-import { memo, useState } from "react"
-import { utils } from "../../api/useAPI"
-import { useToast } from "../../store/ToastContext"
+import { Award, Download, Eye, Loader2 } from 'lucide-react'
+import { memo, useState } from 'react'
+import { utils } from '../../api/useAPI'
+import { useToast } from '../../store/ToastContext'
 
 /**
  * Colonne Certificat dans le tableau des œuvres.
@@ -115,10 +115,7 @@ export const GenerateCertificateAction = memo(({ artwork, user, onGenerated }) =
         title="Générer le certificat PDF"
         className="flex items-center gap-1 px-2 py-1 rounded text-xs bg-kcb-or/10 border border-kcb-or/30 text-kcb-or hover:bg-kcb-or/20 transition disabled:opacity-50 whitespace-nowrap"
       >
-        {generating
-          ? <Loader2 className="w-3 h-3 animate-spin" />
-          : <Award className="w-3 h-3" />
-        }
+        {generating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Award className="w-3 h-3" />}
         {generating ? '...' : 'Générer'}
       </button>
     )

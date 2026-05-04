@@ -1,6 +1,6 @@
-import { utils } from "./useAPI";
+import { utils } from './useAPI'
 
-const CRM_API = `${utils.api}/crm`;
+const CRM_API = `${utils.api}/crm`
 
 /**
  * Cree un nouveau client CRM.
@@ -13,16 +13,16 @@ export const createClient = async (clientData) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(clientData),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere la liste des clients CRM avec parametres optionnels.
@@ -31,21 +31,21 @@ export const createClient = async (clientData) => {
  */
 export const getClients = async (params = {}) => {
   try {
-    const searchParams = new URLSearchParams(params);
-    const queryString = searchParams.toString();
-    const url = queryString ? `${CRM_API}/clients?${queryString}` : `${CRM_API}/clients`;
+    const searchParams = new URLSearchParams(params)
+    const queryString = searchParams.toString()
+    const url = queryString ? `${CRM_API}/clients?${queryString}` : `${CRM_API}/clients`
     const response = await fetch(url, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere un client CRM par ID.
@@ -56,16 +56,16 @@ export const getClientById = async (id) => {
   try {
     const response = await fetch(`${CRM_API}/clients/${id}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour un client CRM.
@@ -79,16 +79,16 @@ export const updateClient = async (id, updates) => {
       method: 'PUT',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Supprime un client CRM.
@@ -100,16 +100,16 @@ export const deleteClient = async (id) => {
     const response = await fetch(`${CRM_API}/clients/${id}`, {
       method: 'DELETE',
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Ajoute une note a un client CRM.
@@ -119,23 +119,20 @@ export const deleteClient = async (id) => {
  */
 export const addNote = async (clientId, content) => {
   try {
-    const response = await fetch(
-      `${CRM_API}/clients/${clientId}/notes`,
-      {
-        method: 'POST',
-        headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
-      }
-    );
+    const response = await fetch(`${CRM_API}/clients/${clientId}/notes`, {
+      method: 'POST',
+      headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content }),
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Supprime une note d'un client CRM.
@@ -145,22 +142,19 @@ export const addNote = async (clientId, content) => {
  */
 export const deleteNote = async (clientId, noteId) => {
   try {
-    const response = await fetch(
-      `${CRM_API}/clients/${clientId}/notes/${noteId}`,
-      {
-        method: 'DELETE',
-        headers: utils.options.headers,
-      }
-    );
+    const response = await fetch(`${CRM_API}/clients/${clientId}/notes/${noteId}`, {
+      method: 'DELETE',
+      headers: utils.options.headers,
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Ajoute une interaction a un client CRM.
@@ -170,23 +164,20 @@ export const deleteNote = async (clientId, noteId) => {
  */
 export const addInteraction = async (clientId, interactionData) => {
   try {
-    const response = await fetch(
-      `${CRM_API}/clients/${clientId}/interactions`,
-      {
-        method: 'POST',
-        headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify(interactionData),
-      }
-    );
+    const response = await fetch(`${CRM_API}/clients/${clientId}/interactions`, {
+      method: 'POST',
+      headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify(interactionData),
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Supprime une interaction d'un client CRM.
@@ -196,22 +187,19 @@ export const addInteraction = async (clientId, interactionData) => {
  */
 export const deleteInteraction = async (clientId, interactionId) => {
   try {
-    const response = await fetch(
-      `${CRM_API}/clients/${clientId}/interactions/${interactionId}`,
-      {
-        method: 'DELETE',
-        headers: utils.options.headers,
-      }
-    );
+    const response = await fetch(`${CRM_API}/clients/${clientId}/interactions/${interactionId}`, {
+      method: 'DELETE',
+      headers: utils.options.headers,
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere les statistiques CRM globales.
@@ -221,16 +209,16 @@ export const getCrmStats = async () => {
   try {
     const response = await fetch(`${CRM_API}/stats`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Synchronise les clients depuis les transactions existantes.
@@ -238,23 +226,20 @@ export const getCrmStats = async () => {
  */
 export const syncClientsFromTransactions = async () => {
   try {
-    const response = await fetch(
-      `${CRM_API}/sync-from-transactions`,
-      {
-        method: 'POST',
-        headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
-      }
-    );
+    const response = await fetch(`${CRM_API}/sync-from-transactions`, {
+      method: 'POST',
+      headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Exporte les clients CRM au format CSV et declenche le telechargement.
@@ -264,23 +249,23 @@ export const exportClientsCSV = async () => {
   try {
     const response = await fetch(`${CRM_API}/export/csv`, {
       headers: utils.options.headers,
-    });
+    })
 
     if (!response.ok) {
-      return { error: `Erreur ${response.status}` };
+      return { error: `Erreur ${response.status}` }
     }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "clients.csv");
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'clients.csv')
+    document.body.appendChild(link)
+    link.click()
+    link.parentNode.removeChild(link)
 
-    return { success: true };
+    return { success: true }
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}

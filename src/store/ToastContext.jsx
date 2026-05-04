@@ -1,21 +1,21 @@
-import { createContext, useCallback, useContext, memo } from "react";
-import { toast as sonnerToast } from "sonner";
+import { createContext, useCallback, useContext, memo } from 'react'
+import { toast as sonnerToast } from 'sonner'
 
 const ToastContext = createContext({
   makeToast: () => {},
-});
+})
 
 /**
  * Maps legacy toast levels to sonner method names.
  * "danger" is a legacy alias for "error".
  */
 const LEVEL_MAP = {
-  success: "success",
-  error: "error",
-  danger: "error",
-  warning: "warning",
-  info: "info",
-};
+  success: 'success',
+  error: 'error',
+  danger: 'error',
+  warning: 'warning',
+  info: 'info',
+}
 
 /**
  * Bridge provider that delegates makeToast() calls to sonner.
@@ -28,18 +28,14 @@ const LEVEL_MAP = {
  * @returns {JSX.Element}
  */
 export const ToastContextProvider = memo(({ children }) => {
-  const makeToast = useCallback((title, level = "info", text = "") => {
-    const method = LEVEL_MAP[level] || "info";
-    const options = text ? { description: text } : {};
-    sonnerToast[method](title, options);
-  }, []);
+  const makeToast = useCallback((title, level = 'info', text = '') => {
+    const method = LEVEL_MAP[level] || 'info'
+    const options = text ? { description: text } : {}
+    sonnerToast[method](title, options)
+  }, [])
 
-  return (
-    <ToastContext.Provider value={{ makeToast }}>
-      {children}
-    </ToastContext.Provider>
-  );
-});
+  return <ToastContext.Provider value={{ makeToast }}>{children}</ToastContext.Provider>
+})
 
 /**
  * Hook to access the toast context.
@@ -47,5 +43,5 @@ export const ToastContextProvider = memo(({ children }) => {
  * @returns {{ makeToast: (title: string, level?: string, text?: string) => void }}
  */
 export function useToast() {
-  return useContext(ToastContext);
+  return useContext(ToastContext)
 }

@@ -1,15 +1,13 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
 /** @type {string} URL publique du projet Supabase — Settings → API → Project URL */
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 
 /** @type {string} Clé anon/public — Settings → API → Project API keys → anon */
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  throw new Error(
-    '[supabase] VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY sont requis dans .env'
-  );
+  throw new Error('[supabase] VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY sont requis dans .env')
 }
 
 /**
@@ -27,4 +25,4 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
-});
+})

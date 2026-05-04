@@ -1,31 +1,27 @@
-import { Plus, X } from "lucide-react";
-import { memo, useRef } from "react";
-import { useToast } from "../../../store/ToastContext";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { useCategoryStore } from "../../../store/CategoryStore";
+import { Plus, X } from 'lucide-react'
+import { memo, useRef } from 'react'
+import { useToast } from '../../../store/ToastContext'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+import { useCategoryStore } from '../../../store/CategoryStore'
 
 export const Step1 = memo(({ formState, setFormState }) => {
-  const { categories } = useCategoryStore();
-  const { makeToast } = useToast();
-  const tagInputRef = useRef();
+  const { categories } = useCategoryStore()
+  const { makeToast } = useToast()
+  const tagInputRef = useRef()
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (
       formState.title.length > 0 &&
       formState.description.length > 0 &&
       formState.tags.length > 0
     ) {
-      setFormState({ ...formState, step: formState.step + 1 });
+      setFormState({ ...formState, step: formState.step + 1 })
     } else {
-      makeToast(
-        "Erreur",
-        "warning",
-        "Veuillez remplir tous les champs ou ajouter des mots clés"
-      );
+      makeToast('Erreur', 'warning', 'Veuillez remplir tous les champs ou ajouter des mots clés')
     }
-  };
+  }
 
   // Animation for tags
   const handleAddTag = () => {
@@ -37,11 +33,11 @@ export const Step1 = memo(({ formState, setFormState }) => {
       setFormState({
         ...formState,
         tags: [...formState.tags, formState.tag],
-        tag: "",
-      });
-      setTimeout(() => tagInputRef.current?.focus(), 100);
+        tag: '',
+      })
+      setTimeout(() => tagInputRef.current?.focus(), 100)
     }
-  };
+  }
 
   return (
     <form
@@ -51,16 +47,11 @@ export const Step1 = memo(({ formState, setFormState }) => {
     >
       {/* Titre */}
       <div className="relative flex flex-col gap-1">
-        <label
-          htmlFor="title"
-          className="text-xs text-kcb-pierre font-medium transition-all"
-        >
+        <label htmlFor="title" className="text-xs text-kcb-pierre font-medium transition-all">
           Titre
         </label>
         <input
-          onChange={(e) =>
-            setFormState({ ...formState, title: e.target.value })
-          }
+          onChange={(e) => setFormState({ ...formState, title: e.target.value })}
           value={formState.title}
           type="text"
           id="title"
@@ -85,9 +76,7 @@ export const Step1 = memo(({ formState, setFormState }) => {
             setFormState({
               ...formState,
               category: e.target.value,
-              categoryId: categories.find(
-                (item) => item.name === e.target.value
-              )?.id,
+              categoryId: categories.find((item) => item.name === e.target.value)?.id,
             })
           }
           value={formState.category}
@@ -106,18 +95,13 @@ export const Step1 = memo(({ formState, setFormState }) => {
 
       {/* Description */}
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="description"
-          className="text-xs text-kcb-pierre font-medium mb-1"
-        >
+        <label htmlFor="description" className="text-xs text-kcb-pierre font-medium mb-1">
           Description
         </label>
         <ReactQuill
           theme="snow"
           value={formState.description}
-          onChange={(value) =>
-            setFormState({ ...formState, description: value })
-          }
+          onChange={(value) => setFormState({ ...formState, description: value })}
           className="border border-white/[0.06] bg-kcb-ardoise text-white rounded-[4px] quill-dark"
           placeholder="Parlez-nous de votre œuvre et de son inspiration"
           minLength={15}
@@ -128,9 +112,7 @@ export const Step1 = memo(({ formState, setFormState }) => {
       {/* Mettre en vente */}
       <div className="flex items-center gap-2 mt-2">
         <input
-          onChange={(e) =>
-            setFormState({ ...formState, forSale: e.target.checked })
-          }
+          onChange={(e) => setFormState({ ...formState, forSale: e.target.checked })}
           checked={formState.forSale}
           type="checkbox"
           id="forSale"
@@ -147,12 +129,10 @@ export const Step1 = memo(({ formState, setFormState }) => {
           onChange={(e) =>
             setFormState({
               ...formState,
-              auctionStatus: e.target.checked
-                ? "auction_ongoing"
-                : "not_for_auction",
+              auctionStatus: e.target.checked ? 'auction_ongoing' : 'not_for_auction',
             })
           }
-          checked={formState.auctionStatus === "auction_ongoing"}
+          checked={formState.auctionStatus === 'auction_ongoing'}
           type="checkbox"
           id="auctionStatus"
           className="accent-kcb-or scale-110 focus:ring-2 focus:ring-kcb-or"
@@ -164,10 +144,7 @@ export const Step1 = memo(({ formState, setFormState }) => {
 
       {/* Mensurations */}
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="mensurations"
-          className="text-xs text-kcb-pierre font-medium"
-        >
+        <label htmlFor="mensurations" className="text-xs text-kcb-pierre font-medium">
           Mensurations
         </label>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
@@ -175,9 +152,7 @@ export const Step1 = memo(({ formState, setFormState }) => {
             className="w-full rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition-all"
             min={10}
             max={500}
-            onChange={(e) =>
-              setFormState({ ...formState, height: e.target.value })
-            }
+            onChange={(e) => setFormState({ ...formState, height: e.target.value })}
             name="height"
             type="number"
             placeholder="Hauteur (cm)"
@@ -186,9 +161,7 @@ export const Step1 = memo(({ formState, setFormState }) => {
             className="w-full rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition-all"
             min={10}
             max={500}
-            onChange={(e) =>
-              setFormState({ ...formState, width: e.target.value })
-            }
+            onChange={(e) => setFormState({ ...formState, width: e.target.value })}
             name="width"
             type="number"
             placeholder="Largeur (cm)"
@@ -197,9 +170,7 @@ export const Step1 = memo(({ formState, setFormState }) => {
             className="w-full rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition-all"
             min={1}
             max={1000}
-            onChange={(e) =>
-              setFormState({ ...formState, weight: e.target.value })
-            }
+            onChange={(e) => setFormState({ ...formState, weight: e.target.value })}
             name="weight"
             type="number"
             placeholder="Poids (kg)"
@@ -283,18 +254,13 @@ export const Step1 = memo(({ formState, setFormState }) => {
 
       {/* Tags dynamiques */}
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="tags"
-          className="text-xs text-kcb-pierre font-medium mb-1"
-        >
+        <label htmlFor="tags" className="text-xs text-kcb-pierre font-medium mb-1">
           Mots-clés
         </label>
         <div className="flex gap-2">
           <input
             ref={tagInputRef}
-            onChange={(e) =>
-              setFormState({ ...formState, tag: e.target.value })
-            }
+            onChange={(e) => setFormState({ ...formState, tag: e.target.value })}
             value={formState.tag}
             type="text"
             className="w-full rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition-all"
@@ -302,9 +268,9 @@ export const Step1 = memo(({ formState, setFormState }) => {
             minLength={3}
             maxLength={12}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleAddTag();
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                handleAddTag()
               }
             }}
           />
@@ -343,9 +309,7 @@ export const Step1 = memo(({ formState, setFormState }) => {
           ))}
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-xs text-kcb-pierre">
-            {formState.tags.length}/5 mots-clés
-          </span>
+          <span className="text-xs text-kcb-pierre">{formState.tags.length}/5 mots-clés</span>
         </div>
       </div>
 
@@ -359,5 +323,5 @@ export const Step1 = memo(({ formState, setFormState }) => {
         </button>
       </div>
     </form>
-  );
-});
+  )
+})

@@ -11,7 +11,7 @@ export async function isPasswordLeaked(password) {
     const encoded = new TextEncoder().encode(password)
     const hashBuffer = await crypto.subtle.digest('SHA-1', encoded)
     const hashHex = Array.from(new Uint8Array(hashBuffer))
-      .map(b => b.toString(16).padStart(2, '0'))
+      .map((b) => b.toString(16).padStart(2, '0'))
       .join('')
       .toUpperCase()
 
@@ -24,7 +24,7 @@ export async function isPasswordLeaked(password) {
     if (!response.ok) return false
 
     const text = await response.text()
-    return text.split('\n').some(line => line.split(':')[0].trim() === suffix)
+    return text.split('\n').some((line) => line.split(':')[0].trim() === suffix)
   } catch {
     // Ne jamais bloquer l'utilisateur si l'API est indisponible
     return false

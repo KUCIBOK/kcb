@@ -1,19 +1,44 @@
-﻿import { useState, useEffect, useCallback } from "react"
-import { Scan, Plus, X, Loader2, CheckCircle, Clock, RefreshCw, Trash2, AlertCircle } from "lucide-react"
-import { getMyNumerisationRequests, createNumerisation, deleteNumerisationRequest } from "../../api/useNumerisation"
-import { useArtworks } from "../../store/ArtworkContext"
-import { KPICard } from "../ui"
+﻿import { useState, useEffect, useCallback } from 'react'
+import {
+  Scan,
+  Plus,
+  X,
+  Loader2,
+  CheckCircle,
+  Clock,
+  RefreshCw,
+  Trash2,
+  AlertCircle,
+} from 'lucide-react'
+import {
+  getMyNumerisationRequests,
+  createNumerisation,
+  deleteNumerisationRequest,
+} from '../../api/useNumerisation'
+import { useArtworks } from '../../store/ArtworkContext'
+import { KPICard } from '../ui'
 
 /** Badge de statut coloré pour une demande de numérisation. */
 function StatusBadge({ status }) {
   const CONFIG = {
-    pending: { label: "En attente", className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-    processing: { label: "En cours", className: "bg-kcb-or/20 text-kcb-or border-kcb-or/30" },
-    delivered: { label: "Terminée", className: "bg-green-500/20 text-green-400 border-green-500/30" },
+    pending: {
+      label: 'En attente',
+      className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+    },
+    processing: { label: 'En cours', className: 'bg-kcb-or/20 text-kcb-or border-kcb-or/30' },
+    delivered: {
+      label: 'Terminée',
+      className: 'bg-green-500/20 text-green-400 border-green-500/30',
+    },
   }
-  const cfg = CONFIG[status] ?? { label: status, className: "bg-gray-500/20 text-kcb-pierre border-gray-500/30" }
+  const cfg = CONFIG[status] ?? {
+    label: status,
+    className: 'bg-gray-500/20 text-kcb-pierre border-gray-500/30',
+  }
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${cfg.className}`}>
+    <span
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${cfg.className}`}
+    >
       {cfg.label}
     </span>
   )
@@ -37,10 +62,10 @@ export function ArtistNumerisationTab() {
   const [formError, setFormError] = useState(null)
 
   const [form, setForm] = useState({
-    artworkId: "",
-    artworkTitle: "",
-    notes: "",
-    priority: "normal",
+    artworkId: '',
+    artworkTitle: '',
+    notes: '',
+    priority: 'normal',
   })
 
   /** Charge les demandes de numérisation de l'artiste connecté. */
@@ -67,7 +92,7 @@ export function ArtistNumerisationTab() {
     setForm((prev) => ({
       ...prev,
       artworkId: selectedId,
-      artworkTitle: artwork?.title ?? "",
+      artworkTitle: artwork?.title ?? '',
     }))
   }
 
@@ -77,7 +102,7 @@ export function ArtistNumerisationTab() {
     setFormError(null)
 
     if (!form.artworkId) {
-      setFormError("Veuillez sélectionner une œuvre.")
+      setFormError('Veuillez sélectionner une œuvre.')
       return
     }
 
@@ -96,7 +121,7 @@ export function ArtistNumerisationTab() {
     }
 
     // Réinitialise et recharge
-    setForm({ artworkId: "", artworkTitle: "", notes: "", priority: "normal" })
+    setForm({ artworkId: '', artworkTitle: '', notes: '', priority: 'normal' })
     setShowForm(false)
     setSubmitting(false)
     await fetchRequests()
@@ -114,9 +139,9 @@ export function ArtistNumerisationTab() {
 
   // ── KPIs ──────────────────────────────────────────────────────────────────
   const total = requests.length
-  const pending = requests.filter((r) => r.status === "pending").length
-  const processing = requests.filter((r) => r.status === "processing").length
-  const delivered = requests.filter((r) => r.status === "delivered").length
+  const pending = requests.filter((r) => r.status === 'pending').length
+  const processing = requests.filter((r) => r.status === 'processing').length
+  const delivered = requests.filter((r) => r.status === 'delivered').length
 
   return (
     <div className="space-y-6">
@@ -140,7 +165,10 @@ export function ArtistNumerisationTab() {
             <RefreshCw className="w-4 h-4" />
           </button>
           <button
-            onClick={() => { setShowForm(true); setFormError(null) }}
+            onClick={() => {
+              setShowForm(true)
+              setFormError(null)
+            }}
             className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-medium rounded-[4px] transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -154,7 +182,7 @@ export function ArtistNumerisationTab() {
         <KPICard
           icon={Scan}
           label="Total demandes"
-          value={loading ? "—" : total}
+          value={loading ? '—' : total}
           loading={loading}
           iconColor="text-kcb-or"
           iconBgColor="bg-kcb-or/10"
@@ -162,7 +190,7 @@ export function ArtistNumerisationTab() {
         <KPICard
           icon={Clock}
           label="En attente"
-          value={loading ? "—" : pending}
+          value={loading ? '—' : pending}
           loading={loading}
           iconColor="text-yellow-400"
           iconBgColor="bg-yellow-900/20"
@@ -170,7 +198,7 @@ export function ArtistNumerisationTab() {
         <KPICard
           icon={RefreshCw}
           label="En cours"
-          value={loading ? "—" : processing}
+          value={loading ? '—' : processing}
           loading={loading}
           iconColor="text-kcb-or"
           iconBgColor="bg-kcb-or/10"
@@ -178,7 +206,7 @@ export function ArtistNumerisationTab() {
         <KPICard
           icon={CheckCircle}
           label="Terminées"
-          value={loading ? "—" : delivered}
+          value={loading ? '—' : delivered}
           loading={loading}
           iconColor="text-green-400"
           iconBgColor="bg-green-900/20"
@@ -191,7 +219,10 @@ export function ArtistNumerisationTab() {
           <div className="flex items-center justify-between">
             <h3 className="text-white font-semibold">Nouvelle demande de numérisation</h3>
             <button
-              onClick={() => { setShowForm(false); setFormError(null) }}
+              onClick={() => {
+                setShowForm(false)
+                setFormError(null)
+              }}
               className="text-kcb-pierre hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
@@ -213,7 +244,7 @@ export function ArtistNumerisationTab() {
                 {myArtworks?.map((artwork) => (
                   <option key={artwork._id} value={artwork._id}>
                     {artwork.title}
-                    {artwork.kucibok_id ? ` — ${artwork.kucibok_id}` : ""}
+                    {artwork.kucibok_id ? ` — ${artwork.kucibok_id}` : ''}
                   </option>
                 ))}
               </select>
@@ -221,9 +252,7 @@ export function ArtistNumerisationTab() {
 
             {/* Priorité */}
             <div>
-              <label className="block text-sm font-medium text-kcb-sable mb-1.5">
-                Priorité
-              </label>
+              <label className="block text-sm font-medium text-kcb-sable mb-1.5">Priorité</label>
               <select
                 value={form.priority}
                 onChange={(e) => setForm((prev) => ({ ...prev, priority: e.target.value }))}
@@ -262,12 +291,19 @@ export function ArtistNumerisationTab() {
                 disabled={submitting}
                 className="flex items-center gap-2 px-5 py-2 bg-kcb-or hover:bg-kcb-or/90 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-[4px] transition-colors"
               >
-                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                {submitting ? "Envoi…" : "Soumettre la demande"}
+                {submitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Plus className="w-4 h-4" />
+                )}
+                {submitting ? 'Envoi…' : 'Soumettre la demande'}
               </button>
               <button
                 type="button"
-                onClick={() => { setShowForm(false); setFormError(null) }}
+                onClick={() => {
+                  setShowForm(false)
+                  setFormError(null)
+                }}
                 className="px-5 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white text-sm font-medium rounded-[4px] transition-colors"
               >
                 Annuler
@@ -309,29 +345,41 @@ export function ArtistNumerisationTab() {
         ) : (
           <div className="divide-y divide-white/[0.06]">
             {requests.map((req) => (
-              <div key={req._id} className="flex items-center justify-between px-6 py-4 hover:bg-kcb-ardoise/40 transition-colors">
+              <div
+                key={req._id}
+                className="flex items-center justify-between px-6 py-4 hover:bg-kcb-ardoise/40 transition-colors"
+              >
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium truncate">{req.artworkTitle || "Œuvre sans titre"}</p>
+                  <p className="text-white text-sm font-medium truncate">
+                    {req.artworkTitle || 'Œuvre sans titre'}
+                  </p>
                   <p className="text-kcb-pierre text-xs mt-0.5">
-                    {req.created_at ? new Date(req.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
-                    {req.priority === "urgent" && (
+                    {req.created_at
+                      ? new Date(req.created_at).toLocaleDateString('fr-FR', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })
+                      : '—'}
+                    {req.priority === 'urgent' && (
                       <span className="ml-2 text-orange-400 font-medium">· Urgent</span>
                     )}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 ml-4 shrink-0">
                   <StatusBadge status={req.status} />
-                  {req.status === "pending" && (
+                  {req.status === 'pending' && (
                     <button
                       onClick={() => handleDelete(req._id)}
                       disabled={deletingId === req._id}
                       className="p-1.5 text-kcb-pierre hover:text-red-400 hover:bg-red-900/20 rounded-[4px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Supprimer la demande"
                     >
-                      {deletingId === req._id
-                        ? <Loader2 className="w-4 h-4 animate-spin" />
-                        : <Trash2 className="w-4 h-4" />
-                      }
+                      {deletingId === req._id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
                     </button>
                   )}
                 </div>

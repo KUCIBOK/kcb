@@ -7,11 +7,11 @@
  * @module useArtists
  */
 
-import { supabase } from '../lib/supabase';
-import { uploadProfileImage } from '../lib/storage';
-import { utils } from './useAPI';
+import { supabase } from '../lib/supabase'
+import { uploadProfileImage } from '../lib/storage'
+import { utils } from './useAPI'
 
-const { api } = utils;
+const { api } = utils
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS PRIVÉS
@@ -23,13 +23,13 @@ const { api } = utils;
  * @returns {Promise<Record<string, string>>}
  */
 async function authHeaders() {
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token ?? '';
+  const { data } = await supabase.auth.getSession()
+  const token = data.session?.access_token ?? ''
   return {
     'Content-Type': 'application/json',
     'kcb-api-key': import.meta.env.VITE_API_KEY,
     Authorization: `Bearer ${token}`,
-  };
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -43,13 +43,13 @@ async function authHeaders() {
  */
 export async function getAllArtists(params = {}) {
   try {
-    const qs = new URLSearchParams(params).toString();
-    const response = await fetch(`${api}/artist${qs ? `?${qs}` : ''}`, { ...utils.options });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    const qs = new URLSearchParams(params).toString()
+    const response = await fetch(`${api}/artist${qs ? `?${qs}` : ''}`, { ...utils.options })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -61,7 +61,7 @@ export async function getAllArtists(params = {}) {
  */
 export async function getArtistAndUpdateVisited(id) {
   // La nouvelle API incrémente les visites automatiquement dans GET /api/artist/:id
-  return getArtistById(id);
+  return getArtistById(id)
 }
 
 /**
@@ -72,12 +72,12 @@ export async function getArtistAndUpdateVisited(id) {
  */
 export async function getArtistById(id) {
   try {
-    const response = await fetch(`${api}/artist/${id}`, { ...utils.options });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Artiste introuvable' };
-    return body?.data ?? body;
+    const response = await fetch(`${api}/artist/${id}`, { ...utils.options })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Artiste introuvable' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -94,7 +94,7 @@ export async function getArtistById(id) {
  * @returns {Promise<{ data: [] }>}
  */
 export async function getManagedArtists() {
-  return { data: [] };
+  return { data: [] }
 }
 
 /**
@@ -104,12 +104,12 @@ export async function getManagedArtists() {
  */
 export async function getFeaturedArtists() {
   try {
-    const response = await fetch(`${api}/artist?random=true`, { ...utils.options });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    const response = await fetch(`${api}/artist?random=true`, { ...utils.options })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -126,33 +126,33 @@ export async function getFeaturedArtists() {
  */
 export async function createArtist(payload) {
   try {
-    const { data: sessionData } = await supabase.auth.getSession();
-    const userId = sessionData.session?.user?.id;
+    const { data: sessionData } = await supabase.auth.getSession()
+    const userId = sessionData.session?.user?.id
 
     // Extraire les champs du FormData
-    const fields = {};
+    const fields = {}
     for (const [key, value] of payload.entries()) {
-      fields[key] = value;
+      fields[key] = value
     }
 
     // Upload image si présente
     if (fields.image instanceof File && userId) {
-      const uploadResult = await uploadProfileImage(userId, fields.image);
-      if (uploadResult.error) return { error: uploadResult.error };
-      fields.image = uploadResult.url;
+      const uploadResult = await uploadProfileImage(userId, fields.image)
+      if (uploadResult.error) return { error: uploadResult.error }
+      fields.image = uploadResult.url
     }
 
-    const headers = await authHeaders();
+    const headers = await authHeaders()
     const response = await fetch(`${api}/artist`, {
       method: 'POST',
       headers,
       body: JSON.stringify(fields),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -167,29 +167,29 @@ export async function createArtist(payload) {
 export async function updateArtist(id, payload) {
   try {
     // Extraire les champs du FormData
-    const fields = {};
+    const fields = {}
     for (const [key, value] of payload.entries()) {
-      fields[key] = value;
+      fields[key] = value
     }
 
     // Upload image si c'est un File
     if (fields.image instanceof File) {
-      const uploadResult = await uploadProfileImage(id, fields.image);
-      if (uploadResult.error) return { error: uploadResult.error };
-      fields.image = uploadResult.url;
+      const uploadResult = await uploadProfileImage(id, fields.image)
+      if (uploadResult.error) return { error: uploadResult.error }
+      fields.image = uploadResult.url
     }
 
-    const headers = await authHeaders();
+    const headers = await authHeaders()
     const response = await fetch(`${api}/artist/${id}`, {
       method: 'PUT',
       headers,
       body: JSON.stringify(fields),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -209,5 +209,5 @@ export async function updateArtist(id, payload) {
  * @returns {Promise<object | { error: string }>}
  */
 export async function updateManagedArtist(id, payload) {
-  return updateArtist(id, payload);
+  return updateArtist(id, payload)
 }

@@ -1,18 +1,18 @@
-﻿import { useEffect, useState } from "react"
-import { getAllLog } from "../../api/useLog"
-import { getUserById } from "../../api/useAuth"
-import { DataLoader } from "../loaders/PageLoader"
+﻿import { useEffect, useState } from 'react'
+import { getAllLog } from '../../api/useLog'
+import { getUserById } from '../../api/useAuth'
+import { DataLoader } from '../loaders/PageLoader'
 
 export function LogsTab() {
   const [state, setState] = useState({
     logs: [],
     set: [],
     loading: true,
-  });
+  })
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        let logs = await getAllLog();
+        let logs = await getAllLog()
         if (logs?.length > 0) {
           logs = logs?.reverse()
           setState((prev) => ({
@@ -20,16 +20,16 @@ export function LogsTab() {
             logs: logs,
             set: logs?.slice(0, 5),
             loading: false,
-          }));
+          }))
         } else {
-          setState((prev) => ({ ...prev, loading: false }));
+          setState((prev) => ({ ...prev, loading: false }))
         }
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false }))
       }
-    };
-    fetchLogs();
-  }, []);
+    }
+    fetchLogs()
+  }, [])
 
   return (
     <section className="bg-kcb-ardoise rounded-[4px] shadow-md border border-white/[0.06] px-0 py-0 md:px-6 md:py-6 w-full mx-auto">
@@ -56,7 +56,9 @@ export function LogsTab() {
                   key={index}
                   className="border-b border-white/[0.06] last:border-0 hover:bg-kcb-ardoise/40 transition-colors"
                 >
-                  <td className="py-2 px-1 md:px-2 align-top max-w-xs truncate">{log.description}</td>
+                  <td className="py-2 px-1 md:px-2 align-top max-w-xs truncate">
+                    {log.description}
+                  </td>
                   <td className="py-2 px-1 md:px-2 align-top whitespace-nowrap text-kcb-pierre">
                     {new Date(log.created_at).toLocaleString()}
                   </td>
@@ -76,11 +78,11 @@ export function LogsTab() {
           className="rounded-full px-4 py-1 bg-kcb-ardoise text-kcb-sable border border-white/[0.06] hover:bg-kcb-ardoise transition disabled:opacity-40 disabled:cursor-not-allowed"
           onClick={() => {
             if (state.set[0] !== state.logs[0]) {
-              const startIndex = state.logs.indexOf(state.set[0]) - 5;
+              const startIndex = state.logs.indexOf(state.set[0]) - 5
               setState({
                 ...state,
                 set: state.logs.slice(startIndex, startIndex + 5),
-              });
+              })
             }
           }}
           disabled={state.set[0] === state.logs[0] || state.loading}
@@ -90,47 +92,51 @@ export function LogsTab() {
         <button
           className="rounded-full px-4 py-1 bg-kcb-ardoise text-kcb-sable border border-white/[0.06] hover:bg-kcb-ardoise transition disabled:opacity-40 disabled:cursor-not-allowed"
           onClick={() => {
-            const lastIndex = state.logs.indexOf(state.set[state.set.length - 1]);
+            const lastIndex = state.logs.indexOf(state.set[state.set.length - 1])
             if (lastIndex < state.logs.length - 1) {
               setState({
                 ...state,
                 set: state.logs.slice(lastIndex + 1, lastIndex + 6),
-              });
+              })
             }
           }}
-          disabled={state.set[state.set.length - 1] === state.logs[state.logs.length - 1] || state.loading}
+          disabled={
+            state.set[state.set.length - 1] === state.logs[state.logs.length - 1] || state.loading
+          }
         >
           Suivant
         </button>
       </footer>
     </section>
-  );
+  )
 }
 
 function UserInfo({ id }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null)
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
     const fetchUser = async () => {
       try {
-        const user = await getUserById(id);
+        const user = await getUserById(id)
         if (mounted) {
           if (user?._id) {
-            setUser(user);
+            setUser(user)
           } else {
-            setUser({ name: "Utilisateur inconnu", username: "Utilisateur inconnu" });
+            setUser({ name: 'Utilisateur inconnu', username: 'Utilisateur inconnu' })
           }
         }
       } catch (error) {
-        if (mounted) setUser({ name: "Utilisateur inconnu", username: "Utilisateur inconnu" });
+        if (mounted) setUser({ name: 'Utilisateur inconnu', username: 'Utilisateur inconnu' })
       }
-    };
-    fetchUser();
-    return () => { mounted = false; };
-  }, [id]);
+    }
+    fetchUser()
+    return () => {
+      mounted = false
+    }
+  }, [id])
   return (
     <span className="inline-block rounded bg-kcb-ardoise px-2 py-0.5 text-xs text-kcb-sable max-w-[120px] truncate">
       {user?.name || <span className="text-kcb-pierre">...</span>}
     </span>
-  );
+  )
 }

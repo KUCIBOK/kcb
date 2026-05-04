@@ -1,12 +1,11 @@
-import { Trash2 } from "lucide-react";
-import { useCategoryStore } from "../../store/CategoryStore";
-
+import { Trash2 } from 'lucide-react'
+import { useCategoryStore } from '../../store/CategoryStore'
 
 export function CategoryList({ categories }) {
-  const { deleteCategory } = useCategoryStore();
+  const { deleteCategory } = useCategoryStore()
   const handleDeleteCategory = async (id) => {
-    await deleteCategory(id);
-  };
+    await deleteCategory(id)
+  }
   return (
     <div className="overflow-x-auto rounded-[4px] border border-white/[0.06] bg-kcb-ardoise px-0 py-0">
       <table className="w-full text-sm">
@@ -20,9 +19,14 @@ export function CategoryList({ categories }) {
         <tbody>
           {categories?.length > 0 ? (
             categories.map((category, index) => (
-              <tr key={index} className="border-b border-white/[0.06] last:border-0 hover:bg-kcb-ardoise/60 transition">
+              <tr
+                key={index}
+                className="border-b border-white/[0.06] last:border-0 hover:bg-kcb-ardoise/60 transition"
+              >
                 <td className="py-2 px-4 text-white/90">{category.name}</td>
-                <td className="py-2 px-4 text-white/50">{new Date(category.created_at).toLocaleDateString()}</td>
+                <td className="py-2 px-4 text-white/50">
+                  {new Date(category.created_at).toLocaleDateString()}
+                </td>
                 <td className="py-2 px-4 text-right">
                   <button
                     onClick={async () => await handleDeleteCategory(category.id)}
@@ -36,11 +40,13 @@ export function CategoryList({ categories }) {
             ))
           ) : (
             <tr>
-              <td colSpan="3" className="text-center py-8 text-white/40">Aucune catégorie disponible</td>
+              <td colSpan="3" className="text-center py-8 text-white/40">
+                Aucune catégorie disponible
+              </td>
             </tr>
           )}
         </tbody>
       </table>
     </div>
-  );
+  )
 }

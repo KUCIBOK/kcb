@@ -1,8 +1,8 @@
-import { AuctionsList } from "../auction/AuctionsList";
-import { useArtworks } from "../../store/ArtworkContext";
+import { AuctionsList } from '../auction/AuctionsList'
+import { useArtworks } from '../../store/ArtworkContext'
 
 export function AuctionTab() {
-  const { myArtworks } = useArtworks();
+  const { myArtworks } = useArtworks()
   return (
     <>
       <div className="rounded-[4px] border bg-kcb-ardoise shadow-sm p-6">
@@ -11,5 +11,5 @@ export function AuctionTab() {
         </div>
       </div>
     </>
-  );
+  )
 }

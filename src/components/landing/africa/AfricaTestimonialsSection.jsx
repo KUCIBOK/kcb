@@ -1,7 +1,7 @@
-import RevealOnScroll from "../RevealOnScroll"
-import SectionLabel from "../SectionLabel"
-import { useLang } from "../../../store/LangContext"
-import { africaT } from "../../../i18n/africa"
+import RevealOnScroll from '../RevealOnScroll'
+import SectionLabel from '../SectionLabel'
+import { useLang } from '../../../store/LangContext'
+import { africaT } from '../../../i18n/africa'
 
 /**
  * Testimonials section with ivory background for Africa portal.
@@ -29,7 +29,9 @@ export default function AfricaTestimonialsSection() {
           {/* Featured — first item, spans full height on left */}
           <RevealOnScroll delay={0}>
             <div className="bg-white p-6 md:p-10 lg:p-14 flex flex-col justify-center h-full">
-              <span className="block font-playfair text-5xl md:text-6xl text-kcb-or leading-[0.6] mb-4 md:mb-5 not-italic">&ldquo;</span>
+              <span className="block font-playfair text-5xl md:text-6xl text-kcb-or leading-[0.6] mb-4 md:mb-5 not-italic">
+                &ldquo;
+              </span>
               <blockquote className="font-playfair italic text-lg md:text-2xl leading-snug text-kcb-noir mb-6 md:mb-8">
                 {t.items[0].quote}
               </blockquote>
@@ -43,7 +45,9 @@ export default function AfricaTestimonialsSection() {
             {t.items.slice(1).map((item, i) => (
               <RevealOnScroll key={item.author} delay={(i + 1) * 0.1}>
                 <div className="bg-white p-5 md:p-8 flex flex-col justify-center h-full">
-                  <span className="block font-playfair text-4xl text-kcb-or leading-[0.6] mb-3 not-italic">&ldquo;</span>
+                  <span className="block font-playfair text-4xl text-kcb-or leading-[0.6] mb-3 not-italic">
+                    &ldquo;
+                  </span>
                   <blockquote className="font-playfair italic text-[15px] leading-snug text-kcb-noir mb-5">
                     {item.quote}
                   </blockquote>

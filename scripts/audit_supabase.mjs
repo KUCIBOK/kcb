@@ -187,49 +187,121 @@ if (migErr) {
   console.log(`  ✅ Migrations appliquées: ${migData?.length ?? 0}`);
 }
 
-// ─── 7. Audit URLs images artworks ──────────────────────────
-console.log('\n── 7. IMAGES ARTWORKS — ÉTAT DES URLs ───────────────────────');
-const { data: artworkImages } = await supabase
-  .from('artworks')
-  .select('id, title, image')
-  .limit(1000);
+// ─── 7. Deep Audit URLs images artworks ─────────────────────
+console.log('\n── 7. DEEP AUDIT — IMAGES ARTWORKS ─────────────────────────');
 
-if (!artworkImages || artworkImages.length === 0) {
+// Récupère toutes les œuvres + artiste associé
+// Pagination manuelle par blocs de 500
+const PAGE = 500;
+let allArtworkRows = [];
+let pageIdx = 0;
+while (true) {
+  const { data: chunk, error: chunkErr } = await supabase
+    .from('artworks')
+    .select('id, title, image, artist_id, status')
+    .range(pageIdx * PAGE, (pageIdx + 1) * PAGE - 1);
+  if (chunkErr) { console.log(`  ❌ Erreur fetch artworks p${pageIdx}: ${chunkErr.message}`); break; }
+  if (!chunk || chunk.length === 0) break;
+  allArtworkRows = allArtworkRows.concat(chunk);
+  if (chunk.length < PAGE) break;
+  pageIdx++;
+}
+
+// Lookup artistes séparé (table légère)
+const artistMap = {};
+const { data: allArtists } = await supabase.from('artists').select('id, name');
+(allArtists ?? []).forEach(a => { artistMap[a.id] = a.name; });
+
+const finalList = allArtworkRows.map(a => ({
+  ...a,
+  artistName: artistMap[a.artist_id] ?? '(artiste inconnu)',
+}));
+
+if (!finalList || finalList.length === 0) {
   console.log('  ℹ️  Aucune œuvre trouvée');
 } else {
-  let nullCount = 0, supabaseCount = 0, cloudinaryCount = 0, vpsCount = 0, otherCount = 0;
-  const brokenSamples = [];
+  const total = finalList.length;
 
-  for (const a of artworkImages) {
-    if (!a.image) { nullCount++; continue; }
-    if (a.image.includes('.supabase.co/storage')) supabaseCount++;
-    else if (a.image.includes('cloudinary.com'))   cloudinaryCount++;
-    else if (a.image.includes('backend.kucibok'))  { vpsCount++; if (brokenSamples.length < 3) brokenSamples.push(a.image); }
-    else { otherCount++; if (brokenSamples.length < 3) brokenSamples.push(a.image); }
+  // ── Classement des URLs ──────────────────────────────────────
+  const groups = { supabase: [], cloudinary: [], vps: [], empty: [], other: [] };
+  for (const a of finalList) {
+    if (!a.image)                               groups.empty.push(a);
+    else if (a.image.includes('.supabase.co'))  groups.supabase.push(a);
+    else if (a.image.includes('cloudinary.com'))groups.cloudinary.push(a);
+    else if (a.image.includes('backend.kucibok'))groups.vps.push(a);
+    else                                         groups.other.push(a);
   }
 
-  const total = artworkImages.length;
-  console.log(`  Total analysé  : ${total} œuvres`);
-  console.log(`  ✅ Supabase    : ${supabaseCount} (URLs en ordre)`);
-  console.log(`  🔶 Cloudinary  : ${cloudinaryCount} (à migrer → node scripts/migrate_cloudinary.js)`);
-  console.log(`  ❌ VPS mort    : ${vpsCount} (backend.kucibok.com expiré — images perdues)`);
-  console.log(`  ⬜ Null/vide   : ${nullCount}`);
-  console.log(`  ℹ️  Autres     : ${otherCount}`);
-  if (brokenSamples.length) {
-    console.log(`\n  Exemples d'URLs non-Supabase :`);
-    brokenSamples.forEach(u => console.log(`    ${u}`));
-  }
+  const pct = (n) => `${((n / total) * 100).toFixed(1)}%`;
+  console.log(`\n  RÉPARTITION (${total} œuvres analysées)`);
+  console.log(`  ${'─'.repeat(50)}`);
+  console.log(`  ✅ Supabase Storage  : ${String(groups.supabase.length).padStart(4)}  (${pct(groups.supabase.length)})  — images affichées`);
+  console.log(`  🔶 Cloudinary        : ${String(groups.cloudinary.length).padStart(4)}  (${pct(groups.cloudinary.length)})  — à migrer`);
+  console.log(`  ❌ VPS mort          : ${String(groups.vps.length).padStart(4)}  (${pct(groups.vps.length)})  — images perdues`);
+  console.log(`  ⬜ Vide / null       : ${String(groups.empty.length).padStart(4)}  (${pct(groups.empty.length)})  — jamais uploadée`);
+  console.log(`  ❓ Autre domaine     : ${String(groups.other.length).padStart(4)}  (${pct(groups.other.length)})`);
 
-  // Test de connectivité sur une URL Supabase Storage (si présente)
-  const supabaseSample = artworkImages.find(a => a.image?.includes('.supabase.co/storage'));
-  if (supabaseSample) {
+  // ── Test connectivité Supabase (5 URLs aléatoires) ───────────
+  console.log(`\n  TEST CONNECTIVITÉ — Supabase Storage (5 échantillons)`);
+  console.log(`  ${'─'.repeat(50)}`);
+  const supabaseSample = groups.supabase.sort(() => Math.random() - 0.5).slice(0, 5);
+  let okCount = 0, failCount = 0;
+  for (const a of supabaseSample) {
     try {
-      const r = await fetch(supabaseSample.image, { method: 'HEAD' });
-      if (r.ok) console.log(`\n  ✅ Bucket public OK  — ${r.status} sur ${supabaseSample.image.slice(0, 80)}…`);
-      else      console.log(`\n  ❌ Bucket inaccessible — ${r.status} sur ${supabaseSample.image.slice(0, 80)}…`);
+      const r = await fetch(a.image, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+      if (r.ok) { okCount++; console.log(`  ✅ ${r.status}  ${a.image.slice(0, 70)}…`); }
+      else       { failCount++; console.log(`  ❌ ${r.status}  ${a.image.slice(0, 70)}…`); }
     } catch (e) {
-      console.log(`\n  ❌ Fetch échoué : ${e.message}`);
+      failCount++;
+      console.log(`  ❌ ERR  ${String(e.message).slice(0, 60)}`);
     }
+  }
+  if (supabaseSample.length === 0) console.log('  ℹ️  Aucune URL Supabase à tester');
+  else console.log(`\n  → ${okCount}/${supabaseSample.length} accessibles — ${failCount > 0 ? '⚠️  certaines URLs Supabase KO' : '✅ bucket public OK'}`);
+
+  // ── Artistes les plus impactés (VPS mort) ────────────────────
+  if (groups.vps.length > 0) {
+    console.log(`\n  ARTISTES IMPACTÉS — images VPS perdues`);
+    console.log(`  ${'─'.repeat(50)}`);
+    const byArtist = {};
+    for (const a of groups.vps) {
+      const name = a.artistName ?? '(artiste inconnu)';
+      const aid  = a.artist_id ?? 'no-id';
+      if (!byArtist[aid]) byArtist[aid] = { name, count: 0, artworkIds: [] };
+      byArtist[aid].count++;
+      byArtist[aid].artworkIds.push(a.id);
+    }
+    const sorted = Object.entries(byArtist).sort((a, b) => b[1].count - a[1].count);
+    sorted.slice(0, 15).forEach(([, v]) => {
+      console.log(`  ❌ ${v.name.padEnd(35)} ${String(v.count).padStart(3)} œuvre(s) sans image`);
+    });
+    if (sorted.length > 15) console.log(`  … et ${sorted.length - 15} autre(s) artiste(s)`);
+    console.log(`\n  Total artistes affectés : ${sorted.length}`);
+  }
+
+  // ── Œuvres "autres domaines" ─────────────────────────────────
+  if (groups.other.length > 0) {
+    console.log(`\n  URLs INCONNUES (domaine non reconnu)`);
+    console.log(`  ${'─'.repeat(50)}`);
+    const domains = {};
+    for (const a of groups.other) {
+      try { const d = new URL(a.image).hostname; domains[d] = (domains[d] || 0) + 1; } catch {}
+    }
+    Object.entries(domains).forEach(([d, n]) => console.log(`  ❓ ${d.padEnd(40)} ${n} œuvre(s)`));
+  }
+
+  // ── Répartition par statut des œuvres VPS ───────────────────
+  if (groups.vps.length > 0) {
+    const byStatus = {};
+    for (const a of groups.vps) {
+      byStatus[a.status ?? 'unknown'] = (byStatus[a.status ?? 'unknown'] || 0) + 1;
+    }
+    console.log(`\n  STATUT des ${groups.vps.length} œuvres VPS`);
+    console.log(`  ${'─'.repeat(50)}`);
+    Object.entries(byStatus).sort((a,b) => b[1]-a[1]).forEach(([s, n]) => {
+      const icon = s === 'approved' ? '✅' : s === 'pending' ? '⏳' : '❌';
+      console.log(`  ${icon} ${s.padEnd(15)} ${n}`);
+    });
   }
 }
 

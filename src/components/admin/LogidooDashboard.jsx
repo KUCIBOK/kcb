@@ -1,5 +1,5 @@
-﻿import { useState, useEffect } from 'react';
-import { utils } from '../../api/useAPI';
+﻿import { useState, useEffect } from 'react'
+import { utils } from '../../api/useAPI'
 import {
   Truck,
   Package,
@@ -12,97 +12,97 @@ import {
   Eye,
   Trash2,
   TrendingUp,
-} from 'lucide-react';
+} from 'lucide-react'
 
 export default function LogidooDashboard() {
-  const [alerts, setAlerts] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
+  const [alerts, setAlerts] = useState([])
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
 
   useEffect(() => {
-    loadAlerts();
-    loadStats();
-    
+    loadAlerts()
+    loadStats()
+
     // Auto-refresh every 30 seconds
     const interval = setInterval(() => {
-      loadAlerts();
-      loadStats();
-    }, 30000);
-    return () => clearInterval(interval);
-  }, []);
+      loadAlerts()
+      loadStats()
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   const loadAlerts = async () => {
     try {
       const response = await fetch(`${utils.api}/logistics/alerts?limit=20`, {
         headers: utils.options.headers,
-      });
-      const data = await response.json();
+      })
+      const data = await response.json()
       if (data.success) {
-        setAlerts(data.alerts);
+        setAlerts(data.alerts)
       }
     } catch (err) {
       // Silenced for production
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const loadStats = async () => {
     try {
       const response = await fetch(`${utils.api}/logistics/alerts/stats`, {
         headers: utils.options.headers,
-      });
-      const data = await response.json();
+      })
+      const data = await response.json()
       if (data.success) {
-        setStats(data.stats);
+        setStats(data.stats)
       }
     } catch (err) {
       // Silenced for production
     }
-  };
+  }
 
   const handleMarkRead = async (alertId) => {
     try {
       await fetch(`${utils.api}/logistics/alerts/${alertId}/read`, {
         method: 'PATCH',
         headers: utils.options.headers,
-      });
-      loadAlerts();
-      loadStats();
+      })
+      loadAlerts()
+      loadStats()
     } catch (err) {
       // Silenced for production
     }
-  };
+  }
 
   const handleMarkAllRead = async () => {
     try {
       await fetch(`${utils.api}/logistics/alerts/read-all`, {
         method: 'PATCH',
         headers: utils.options.headers,
-      });
-      loadAlerts();
-      loadStats();
+      })
+      loadAlerts()
+      loadStats()
     } catch (err) {
       // Silenced for production
     }
-  };
+  }
 
   const handleSync = async () => {
-    setSyncing(true);
+    setSyncing(true)
     try {
       await fetch(`${utils.api}/logistics/sync`, {
         method: 'POST',
         headers: utils.options.headers,
-      });
-      loadAlerts();
-      loadStats();
+      })
+      loadAlerts()
+      loadStats()
     } catch (err) {
       // Silenced for production
     } finally {
-      setSyncing(false);
+      setSyncing(false)
     }
-  };
+  }
 
   const getSeverityColor = (severity) => {
     const colors = {
@@ -110,9 +110,9 @@ export default function LogidooDashboard() {
       warning: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-300',
       success: 'bg-green-500/20 border-green-500/50 text-green-300',
       info: 'bg-kcb-or/20 border-kcb-or/50 text-kcb-sable',
-    };
-    return colors[severity] || colors.info;
-  };
+    }
+    return colors[severity] || colors.info
+  }
 
   const getTypeIcon = (type) => {
     const icons = {
@@ -122,27 +122,27 @@ export default function LogidooDashboard() {
       delivered: <CheckCircle className="w-4 h-4" />,
       created: <Package className="w-4 h-4" />,
       cancelled: <Trash2 className="w-4 h-4" />,
-    };
-    return icons[type] || <Bell className="w-4 h-4" />;
-  };
+    }
+    return icons[type] || <Bell className="w-4 h-4" />
+  }
 
   const formatDate = (date) => {
-    const d = new Date(date);
-    const now = new Date();
-    const diff = now - d;
-    
-    if (diff < 60000) return 'À l\'instant';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}min`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h`;
-    return d.toLocaleDateString('fr-FR');
-  };
+    const d = new Date(date)
+    const now = new Date()
+    const diff = now - d
+
+    if (diff < 60000) return "À l'instant"
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}min`
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h`
+    return d.toLocaleDateString('fr-FR')
+  }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-kcb-pierre">Chargement...</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -186,7 +186,11 @@ export default function LogidooDashboard() {
           />
           <StatCard
             label="Taux de succès"
-            value={stats.bySeverity?.success ? `${((stats.bySeverity.success / stats.total) * 100).toFixed(0)}%` : 'N/A'}
+            value={
+              stats.bySeverity?.success
+                ? `${((stats.bySeverity.success / stats.total) * 100).toFixed(0)}%`
+                : 'N/A'
+            }
             icon={<TrendingUp className="w-5 h-5" />}
             color="green"
           />
@@ -234,9 +238,7 @@ export default function LogidooDashboard() {
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-white">{alert.title}</h3>
-                        {!alert.read && (
-                          <span className="w-2 h-2 bg-kcb-or rounded-full"></span>
-                        )}
+                        {!alert.read && <span className="w-2 h-2 bg-kcb-or rounded-full"></span>}
                       </div>
                       <p className="text-sm text-kcb-sable mt-1">{alert.message}</p>
                       <div className="flex items-center gap-4 mt-2 text-xs text-kcb-pierre">
@@ -292,11 +294,17 @@ export default function LogidooDashboard() {
             <div className="space-y-3">
               {Object.entries(stats.bySeverity).map(([severity, count]) => (
                 <div key={severity} className="flex justify-between items-center">
-                  <span className={`capitalize flex items-center gap-2 ${
-                    severity === 'critical' ? 'text-red-400' :
-                    severity === 'warning' ? 'text-yellow-400' :
-                    severity === 'success' ? 'text-green-400' : 'text-kcb-or'
-                  }`}>
+                  <span
+                    className={`capitalize flex items-center gap-2 ${
+                      severity === 'critical'
+                        ? 'text-red-400'
+                        : severity === 'warning'
+                          ? 'text-yellow-400'
+                          : severity === 'success'
+                            ? 'text-green-400'
+                            : 'text-kcb-or'
+                    }`}
+                  >
                     {severity === 'critical' && <AlertTriangle className="w-4 h-4" />}
                     {severity === 'warning' && <Clock className="w-4 h-4" />}
                     {severity === 'success' && <CheckCircle className="w-4 h-4" />}
@@ -311,7 +319,7 @@ export default function LogidooDashboard() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 function StatCard({ label, value, icon, color }) {
@@ -321,7 +329,7 @@ function StatCard({ label, value, icon, color }) {
     yellow: 'bg-yellow-500/10 border-yellow-500/30',
     kcb: 'bg-kcb-bronze/10 border-kcb-bronze/30',
     red: 'bg-red-500/10 border-red-500/30',
-  };
+  }
 
   const textColors = {
     blue: 'text-kcb-sable',
@@ -329,7 +337,7 @@ function StatCard({ label, value, icon, color }) {
     yellow: 'text-yellow-300',
     kcb: 'text-kcb-sable',
     red: 'text-red-300',
-  };
+  }
 
   return (
     <div className={`border rounded-[4px] p-4 ${colors[color]}`}>
@@ -339,5 +347,5 @@ function StatCard({ label, value, icon, color }) {
       </div>
       <div className="text-3xl font-bold text-white">{value}</div>
     </div>
-  );
+  )
 }

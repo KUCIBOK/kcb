@@ -1,164 +1,174 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
-  CreditCard, Check, X, Zap, Crown, Shield, Users,
-  Image, HardDrive, BarChart3, ArrowUp, AlertTriangle,
-  Package, Clock, TrendingUp, Bell
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../store/AuthContext";
-import { useArtworks } from "../../store/ArtworkContext";
-import { useArtist } from "../../store/ArtistContext";
-import { cancelMySubscription } from "../../api/useSubscriptions";
+  CreditCard,
+  Check,
+  X,
+  Zap,
+  Crown,
+  Shield,
+  Users,
+  Image,
+  HardDrive,
+  BarChart3,
+  ArrowUp,
+  AlertTriangle,
+  Package,
+  Clock,
+  TrendingUp,
+  Bell,
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../store/AuthContext'
+import { useArtworks } from '../../store/ArtworkContext'
+import { useArtist } from '../../store/ArtistContext'
+import { cancelMySubscription } from '../../api/useSubscriptions'
 
 // Plan features limits
 const PLAN_LIMITS = {
   free: {
-    name: "Gratuit",
+    name: 'Gratuit',
     price: 0,
     maxArtists: 3,
     maxArtworks: 10,
     maxStorage: 100,
     features: [
-      "3 artistes maximum",
-      "10 oeuvres maximum",
-      "100MB stockage",
-      "Support par email",
-      "Statistiques basiques"
-    ]
+      '3 artistes maximum',
+      '10 oeuvres maximum',
+      '100MB stockage',
+      'Support par email',
+      'Statistiques basiques',
+    ],
   },
   starter: {
-    name: "Starter",
+    name: 'Starter',
     price: 9900,
     maxArtists: 10,
     maxArtworks: 50,
     maxStorage: 500,
     features: [
-      "10 artistes",
-      "50 oeuvres",
-      "500MB stockage",
-      "Support prioritaire",
-      "CRM basique",
-      "Statistiques avancées"
-    ]
+      '10 artistes',
+      '50 oeuvres',
+      '500MB stockage',
+      'Support prioritaire',
+      'CRM basique',
+      'Statistiques avancées',
+    ],
   },
   pro: {
-    name: "Pro",
+    name: 'Pro',
     price: 19900,
     maxArtists: 50,
     maxArtworks: 200,
     maxStorage: 2000,
     features: [
-      "50 artistes",
-      "200 oeuvres",
-      "2GB stockage",
-      "Support VIP",
-      "CRM complet",
-      "Analytique Pro",
-      "Multi-entité",
-      "Intégrations API"
-    ]
+      '50 artistes',
+      '200 oeuvres',
+      '2GB stockage',
+      'Support VIP',
+      'CRM complet',
+      'Analytique Pro',
+      'Multi-entité',
+      'Intégrations API',
+    ],
   },
   enterprise: {
-    name: "Enterprise",
+    name: 'Enterprise',
     price: 49900,
     maxArtists: -1,
     maxArtworks: -1,
     maxStorage: -1,
     features: [
-      "Artistes illimités",
-      "Oeuvres illimitées",
-      "Stockage illimité",
-      "Support dédié",
-      "Toutes fonctionnalités",
-      "API complète",
-      "Formation incluse",
-      "Intégrations sur mesure"
-    ]
-  }
-};
+      'Artistes illimités',
+      'Oeuvres illimitées',
+      'Stockage illimité',
+      'Support dédié',
+      'Toutes fonctionnalités',
+      'API complète',
+      'Formation incluse',
+      'Intégrations sur mesure',
+    ],
+  },
+}
 
 function getPlanKey(planName) {
-  if (!planName) return 'free';
-  const name = planName.toLowerCase();
-  if (name.includes('gratuit') || name === 'free') return 'free';
-  if (name.includes('starter')) return 'starter';
-  if (name.includes('pro')) return 'pro';
-  if (name.includes('enterprise') || name.includes('business')) return 'enterprise';
-  return 'free';
+  if (!planName) return 'free'
+  const name = planName.toLowerCase()
+  if (name.includes('gratuit') || name === 'free') return 'free'
+  if (name.includes('starter')) return 'starter'
+  if (name.includes('pro')) return 'pro'
+  if (name.includes('enterprise') || name.includes('business')) return 'enterprise'
+  return 'free'
 }
 
 export function Abonnement() {
-  const { subscription, loadSubscription } = useAuth();
-  const { myArtworks } = useArtworks();
-  const { myArtists } = useArtist();
-  const [loading, setLoading] = useState(true);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [cancelLoading, setCancelLoading] = useState(false);
-  const [cancelError, setCancelError] = useState('');
+  const { subscription, loadSubscription } = useAuth()
+  const { myArtworks } = useArtworks()
+  const { myArtists } = useArtist()
+  const [loading, setLoading] = useState(true)
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false)
+  const [cancelLoading, setCancelLoading] = useState(false)
+  const [cancelError, setCancelError] = useState('')
 
   useEffect(() => {
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   const daysLeft = subscription?.end_date
     ? Math.ceil((new Date(subscription.end_date) - new Date()) / (1000 * 60 * 60 * 24))
-    : null;
-  const isExpiringSoon = daysLeft !== null && daysLeft <= 7 && daysLeft > 0;
+    : null
+  const isExpiringSoon = daysLeft !== null && daysLeft <= 7 && daysLeft > 0
 
   const handleCancel = async () => {
-    setCancelLoading(true);
-    setCancelError('');
-    const { error } = await cancelMySubscription();
-    setCancelLoading(false);
+    setCancelLoading(true)
+    setCancelError('')
+    const { error } = await cancelMySubscription()
+    setCancelLoading(false)
     if (error) {
-      setCancelError(error);
-      return;
+      setCancelError(error)
+      return
     }
-    setShowCancelConfirm(false);
-    if (typeof loadSubscription === 'function') await loadSubscription();
-  };
+    setShowCancelConfirm(false)
+    if (typeof loadSubscription === 'function') await loadSubscription()
+  }
 
-  const planKey = getPlanKey(subscription?.plan?.name);
-  const currentPlan = PLAN_LIMITS[planKey] || PLAN_LIMITS.free;
+  const planKey = getPlanKey(subscription?.plan?.name)
+  const currentPlan = PLAN_LIMITS[planKey] || PLAN_LIMITS.free
 
-  const artistsCount = myArtists?.length || 0;
-  const artworksCount = myArtworks?.length || 0;
-  const storageUsed = Math.round(artworksCount * 5);
+  const artistsCount = myArtists?.length || 0
+  const artworksCount = myArtworks?.length || 0
+  const storageUsed = Math.round(artworksCount * 5)
 
-  const artistsPercent = currentPlan.maxArtists > 0 
-    ? Math.min((artistsCount / currentPlan.maxArtists) * 100, 100) 
-    : 0;
-  const artworksPercent = currentPlan.maxArtworks > 0 
-    ? Math.min((artworksCount / currentPlan.maxArtworks) * 100, 100) 
-    : 0;
-  const storagePercent = currentPlan.maxStorage > 0 
-    ? Math.min((storageUsed / currentPlan.maxStorage) * 100, 100) 
-    : 0;
+  const artistsPercent =
+    currentPlan.maxArtists > 0 ? Math.min((artistsCount / currentPlan.maxArtists) * 100, 100) : 0
+  const artworksPercent =
+    currentPlan.maxArtworks > 0 ? Math.min((artworksCount / currentPlan.maxArtworks) * 100, 100) : 0
+  const storagePercent =
+    currentPlan.maxStorage > 0 ? Math.min((storageUsed / currentPlan.maxStorage) * 100, 100) : 0
 
-  const needsUpgrade = artistsPercent >= 80 || artworksPercent >= 80 || storagePercent >= 80;
-  const isAtLimit = artistsPercent >= 100 || artworksPercent >= 100 || storagePercent >= 100;
+  const needsUpgrade = artistsPercent >= 80 || artworksPercent >= 80 || storagePercent >= 80
+  const isAtLimit = artistsPercent >= 100 || artworksPercent >= 100 || storagePercent >= 100
 
   const getRecommendedUpgrade = () => {
-    if (planKey === 'free') return 'starter';
-    if (planKey === 'starter') return 'pro';
-    if (planKey === 'pro') return 'enterprise';
-    return null;
-  };
+    if (planKey === 'free') return 'starter'
+    if (planKey === 'starter') return 'pro'
+    if (planKey === 'pro') return 'enterprise'
+    return null
+  }
 
-  const recommendedPlan = getRecommendedUpgrade();
-  const recommendedPlanData = recommendedPlan ? PLAN_LIMITS[recommendedPlan] : null;
+  const recommendedPlan = getRecommendedUpgrade()
+  const recommendedPlanData = recommendedPlan ? PLAN_LIMITS[recommendedPlan] : null
 
   const monthsSubscribed = subscription?.created_at
     ? Math.floor((new Date() - new Date(subscription.created_at)) / (1000 * 60 * 60 * 24 * 30))
-    : 0;
-  const currentSpent = monthsSubscribed * currentPlan.price;
+    : 0
+  const currentSpent = monthsSubscribed * currentPlan.price
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
       </div>
-    );
+    )
   }
 
   return (
@@ -184,7 +194,11 @@ export function Abonnement() {
         <div className="flex items-start gap-3 bg-amber-900/30 border border-amber-700/40 rounded-[4px] px-4 py-3 text-sm">
           <Bell className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
           <p className="text-amber-200 flex-1">
-            Votre abonnement expire dans <strong>{daysLeft} jour{daysLeft > 1 ? 's' : ''}</strong>.{' '}
+            Votre abonnement expire dans{' '}
+            <strong>
+              {daysLeft} jour{daysLeft > 1 ? 's' : ''}
+            </strong>
+            .{' '}
             <Link to="/global#pricing" className="text-amber-300 underline hover:text-amber-200">
               Renouveler maintenant
             </Link>
@@ -198,9 +212,7 @@ export function Abonnement() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Crown className="w-6 h-6 text-yellow-400" />
-              <h2 className="text-2xl font-bold text-white">
-                Plan {currentPlan.name}
-              </h2>
+              <h2 className="text-2xl font-bold text-white">Plan {currentPlan.name}</h2>
               {planKey === 'free' && (
                 <span className="px-2 py-1 bg-kcb-ardoise text-kcb-sable text-xs rounded-full">
                   Actuel
@@ -213,10 +225,9 @@ export function Abonnement() {
               )}
             </div>
             <p className="text-kcb-pierre">
-              {currentPlan.price === 0 
-                ? "Gratuit pour toujours" 
-                : `${currentPlan.price.toLocaleString()} CFA/mois`
-              }
+              {currentPlan.price === 0
+                ? 'Gratuit pour toujours'
+                : `${currentPlan.price.toLocaleString()} CFA/mois`}
             </p>
           </div>
           {subscription?.end_date && (
@@ -237,7 +248,8 @@ export function Abonnement() {
           <div>
             <p className="text-white font-medium">Limite atteinte!</p>
             <p className="text-red-200 text-sm">
-              Vous avez atteint les limites de votre plan. Passez à un plan supérieur pour continuer.
+              Vous avez atteint les limites de votre plan. Passez à un plan supérieur pour
+              continuer.
             </p>
             {recommendedPlanData && (
               <Link
@@ -260,9 +272,11 @@ export function Abonnement() {
               <Users className="w-5 h-5 text-kcb-or" />
               <h3 className="font-semibold text-white">Artistes</h3>
             </div>
-            <span className={`text-sm font-medium ${
-              artistsPercent >= 80 ? 'text-red-400' : 'text-green-400'
-            }`}>
+            <span
+              className={`text-sm font-medium ${
+                artistsPercent >= 80 ? 'text-red-400' : 'text-green-400'
+              }`}
+            >
               {artistsPercent.toFixed(0)}%
             </span>
           </div>
@@ -274,7 +288,7 @@ export function Abonnement() {
               </span>
             </div>
             <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full rounded-full transition-all ${
                   artistsPercent >= 80 ? 'bg-red-500' : 'bg-kcb-or'
                 }`}
@@ -290,9 +304,11 @@ export function Abonnement() {
               <Image className="w-5 h-5 text-kcb-bronze" />
               <h3 className="font-semibold text-white">Oeuvres</h3>
             </div>
-            <span className={`text-sm font-medium ${
-              artworksPercent >= 80 ? 'text-red-400' : 'text-green-400'
-            }`}>
+            <span
+              className={`text-sm font-medium ${
+                artworksPercent >= 80 ? 'text-red-400' : 'text-green-400'
+              }`}
+            >
               {artworksPercent.toFixed(0)}%
             </span>
           </div>
@@ -304,7 +320,7 @@ export function Abonnement() {
               </span>
             </div>
             <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full rounded-full transition-all ${
                   artworksPercent >= 80 ? 'bg-red-500' : 'bg-kcb-bronze'
                 }`}
@@ -320,9 +336,11 @@ export function Abonnement() {
               <HardDrive className="w-5 h-5 text-green-400" />
               <h3 className="font-semibold text-white">Stockage</h3>
             </div>
-            <span className={`text-sm font-medium ${
-              storagePercent >= 80 ? 'text-red-400' : 'text-green-400'
-            }`}>
+            <span
+              className={`text-sm font-medium ${
+                storagePercent >= 80 ? 'text-red-400' : 'text-green-400'
+              }`}
+            >
               {storagePercent.toFixed(0)}%
             </span>
           </div>
@@ -330,11 +348,12 @@ export function Abonnement() {
             <div className="flex justify-between text-sm mb-1">
               <span className="text-kcb-pierre">Utilisation</span>
               <span className="text-white">
-                {storageUsed}MB / {currentPlan.maxStorage === -1 ? '∞' : currentPlan.maxStorage + 'MB'}
+                {storageUsed}MB /{' '}
+                {currentPlan.maxStorage === -1 ? '∞' : currentPlan.maxStorage + 'MB'}
               </span>
             </div>
             <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full rounded-full transition-all ${
                   storagePercent >= 80 ? 'bg-red-500' : 'bg-green-500'
                 }`}
@@ -353,11 +372,10 @@ export function Abonnement() {
               <Zap className="w-6 h-6 text-yellow-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Recommandation d'upgrade
-              </h3>
+              <h3 className="text-lg font-semibold text-white mb-2">Recommandation d'upgrade</h3>
               <p className="text-kcb-pierre mb-4">
-                Vous avez utilisé plus de 80% de vos ressources. Passez à <strong>{recommendedPlanData.name}</strong> pour bénéficier de:
+                Vous avez utilisé plus de 80% de vos ressources. Passez à{' '}
+                <strong>{recommendedPlanData.name}</strong> pour bénéficier de:
               </p>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                 {recommendedPlanData.features.slice(0, 4).map((feature, idx) => (
@@ -372,7 +390,8 @@ export function Abonnement() {
                 className="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-6 py-2 rounded-[4px] transition font-medium"
               >
                 <ArrowUp className="w-4 h-4" />
-                Passer à {recommendedPlanData.name} - {recommendedPlanData.price.toLocaleString()} CFA/mois
+                Passer à {recommendedPlanData.name} - {recommendedPlanData.price.toLocaleString()}{' '}
+                CFA/mois
               </Link>
             </div>
           </div>
@@ -405,9 +424,13 @@ export function Abonnement() {
           <div className="space-y-0 divide-y divide-white/[0.06]">
             <div className="flex justify-between items-center py-3">
               <span className="text-kcb-pierre text-sm">Statut</span>
-              <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
-                subscription.status === 'active' ? 'bg-green-700 text-white' : 'bg-red-800 text-red-200'
-              }`}>
+              <span
+                className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                  subscription.status === 'active'
+                    ? 'bg-green-700 text-white'
+                    : 'bg-red-800 text-red-200'
+                }`}
+              >
                 {subscription.status === 'active' ? 'Actif' : 'Inactif'}
               </span>
             </div>
@@ -426,18 +449,24 @@ export function Abonnement() {
             <div className="flex justify-between items-center py-3">
               <span className="text-kcb-pierre text-sm">Début</span>
               <span className="text-white text-sm">
-                {subscription.start_date ? new Date(subscription.start_date).toLocaleDateString('fr-FR') : '—'}
+                {subscription.start_date
+                  ? new Date(subscription.start_date).toLocaleDateString('fr-FR')
+                  : '—'}
               </span>
             </div>
             <div className="flex justify-between items-center py-3">
               <span className="text-kcb-pierre text-sm">Fin / Renouvellement</span>
               <span className="text-white text-sm">
-                {subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—'}
+                {subscription.end_date
+                  ? new Date(subscription.end_date).toLocaleDateString('fr-FR')
+                  : '—'}
               </span>
             </div>
             {currentSpent > 0 && (
               <div className="flex justify-between items-center py-3">
-                <span className="text-kcb-pierre text-sm">Total versé ({monthsSubscribed} mois)</span>
+                <span className="text-kcb-pierre text-sm">
+                  Total versé ({monthsSubscribed} mois)
+                </span>
                 <span className="text-white text-sm font-semibold">
                   {currentSpent.toLocaleString('fr-FR')} {subscription.currency ?? 'XOF'}
                 </span>
@@ -457,7 +486,11 @@ export function Abonnement() {
                 <div className="bg-red-900/20 border border-red-700/40 rounded-[4px] p-4 space-y-3">
                   <p className="text-sm text-red-200 font-medium">Confirmer l'annulation ?</p>
                   <p className="text-xs text-red-300/80">
-                    Votre accès restera actif jusqu'au {subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—'}. Cette action est irréversible.
+                    Votre accès restera actif jusqu'au{' '}
+                    {subscription.end_date
+                      ? new Date(subscription.end_date).toLocaleDateString('fr-FR')
+                      : '—'}
+                    . Cette action est irréversible.
                   </p>
                   {cancelError && <p className="text-xs text-red-400">{cancelError}</p>}
                   <div className="flex gap-3">
@@ -466,10 +499,13 @@ export function Abonnement() {
                       disabled={cancelLoading}
                       className="px-4 py-1.5 bg-red-700 hover:bg-red-600 text-white text-sm rounded-[4px] transition disabled:opacity-50"
                     >
-                      {cancelLoading ? 'En cours…' : 'Confirmer l\'annulation'}
+                      {cancelLoading ? 'En cours…' : "Confirmer l'annulation"}
                     </button>
                     <button
-                      onClick={() => { setShowCancelConfirm(false); setCancelError(''); }}
+                      onClick={() => {
+                        setShowCancelConfirm(false)
+                        setCancelError('')
+                      }}
                       className="px-4 py-1.5 border border-white/10 text-kcb-pierre hover:text-white text-sm rounded-[4px] transition"
                     >
                       Annuler
@@ -490,8 +526,8 @@ export function Abonnement() {
             Débloquez toutes les fonctionnalités
           </h3>
           <p className="text-kcb-pierre mb-6 max-w-lg mx-auto">
-            Avec un abonnement premium, vous pouvez gérer plus d'artistes, 
-            vendre plus d'oeuvres et accéder à des outils avancés.
+            Avec un abonnement premium, vous pouvez gérer plus d'artistes, vendre plus d'oeuvres et
+            accéder à des outils avancés.
           </p>
           <Link
             to="/global#pricing"
@@ -503,7 +539,7 @@ export function Abonnement() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default Abonnement;
+export default Abonnement

@@ -1,17 +1,17 @@
-import { Users, TrendingUp, Trophy, Target } from "lucide-react";
+import { Users, TrendingUp, Trophy, Target } from 'lucide-react'
 
 export function CrmStats({ stats }) {
   const getStatusCount = (status) => {
-    const item = stats.clientsByStatus?.find((s) => s._id === status);
-    return item?.count || 0;
-  };
+    const item = stats.clientsByStatus?.find((s) => s._id === status)
+    return item?.count || 0
+  }
 
   const getSegmentCount = (segment) => {
-    const item = stats.clientsBySegment?.find((s) => s._id === segment);
-    return item?.count || 0;
-  };
+    const item = stats.clientsBySegment?.find((s) => s._id === segment)
+    return item?.count || 0
+  }
 
-  const totalRevenue = stats.totalRevenue?.[0]?.total || 0;
+  const totalRevenue = stats.totalRevenue?.[0]?.total || 0
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -23,7 +23,7 @@ export function CrmStats({ stats }) {
         </div>
         <p className="text-3xl font-bold text-white">{stats.totalClients}</p>
         <p className="text-xs text-kcb-pierre mt-2">
-          {getStatusCount("vip")} VIP • {getStatusCount("client")} Actifs
+          {getStatusCount('vip')} VIP • {getStatusCount('client')} Actifs
         </p>
       </div>
 
@@ -45,9 +45,7 @@ export function CrmStats({ stats }) {
           <h3 className="text-kcb-pierre text-sm font-medium">Chiffre d'affaires</h3>
           <TrendingUp className="w-5 h-5 text-green-400" />
         </div>
-        <p className="text-3xl font-bold text-white">
-          {(totalRevenue / 1000000).toFixed(1)}M
-        </p>
+        <p className="text-3xl font-bold text-white">{(totalRevenue / 1000000).toFixed(1)}M</p>
         <p className="text-xs text-kcb-pierre mt-2">CFA</p>
       </div>
 
@@ -57,11 +55,11 @@ export function CrmStats({ stats }) {
           <h3 className="text-kcb-pierre text-sm font-medium">Prospects</h3>
           <Target className="w-5 h-5 text-kcb-bronze" />
         </div>
-        <p className="text-3xl font-bold text-white">{getStatusCount("prospect")}</p>
+        <p className="text-3xl font-bold text-white">{getStatusCount('prospect')}</p>
         <p className="text-xs text-kcb-pierre mt-2">À convertir</p>
       </div>
     </div>
-  );
+  )
 }
 
-export default CrmStats;
+export default CrmStats

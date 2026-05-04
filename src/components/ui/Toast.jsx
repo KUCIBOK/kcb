@@ -1,19 +1,19 @@
-import React from 'react';
+import React from 'react'
 
 /**
  * Design System - Toast Notification System
- * 
+ *
  * Simple toast notifications for user feedback
  * Usage: Import and use the toast functions
- * 
+ *
  * Example:
  * import { toast } from './components/ui/Toast'
  * toast.success('Saved successfully!')
  * toast.error('Something went wrong')
  */
 
-import { Toaster, toast as sonnerToast } from 'sonner';
-import { CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import { Toaster, toast as sonnerToast } from 'sonner'
+import { CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react'
 
 export function ToastProvider({ children }) {
   return (
@@ -38,7 +38,7 @@ export function ToastProvider({ children }) {
         }}
       />
     </>
-  );
+  )
 }
 
 export const toast = {
@@ -46,41 +46,41 @@ export const toast = {
     sonnerToast.success(message, {
       duration: 3000,
       ...options,
-    });
+    })
   },
-  
+
   error: (message, options) => {
     sonnerToast.error(message, {
       duration: 4000,
       ...options,
-    });
+    })
   },
-  
+
   warning: (message, options) => {
     sonnerToast.warning(message, {
       duration: 3500,
       ...options,
-    });
+    })
   },
-  
+
   info: (message, options) => {
     sonnerToast.info(message, {
       duration: 3000,
       ...options,
-    });
+    })
   },
-  
+
   promise: (promise, messages) => {
     return sonnerToast.promise(promise, {
       loading: messages.loading || 'Chargement...',
       success: messages.success || 'Succès!',
       error: messages.error || 'Erreur',
-    });
+    })
   },
-  
-  custom: (component, options) => {
-    sonnerToast.custom(component, options);
-  }
-};
 
-export default toast;
+  custom: (component, options) => {
+    sonnerToast.custom(component, options)
+  },
+}
+
+export default toast

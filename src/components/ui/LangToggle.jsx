@@ -1,9 +1,9 @@
-import { Globe } from "lucide-react"
-import { useLang } from "../../store/LangContext"
+import { Globe } from 'lucide-react'
+import { useLang } from '../../store/LangContext'
 
 export default function LangToggle() {
   const { lang, setLang } = useLang()
-  const next = lang === "fr" ? "en" : "fr"
+  const next = lang === 'fr' ? 'en' : 'fr'
 
   return (
     <button

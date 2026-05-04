@@ -1,36 +1,36 @@
-import { memo, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { ShieldCheck, ArrowUpRight } from "lucide-react";
-import { getArtistById } from "../../api/useArtists";
-import { LikeHeart } from "./LikeHeart";
+import { memo, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { ShieldCheck, ArrowUpRight } from 'lucide-react'
+import { getArtistById } from '../../api/useArtists'
+import { LikeHeart } from './LikeHeart'
 
 /** @type {Map<string, object>} Cache artistes pour éviter N+1 fetches */
-const artistCache = new Map();
+const artistCache = new Map()
 
 export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
-  const [artist, setArtist] = useState(artistProp ?? {});
+  const [artist, setArtist] = useState(artistProp ?? {})
 
   useEffect(() => {
-    const artistId = artwork?.artistId || artwork?.artist_id;
-    if (!artistId || artistProp?._id || artistProp?.id) return;
+    const artistId = artwork?.artistId || artwork?.artist_id
+    if (!artistId || artistProp?._id || artistProp?.id) return
 
     if (artistCache.has(artistId)) {
-      setArtist(artistCache.get(artistId));
-      return;
+      setArtist(artistCache.get(artistId))
+      return
     }
 
     const getArtist = async () => {
-      const artistData = await getArtistById(artistId);
+      const artistData = await getArtistById(artistId)
       if (artistData?._id || artistData?.id) {
-        artistCache.set(artistId, artistData);
-        setArtist(artistData);
+        artistCache.set(artistId, artistData)
+        setArtist(artistData)
       }
-    };
-    getArtist();
-  }, [artwork?.artistId, artwork?.artist_id, artistProp]);
+    }
+    getArtist()
+  }, [artwork?.artistId, artwork?.artist_id, artistProp])
 
-  const isCertified = !!artwork?.kucibok_id;
-  const artworkId = artwork?._id || artwork?.id;
+  const isCertified = !!artwork?.kucibok_id
+  const artworkId = artwork?._id || artwork?.id
 
   return (
     <div className="group relative rounded-[4px] bg-kcb-ardoise border border-white/[0.06] hover:border-kcb-or/30 shadow-sm hover:shadow-[0_8px_30px_rgba(201,168,76,0.08)] transition-all duration-300 overflow-hidden">
@@ -45,7 +45,9 @@ export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
             alt={artwork?.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
             loading="lazy"
-            onError={(e) => { e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
+            onError={(e) => {
+              e.currentTarget.src = '/images/placeholder-artwork.svg'
+            }}
           />
 
           {/* Gradient overlay on hover */}
@@ -89,20 +91,22 @@ export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
                   src={artist?.image || '/images/placeholder-artwork.svg'}
                   alt={artist?.name}
                   className="w-full h-full object-cover"
-                  onError={(e) => { e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
+                  onError={(e) => {
+                    e.currentTarget.src = '/images/placeholder-artwork.svg'
+                  }}
                 />
               </div>
-              <span className="text-xs text-kcb-pierre truncate">
-                {artist?.name}
-              </span>
+              <span className="text-xs text-kcb-pierre truncate">{artist?.name}</span>
             </div>
           )}
 
           {/* Price bar */}
           <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
             <span className="font-playfair text-base font-bold text-white">
-              {artwork?.price?.toLocaleString("fr-FR").replace(/\s/g, "\u202F")}{" "}
-              <span className="text-xs font-dm-sans font-normal text-kcb-pierre">{artwork?.currency}</span>
+              {artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, '\u202F')}{' '}
+              <span className="text-xs font-dm-sans font-normal text-kcb-pierre">
+                {artwork?.currency}
+              </span>
             </span>
             {artwork?.category && (
               <span className="text-[10px] tracking-[0.06em] uppercase text-kcb-pierre bg-white/[0.04] px-2 py-0.5 rounded-[2px]">
@@ -114,5 +118,5 @@ export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
       </Link>
       <LikeHeart artwork={artwork} />
     </div>
-  );
-});
+  )
+})

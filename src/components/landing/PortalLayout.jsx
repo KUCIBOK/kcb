@@ -1,13 +1,13 @@
-import { useEffect } from "react"
-import { useLocation } from "react-router-dom"
-import PortalNav from "./PortalNav"
-import PortalFooter from "./PortalFooter"
-import { LangProvider } from "../../store/LangContext"
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import PortalNav from './PortalNav'
+import PortalFooter from './PortalFooter'
+import { LangProvider } from '../../store/LangContext'
 
 /** CSS variable maps per portal. */
 const PORTAL_VARS = {
-  africa: { "--accent": "#C9A84C", "--accent-dark": "#8B6914" },
-  global: { "--accent": "#A8B0BC", "--accent-dark": "#6B7280" },
+  africa: { '--accent': '#C9A84C', '--accent-dark': '#8B6914' },
+  global: { '--accent': '#A8B0BC', '--accent-dark': '#6B7280' },
 }
 
 /**
@@ -29,10 +29,10 @@ export default function PortalLayout({ portal, children }) {
 
   useEffect(() => {
     if (hash) {
-      const id = hash.replace("#", "")
+      const id = hash.replace('#', '')
       // Small delay to let sections mount before scrolling
       setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
       }, 300)
     } else {
       window.scrollTo(0, 0)
@@ -40,7 +40,7 @@ export default function PortalLayout({ portal, children }) {
   }, [hash])
 
   return (
-    <LangProvider defaultLang={portal === "africa" ? "fr" : "en"}>
+    <LangProvider defaultLang={portal === 'africa' ? 'fr' : 'en'}>
       <div
         className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans grain-overlay"
         style={PORTAL_VARS[portal]}

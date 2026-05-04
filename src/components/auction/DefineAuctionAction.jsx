@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { PenBox } from "lucide-react";
-import { Modal, Input, Button, toast } from "../ui";
-import { utils } from "../../api/useAPI";
+import { useState, useEffect } from 'react'
+import { PenBox } from 'lucide-react'
+import { Modal, Input, Button, toast } from '../ui'
+import { utils } from '../../api/useAPI'
 
 export function DefineAuctionAction({ artwork }) {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
 
   return (
     <>
@@ -16,40 +16,35 @@ export function DefineAuctionAction({ artwork }) {
         <p className="mx-auto text-sm">Définir l'enchère</p>
       </button>
 
-      {showModal && (
-        <DefineAuctionModal
-          artwork={artwork}
-          closeModal={() => setShowModal(false)}
-        />
-      )}
+      {showModal && <DefineAuctionModal artwork={artwork} closeModal={() => setShowModal(false)} />}
     </>
-  );
+  )
 }
 
 function DefineAuctionModal({ artwork, closeModal }) {
   const [state, setState] = useState({
-    startingPrice: "",
-    startTime: "",
-    endTime: "",
-    loading: false
-  });
+    startingPrice: '',
+    startTime: '',
+    endTime: '',
+    loading: false,
+  })
 
   useEffect(() => {
-    const now = new Date();
-    const in24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const now = new Date()
+    const in24h = new Date(now.getTime() + 24 * 60 * 60 * 1000)
 
     setState((prev) => ({
       ...prev,
-      startingPrice: artwork?.price || "",
+      startingPrice: artwork?.price || '',
       startTime: now.toISOString().slice(0, 16),
       endTime: in24h.toISOString().slice(0, 16),
-    }));
-  }, [artwork]);
+    }))
+  }, [artwork])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      setState(prev => ({...prev, loading: true}));
+      setState((prev) => ({ ...prev, loading: true }))
 
       const res = await fetch(`${utils.api}/auction`, {
         method: 'POST',
@@ -60,29 +55,24 @@ function DefineAuctionModal({ artwork, closeModal }) {
           startTime: state.startTime,
           endTime: state.endTime,
         }),
-      });
+      })
 
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || `Erreur ${res.status}`);
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.message || `Erreur ${res.status}`)
       }
 
-      toast.success('Enchere creee avec succes');
-      closeModal();
+      toast.success('Enchere creee avec succes')
+      closeModal()
     } catch (err) {
-      toast.error(err.message || 'Erreur');
+      toast.error(err.message || 'Erreur')
     } finally {
-      setState(prev => ({...prev, loading: false}));
+      setState((prev) => ({ ...prev, loading: false }))
     }
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={closeModal}
-      title="Définir l'enchère"
-      size="md"
-    >
+    <Modal isOpen={true} onClose={closeModal} title="Définir l'enchère" size="md">
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Prix de départ"
@@ -110,22 +100,14 @@ function DefineAuctionModal({ artwork, closeModal }) {
         />
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={closeModal}
-          >
+          <Button type="button" variant="secondary" onClick={closeModal}>
             Annuler
           </Button>
-          <Button
-            type="submit"
-            disabled={state.loading}
-            loading={state.loading}
-          >
+          <Button type="submit" disabled={state.loading} loading={state.loading}>
             Créer l'enchère
           </Button>
         </div>
       </form>
     </Modal>
-  );
+  )
 }

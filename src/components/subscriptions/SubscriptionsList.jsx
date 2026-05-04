@@ -1,6 +1,6 @@
-import { Users } from "lucide-react"
-import { useState, useEffect } from "react"
-import { getUserById } from "../../api/useAuth"
+import { Users } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { getUserById } from '../../api/useAuth'
 
 export function SubscriptionsList({ subscriptions }) {
   return (
@@ -21,13 +21,21 @@ export function SubscriptionsList({ subscriptions }) {
           <tbody>
             {subscriptions?.map((item, index) => (
               <tr key={index} className="hover:bg-zinc-800/40 transition">
-                <td className="py-2 px-2 md:px-4"><UserInfo id={item.userId} /></td>
+                <td className="py-2 px-2 md:px-4">
+                  <UserInfo id={item.userId} />
+                </td>
                 <td className="py-2 px-2 md:px-4">{item?.planRole}</td>
                 <td className="py-2 px-2 md:px-4">{item?.planName}</td>
                 <td className="py-2 px-2 md:px-4 text-kcb-pierre">{item?.status}</td>
-                <td className="py-2 px-2 md:px-4">{item?.amount} {item?.currency}</td>
-                <td className="py-2 px-2 md:px-4 text-kcb-pierre">{new Date(item?.startDate).toLocaleDateString()}</td>
-                <td className="py-2 px-2 md:px-4 text-kcb-pierre">{new Date(item?.endDate).toLocaleDateString()}</td>
+                <td className="py-2 px-2 md:px-4">
+                  {item?.amount} {item?.currency}
+                </td>
+                <td className="py-2 px-2 md:px-4 text-kcb-pierre">
+                  {new Date(item?.startDate).toLocaleDateString()}
+                </td>
+                <td className="py-2 px-2 md:px-4 text-kcb-pierre">
+                  {new Date(item?.endDate).toLocaleDateString()}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -39,29 +47,29 @@ export function SubscriptionsList({ subscriptions }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 function UserInfo({ id }) {
-    const [state, setState] = useState(null);
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const user = await getUserById(id);
-                if (user?.id || user?._id) {
-                    setState(user);
-                } else {
-                    setState({ name: 'Utilisateur inconnu', email: '' });
-                }
-            } catch (error) {
-                setState({ name: 'Utilisateur inconnu', email: '' });
-            }
-        };
-        fetchUser();
-    }, [id]);
-    return (
-        <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-medium text-zinc-100 truncate">{state?.name}</span>
-            {state?.email && <span className="text-xs text-kcb-pierre truncate">{state?.email}</span>}
-        </div>
-    );
+  const [state, setState] = useState(null)
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getUserById(id)
+        if (user?.id || user?._id) {
+          setState(user)
+        } else {
+          setState({ name: 'Utilisateur inconnu', email: '' })
+        }
+      } catch (error) {
+        setState({ name: 'Utilisateur inconnu', email: '' })
+      }
+    }
+    fetchUser()
+  }, [id])
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="text-xs font-medium text-zinc-100 truncate">{state?.name}</span>
+      {state?.email && <span className="text-xs text-kcb-pierre truncate">{state?.email}</span>}
+    </div>
+  )
 }

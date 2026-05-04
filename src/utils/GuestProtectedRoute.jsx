@@ -11,10 +11,10 @@ export function GuestProtectedRoute() {
   if (loading) return <PageLoader />
   if (user?.role && !isRecoveryFlow) {
     const DASHBOARD_ROUTES = {
-      buyer:   '/account',
-      artist:  '/dashboard/artist',
+      buyer: '/account',
+      artist: '/dashboard/artist',
       curator: '/dashboard/curator',
-      admin:   '/dashboard/admin',
+      admin: '/dashboard/admin',
     }
     const dest = DASHBOARD_ROUTES[user.role] ?? '/account'
     return <Navigate to={dest} />

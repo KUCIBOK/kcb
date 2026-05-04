@@ -1,23 +1,26 @@
-import { useState } from "react";
-import { X, Send, CheckCircle2 } from "lucide-react";
-import { createInquiry } from "../../api/useSourcing";
+import { useState } from 'react'
+import { X, Send, CheckCircle2 } from 'lucide-react'
+import { createInquiry } from '../../api/useSourcing'
 
 const PURPOSE_OPTIONS = [
-  { value: "exhibition", label: "Exposition temporaire" },
-  { value: "acquisition", label: "Acquisition" },
-  { value: "loan", label: "Prêt temporaire" },
-  { value: "expertise", label: "Expertise / Estimation" },
-  { value: "other", label: "Autre" },
-];
+  { value: 'exhibition', label: 'Exposition temporaire' },
+  { value: 'acquisition', label: 'Acquisition' },
+  { value: 'loan', label: 'Prêt temporaire' },
+  { value: 'expertise', label: 'Expertise / Estimation' },
+  { value: 'other', label: 'Autre' },
+]
 
 const AVAILABILITY_LABELS = {
-  available: { label: "Disponible", color: "text-green-400 bg-green-900/30 border-green-700/40" },
-  on_exhibition: { label: "En exposition", color: "text-yellow-400 bg-yellow-900/30 border-yellow-700/40" },
-  on_request: { label: "Sur demande", color: "text-kcb-or bg-kcb-or/10 border-kcb-or/30" },
-  unavailable: { label: "Indisponible", color: "text-red-400 bg-red-900/30 border-red-700/40" },
-};
+  available: { label: 'Disponible', color: 'text-green-400 bg-green-900/30 border-green-700/40' },
+  on_exhibition: {
+    label: 'En exposition',
+    color: 'text-yellow-400 bg-yellow-900/30 border-yellow-700/40',
+  },
+  on_request: { label: 'Sur demande', color: 'text-kcb-or bg-kcb-or/10 border-kcb-or/30' },
+  unavailable: { label: 'Indisponible', color: 'text-red-400 bg-red-900/30 border-red-700/40' },
+}
 
-const INITIAL = { purpose: "", organization: "", budget: "", message: "" };
+const INITIAL = { purpose: '', organization: '', budget: '', message: '' }
 
 /**
  * Modal de demande de mise en relation (sourcing) pour le catalogue certifié F3.
@@ -28,46 +31,46 @@ const INITIAL = { purpose: "", organization: "", budget: "", message: "" };
  * @param {Function} props.onClose - Fermeture
  */
 export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
-  const [form, setForm] = useState(INITIAL);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [form, setForm] = useState(INITIAL)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
 
   const availability = artwork?.availabilityStatus
     ? AVAILABILITY_LABELS[artwork.availabilityStatus]
-    : null;
+    : null
 
   const handleClose = () => {
-    setForm(INITIAL);
-    setSuccess(false);
-    setError("");
-    onClose();
-  };
+    setForm(INITIAL)
+    setSuccess(false)
+    setError('')
+    onClose()
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+    e.preventDefault()
+    setError('')
     if (!form.purpose || !form.message) {
-      setError("Veuillez indiquer l'objet et votre message.");
-      return;
+      setError("Veuillez indiquer l'objet et votre message.")
+      return
     }
-    setLoading(true);
+    setLoading(true)
     const result = await createInquiry({
       artworkId: artwork._id,
       purpose: form.purpose,
       organization: form.organization,
       budget: form.budget,
       message: form.message,
-    });
-    setLoading(false);
+    })
+    setLoading(false)
     if (result?.error) {
-      setError(result.error);
+      setError(result.error)
     } else {
-      setSuccess(true);
+      setSuccess(true)
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
@@ -85,8 +88,8 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
             <CheckCircle2 className="w-14 h-14 text-green-400" />
             <h3 className="text-white font-semibold text-lg">Demande envoyée</h3>
             <p className="text-kcb-pierre text-sm">
-              Votre demande de sourcing a bien été transmise à l'équipe Kucibok.
-              Un responsable vous contactera sous 48 h ouvrées.
+              Votre demande de sourcing a bien été transmise à l'équipe Kucibok. Un responsable vous
+              contactera sous 48 h ouvrées.
             </p>
             <button
               onClick={handleClose}
@@ -110,7 +113,9 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
                 <p className="text-white font-semibold text-sm leading-tight">{artwork?.title}</p>
                 <p className="text-kcb-pierre text-xs mt-0.5">{artwork?.artist}</p>
                 {availability && (
-                  <span className={`inline-block mt-1.5 text-[10px] px-2 py-0.5 rounded-full border font-medium ${availability.color}`}>
+                  <span
+                    className={`inline-block mt-1.5 text-[10px] px-2 py-0.5 rounded-full border font-medium ${availability.color}`}
+                  >
                     {availability.label}
                   </span>
                 )}
@@ -128,14 +133,18 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
               >
                 <option value="">Sélectionner…</option>
                 {PURPOSE_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
                 ))}
               </select>
             </div>
 
             {/* Organisation */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-kcb-pierre font-medium">Organisation / Institution</label>
+              <label className="text-xs text-kcb-pierre font-medium">
+                Organisation / Institution
+              </label>
               <input
                 type="text"
                 value={form.organization}
@@ -170,9 +179,7 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
               />
             </div>
 
-            {error && (
-              <p className="text-red-400 text-xs">{error}</p>
-            )}
+            {error && <p className="text-red-400 text-xs">{error}</p>}
 
             <div className="flex justify-end gap-3 pt-2">
               <button
@@ -188,12 +195,12 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
                 className="flex items-center gap-2 px-5 py-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-md text-sm font-medium transition disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
-                {loading ? "Envoi…" : "Envoyer la demande"}
+                {loading ? 'Envoi…' : 'Envoyer la demande'}
               </button>
             </div>
           </form>
         )}
       </div>
     </div>
-  );
+  )
 }

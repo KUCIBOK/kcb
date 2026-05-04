@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom"
-import { ArrowRight } from "lucide-react"
-import RevealOnScroll from "./RevealOnScroll"
-import SectionLabel from "./SectionLabel"
+import { Link } from 'react-router-dom'
+import { ArrowRight } from 'lucide-react'
+import RevealOnScroll from './RevealOnScroll'
+import SectionLabel from './SectionLabel'
 
 /**
  * Shared hero layout for portal landing pages.
@@ -17,12 +17,20 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
   return (
     <section className="relative overflow-visible pt-20 lg:pt-36 pb-0">
       {/* Subtle vertical lines */}
-      <div className="absolute inset-0 opacity-[0.025] pointer-events-none"
-        style={{ backgroundImage: "repeating-linear-gradient(90deg, var(--accent) 0px, var(--accent) 1px, transparent 1px, transparent 120px)" }}
+      <div
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(90deg, var(--accent) 0px, var(--accent) 1px, transparent 1px, transparent 120px)',
+        }}
       />
       {/* Radial glow */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse 40% 40% at 75% 25%, color-mix(in srgb, var(--accent) 3%, transparent), transparent 60%)" }}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 40% 40% at 75% 25%, color-mix(in srgb, var(--accent) 3%, transparent), transparent 60%)',
+        }}
       />
 
       <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(16px,5vw,80px)]">
@@ -45,8 +53,8 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
               <div className="flex gap-3 lg:gap-4 flex-wrap pb-8 lg:pb-24">
                 {actions.map((a, i) => {
                   const cls = a.primary
-                    ? "inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-6 lg:px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px"
-                    : "inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase py-2.5 transition-colors hover:text-[var(--accent)]"
+                    ? 'inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-6 lg:px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px'
+                    : 'inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase py-2.5 transition-colors hover:text-[var(--accent)]'
                   const content = (
                     <>
                       {a.text}
@@ -54,7 +62,11 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
                     </>
                   )
                   if (a.to) {
-                    return <Link key={i} to={a.to} className={cls}>{content}</Link>
+                    return (
+                      <Link key={i} to={a.to} className={cls}>
+                        {content}
+                      </Link>
+                    )
                   }
                   return (
                     <button key={i} onClick={a.onClick} className={cls}>
@@ -65,9 +77,7 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
               </div>
             </RevealOnScroll>
           </div>
-          <div className="flex justify-center items-end">
-            {children}
-          </div>
+          <div className="flex justify-center items-end">{children}</div>
         </div>
       </div>
     </section>

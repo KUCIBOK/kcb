@@ -1,111 +1,133 @@
-import { useState, useEffect } from "react";
-import { 
-  BarChart3, PieChart as PieChartIcon, TrendingUp, Clock, 
-  Eye, Heart, Target, Percent, Calendar, DollarSign, 
-  Package, ArrowUp, ArrowDown, RefreshCw, Activity
-} from "lucide-react";
-import { Bar, Pie, Line, Doughnut } from "react-chartjs-2";
-import { 
-  Chart as ChartJS, 
-  CategoryScale, LinearScale, BarElement, LineElement, 
-  PointElement, ArcElement, Title, Tooltip, Legend, Filler 
-} from "chart.js";
-import { getProfessionalAnalytics, getRealTimeStats } from "../../api/useProfessionalAnalytics";
+import { useState, useEffect } from 'react'
+import {
+  BarChart3,
+  PieChart as PieChartIcon,
+  TrendingUp,
+  Clock,
+  Eye,
+  Heart,
+  Target,
+  Percent,
+  Calendar,
+  DollarSign,
+  Package,
+  ArrowUp,
+  ArrowDown,
+  RefreshCw,
+  Activity,
+} from 'lucide-react'
+import { Bar, Pie, Line, Doughnut } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js'
+import { getProfessionalAnalytics, getRealTimeStats } from '../../api/useProfessionalAnalytics'
 
 ChartJS.register(
-  CategoryScale, LinearScale, BarElement, LineElement, 
-  PointElement, ArcElement, Title, Tooltip, Legend, Filler
-);
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+)
 
 export function AnalytiquePro() {
-  const [analytics, setAnalytics] = useState(null);
-  const [realtime, setRealtime] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [period, setPeriod] = useState("month");
-  const [error, setError] = useState("");
+  const [analytics, setAnalytics] = useState(null)
+  const [realtime, setRealtime] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [period, setPeriod] = useState('month')
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    loadAnalytics();
-  }, [period]);
+    loadAnalytics()
+  }, [period])
 
   const loadAnalytics = async () => {
-    setLoading(true);
-    setError("");
-    
+    setLoading(true)
+    setError('')
+
     const [analyticsData, realtimeData] = await Promise.all([
       getProfessionalAnalytics(period),
-      getRealTimeStats()
-    ]);
+      getRealTimeStats(),
+    ])
 
     if (!analyticsData.error) {
-      setAnalytics(analyticsData);
+      setAnalytics(analyticsData)
     } else {
-      setError(analyticsData.error);
+      setError(analyticsData.error)
     }
 
     if (!realtimeData.error) {
-      setRealtime(realtimeData);
+      setRealtime(realtimeData)
     }
 
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <RefreshCw className="w-8 h-8 animate-spin text-kcb-or" />
       </div>
-    );
+    )
   }
 
   // Prepare chart data
-  const categoryLabels = analytics?.salesByCategory 
-    ? Object.keys(analytics.salesByCategory) 
-    : [];
-  const categoryData = analytics?.salesByCategory 
-    ? Object.values(analytics.salesByCategory).map(c => c.count) 
-    : [];
-  const categoryRevenue = analytics?.salesByCategory 
-    ? Object.values(analytics.salesByCategory).map(c => c.revenue) 
-    : [];
+  const categoryLabels = analytics?.salesByCategory ? Object.keys(analytics.salesByCategory) : []
+  const categoryData = analytics?.salesByCategory
+    ? Object.values(analytics.salesByCategory).map((c) => c.count)
+    : []
+  const categoryRevenue = analytics?.salesByCategory
+    ? Object.values(analytics.salesByCategory).map((c) => c.revenue)
+    : []
 
-  const priceRangeLabels = analytics?.salesByPriceRange 
-    ? Object.keys(analytics.salesByPriceRange) 
-    : [];
-  const priceRangeData = analytics?.salesByPriceRange 
-    ? Object.values(analytics.salesByPriceRange).map(p => p.count) 
-    : [];
+  const priceRangeLabels = analytics?.salesByPriceRange
+    ? Object.keys(analytics.salesByPriceRange)
+    : []
+  const priceRangeData = analytics?.salesByPriceRange
+    ? Object.values(analytics.salesByPriceRange).map((p) => p.count)
+    : []
 
-  const periodLabels = analytics?.salesByPeriod 
-    ? analytics.salesByPeriod.map(p => p.month) 
-    : [];
-  const periodData = analytics?.salesByPeriod 
-    ? analytics.salesByPeriod.map(p => p.count) 
-    : [];
+  const periodLabels = analytics?.salesByPeriod ? analytics.salesByPeriod.map((p) => p.month) : []
+  const periodData = analytics?.salesByPeriod ? analytics.salesByPeriod.map((p) => p.count) : []
 
   // Chart options
   const barOptions = {
     responsive: true,
     plugins: { legend: { display: false } },
     scales: {
-      y: { beginAtZero: true, ticks: { color: "#fff" }, grid: { color: "#333" } },
-      x: { ticks: { color: "#fff" }, grid: { color: "#333" } }
-    }
-  };
+      y: { beginAtZero: true, ticks: { color: '#fff' }, grid: { color: '#333' } },
+      x: { ticks: { color: '#fff' }, grid: { color: '#333' } },
+    },
+  }
 
   const pieOptions = {
-    plugins: { legend: { labels: { color: "#fff" } } },
+    plugins: { legend: { labels: { color: '#fff' } } },
     maintainAspectRatio: false,
-  };
+  }
 
   const lineOptions = {
     responsive: true,
-    plugins: { legend: { labels: { color: "#fff" } } },
+    plugins: { legend: { labels: { color: '#fff' } } },
     scales: {
-      y: { beginAtZero: true, ticks: { color: "#fff" }, grid: { color: "#333" } },
-      x: { ticks: { color: "#fff" }, grid: { color: "#333" } }
-    }
-  };
+      y: { beginAtZero: true, ticks: { color: '#fff' }, grid: { color: '#333' } },
+      x: { ticks: { color: '#fff' }, grid: { color: '#333' } },
+    },
+  }
 
   return (
     <div className="space-y-6">
@@ -188,7 +210,9 @@ export function AnalytiquePro() {
           <div className="flex justify-between items-center mb-2">
             <DollarSign className="w-5 h-5 text-yellow-400" />
           </div>
-          <p className="text-2xl font-bold text-white">{((analytics?.overview?.totalRevenue || 0) / 1000000).toFixed(2)}M</p>
+          <p className="text-2xl font-bold text-white">
+            {((analytics?.overview?.totalRevenue || 0) / 1000000).toFixed(2)}M
+          </p>
           <p className="text-xs text-kcb-pierre mt-1">Revenu total</p>
         </div>
       </div>
@@ -234,21 +258,27 @@ export function AnalytiquePro() {
           <div className="flex justify-between items-center mb-2">
             <ArrowUp className="w-5 h-5 text-green-400" />
           </div>
-          <p className="text-2xl font-bold text-green-400">{analytics?.overview?.soldArtworks || 0}</p>
+          <p className="text-2xl font-bold text-green-400">
+            {analytics?.overview?.soldArtworks || 0}
+          </p>
           <p className="text-xs text-kcb-pierre mt-1">Vendues</p>
         </div>
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <ArrowDown className="w-5 h-5 text-kcb-or" />
           </div>
-          <p className="text-2xl font-bold text-kcb-or">{analytics?.overview?.unsoldArtworks || 0}</p>
+          <p className="text-2xl font-bold text-kcb-or">
+            {analytics?.overview?.unsoldArtworks || 0}
+          </p>
           <p className="text-xs text-kcb-pierre mt-1">En vente</p>
         </div>
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
             <Calendar className="w-5 h-5 text-yellow-400" />
           </div>
-          <p className="text-2xl font-bold text-yellow-400">{analytics?.overview?.pendingArtworks || 0}</p>
+          <p className="text-2xl font-bold text-yellow-400">
+            {analytics?.overview?.pendingArtworks || 0}
+          </p>
           <p className="text-xs text-kcb-pierre mt-1">En attente</p>
         </div>
       </div>
@@ -263,24 +293,26 @@ export function AnalytiquePro() {
           </h3>
           <div className="h-64">
             {categoryLabels.length > 0 ? (
-              <Pie 
+              <Pie
                 data={{
                   labels: categoryLabels,
-                  datasets: [{
-                    data: categoryData,
-                    backgroundColor: [
-                      "rgba(59,130,246,0.8)",
-                      "rgba(168,85,247,0.8)",
-                      "rgba(34,197,94,0.8)",
-                      "rgba(251,191,36,0.8)",
-                      "rgba(239,68,68,0.8)",
-                      "rgba(236,72,153,0.8)",
-                      "rgba(20,184,166,0.8)",
-                      "rgba(107,114,128,0.8)",
-                    ],
-                  }]
-                }} 
-                options={pieOptions} 
+                  datasets: [
+                    {
+                      data: categoryData,
+                      backgroundColor: [
+                        'rgba(59,130,246,0.8)',
+                        'rgba(168,85,247,0.8)',
+                        'rgba(34,197,94,0.8)',
+                        'rgba(251,191,36,0.8)',
+                        'rgba(239,68,68,0.8)',
+                        'rgba(236,72,153,0.8)',
+                        'rgba(20,184,166,0.8)',
+                        'rgba(107,114,128,0.8)',
+                      ],
+                    },
+                  ],
+                }}
+                options={pieOptions}
               />
             ) : (
               <p className="text-kcb-pierre text-center py-8">Aucune donnée</p>
@@ -296,17 +328,19 @@ export function AnalytiquePro() {
           </h3>
           <div className="h-64">
             {priceRangeLabels.length > 0 ? (
-              <Bar 
+              <Bar
                 data={{
                   labels: priceRangeLabels,
-                  datasets: [{
-                    label: "Nombre de ventes",
-                    data: priceRangeData,
-                    backgroundColor: "rgba(59,130,246,0.7)",
-                    borderRadius: 6,
-                  }]
-                }} 
-                options={barOptions} 
+                  datasets: [
+                    {
+                      label: 'Nombre de ventes',
+                      data: priceRangeData,
+                      backgroundColor: 'rgba(59,130,246,0.7)',
+                      borderRadius: 6,
+                    },
+                  ],
+                }}
+                options={barOptions}
               />
             ) : (
               <p className="text-kcb-pierre text-center py-8">Aucune donnée</p>
@@ -323,19 +357,21 @@ export function AnalytiquePro() {
         </h3>
         <div className="h-64">
           {periodLabels.length > 0 ? (
-            <Line 
+            <Line
               data={{
                 labels: periodLabels,
-                datasets: [{
-                  label: "Ventes",
-                  data: periodData,
-                  borderColor: "rgba(168,85,247,1)",
-                  backgroundColor: "rgba(168,85,247,0.1)",
-                  fill: true,
-                  tension: 0.4,
-                }]
-              }} 
-              options={lineOptions} 
+                datasets: [
+                  {
+                    label: 'Ventes',
+                    data: periodData,
+                    borderColor: 'rgba(168,85,247,1)',
+                    backgroundColor: 'rgba(168,85,247,0.1)',
+                    fill: true,
+                    tension: 0.4,
+                  },
+                ],
+              }}
+              options={lineOptions}
             />
           ) : (
             <p className="text-kcb-pierre text-center py-8">Aucune donnée</p>
@@ -364,7 +400,9 @@ export function AnalytiquePro() {
                 {analytics.topArtworks.map((artwork, idx) => (
                   <tr key={idx} className="border-b border-white/[0.06]/50 hover:bg-kcb-ardoise/50">
                     <td className="py-2 px-3 text-kcb-pierre">{idx + 1}</td>
-                    <td className="py-2 px-3 text-white font-medium truncate max-w-xs">{artwork.title}</td>
+                    <td className="py-2 px-3 text-white font-medium truncate max-w-xs">
+                      {artwork.title}
+                    </td>
                     <td className="py-2 px-3 text-kcb-sable">{artwork.artist}</td>
                     <td className="py-2 px-3 text-right text-green-400 font-medium">
                       {Number(artwork.price).toLocaleString()} CFA
@@ -411,7 +449,7 @@ export function AnalytiquePro() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default AnalytiquePro;
+export default AnalytiquePro

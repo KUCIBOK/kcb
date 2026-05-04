@@ -1,7 +1,7 @@
-﻿import { useState, useEffect } from 'react';
-import { useSupportTickets } from '../../hooks/useSupportTickets';
-import { MessageSquare, Plus, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-import CreateTicketModal from './CreateTicketModal';
+﻿import { useState, useEffect } from 'react'
+import { useSupportTickets } from '../../hooks/useSupportTickets'
+import { MessageSquare, Plus, AlertCircle, CheckCircle, Clock } from 'lucide-react'
+import CreateTicketModal from './CreateTicketModal'
 
 const statusIcons = {
   ouvert: <Clock className="w-4 h-4" />,
@@ -9,7 +9,7 @@ const statusIcons = {
   resolu: <CheckCircle className="w-4 h-4" />,
   ferme: <AlertCircle className="w-4 h-4" />,
   en_attente: <Clock className="w-4 h-4" />,
-};
+}
 
 const statusColors = {
   ouvert: 'bg-green-500/10 text-green-300 border-green-500/30',
@@ -17,36 +17,34 @@ const statusColors = {
   en_attente: 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30',
   resolu: 'bg-kcb-bronze/10 text-kcb-bronze border-kcb-bronze/30',
   ferme: 'bg-gray-500/10 text-kcb-sable border-gray-500/30',
-};
+}
 
 const priorityBadges = {
   basse: 'bg-kcb-or/10 text-kcb-or',
   normale: 'bg-gray-500/20 text-kcb-sable',
   haute: 'bg-orange-500/20 text-orange-300',
   critique: 'bg-red-500/20 text-red-300',
-};
+}
 
 export default function MyTickets() {
-  const { tickets, loading, getMyTickets } = useSupportTickets();
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeStatus, setActiveStatus] = useState('');
+  const { tickets, loading, getMyTickets } = useSupportTickets()
+  const [selectedTicket, setSelectedTicket] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeStatus, setActiveStatus] = useState('')
 
   useEffect(() => {
-    loadTickets();
-  }, [activeStatus]);
+    loadTickets()
+  }, [activeStatus])
 
   const loadTickets = () => {
-    getMyTickets({ status: activeStatus || undefined });
-  };
+    getMyTickets({ status: activeStatus || undefined })
+  }
 
-  const filteredTickets = activeStatus
-    ? tickets.filter((t) => t.status === activeStatus)
-    : tickets;
+  const filteredTickets = activeStatus ? tickets.filter((t) => t.status === activeStatus) : tickets
 
   const handleTicketCreated = () => {
-    loadTickets();
-  };
+    loadTickets()
+  }
 
   return (
     <div className="space-y-6">
@@ -115,9 +113,7 @@ export default function MyTickets() {
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-mono text-kcb-pierre">
-                      {ticket.ticketId}
-                    </span>
+                    <span className="text-xs font-mono text-kcb-pierre">{ticket.ticketId}</span>
                     <span
                       className={`flex items-center gap-1 text-xs px-2 py-1 rounded border ${
                         statusColors[ticket.status]
@@ -137,15 +133,11 @@ export default function MyTickets() {
               </div>
 
               {/* Corps */}
-              <p className="text-kcb-pierre text-sm mb-3 line-clamp-2">
-                {ticket.description}
-              </p>
+              <p className="text-kcb-pierre text-sm mb-3 line-clamp-2">{ticket.description}</p>
 
               {/* Métadonnées */}
               <div className="flex items-center justify-between text-xs text-kcb-pierre">
-                <span>
-                  {new Date(ticket.created_at).toLocaleDateString('fr-FR')}
-                </span>
+                <span>{new Date(ticket.created_at).toLocaleDateString('fr-FR')}</span>
                 <span className="flex items-center gap-1">
                   <MessageSquare className="w-3 h-3" />
                   {ticket.responses?.length || 0} réponse{ticket.responses?.length !== 1 ? 's' : ''}
@@ -163,5 +155,5 @@ export default function MyTickets() {
         onSuccess={handleTicketCreated}
       />
     </div>
-  );
+  )
 }

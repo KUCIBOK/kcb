@@ -1,58 +1,58 @@
-import { useState } from "react";
-import { createClient } from "../../api/useCrm";
-import { Input, Select, Button, toast } from "../ui";
+import { useState } from 'react'
+import { createClient } from '../../api/useCrm'
+import { Input, Select, Button, toast } from '../ui'
 
 export function AddClientForm({ onSuccess }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    country: "",
-    city: "",
-    segment: "other",
-  });
+    name: '',
+    email: '',
+    phone: '',
+    country: '',
+    city: '',
+    segment: 'other',
+  })
 
   const segmentOptions = [
-    { value: "art-collector", label: "Collectionneur d'art" },
-    { value: "corporate", label: "Corporate" },
-    { value: "museum", label: "Musée" },
-    { value: "gallery", label: "Galerie" },
-    { value: "investor", label: "Investisseur" },
-    { value: "other", label: "Autre" }
-  ];
+    { value: 'art-collector', label: "Collectionneur d'art" },
+    { value: 'corporate', label: 'Corporate' },
+    { value: 'museum', label: 'Musée' },
+    { value: 'gallery', label: 'Galerie' },
+    { value: 'investor', label: 'Investisseur' },
+    { value: 'other', label: 'Autre' },
+  ]
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
-    const result = await createClient(formData);
+    const result = await createClient(formData)
 
     if (result.error) {
-      toast.error(`× ${result.error}`);
+      toast.error(`× ${result.error}`)
     } else {
-      toast.success('✓ Client créé avec succès!');
+      toast.success('✓ Client créé avec succès!')
       setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        country: "",
-        city: "",
-        segment: "other",
-      });
-      setTimeout(() => onSuccess(), 500);
+        name: '',
+        email: '',
+        phone: '',
+        country: '',
+        city: '',
+        segment: 'other',
+      })
+      setTimeout(() => onSuccess(), 500)
     }
 
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <div className="space-y-4">
@@ -117,7 +117,7 @@ export function AddClientForm({ onSuccess }) {
             label="Segment client"
             options={segmentOptions}
             value={formData.segment}
-            onChange={(value) => setFormData(prev => ({ ...prev, segment: value }))}
+            onChange={(value) => setFormData((prev) => ({ ...prev, segment: value }))}
           />
         </div>
 
@@ -129,12 +129,12 @@ export function AddClientForm({ onSuccess }) {
             loading={loading}
             className="flex-1"
           >
-            {loading ? "Création..." : "Créer le client"}
+            {loading ? 'Création...' : 'Créer le client'}
           </Button>
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default AddClientForm;
+export default AddClientForm

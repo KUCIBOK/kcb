@@ -1,6 +1,6 @@
-import RevealOnScroll from "../RevealOnScroll"
-import { useLang } from "../../../store/LangContext"
-import { africaT } from "../../../i18n/africa"
+import RevealOnScroll from '../RevealOnScroll'
+import { useLang } from '../../../store/LangContext'
+import { africaT } from '../../../i18n/africa'
 
 export default function AfricaStatsStrip() {
   const { lang } = useLang()
@@ -38,7 +38,7 @@ function StatItem({ stat }) {
     <div className="flex flex-col items-center text-center gap-1.5">
       <span
         className="font-playfair font-bold text-white leading-none"
-        style={{ fontSize: "clamp(24px, 2.5vw, 32px)" }}
+        style={{ fontSize: 'clamp(24px, 2.5vw, 32px)' }}
       >
         {stat.number}
       </span>

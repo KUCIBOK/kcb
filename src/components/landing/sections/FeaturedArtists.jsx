@@ -1,22 +1,28 @@
-import { useEffect, useState } from "react";
-import { Palette } from "lucide-react";
-import { useArtist } from "../../../store/ArtistContext";
-import { ArtistList } from "../../artists/ArtistsList";
+import { useEffect, useState } from 'react'
+import { Palette } from 'lucide-react'
+import { useArtist } from '../../../store/ArtistContext'
+import { ArtistList } from '../../artists/ArtistsList'
 
 export default function FeaturedArtists() {
-  const { artists } = useArtist();
-  const artistsWithImage = artists?.filter(item => item?.artworkCount >= 3 && item?.image && item?.image != 'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg')
-  const [featuredArtists, setFeaturedArtists] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { artists } = useArtist()
+  const artistsWithImage = artists?.filter(
+    (item) =>
+      item?.artworkCount >= 3 &&
+      item?.image &&
+      item?.image !=
+        'https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg'
+  )
+  const [featuredArtists, setFeaturedArtists] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (artists.length > 0) {
       // Prend les 6 premiers artistes ou tous si moins de 6
-      const featured = artistsWithImage.slice(0, 6);
-      setFeaturedArtists(featured);
-      setLoading(false);
+      const featured = artistsWithImage.slice(0, 6)
+      setFeaturedArtists(featured)
+      setLoading(false)
     }
-  }, [artists]);
+  }, [artists])
 
   return (
     <div className="py-16 bg-gradient-to-b from-[#020817] to-[#0f172a]">
@@ -24,9 +30,7 @@ export default function FeaturedArtists() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center mb-4">
             <Palette className="w-8 h-8 text-[#7170c4] mr-2" />
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
-              Artistes à découvrir
-            </h2>
+            <h2 className="text-3xl font-bold text-white sm:text-4xl">Artistes à découvrir</h2>
           </div>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Une sélection des talents émergents de la scène artistique africaine
@@ -65,5 +69,5 @@ export default function FeaturedArtists() {
         )}
       </div>
     </div>
-  );
+  )
 }

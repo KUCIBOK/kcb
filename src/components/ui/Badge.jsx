@@ -1,11 +1,11 @@
-import React from 'react';
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import React from 'react'
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react'
 
 /**
  * Design System - Badge Component
- * 
+ *
  * Small status indicators and labels
- * 
+ *
  * Variants:
  * - default: Gray
  * - success: Green
@@ -21,14 +21,14 @@ const variants = {
   warning: 'bg-yellow-900/20 text-yellow-400 border-yellow-700',
   danger: 'bg-red-900/20 text-red-400 border-red-700',
   info: 'bg-blue-900/20 text-blue-400 border-blue-700',
-  primary: 'bg-kcb-or/10 text-kcb-or border-kcb-or/30'
-};
+  primary: 'bg-kcb-or/10 text-kcb-or border-kcb-or/30',
+}
 
 const sizes = {
   sm: 'px-2 py-0.5 text-xs',
   md: 'px-2.5 py-1 text-sm',
-  lg: 'px-3 py-1.5 text-base'
-};
+  lg: 'px-3 py-1.5 text-base',
+}
 
 export function Badge({
   children,
@@ -38,16 +38,19 @@ export function Badge({
   dot = false,
   removable = false,
   onRemove,
-  className = ''
+  className = '',
 }) {
-  const baseStyles = 'inline-flex items-center gap-1.5 font-medium border rounded-full transition-colors';
-  const variantStyles = variants[variant] || variants.default;
-  const sizeStyles = sizes[size] || sizes.sm;
+  const baseStyles =
+    'inline-flex items-center gap-1.5 font-medium border rounded-full transition-colors'
+  const variantStyles = variants[variant] || variants.default
+  const sizeStyles = sizes[size] || sizes.sm
 
   return (
     <span className={`${baseStyles} ${variantStyles} ${sizeStyles} ${className}`}>
       {dot && (
-        <span className={`w-1.5 h-1.5 rounded-full ${variant === 'success' ? 'bg-green-400' : variant === 'warning' ? 'bg-yellow-400' : variant === 'danger' ? 'bg-red-400' : 'bg-kcb-pierre'}`} />
+        <span
+          className={`w-1.5 h-1.5 rounded-full ${variant === 'success' ? 'bg-green-400' : variant === 'warning' ? 'bg-yellow-400' : variant === 'danger' ? 'bg-red-400' : 'bg-kcb-pierre'}`}
+        />
       )}
       {Icon && <Icon className="w-3.5 h-3.5" />}
       {children}
@@ -61,7 +64,7 @@ export function Badge({
         </button>
       )}
     </span>
-  );
+  )
 }
 
 export function StatusBadge({ status, className = '' }) {
@@ -72,20 +75,16 @@ export function StatusBadge({ status, className = '' }) {
     error: { variant: 'danger', icon: AlertCircle, label: 'Erreur' },
     approved: { variant: 'success', icon: CheckCircle, label: 'Approuvé' },
     rejected: { variant: 'danger', icon: X, label: 'Rejeté' },
-    draft: { variant: 'default', icon: Info, label: 'Brouillon' }
-  };
+    draft: { variant: 'default', icon: Info, label: 'Brouillon' },
+  }
 
-  const config = statusConfig[status] || statusConfig.draft;
+  const config = statusConfig[status] || statusConfig.draft
 
   return (
-    <Badge 
-      variant={config.variant} 
-      icon={config.icon}
-      className={className}
-    >
+    <Badge variant={config.variant} icon={config.icon} className={className}>
       {config.label}
     </Badge>
-  );
+  )
 }
 
-export default Badge;
+export default Badge

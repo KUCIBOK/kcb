@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Scrollbar fine et couleur personnalisée */
 * {
@@ -28,14 +28,14 @@ td {
 }
 
 .font-playfair {
-  font-family: "Playfair Display", serif;
+  font-family: 'Playfair Display', serif;
 }
 
 .bg-card {
-  background-color: #1C1C1E;
+  background-color: #1c1c1e;
 }
 .border-border {
-  border-color: #2A2A2C;
+  border-color: #2a2a2c;
 }
 
 .animate-fade-in-up {
@@ -187,21 +187,21 @@ td {
 
   :root {
     /* KCB Landing tokens — additif, ne casse pas les dashboards */
-    --kcb-noir: #0A0A0A;
+    --kcb-noir: #0a0a0a;
     --kcb-noir-deep: #050505;
-    --kcb-ardoise: #1C1C1E;
-    --kcb-ardoise-cool: #16181E;
-    --kcb-pierre: #3A3A3C;
-    --kcb-sable: #D4C5A9;
-    --kcb-ivoire: #F5F0E8;
-    --kcb-blanc: #FFFFFF;
-    --kcb-or: #C9A84C;
-    --kcb-bronze: #8B6914;
-    --kcb-silver: #A8B0BC;
-    --kcb-silver-light: #C4CAD4;
-    --kcb-silver-dark: #6B7280;
-    --kcb-steel: #1A1D24;
-    --kcb-platinum: #D6DAE0;
+    --kcb-ardoise: #1c1c1e;
+    --kcb-ardoise-cool: #16181e;
+    --kcb-pierre: #3a3a3c;
+    --kcb-sable: #d4c5a9;
+    --kcb-ivoire: #f5f0e8;
+    --kcb-blanc: #ffffff;
+    --kcb-or: #c9a84c;
+    --kcb-bronze: #8b6914;
+    --kcb-silver: #a8b0bc;
+    --kcb-silver-light: #c4cad4;
+    --kcb-silver-dark: #6b7280;
+    --kcb-steel: #1a1d24;
+    --kcb-platinum: #d6dae0;
 
     --font-display: 'Playfair Display', Georgia, serif;
     --font-body-kcb: 'DM Sans', system-ui, sans-serif;
@@ -291,11 +291,11 @@ td {
 
 @layer utilities {
   .font-sans {
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
   }
 
   .font-serif {
-    font-family: "Playfair Display", serif;
+    font-family: 'Playfair Display', serif;
   }
 
   .text-balance {
@@ -303,7 +303,7 @@ td {
   }
 
   .bg-muted {
-    background-color: #1C1C1E;
+    background-color: #1c1c1e;
   }
 
   .hover-card {
@@ -353,21 +353,21 @@ td {
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
   /* KCB Landing palette */
-  --color-kcb-noir: #0A0A0A;
+  --color-kcb-noir: #0a0a0a;
   --color-kcb-noir-deep: #050505;
-  --color-kcb-ardoise: #1C1C1E;
-  --color-kcb-ardoise-cool: #16181E;
-  --color-kcb-pierre: #3A3A3C;
-  --color-kcb-sable: #D4C5A9;
-  --color-kcb-ivoire: #F5F0E8;
-  --color-kcb-blanc: #FFFFFF;
-  --color-kcb-or: #C9A84C;
-  --color-kcb-bronze: #8B6914;
-  --color-kcb-silver: #A8B0BC;
-  --color-kcb-silver-light: #C4CAD4;
-  --color-kcb-silver-dark: #6B7280;
-  --color-kcb-steel: #1A1D24;
-  --color-kcb-platinum: #D6DAE0;
+  --color-kcb-ardoise: #1c1c1e;
+  --color-kcb-ardoise-cool: #16181e;
+  --color-kcb-pierre: #3a3a3c;
+  --color-kcb-sable: #d4c5a9;
+  --color-kcb-ivoire: #f5f0e8;
+  --color-kcb-blanc: #ffffff;
+  --color-kcb-or: #c9a84c;
+  --color-kcb-bronze: #8b6914;
+  --color-kcb-silver: #a8b0bc;
+  --color-kcb-silver-light: #c4cad4;
+  --color-kcb-silver-dark: #6b7280;
+  --color-kcb-steel: #1a1d24;
+  --color-kcb-platinum: #d6dae0;
 }
 
 @keyframes slide-out-right {
@@ -426,85 +426,197 @@ td {
 
 /* Smoke particles — Africa hero */
 @keyframes smoke-drift-1 {
-  0%, 100% { transform: translateX(0) translateY(0); opacity: 0.5; }
-  50% { transform: translateX(-20px) translateY(-15px); opacity: 0.8; }
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(-20px) translateY(-15px);
+    opacity: 0.8;
+  }
 }
 @keyframes smoke-drift-2 {
-  0%, 100% { transform: translateX(0) translateY(0); opacity: 0.4; }
-  50% { transform: translateX(15px) translateY(-20px); opacity: 0.7; }
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(15px) translateY(-20px);
+    opacity: 0.7;
+  }
 }
 @keyframes smoke-drift-3 {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
-  50% { transform: translateY(-25px) scale(1.1); opacity: 0.6; }
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-25px) scale(1.1);
+    opacity: 0.6;
+  }
 }
 @keyframes smoke-1 {
-  0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
-  50% { transform: translateX(-50%) scale(1.15); opacity: 0.6; }
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.15);
+    opacity: 0.6;
+  }
 }
 @keyframes smoke-2 {
-  0%, 100% { transform: translateX(-50%) scale(1) translateY(0); opacity: 1; }
-  50% { transform: translateX(-50%) scale(1.2) translateY(-10px); opacity: 0.5; }
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.2) translateY(-10px);
+    opacity: 0.5;
+  }
 }
 
 /* Kuzi mascot — gentle float */
 @keyframes kuzi-float {
-  0%, 100% { transform: translateY(0px); }
-  50%      { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 /* Kuzi mascot — eyelid blink overlay (double blink every 5s) */
 @keyframes kuzi-eyelid {
-  0%, 82%, 86%, 91%, 95%, 100% { transform: scaleY(0); opacity: 0; }
-  83%, 84%                      { transform: scaleY(1); opacity: 1; }
-  92%, 93%                      { transform: scaleY(1); opacity: 1; }
+  0%,
+  82%,
+  86%,
+  91%,
+  95%,
+  100% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  83%,
+  84% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  92%,
+  93% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }
 
 /* ── GatewayKuzi animations ────────────────────────────── */
 /* Continuous subtle breathing bob */
 @keyframes kuzi-breathe {
-  0%, 100% { transform: translateY(0px); }
-  50%      { transform: translateY(-2px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
 }
 /* Continuous slow sway (simulates necklace physics) */
 @keyframes kuzi-sway {
-  0%, 100% { transform: rotate(-1.5deg); }
-  25%      { transform: rotate(-0.5deg); }
-  50%      { transform: rotate(1.5deg);  }
-  75%      { transform: rotate(0.5deg);  }
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  25% {
+    transform: rotate(-0.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+  75% {
+    transform: rotate(0.5deg);
+  }
 }
 /* Energy bounce — 2 quick jumps */
 @keyframes kuzi-bounce {
-  0%   { transform: translateY(0);     }
-  20%  { transform: translateY(-10px); }
-  40%  { transform: translateY(0);     }
-  60%  { transform: translateY(-6px);  }
-  80%  { transform: translateY(0);     }
-  100% { transform: translateY(0);     }
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-10px);
+  }
+  40% {
+    transform: translateY(0);
+  }
+  60% {
+    transform: translateY(-6px);
+  }
+  80% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 /* Eye shine pulse in energy/welcome phases */
 @keyframes kuzi-shine {
-  0%   { opacity: 0.4; transform: scale(1);    }
-  100% { opacity: 0.9; transform: scale(1.4);  }
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1.4);
+  }
 }
 
 /* Cert section — scan line & pulse dot */
 @keyframes kcb-cert-scan {
-  0%   { top: 0%;   opacity: 0.6; }
-  95%  { top: 100%; opacity: 0.4; }
-  100% { top: 100%; opacity: 0;   }
+  0% {
+    top: 0%;
+    opacity: 0.6;
+  }
+  95% {
+    top: 100%;
+    opacity: 0.4;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
 }
 @keyframes kcb-cert-pulse {
-  0%, 100% { opacity: 1;   }
-  50%       { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* Float animations — Global hero stats */
 @keyframes kcb-float-1 {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 @keyframes kcb-float-2 {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  50% { transform: translateY(-6px) translateX(4px); }
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-6px) translateX(4px);
+  }
 }
 
 /* Geo line separator */
@@ -524,5 +636,9 @@ td {
   transform: rotate(45deg);
   opacity: 0.4;
 }
-.kcb-geo-line::before { left: 0; }
-.kcb-geo-line::after { right: 0; }
+.kcb-geo-line::before {
+  left: 0;
+}
+.kcb-geo-line::after {
+  right: 0;
+}

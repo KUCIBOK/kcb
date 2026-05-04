@@ -1,5 +1,5 @@
-import { memo } from "react"
-import { Link } from "react-router-dom"
+import { memo } from 'react'
+import { Link } from 'react-router-dom'
 
 /**
  * Main site footer — used by Layout for non-portal pages.
@@ -19,7 +19,8 @@ export const Footer = memo(() => (
             </span>
           </Link>
           <p className="text-[13px] text-kcb-pierre leading-[1.7] max-w-[300px]">
-            Infrastructure de standardisation et de circulation securisee de l'art africain contemporain.
+            Infrastructure de standardisation et de circulation securisee de l'art africain
+            contemporain.
           </p>
         </div>
 
@@ -29,10 +30,38 @@ export const Footer = memo(() => (
             Navigation
           </h4>
           <ul className="list-none space-y-2.5">
-            <li><Link to="/africa/catalogue" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Catalogue</Link></li>
-            <li><Link to="/africa/artists" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Artistes</Link></li>
-            <li><Link to="/africa/about" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">A propos</Link></li>
-            <li><Link to="/africa/blog" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Blog</Link></li>
+            <li>
+              <Link
+                to="/africa/catalogue"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                Catalogue
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/africa/artists"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                Artistes
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/africa/about"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                A propos
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/africa/blog"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                Blog
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -42,10 +71,38 @@ export const Footer = memo(() => (
             Ressources
           </h4>
           <ul className="list-none space-y-2.5">
-            <li><Link to="/africa/faq" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">FAQ</Link></li>
-            <li><Link to="/africa/contact" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Contact</Link></li>
-            <li><Link to="/africa" className="text-[13px] text-kcb-or no-underline transition-colors hover:text-white">Portail Afrique</Link></li>
-            <li><Link to="/global" className="text-[13px] text-kcb-silver no-underline transition-colors hover:text-white">Global Portal</Link></li>
+            <li>
+              <Link
+                to="/africa/faq"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                FAQ
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/africa/contact"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/africa"
+                className="text-[13px] text-kcb-or no-underline transition-colors hover:text-white"
+              >
+                Portail Afrique
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/global"
+                className="text-[13px] text-kcb-silver no-underline transition-colors hover:text-white"
+              >
+                Global Portal
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -55,10 +112,38 @@ export const Footer = memo(() => (
             Legal
           </h4>
           <ul className="list-none space-y-2.5">
-            <li><Link to="/privacy-policy" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Confidentialite</Link></li>
-            <li><Link to="/terms-and-conditions" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">CGU</Link></li>
-            <li><Link to="/sales-conditions" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">CGV</Link></li>
-            <li><Link to="/ethic-chart" className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white">Charte ethique</Link></li>
+            <li>
+              <Link
+                to="/privacy-policy"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                Confidentialite
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/terms-and-conditions"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                CGU
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/sales-conditions"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                CGV
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/ethic-chart"
+                className="text-[13px] text-kcb-pierre no-underline transition-colors hover:text-white"
+              >
+                Charte ethique
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
@@ -69,10 +154,16 @@ export const Footer = memo(() => (
           &copy; {new Date().getFullYear()} Kucibok — Art africain certifie
         </p>
         <div className="flex gap-6">
-          <Link to="/privacy-policy" className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors">
+          <Link
+            to="/privacy-policy"
+            className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors"
+          >
             Confidentialite
           </Link>
-          <Link to="/terms-and-conditions" className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors">
+          <Link
+            to="/terms-and-conditions"
+            className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors"
+          >
             CGU
           </Link>
         </div>

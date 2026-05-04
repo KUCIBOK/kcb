@@ -7,18 +7,18 @@
  * @module useArtworks
  */
 
-import { fetchWithTimeout, utils } from './useAPI';
+import { fetchWithTimeout, utils } from './useAPI'
 
 /** Mélange un tableau en place avec l'algorithme Fisher-Yates (non biaisé). */
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
   }
-  return arr;
+  return arr
 }
 
-const { api } = utils;
+const { api } = utils
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPER INTERNE
@@ -32,13 +32,15 @@ const { api } = utils;
  */
 async function fetchArtworks(params = {}) {
   try {
-    const qs = new URLSearchParams(params).toString();
-    const response = await fetchWithTimeout(`${api}/artworks${qs ? `?${qs}` : ''}`, { ...utils.options });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    const qs = new URLSearchParams(params).toString()
+    const response = await fetchWithTimeout(`${api}/artworks${qs ? `?${qs}` : ''}`, {
+      ...utils.options,
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -57,12 +59,12 @@ export async function verifyArtwork(kuciobkId) {
     const response = await fetch(`${api}/artworks/verify/${kuciobkId}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -77,7 +79,7 @@ export async function verifyArtwork(kuciobkId) {
  * @returns {Promise<{ data: object[], pagination: object } | { error: string }>}
  */
 export async function getAllArtworks(params = {}) {
-  return fetchArtworks(params);
+  return fetchArtworks(params)
 }
 
 /**
@@ -88,12 +90,12 @@ export async function getAllArtworks(params = {}) {
  */
 export async function getArtworkById(id) {
   try {
-    const response = await fetch(`${api}/artworks/${id}`, { ...utils.options });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    const response = await fetch(`${api}/artworks/${id}`, { ...utils.options })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -103,7 +105,7 @@ export async function getArtworkById(id) {
  * @returns {Promise<object>}
  */
 export async function getForSaleArtworks() {
-  return fetchArtworks({ for_sale: true, status: 'approved', limit: 1000 });
+  return fetchArtworks({ for_sale: true, status: 'approved', limit: 1000 })
 }
 
 /**
@@ -113,7 +115,7 @@ export async function getForSaleArtworks() {
  * @returns {Promise<object>}
  */
 export async function getArtistForSaleArtworks(id) {
-  return fetchArtworks({ artist_id: id, for_sale: true });
+  return fetchArtworks({ artist_id: id, for_sale: true })
 }
 
 /**
@@ -123,7 +125,7 @@ export async function getArtistForSaleArtworks(id) {
  * @returns {Promise<object>}
  */
 export async function getOwnerForSaleArtworks(id) {
-  return fetchArtworks({ user_id: id, for_sale: true });
+  return fetchArtworks({ user_id: id, for_sale: true })
 }
 
 /**
@@ -133,7 +135,7 @@ export async function getOwnerForSaleArtworks(id) {
  * @returns {Promise<object>}
  */
 export async function getMyArtworks(id) {
-  return fetchArtworks({ artist_id: id });
+  return fetchArtworks({ artist_id: id })
 }
 
 /**
@@ -143,7 +145,7 @@ export async function getMyArtworks(id) {
  * @returns {Promise<object>}
  */
 export async function getOwnerArtworks(id) {
-  return fetchArtworks({ user_id: id });
+  return fetchArtworks({ user_id: id })
 }
 
 /**
@@ -152,7 +154,7 @@ export async function getOwnerArtworks(id) {
  * @returns {Promise<object>}
  */
 export async function getPendingArtworks() {
-  return fetchArtworks({ status: 'pending' });
+  return fetchArtworks({ status: 'pending' })
 }
 
 /**
@@ -161,7 +163,7 @@ export async function getPendingArtworks() {
  * @returns {Promise<object>}
  */
 export async function getApprovedArtworks() {
-  return fetchArtworks({ status: 'approved' });
+  return fetchArtworks({ status: 'approved' })
 }
 
 /**
@@ -170,7 +172,7 @@ export async function getApprovedArtworks() {
  * @returns {Promise<object>}
  */
 export async function getRejectedArtworks() {
-  return fetchArtworks({ status: 'rejected' });
+  return fetchArtworks({ status: 'rejected' })
 }
 
 /**
@@ -180,10 +182,10 @@ export async function getRejectedArtworks() {
  * @returns {Promise<object[] | { error: string }>}
  */
 export async function getRandomArtworks() {
-  const result = await fetchArtworks({ for_sale: true, limit: 20 });
-  if (result.error) return result;
-  const items = Array.isArray(result) ? [...result] : [];
-  return shuffleArray(items).slice(0, 8);
+  const result = await fetchArtworks({ for_sale: true, limit: 20 })
+  if (result.error) return result
+  const items = Array.isArray(result) ? [...result] : []
+  return shuffleArray(items).slice(0, 8)
 }
 
 /**
@@ -193,10 +195,10 @@ export async function getRandomArtworks() {
  * @returns {Promise<object[] | { error: string }>}
  */
 export async function getRandomArtworksByCategories(category) {
-  const result = await fetchArtworks({ category, for_sale: true, limit: 20 });
-  if (result.error) return result;
-  const items = Array.isArray(result) ? [...result] : [];
-  return shuffleArray(items).slice(0, 8);
+  const result = await fetchArtworks({ category, for_sale: true, limit: 20 })
+  if (result.error) return result
+  const items = Array.isArray(result) ? [...result] : []
+  return shuffleArray(items).slice(0, 8)
 }
 
 /**
@@ -206,7 +208,7 @@ export async function getRandomArtworksByCategories(category) {
  * @returns {Promise<{ data: [] }>}
  */
 export async function getManagedArtworks() {
-  return { data: [] };
+  return { data: [] }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -222,38 +224,44 @@ export async function getManagedArtworks() {
  */
 export async function submitArtwork(data) {
   try {
-    const { supabase }          = await import('../lib/supabase');
-    const { uploadArtworkImage } = await import('../lib/storage');
-    const { data: sessionData } = await supabase.auth.getSession();
-    const token  = sessionData.session?.access_token ?? '';
-    const userId = sessionData.session?.user?.id;
+    const { supabase } = await import('../lib/supabase')
+    const { uploadArtworkImage } = await import('../lib/storage')
+    const { data: sessionData } = await supabase.auth.getSession()
+    const token = sessionData.session?.access_token ?? ''
+    const userId = sessionData.session?.user?.id
 
-    const fields = {};
-    for (const [key, value] of data.entries()) fields[key] = value;
+    const fields = {}
+    for (const [key, value] of data.entries()) fields[key] = value
 
-    if ('forSale' in fields) { fields.for_sale = fields.forSale; delete fields.forSale; }
-    if ('availabilityStatus' in fields) { fields.availability_status = fields.availabilityStatus; delete fields.availabilityStatus; }
+    if ('forSale' in fields) {
+      fields.for_sale = fields.forSale
+      delete fields.forSale
+    }
+    if ('availabilityStatus' in fields) {
+      fields.availability_status = fields.availabilityStatus
+      delete fields.availabilityStatus
+    }
 
     if (fields.image instanceof File && userId) {
-      const upload = await uploadArtworkImage(userId, fields.image);
-      if (upload.error) return { error: upload.error };
-      fields.image = upload.url;
+      const upload = await uploadArtworkImage(userId, fields.image)
+      if (upload.error) return { error: upload.error }
+      fields.image = upload.url
     }
 
     const response = await fetch(`${api}/artworks`, {
-      method:  'POST',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'kcb-api-key':  import.meta.env.VITE_API_KEY,
-        Authorization:  `Bearer ${token}`,
+        'kcb-api-key': import.meta.env.VITE_API_KEY,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(fields),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -267,37 +275,41 @@ export async function submitArtwork(data) {
  */
 export async function updateArtwork(id, payload) {
   try {
-    const { supabase }                        = await import('../lib/supabase');
-    const { uploadArtworkImage, uploadFile }  = await import('../lib/storage');
-    const { data: sessionData } = await supabase.auth.getSession();
-    const token  = sessionData.session?.access_token ?? '';
-    const userId = sessionData.session?.user?.id;
+    const { supabase } = await import('../lib/supabase')
+    const { uploadArtworkImage, uploadFile } = await import('../lib/storage')
+    const { data: sessionData } = await supabase.auth.getSession()
+    const token = sessionData.session?.access_token ?? ''
+    const userId = sessionData.session?.user?.id
 
-    const fields = {};
-    for (const [key, value] of payload.entries()) fields[key] = value;
+    const fields = {}
+    for (const [key, value] of payload.entries()) fields[key] = value
 
     if (fields.image instanceof File && userId) {
       // Utilise un path stable basé sur l'id de l'œuvre pour écraser l'ancienne image
-      const ext = fields.image.name.split('.').pop()?.toLowerCase() ?? 'jpg';
-      const upload = await uploadFile({ bucket: 'artworks', path: `${userId}/${id}.${ext}`, file: fields.image });
-      if (upload.error) return { error: upload.error };
-      fields.image = upload.url;
+      const ext = fields.image.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+      const upload = await uploadFile({
+        bucket: 'artworks',
+        path: `${userId}/${id}.${ext}`,
+        file: fields.image,
+      })
+      if (upload.error) return { error: upload.error }
+      fields.image = upload.url
     }
 
     const response = await fetch(`${api}/artworks/${id}`, {
-      method:  'PUT',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'kcb-api-key':  import.meta.env.VITE_API_KEY,
-        Authorization:  `Bearer ${token}`,
+        'kcb-api-key': import.meta.env.VITE_API_KEY,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(fields),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -313,13 +325,13 @@ export async function setArtworkStatus(id, status) {
     const response = await fetch(`${api}/artworks/${id}`, {
       ...utils.options,
       method: 'PATCH',
-      body:   JSON.stringify({ status }),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+      body: JSON.stringify({ status }),
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -335,13 +347,13 @@ export async function updateEtherscan(id, etherscan) {
     const response = await fetch(`${api}/artworks/${id}`, {
       ...utils.options,
       method: 'PUT',
-      body:   JSON.stringify({ etherscan }),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+      body: JSON.stringify({ etherscan }),
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -356,12 +368,12 @@ export async function deleteArtwork(id) {
     const response = await fetch(`${api}/artworks/${id}`, {
       ...utils.options,
       method: 'DELETE',
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -376,7 +388,7 @@ export async function deleteArtwork(id) {
  * @returns {Promise<{ data: [] }>}
  */
 export async function getLikedArtworks() {
-  return { data: [] };
+  return { data: [] }
 }
 
 /**
@@ -385,7 +397,7 @@ export async function getLikedArtworks() {
  * @returns {Promise<{ ok: true }>}
  */
 export async function likeArtwork() {
-  return { ok: true };
+  return { ok: true }
 }
 
 /**
@@ -394,7 +406,7 @@ export async function likeArtwork() {
  * @returns {Promise<{ ok: true }>}
  */
 export async function dislikeArtwork() {
-  return { ok: true };
+  return { ok: true }
 }
 
 /**
@@ -404,5 +416,5 @@ export async function dislikeArtwork() {
  * @returns {Promise<{ error: string }>}
  */
 export async function purchaseArtwork() {
-  return { error: 'Utilisez le flux PayDunya via /payments/paydunya-init' };
+  return { error: 'Utilisez le flux PayDunya via /payments/paydunya-init' }
 }

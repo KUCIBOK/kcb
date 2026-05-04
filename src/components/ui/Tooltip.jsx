@@ -1,15 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
 
 /**
  * Tooltip Component
- * 
+ *
  * A lightweight tooltip that appears on hover
- * 
+ *
  * @example
  * <Tooltip content="This is a tooltip">
  *   <button>Hover me</button>
  * </Tooltip>
- * 
+ *
  * @example
  * <Tooltip content="Delete item" placement="left" variant="danger">
  *   <button><Trash2 /></button>
@@ -21,89 +21,89 @@ export function Tooltip({
   placement = 'top', // 'top' | 'bottom' | 'left' | 'right'
   variant = 'default', // 'default' | 'dark' | 'success' | 'danger' | 'warning'
   delay = 200, // ms delay before showing tooltip
-  disabled = false
+  disabled = false,
 }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
-  const triggerRef = useRef(null);
-  const tooltipRef = useRef(null);
-  const timeoutRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false)
+  const [position, setPosition] = useState({ top: 0, left: 0 })
+  const triggerRef = useRef(null)
+  const tooltipRef = useRef(null)
+  const timeoutRef = useRef(null)
 
   const variants = {
     default: 'bg-kcb-ardoise text-kcb-sable border-white/[0.08]',
     dark: 'bg-kcb-noir-deep text-white border-white/[0.06]',
     success: 'bg-green-900/90 text-green-100 border-green-700',
     danger: 'bg-red-900/90 text-red-100 border-red-700',
-    warning: 'bg-orange-900/90 text-orange-100 border-orange-700'
-  };
+    warning: 'bg-orange-900/90 text-orange-100 border-orange-700',
+  }
 
   useEffect(() => {
     if (isVisible && triggerRef.current && tooltipRef.current) {
-      const triggerRect = triggerRef.current.getBoundingClientRect();
-      const tooltipRect = tooltipRef.current.getBoundingClientRect();
-      
-      let top = 0;
-      let left = 0;
+      const triggerRect = triggerRef.current.getBoundingClientRect()
+      const tooltipRect = tooltipRef.current.getBoundingClientRect()
+
+      let top = 0
+      let left = 0
 
       switch (placement) {
         case 'top':
-          top = triggerRect.top - tooltipRect.height - 8;
-          left = triggerRect.left + (triggerRect.width - tooltipRect.width) / 2;
-          break;
+          top = triggerRect.top - tooltipRect.height - 8
+          left = triggerRect.left + (triggerRect.width - tooltipRect.width) / 2
+          break
         case 'bottom':
-          top = triggerRect.bottom + 8;
-          left = triggerRect.left + (triggerRect.width - tooltipRect.width) / 2;
-          break;
+          top = triggerRect.bottom + 8
+          left = triggerRect.left + (triggerRect.width - tooltipRect.width) / 2
+          break
         case 'left':
-          top = triggerRect.top + (triggerRect.height - tooltipRect.height) / 2;
-          left = triggerRect.left - tooltipRect.width - 8;
-          break;
+          top = triggerRect.top + (triggerRect.height - tooltipRect.height) / 2
+          left = triggerRect.left - tooltipRect.width - 8
+          break
         case 'right':
-          top = triggerRect.top + (triggerRect.height - tooltipRect.height) / 2;
-          left = triggerRect.right + 8;
-          break;
+          top = triggerRect.top + (triggerRect.height - tooltipRect.height) / 2
+          left = triggerRect.right + 8
+          break
         default:
-          break;
+          break
       }
 
       // Keep tooltip within viewport
-      const padding = 8;
-      if (left < padding) left = padding;
+      const padding = 8
+      if (left < padding) left = padding
       if (left + tooltipRect.width > window.innerWidth - padding) {
-        left = window.innerWidth - tooltipRect.width - padding;
+        left = window.innerWidth - tooltipRect.width - padding
       }
-      if (top < padding) top = padding;
+      if (top < padding) top = padding
       if (top + tooltipRect.height > window.innerHeight - padding) {
-        top = window.innerHeight - tooltipRect.height - padding;
+        top = window.innerHeight - tooltipRect.height - padding
       }
 
-      setPosition({ top, left });
+      setPosition({ top, left })
     }
-  }, [isVisible, placement]);
+  }, [isVisible, placement])
 
   const handleMouseEnter = () => {
-    if (disabled || !content) return;
+    if (disabled || !content) return
     timeoutRef.current = setTimeout(() => {
-      setIsVisible(true);
-    }, delay);
-  };
+      setIsVisible(true)
+    }, delay)
+  }
 
   const handleMouseLeave = () => {
     if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+      clearTimeout(timeoutRef.current)
     }
-    setIsVisible(false);
-  };
+    setIsVisible(false)
+  }
 
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+        clearTimeout(timeoutRef.current)
       }
-    };
-  }, []);
+    }
+  }, [])
 
-  if (!content) return children;
+  if (!content) return children
 
   return (
     <>
@@ -131,9 +131,9 @@ export function Tooltip({
           role="tooltip"
         >
           {content}
-          
+
           {/* Arrow */}
-          <div 
+          <div
             className={`absolute w-2 h-2 rotate-45 border ${variants[variant]}
               ${placement === 'top' ? 'bottom-[-5px] left-1/2 -translate-x-1/2 border-t-0 border-l-0' : ''}
               ${placement === 'bottom' ? 'top-[-5px] left-1/2 -translate-x-1/2 border-b-0 border-r-0' : ''}
@@ -144,7 +144,7 @@ export function Tooltip({
         </div>
       )}
     </>
-  );
+  )
 }
 
-export default Tooltip;
+export default Tooltip

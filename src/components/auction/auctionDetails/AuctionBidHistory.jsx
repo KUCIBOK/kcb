@@ -1,4 +1,4 @@
-﻿import { History } from "lucide-react";
+﻿import { History } from 'lucide-react'
 
 export default function AuctionBidHistory({ bids }) {
   return (
@@ -15,15 +15,11 @@ export default function AuctionBidHistory({ bids }) {
           <table className="w-full">
             <thead className="bg-kcb-ardoise/50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">
-                  Montant
-                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">Montant</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">
                   Enchérisseur
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">
-                  Date
-                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-kcb-pierre">Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.06]/50">
@@ -32,9 +28,9 @@ export default function AuctionBidHistory({ bids }) {
                   <td className="px-4 py-3 text-white">{bid.amount} FCFA</td>
                   <td className="px-4 py-3 text-white">
                     {bid.bidder?.name ||
-                      (typeof bid.bidder === "string"
+                      (typeof bid.bidder === 'string'
                         ? `Utilisateur #${bid.bidder.slice(-4)}`
-                        : "Anonyme")}
+                        : 'Anonyme')}
                   </td>
                   <td className="px-4 py-3 text-kcb-pierre">
                     {new Date(bid.created_at).toLocaleString()}
@@ -46,5 +42,5 @@ export default function AuctionBidHistory({ bids }) {
         </div>
       )}
     </div>
-  );
+  )
 }

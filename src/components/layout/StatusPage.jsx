@@ -5,9 +5,9 @@ import PageWrapper from './PageWrapper'
 /** @type {Record<string, {icon: React.ElementType, colorClass: string, bgClass: string}>} */
 const VARIANT_MAP = {
   success: { icon: CheckCircle, colorClass: 'text-emerald-400', bgClass: 'bg-emerald-400/10' },
-  error:   { icon: XCircle,    colorClass: 'text-red-400',     bgClass: 'bg-red-400/10' },
-  warning: { icon: AlertCircle, colorClass: 'text-kcb-or',     bgClass: 'bg-kcb-or/10' },
-  info:    { icon: Info,        colorClass: 'text-kcb-or',     bgClass: 'bg-kcb-or/10' },
+  error: { icon: XCircle, colorClass: 'text-red-400', bgClass: 'bg-red-400/10' },
+  warning: { icon: AlertCircle, colorClass: 'text-kcb-or', bgClass: 'bg-kcb-or/10' },
+  info: { icon: Info, colorClass: 'text-kcb-or', bgClass: 'bg-kcb-or/10' },
 }
 
 /**
@@ -41,19 +41,17 @@ export default function StatusPage({
       <div className="w-full max-w-md">
         <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-8 text-center">
           {/* Icon */}
-          <div className={`mx-auto w-16 h-16 rounded-full ${config.bgClass} flex items-center justify-center mb-6`}>
+          <div
+            className={`mx-auto w-16 h-16 rounded-full ${config.bgClass} flex items-center justify-center mb-6`}
+          >
             <Icon className={`w-8 h-8 ${config.colorClass}`} />
           </div>
 
           {/* Title */}
-          <h1 className="font-playfair text-xl font-bold text-white mb-3">
-            {title}
-          </h1>
+          <h1 className="font-playfair text-xl font-bold text-white mb-3">{title}</h1>
 
           {/* Message */}
-          <p className="text-kcb-sable text-sm leading-relaxed mb-6">
-            {message}
-          </p>
+          <p className="text-kcb-sable text-sm leading-relaxed mb-6">{message}</p>
 
           {/* Detail rows */}
           {details && details.length > 0 && (
@@ -78,10 +76,18 @@ export default function StatusPage({
                 const base = `inline-flex items-center justify-center px-6 py-2.5 rounded-[4px] text-sm transition-colors ${cls}`
 
                 if (action.to) {
-                  return <Link key={i} to={action.to} className={base}>{action.label}</Link>
+                  return (
+                    <Link key={i} to={action.to} className={base}>
+                      {action.label}
+                    </Link>
+                  )
                 }
                 if (action.href) {
-                  return <a key={i} href={action.href} className={base}>{action.label}</a>
+                  return (
+                    <a key={i} href={action.href} className={base}>
+                      {action.label}
+                    </a>
+                  )
                 }
                 return (
                   <button key={i} onClick={action.onClick} className={base}>

@@ -1,4 +1,4 @@
-import RevealOnScroll from "./RevealOnScroll"
+import RevealOnScroll from './RevealOnScroll'
 
 /**
  * Three-column pillar grid section.
@@ -6,13 +6,9 @@ import RevealOnScroll from "./RevealOnScroll"
  * @param {Array<{num: string, title: string, text: string}>} props.pillars - Array of 3 pillar items
  * @param {"africa"|"global"} [props.portal="africa"] - Portal theme
  */
-export default function PillarSection({ pillars, portal = "africa" }) {
-  const borderColor = portal === "global"
-    ? "border-kcb-silver/8"
-    : "border-kcb-or/8"
-  const hoverBg = portal === "global"
-    ? "hover:bg-kcb-silver/[0.02]"
-    : "hover:bg-kcb-or/[0.02]"
+export default function PillarSection({ pillars, portal = 'africa' }) {
+  const borderColor = portal === 'global' ? 'border-kcb-silver/8' : 'border-kcb-or/8'
+  const hoverBg = portal === 'global' ? 'hover:bg-kcb-silver/[0.02]' : 'hover:bg-kcb-or/[0.02]'
 
   return (
     <section className={`bg-kcb-ardoise-cool border-t border-b ${borderColor} pt-10 md:pt-20`}>
@@ -26,12 +22,8 @@ export default function PillarSection({ pillars, portal = "africa" }) {
                 <div className="font-jetbrains text-[10px] text-[var(--accent)] tracking-[0.2em] mb-3">
                   {p.num}
                 </div>
-                <h3 className="font-playfair font-semibold text-lg text-white mb-2">
-                  {p.title}
-                </h3>
-                <p className="text-[13px] leading-relaxed text-kcb-pierre">
-                  {p.text}
-                </p>
+                <h3 className="font-playfair font-semibold text-lg text-white mb-2">{p.title}</h3>
+                <p className="text-[13px] leading-relaxed text-kcb-pierre">{p.text}</p>
               </div>
             </RevealOnScroll>
           ))}

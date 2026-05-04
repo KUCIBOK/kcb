@@ -1,19 +1,30 @@
-import { useState, useMemo } from "react"
-import { ShieldCheck, Shield, ExternalLink, Info, FileQuestion } from "lucide-react"
-import { Link } from "react-router-dom"
-import { useArtworks } from "../../store/ArtworkContext"
-import { KPICard } from "../ui"
+import { useState, useMemo } from 'react'
+import { ShieldCheck, Shield, ExternalLink, Info, FileQuestion } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useArtworks } from '../../store/ArtworkContext'
+import { KPICard } from '../ui'
 
 /** Badge de statut d'approbation de l'œuvre. */
 function ArtworkStatusBadge({ status }) {
   const CONFIG = {
-    approved: { label: "Approuvée", className: "bg-green-500/20 text-green-400 border-green-500/30" },
-    pending: { label: "En attente", className: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-    rejected: { label: "Refusée", className: "bg-red-500/20 text-red-400 border-red-500/30" },
+    approved: {
+      label: 'Approuvée',
+      className: 'bg-green-500/20 text-green-400 border-green-500/30',
+    },
+    pending: {
+      label: 'En attente',
+      className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+    },
+    rejected: { label: 'Refusée', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
   }
-  const cfg = CONFIG[status] ?? { label: status, className: "bg-gray-500/20 text-kcb-pierre border-gray-500/30" }
+  const cfg = CONFIG[status] ?? {
+    label: status,
+    className: 'bg-gray-500/20 text-kcb-pierre border-gray-500/30',
+  }
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${cfg.className}`}>
+    <span
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${cfg.className}`}
+    >
       {cfg.label}
     </span>
   )
@@ -21,9 +32,9 @@ function ArtworkStatusBadge({ status }) {
 
 /** Filtre de sélection du statut KCB. */
 const KCB_FILTERS = [
-  { value: "all", label: "Toutes" },
-  { value: "certified", label: "Certifiées" },
-  { value: "uncertified", label: "Non certifiées" },
+  { value: 'all', label: 'Toutes' },
+  { value: 'certified', label: 'Certifiées' },
+  { value: 'uncertified', label: 'Non certifiées' },
 ]
 
 /**
@@ -35,20 +46,23 @@ const KCB_FILTERS = [
 export function ArtistCertificationTab() {
   const { myArtworks } = useArtworks()
 
-  const [filter, setFilter] = useState("all")
+  const [filter, setFilter] = useState('all')
 
   const artworks = myArtworks ?? []
 
   // ── KPIs ──────────────────────────────────────────────────────────────────
   const total = artworks.length
   const certified = useMemo(() => artworks.filter((a) => !!a.kucibok_id).length, [artworks])
-  const pendingCert = useMemo(() => artworks.filter((a) => a.status === "pending").length, [artworks])
+  const pendingCert = useMemo(
+    () => artworks.filter((a) => a.status === 'pending').length,
+    [artworks]
+  )
   const uncertified = useMemo(() => artworks.filter((a) => !a.kucibok_id).length, [artworks])
 
   // ── Filtrage ──────────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
-    if (filter === "certified") return artworks.filter((a) => !!a.kucibok_id)
-    if (filter === "uncertified") return artworks.filter((a) => !a.kucibok_id)
+    if (filter === 'certified') return artworks.filter((a) => !!a.kucibok_id)
+    if (filter === 'uncertified') return artworks.filter((a) => !a.kucibok_id)
     return artworks
   }, [artworks, filter])
 
@@ -101,11 +115,13 @@ export function ArtistCertificationTab() {
       <div className="bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] p-5 flex items-start gap-3">
         <Info className="w-5 h-5 text-kcb-or shrink-0 mt-0.5" />
         <div>
-          <h4 className="text-white font-semibold text-sm mb-1">Qu'est-ce que le Standard Kucibok ?</h4>
+          <h4 className="text-white font-semibold text-sm mb-1">
+            Qu'est-ce que le Standard Kucibok ?
+          </h4>
           <p className="text-kcb-pierre text-sm leading-relaxed">
-            Le Standard Kucibok (KCB) est un identifiant unique et infalsifiable attribué à chaque œuvre d'art
-            africaine certifiée sur la plateforme. Il garantit l'authenticité, la traçabilité de provenance
-            et permet une vérification publique via QR code.
+            Le Standard Kucibok (KCB) est un identifiant unique et infalsifiable attribué à chaque
+            œuvre d'art africaine certifiée sur la plateforme. Il garantit l'authenticité, la
+            traçabilité de provenance et permet une vérification publique via QR code.
           </p>
           <Link
             to="/verify"
@@ -129,8 +145,8 @@ export function ArtistCertificationTab() {
                 onClick={() => setFilter(f.value)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                   filter === f.value
-                    ? "bg-kcb-or text-kcb-noir"
-                    : "text-kcb-pierre hover:text-white"
+                    ? 'bg-kcb-or text-kcb-noir'
+                    : 'text-kcb-pierre hover:text-white'
                 }`}
               >
                 {f.label}
@@ -143,7 +159,7 @@ export function ArtistCertificationTab() {
           <div className="flex flex-col items-center justify-center py-14 text-center px-6">
             <Shield className="w-10 h-10 text-kcb-pierre mb-3" />
             <p className="text-kcb-pierre font-medium">Aucune œuvre dans cette catégorie</p>
-            {filter === "certified" && (
+            {filter === 'certified' && (
               <p className="text-kcb-pierre text-sm mt-1">
                 Vous n'avez pas encore d'œuvre certifiée KCB.
               </p>
@@ -153,9 +169,15 @@ export function ArtistCertificationTab() {
           <div className="divide-y divide-white/[0.06]">
             {/* En-tête du tableau */}
             <div className="hidden sm:grid grid-cols-12 px-6 py-3 bg-white/[0.04]">
-              <span className="col-span-5 text-xs font-medium text-kcb-pierre uppercase tracking-wide">Titre</span>
-              <span className="col-span-3 text-xs font-medium text-kcb-pierre uppercase tracking-wide">Statut</span>
-              <span className="col-span-4 text-xs font-medium text-kcb-pierre uppercase tracking-wide">Identifiant KCB</span>
+              <span className="col-span-5 text-xs font-medium text-kcb-pierre uppercase tracking-wide">
+                Titre
+              </span>
+              <span className="col-span-3 text-xs font-medium text-kcb-pierre uppercase tracking-wide">
+                Statut
+              </span>
+              <span className="col-span-4 text-xs font-medium text-kcb-pierre uppercase tracking-wide">
+                Identifiant KCB
+              </span>
             </div>
 
             {filtered.map((artwork) => (
@@ -190,7 +212,7 @@ export function ArtistCertificationTab() {
                     <div className="flex items-center gap-2">
                       <Shield className="w-4 h-4 text-kcb-pierre shrink-0" />
                       <span className="text-kcb-pierre text-xs">Non certifiée</span>
-                      {artwork.status === "approved" && (
+                      {artwork.status === 'approved' && (
                         <Link
                           to="/dashboard/submit-artwork"
                           className="text-kcb-or hover:text-kcb-or/80 text-xs font-medium underline transition-colors"
@@ -212,10 +234,12 @@ export function ArtistCertificationTab() {
         <div className="bg-[#13161e] border border-white/[0.06] rounded-[4px] p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1">
             <h4 className="text-white font-semibold text-sm">
-              {uncertified} œuvre{uncertified > 1 ? "s" : ""} non certifiée{uncertified > 1 ? "s" : ""}
+              {uncertified} œuvre{uncertified > 1 ? 's' : ''} non certifiée
+              {uncertified > 1 ? 's' : ''}
             </h4>
             <p className="text-kcb-pierre text-sm mt-0.5">
-              Soumettez vos œuvres pour obtenir un identifiant KCB et garantir leur authenticité sur la plateforme.
+              Soumettez vos œuvres pour obtenir un identifiant KCB et garantir leur authenticité sur
+              la plateforme.
             </p>
           </div>
           <Link

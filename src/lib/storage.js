@@ -10,13 +10,13 @@
  * @module storage
  */
 
-import { supabase } from './supabase';
+import { supabase } from './supabase'
 
 /** Types MIME acceptés pour les images. */
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 
 /** Taille maximale autorisée par fichier (10 Mo). */
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PRIMITIVES
@@ -30,12 +30,12 @@ const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
  */
 function validateImageFile(file) {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    return { error: 'Format non supporté. Utilisez JPEG, PNG, WebP ou GIF.' };
+    return { error: 'Format non supporté. Utilisez JPEG, PNG, WebP ou GIF.' }
   }
   if (file.size > MAX_FILE_SIZE_BYTES) {
-    return { error: 'Fichier trop volumineux. Maximum 10 Mo.' };
+    return { error: 'Fichier trop volumineux. Maximum 10 Mo.' }
   }
-  return { ok: true };
+  return { ok: true }
 }
 
 /**
@@ -46,17 +46,17 @@ function validateImageFile(file) {
  * @returns {Promise<{ url: string } | { error: string }>}
  */
 export async function uploadFile({ bucket, path, file }) {
-  const validation = validateImageFile(file);
-  if (!validation.ok) return { error: validation.error };
+  const validation = validateImageFile(file)
+  if (!validation.ok) return { error: validation.error }
 
   const { error } = await supabase.storage
     .from(bucket)
-    .upload(path, file, { upsert: true, contentType: file.type });
+    .upload(path, file, { upsert: true, contentType: file.type })
 
-  if (error) return { error: error.message };
+  if (error) return { error: error.message }
 
-  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-  return { url: data.publicUrl };
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path)
+  return { url: data.publicUrl }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -72,8 +72,8 @@ export async function uploadFile({ bucket, path, file }) {
  * @returns {Promise<{ url: string } | { error: string }>}
  */
 export async function uploadProfileImage(userId, file) {
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
-  return uploadFile({ bucket: 'profiles', path: `${userId}/avatar.${ext}`, file });
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+  return uploadFile({ bucket: 'profiles', path: `${userId}/avatar.${ext}`, file })
 }
 
 /**
@@ -85,9 +85,9 @@ export async function uploadProfileImage(userId, file) {
  * @returns {Promise<{ url: string } | { error: string }>}
  */
 export async function uploadArtworkImage(userId, file) {
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
-  const timestamp = Date.now();
-  return uploadFile({ bucket: 'artworks', path: `${userId}/${timestamp}.${ext}`, file });
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+  const timestamp = Date.now()
+  return uploadFile({ bucket: 'artworks', path: `${userId}/${timestamp}.${ext}`, file })
 }
 
 /**
@@ -99,9 +99,9 @@ export async function uploadArtworkImage(userId, file) {
  * @returns {Promise<{ url: string } | { error: string }>}
  */
 export async function uploadBlogImage(userId, file) {
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
-  const timestamp = Date.now();
-  return uploadFile({ bucket: 'blogs', path: `${userId}/${timestamp}.${ext}`, file });
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+  const timestamp = Date.now()
+  return uploadFile({ bucket: 'blogs', path: `${userId}/${timestamp}.${ext}`, file })
 }
 
 /**
@@ -112,7 +112,7 @@ export async function uploadBlogImage(userId, file) {
  * @returns {Promise<{ ok: true } | { error: string }>}
  */
 export async function deleteFile(bucket, path) {
-  const { error } = await supabase.storage.from(bucket).remove([path]);
-  if (error) return { error: error.message };
-  return { ok: true };
+  const { error } = await supabase.storage.from(bucket).remove([path])
+  if (error) return { error: error.message }
+  return { ok: true }
 }

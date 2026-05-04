@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 
 /**
  * Design System - Accordion Component
- * 
+ *
  * Collapsible content sections
- * 
+ *
  * Features:
  * - Single or multiple items open at once
  * - Smooth animations
@@ -20,36 +20,36 @@ export function Accordion({
   openItems: controlledOpenItems,
   onChange,
   allowMultiple = false,
-  className = ''
+  className = '',
 }) {
-  const [internalOpenItems, setInternalOpenItems] = useState(defaultOpenItems);
-  
-  const isControlled = controlledOpenItems !== undefined;
-  const openItems = isControlled ? controlledOpenItems : internalOpenItems;
+  const [internalOpenItems, setInternalOpenItems] = useState(defaultOpenItems)
+
+  const isControlled = controlledOpenItems !== undefined
+  const openItems = isControlled ? controlledOpenItems : internalOpenItems
 
   const toggleItem = (itemValue) => {
-    let newOpenItems;
-    
+    let newOpenItems
+
     if (allowMultiple) {
       // Multiple items can be open
       newOpenItems = openItems.includes(itemValue)
-        ? openItems.filter(v => v !== itemValue)
-        : [...openItems, itemValue];
+        ? openItems.filter((v) => v !== itemValue)
+        : [...openItems, itemValue]
     } else {
       // Only one item can be open
-      newOpenItems = openItems.includes(itemValue) ? [] : [itemValue];
+      newOpenItems = openItems.includes(itemValue) ? [] : [itemValue]
     }
 
     if (!isControlled) {
-      setInternalOpenItems(newOpenItems);
+      setInternalOpenItems(newOpenItems)
     }
-    onChange?.(newOpenItems);
-  };
+    onChange?.(newOpenItems)
+  }
 
   return (
     <div className={`space-y-2 ${className}`}>
       {items.map((item) => {
-        const isOpen = openItems.includes(item.value);
+        const isOpen = openItems.includes(item.value)
 
         return (
           <div
@@ -69,16 +69,10 @@ export function Accordion({
               `}
             >
               <div className="flex items-center gap-3 flex-1">
-                {item.icon && (
-                  <span className="text-kcb-pierre">{item.icon}</span>
-                )}
+                {item.icon && <span className="text-kcb-pierre">{item.icon}</span>}
                 <div className="flex-1">
-                  <h3 className="text-sm font-medium text-white">
-                    {item.title}
-                  </h3>
-                  {item.subtitle && (
-                    <p className="text-xs text-kcb-pierre mt-1">{item.subtitle}</p>
-                  )}
+                  <h3 className="text-sm font-medium text-white">{item.title}</h3>
+                  {item.subtitle && <p className="text-xs text-kcb-pierre mt-1">{item.subtitle}</p>}
                 </div>
                 {item.badge !== undefined && (
                   <span className="px-2 py-1 text-xs rounded-full bg-white/[0.06] text-kcb-sable">
@@ -103,15 +97,13 @@ export function Accordion({
                 ${isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}
               `}
             >
-              <div className="p-4 pt-0 border-t border-white/[0.06]">
-                {item.content}
-              </div>
+              <div className="p-4 pt-0 border-t border-white/[0.06]">{item.content}</div>
             </div>
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }
 
 /**
@@ -119,52 +111,52 @@ export function Accordion({
  * For more explicit control and nested content
  */
 
-export function AccordionGroup({ 
-  children, 
+export function AccordionGroup({
+  children,
   defaultOpenItems = [],
   openItems: controlledOpenItems,
   onChange,
   allowMultiple = false,
-  className = '' 
+  className = '',
 }) {
-  const [internalOpenItems, setInternalOpenItems] = useState(defaultOpenItems);
-  
-  const isControlled = controlledOpenItems !== undefined;
-  const openItems = isControlled ? controlledOpenItems : internalOpenItems;
+  const [internalOpenItems, setInternalOpenItems] = useState(defaultOpenItems)
+
+  const isControlled = controlledOpenItems !== undefined
+  const openItems = isControlled ? controlledOpenItems : internalOpenItems
 
   const toggleItem = (itemValue) => {
-    let newOpenItems;
-    
+    let newOpenItems
+
     if (allowMultiple) {
       newOpenItems = openItems.includes(itemValue)
-        ? openItems.filter(v => v !== itemValue)
-        : [...openItems, itemValue];
+        ? openItems.filter((v) => v !== itemValue)
+        : [...openItems, itemValue]
     } else {
-      newOpenItems = openItems.includes(itemValue) ? [] : [itemValue];
+      newOpenItems = openItems.includes(itemValue) ? [] : [itemValue]
     }
 
     if (!isControlled) {
-      setInternalOpenItems(newOpenItems);
+      setInternalOpenItems(newOpenItems)
     }
-    onChange?.(newOpenItems);
-  };
+    onChange?.(newOpenItems)
+  }
 
   return (
     <div className={`space-y-2 ${className}`}>
-      {React.Children.map(children, child => {
+      {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, {
             isOpen: openItems.includes(child.props.value),
-            onToggle: () => toggleItem(child.props.value)
-          });
+            onToggle: () => toggleItem(child.props.value),
+          })
         }
-        return child;
+        return child
       })}
     </div>
-  );
+  )
 }
 
-export function AccordionItem({ 
+export function AccordionItem({
   value,
   title,
   subtitle,
@@ -174,10 +166,12 @@ export function AccordionItem({
   disabled,
   isOpen,
   onToggle,
-  className = ''
+  className = '',
 }) {
   return (
-    <div className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden ${className}`}>
+    <div
+      className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden ${className}`}
+    >
       {/* Accordion header */}
       <button
         onClick={() => !disabled && onToggle?.()}
@@ -189,16 +183,10 @@ export function AccordionItem({
         `}
       >
         <div className="flex items-center gap-3 flex-1">
-          {icon && (
-            <span className="text-kcb-pierre">{icon}</span>
-          )}
+          {icon && <span className="text-kcb-pierre">{icon}</span>}
           <div className="flex-1">
-            <h3 className="text-sm font-medium text-white">
-              {title}
-            </h3>
-            {subtitle && (
-              <p className="text-xs text-kcb-pierre mt-1">{subtitle}</p>
-            )}
+            <h3 className="text-sm font-medium text-white">{title}</h3>
+            {subtitle && <p className="text-xs text-kcb-pierre mt-1">{subtitle}</p>}
           </div>
           {badge !== undefined && (
             <span className="px-2 py-1 text-xs rounded-full bg-white/[0.06] text-kcb-sable">
@@ -220,12 +208,10 @@ export function AccordionItem({
           ${isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}
         `}
       >
-        <div className="p-4 pt-0 border-t border-white/[0.06]">
-          {children}
-        </div>
+        <div className="p-4 pt-0 border-t border-white/[0.06]">{children}</div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Accordion;
+export default Accordion

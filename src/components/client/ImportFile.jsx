@@ -1,52 +1,52 @@
-import { Upload, XCircle } from "lucide-react";
-import { useState } from "react";
-import { Progress } from "../ui";
-import { Modal, Button } from "../ui";
+import { Upload, XCircle } from 'lucide-react'
+import { useState } from 'react'
+import { Progress } from '../ui'
+import { Modal, Button } from '../ui'
 
 const ImportFile = ({ onUpload }) => {
-  const [file, setFile] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [result, setResult] = useState(null);
+  const [file, setFile] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [result, setResult] = useState(null)
 
   const handleUpload = async () => {
-    if (!file) return;
-    setIsLoading(true);
-    setProgress(0);
-    
+    if (!file) return
+    setIsLoading(true)
+    setProgress(0)
+
     // Simulate progress
     const progressInterval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 90) {
-          clearInterval(progressInterval);
-          return prev;
+          clearInterval(progressInterval)
+          return prev
         }
-        return prev + Math.random() * 30;
-      });
-    }, 300);
-    
-    const res = await onUpload(file);
-    clearInterval(progressInterval);
-    setProgress(100);
-    setResult(res);
-    setIsLoading(false);
+        return prev + Math.random() * 30
+      })
+    }, 300)
+
+    const res = await onUpload(file)
+    clearInterval(progressInterval)
+    setProgress(100)
+    setResult(res)
+    setIsLoading(false)
     if (!res.error) {
       setTimeout(() => {
-        setIsOpen(false);
-        setFile(null);
-        setResult(null);
-        setProgress(0);
-      }, 2000);
+        setIsOpen(false)
+        setFile(null)
+        setResult(null)
+        setProgress(0)
+      }, 2000)
     }
-  };
+  }
 
   const handleClose = () => {
-    setIsOpen(false);
-    setFile(null);
-    setResult(null);
-    setProgress(0);
-  };
+    setIsOpen(false)
+    setFile(null)
+    setResult(null)
+    setProgress(0)
+  }
 
   return (
     <>
@@ -59,12 +59,7 @@ const ImportFile = ({ onUpload }) => {
       </button>
 
       {isOpen && (
-        <Modal
-          isOpen={isOpen}
-          onClose={handleClose}
-          title="Importer des clients"
-          size="sm"
-        >
+        <Modal isOpen={isOpen} onClose={handleClose} title="Importer des clients" size="sm">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-kcb-sable mb-2">
@@ -83,9 +78,7 @@ const ImportFile = ({ onUpload }) => {
                   hover:file:bg-kcb-ardoise
                   disabled:opacity-50"
               />
-              <p className="mt-1 text-xs text-kcb-pierre">
-                Formats acceptés: .csv, .xlsx
-              </p>
+              <p className="mt-1 text-xs text-kcb-pierre">Formats acceptés: .csv, .xlsx</p>
             </div>
 
             {isLoading && (
@@ -98,19 +91,13 @@ const ImportFile = ({ onUpload }) => {
             {result && (
               <div
                 className={`p-3 rounded-md text-sm ${
-                  result.error
-                    ? "bg-red-900/50 text-red-200"
-                    : "bg-green-900/50 text-green-200"
+                  result.error ? 'bg-red-900/50 text-red-200' : 'bg-green-900/50 text-green-200'
                 }`}
               >
-                <div className="font-medium mb-1">
-                  {result.error || result.message}
-                </div>
+                <div className="font-medium mb-1">{result.error || result.message}</div>
                 {result.duplicates > 0 && result.duplicateDetails && (
                   <div className="mt-2">
-                    <p className="text-xs font-medium mb-1">
-                      Détails des doublons :
-                    </p>
+                    <p className="text-xs font-medium mb-1">Détails des doublons :</p>
                     <ul className="text-xs space-y-1 max-h-32 overflow-y-auto">
                       {result.duplicateDetails.map((detail, index) => (
                         <li key={index} className="opacity-90">
@@ -123,12 +110,7 @@ const ImportFile = ({ onUpload }) => {
               </div>
             )}
             <div className="flex justify-end gap-2 pt-4">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handleClose}
-                disabled={isLoading}
-              >
+              <Button type="button" variant="secondary" onClick={handleClose} disabled={isLoading}>
                 Annuler
               </Button>
               <Button
@@ -144,7 +126,7 @@ const ImportFile = ({ onUpload }) => {
         </Modal>
       )}
     </>
-  );
-};
+  )
+}
 
-export default ImportFile;
+export default ImportFile

@@ -1,46 +1,46 @@
-import { ChevronLeft, ChevronRight, Image, Search } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { DefineAuctionAction } from "./DefineAuctionAction";
+import { ChevronLeft, ChevronRight, Image, Search } from 'lucide-react'
+import { Fragment, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { DefineAuctionAction } from './DefineAuctionAction'
 
 export const AuctionsList = ({ artworks, user }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const filteredAuctions = Array.isArray(artworks)
-    ? artworks.filter((artwork) => artwork.auctionStatus === "auction_ongoing")
-    : [];
+    ? artworks.filter((artwork) => artwork.auctionStatus === 'auction_ongoing')
+    : []
 
   const [state, setState] = useState({
     set: filteredAuctions.slice(0, 40),
     artworks: filteredAuctions,
-  });
+  })
 
   useEffect(() => {
     const updateState = () => {
       setState({
         set: filteredAuctions.slice(0, 40),
         artworks: filteredAuctions,
-      });
-    };
-    updateState();
-  }, [artworks]);
+      })
+    }
+    updateState()
+  }, [artworks])
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
-    const query = search.trim().toLowerCase();
-    let filtered = filteredAuctions;
-    if (query !== "") {
+    const query = search.trim().toLowerCase()
+    let filtered = filteredAuctions
+    if (query !== '') {
       filtered = filteredAuctions.filter((artwork) => {
-        const titleMatch = artwork.title?.toLowerCase().includes(query);
-        const artistMatch = artwork.artist?.toLowerCase().includes(query);
-        return titleMatch || artistMatch;
-      });
+        const titleMatch = artwork.title?.toLowerCase().includes(query)
+        const artistMatch = artwork.artist?.toLowerCase().includes(query)
+        return titleMatch || artistMatch
+      })
     }
     setState({
       set: filtered.slice(0, 40),
       artworks: filtered,
-    });
-  }, [search, artworks]);
+    })
+  }, [search, artworks])
 
   return (
     <div>
@@ -86,9 +86,7 @@ export const AuctionsList = ({ artworks, user }) => {
                     <td className="py-2 font-semibold text-white truncate max-w-[160px]">
                       {artwork.title}
                     </td>
-                    <td className="py-2 text-kcb-sable truncate max-w-[120px]">
-                      {artwork.artist}
-                    </td>
+                    <td className="py-2 text-kcb-sable truncate max-w-[120px]">{artwork.artist}</td>
                     <td className="py-2 text-kcb-pierre">
                       {new Date(artwork.created).toLocaleDateString()}
                     </td>
@@ -116,11 +114,11 @@ export const AuctionsList = ({ artworks, user }) => {
             className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
             onClick={() => {
               if (state.set[0] !== state.artworks[0]) {
-                const startIndex = state.artworks.indexOf(state.set[0]) - 40;
+                const startIndex = state.artworks.indexOf(state.set[0]) - 40
                 setState({
                   ...state,
                   set: state.artworks.slice(startIndex, startIndex + 40),
-                });
+                })
               }
             }}
             disabled={state.set[0] === state.artworks[0]}
@@ -128,31 +126,26 @@ export const AuctionsList = ({ artworks, user }) => {
             <ChevronLeft className="w-4 h-4 mr-1 inline-block" /> Précédent
           </button>
           <span className="text-xs text-kcb-pierre flex items-center px-2">
-            Page {Math.floor(state.artworks.indexOf(state.set[0]) / 40) + 1} /{" "}
+            Page {Math.floor(state.artworks.indexOf(state.set[0]) / 40) + 1} /{' '}
             {Math.ceil(state.artworks.length / 40)}
           </span>
           <button
             className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
             onClick={() => {
-              const lastIndex = state.artworks.indexOf(
-                state.set[state.set.length - 1]
-              );
+              const lastIndex = state.artworks.indexOf(state.set[state.set.length - 1])
               if (lastIndex < state.artworks.length - 1) {
                 setState({
                   ...state,
                   set: state.artworks.slice(lastIndex + 1, lastIndex + 41),
-                });
+                })
               }
             }}
-            disabled={
-              state.set[state.set.length - 1] ===
-              state.artworks[state.artworks.length - 1]
-            }
+            disabled={state.set[state.set.length - 1] === state.artworks[state.artworks.length - 1]}
           >
             Suivant <ChevronRight className="w-4 h-4 ml-1 inline-block" />
           </button>
         </div>
       )}
     </div>
-  );
-};
+  )
+}

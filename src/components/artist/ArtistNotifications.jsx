@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Bell,
   CheckCircle,
@@ -12,11 +12,11 @@ import {
   MessageSquare,
   Heart,
   Clock,
-} from 'lucide-react';
+} from 'lucide-react'
 
 export default function ArtistNotifications() {
-  const [notifications, setNotifications] = useState([]);
-  const [filter, setFilter] = useState('all');
+  const [notifications, setNotifications] = useState([])
+  const [filter, setFilter] = useState('all')
 
   // Données par défaut
   const defaultNotifications = [
@@ -74,37 +74,36 @@ export default function ArtistNotifications() {
       read: true,
       severity: 'warning',
     },
-  ];
+  ]
 
   useEffect(() => {
-    setNotifications(defaultNotifications);
-  }, []);
+    setNotifications(defaultNotifications)
+  }, [])
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length
 
-  const filteredNotifications = filter === 'all' 
-    ? notifications 
-    : filter === 'unread' 
-      ? notifications.filter(n => !n.read)
-      : notifications.filter(n => n.read);
+  const filteredNotifications =
+    filter === 'all'
+      ? notifications
+      : filter === 'unread'
+        ? notifications.filter((n) => !n.read)
+        : notifications.filter((n) => n.read)
 
   const handleMarkRead = (id) => {
-    setNotifications(notifications.map(n => 
-      n._id === id ? { ...n, read: true } : n
-    ));
-  };
+    setNotifications(notifications.map((n) => (n._id === id ? { ...n, read: true } : n)))
+  }
 
   const handleMarkAllRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
-  };
+    setNotifications(notifications.map((n) => ({ ...n, read: true })))
+  }
 
   const handleDelete = (id) => {
-    setNotifications(notifications.filter(n => n._id !== id));
-  };
+    setNotifications(notifications.filter((n) => n._id !== id))
+  }
 
   const handleClearAll = () => {
-    setNotifications([]);
-  };
+    setNotifications([])
+  }
 
   const getSeverityStyle = (severity) => {
     const styles = {
@@ -112,9 +111,9 @@ export default function ArtistNotifications() {
       warning: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300',
       info: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
       critical: 'bg-red-500/10 border-red-500/30 text-red-300',
-    };
-    return styles[severity] || styles.info;
-  };
+    }
+    return styles[severity] || styles.info
+  }
 
   const getTypeIcon = (type) => {
     const icons = {
@@ -124,9 +123,9 @@ export default function ArtistNotifications() {
       message: <MessageSquare className="w-4 h-4" />,
       delivery: <Package className="w-4 h-4" />,
       warning: <AlertTriangle className="w-4 h-4" />,
-    };
-    return icons[type] || <Bell className="w-4 h-4" />;
-  };
+    }
+    return icons[type] || <Bell className="w-4 h-4" />
+  }
 
   return (
     <div className="space-y-6">
@@ -135,10 +134,9 @@ export default function ArtistNotifications() {
         <div>
           <h1 className="text-3xl font-bold text-white">🔔 Notifications</h1>
           <p className="text-kcb-pierre mt-1">
-            {unreadCount > 0 
+            {unreadCount > 0
               ? `${unreadCount} notification${unreadCount > 1 ? 's' : ''} non lue${unreadCount > 1 ? 's' : ''}`
-              : 'Toutes les notifications ont été lues'
-            }
+              : 'Toutes les notifications ont été lues'}
           </p>
         </div>
         <div className="flex gap-2">
@@ -183,12 +181,11 @@ export default function ArtistNotifications() {
         <div className="text-center py-12 bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06]">
           <Bell className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
           <p className="text-kcb-pierre">
-            {filter === 'all' 
-              ? 'Aucune notification' 
-              : filter === 'unread' 
-                ? 'Aucune notification non lue' 
-                : 'Aucune notification lue'
-            }
+            {filter === 'all'
+              ? 'Aucune notification'
+              : filter === 'unread'
+                ? 'Aucune notification non lue'
+                : 'Aucune notification lue'}
           </p>
         </div>
       ) : (
@@ -202,9 +199,7 @@ export default function ArtistNotifications() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5">
-                    {getTypeIcon(notification.type)}
-                  </div>
+                  <div className="mt-0.5">{getTypeIcon(notification.type)}</div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-white">{notification.title}</h3>
@@ -246,33 +241,33 @@ export default function ArtistNotifications() {
 
       {/* Statistiques rapides */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <StatCard 
-          label="Ventes" 
-          value={notifications.filter(n => n.type === 'sale').length}
+        <StatCard
+          label="Ventes"
+          value={notifications.filter((n) => n.type === 'sale').length}
           icon={<DollarSign className="w-4 h-4" />}
           color="green"
         />
-        <StatCard 
-          label="Enchères" 
-          value={notifications.filter(n => n.type === 'bid').length}
+        <StatCard
+          label="Enchères"
+          value={notifications.filter((n) => n.type === 'bid').length}
           icon={<DollarSign className="w-4 h-4" />}
           color="blue"
         />
-        <StatCard 
-          label="Messages" 
-          value={notifications.filter(n => n.type === 'message').length}
+        <StatCard
+          label="Messages"
+          value={notifications.filter((n) => n.type === 'message').length}
           icon={<MessageSquare className="w-4 h-4" />}
           color="kcb"
         />
-        <StatCard 
-          label="Favoris" 
-          value={notifications.filter(n => n.type === 'favorite').length}
+        <StatCard
+          label="Favoris"
+          value={notifications.filter((n) => n.type === 'favorite').length}
           icon={<Heart className="w-4 h-4" />}
           color="red"
         />
       </div>
     </div>
-  );
+  )
 }
 
 function StatCard({ label, value, icon, color }) {
@@ -281,7 +276,7 @@ function StatCard({ label, value, icon, color }) {
     blue: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
     kcb: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
     red: 'bg-red-500/10 border-red-500/30 text-red-300',
-  };
+  }
 
   return (
     <div className={`border rounded-[4px] p-4 ${colors[color]}`}>
@@ -291,5 +286,5 @@ function StatCard({ label, value, icon, color }) {
       </div>
       <div className="text-2xl font-bold text-white">{value}</div>
     </div>
-  );
+  )
 }

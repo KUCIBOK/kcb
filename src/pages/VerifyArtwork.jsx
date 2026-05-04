@@ -1,30 +1,30 @@
-import { useEffect, useState } from "react"
-import { useParams, Link } from "react-router-dom"
-import { ShieldCheck, ShieldX, Loader2, ExternalLink } from "lucide-react"
-import { verifyArtwork } from "../api/useArtworks"
+import { useEffect, useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { ShieldCheck, ShieldX, Loader2, ExternalLink } from 'lucide-react'
+import { verifyArtwork } from '../api/useArtworks'
 
 export default function VerifyArtwork() {
   const { kucibokId } = useParams()
-  const [state, setState] = useState("loading") // "loading" | "verified" | "unverified" | "error"
+  const [state, setState] = useState('loading') // "loading" | "verified" | "unverified" | "error"
   const [artwork, setArtwork] = useState(null)
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
     if (!kucibokId) {
-      setState("error")
-      setErrorMsg("Identifiant manquant.")
+      setState('error')
+      setErrorMsg('Identifiant manquant.')
       return
     }
 
     verifyArtwork(kucibokId).then((data) => {
       if (data?.error) {
-        setState("error")
+        setState('error')
         setErrorMsg(data.error)
       } else if (data?.verified === true) {
-        setState("verified")
+        setState('verified')
         setArtwork(data)
       } else {
-        setState("unverified")
+        setState('unverified')
         setArtwork(data)
       }
     })
@@ -43,9 +43,8 @@ export default function VerifyArtwork() {
       {/* Contenu */}
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
-
           {/* Loading */}
-          {state === "loading" && (
+          {state === 'loading' && (
             <div className="text-center">
               <Loader2 className="w-10 h-10 text-kcb-or animate-spin mx-auto mb-4" />
               <p className="text-kcb-pierre text-sm">Vérification en cours…</p>
@@ -53,7 +52,7 @@ export default function VerifyArtwork() {
           )}
 
           {/* Certifiée */}
-          {state === "verified" && artwork && (
+          {state === 'verified' && artwork && (
             <div className="bg-kcb-ardoise rounded-[4px] border border-kcb-or/30 shadow-lg overflow-hidden">
               {/* Bandeau or */}
               <div className="bg-kcb-or px-6 py-5 text-kcb-noir text-center">
@@ -79,8 +78,10 @@ export default function VerifyArtwork() {
                 {artwork.certifiedAt && (
                   <Row
                     label="Certifié le"
-                    value={new Date(artwork.certifiedAt).toLocaleDateString("fr-FR", {
-                      year: "numeric", month: "long", day: "numeric",
+                    value={new Date(artwork.certifiedAt).toLocaleDateString('fr-FR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
                     })}
                   />
                 )}
@@ -108,28 +109,32 @@ export default function VerifyArtwork() {
           )}
 
           {/* Non certifiée */}
-          {state === "unverified" && (
+          {state === 'unverified' && (
             <div className="bg-kcb-ardoise rounded-[4px] border border-amber-500/30 shadow-lg overflow-hidden">
               <div className="bg-amber-900/30 px-6 py-5 text-center border-b border-amber-500/20">
                 <ShieldX className="w-10 h-10 mx-auto mb-2 text-amber-400" />
                 <p className="font-bold text-amber-400 text-lg">Non encore certifiée</p>
               </div>
               <div className="px-6 py-6 text-center">
-                <p className="text-sm text-kcb-sable">{artwork?.message || "Cette œuvre n'a pas encore été validée par Kucibok."}</p>
+                <p className="text-sm text-kcb-sable">
+                  {artwork?.message || "Cette œuvre n'a pas encore été validée par Kucibok."}
+                </p>
                 <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kucibokId}</p>
               </div>
             </div>
           )}
 
           {/* Erreur / introuvable */}
-          {state === "error" && (
+          {state === 'error' && (
             <div className="bg-kcb-ardoise rounded-[4px] border border-red-500/30 shadow-lg overflow-hidden">
               <div className="bg-red-900/30 px-6 py-5 text-center border-b border-red-500/20">
                 <ShieldX className="w-10 h-10 mx-auto mb-2 text-red-400" />
                 <p className="font-bold text-red-400 text-lg">Identifiant introuvable</p>
               </div>
               <div className="px-6 py-6 text-center">
-                <p className="text-sm text-kcb-sable">{errorMsg || "Cet identifiant ne correspond à aucune œuvre enregistrée."}</p>
+                <p className="text-sm text-kcb-sable">
+                  {errorMsg || 'Cet identifiant ne correspond à aucune œuvre enregistrée.'}
+                </p>
                 <p className="text-xs text-kcb-pierre mt-3 font-jetbrains">{kucibokId}</p>
               </div>
             </div>

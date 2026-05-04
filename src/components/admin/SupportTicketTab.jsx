@@ -1,59 +1,59 @@
-﻿import { useState, useEffect } from 'react';
-import { MessageSquare, Plus, CheckCircle, Clock, AlertCircle } from 'lucide-react';
-import { utils } from '../../api/useAPI';
+﻿import { useState, useEffect } from 'react'
+import { MessageSquare, Plus, CheckCircle, Clock, AlertCircle } from 'lucide-react'
+import { utils } from '../../api/useAPI'
 
 export default function SupportTicketTab() {
-  const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [tickets, setTickets] = useState([])
+  const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     total: 0,
     ouvert: 0,
     en_cours: 0,
     resolu: 0,
     ferme: 0,
-  });
+  })
 
   useEffect(() => {
-    loadTickets();
-  }, []);
+    loadTickets()
+  }, [])
 
   const loadTickets = async () => {
     try {
       const response = await fetch(`${utils.api}/support-tickets/admin/all`, {
         headers: utils.options.headers,
-      });
-      const data = await response.json();
-      setTickets(data.tickets || []);
+      })
+      const data = await response.json()
+      setTickets(data.tickets || [])
 
       // Calculer les stats
       const newStats = {
         total: data.count || 0,
-        ouvert: data.tickets?.filter(t => t.status === 'ouvert').length || 0,
-        en_cours: data.tickets?.filter(t => t.status === 'en_cours').length || 0,
-        resolu: data.tickets?.filter(t => t.status === 'resolu').length || 0,
-        ferme: data.tickets?.filter(t => t.status === 'ferme').length || 0,
-      };
-      setStats(newStats);
+        ouvert: data.tickets?.filter((t) => t.status === 'ouvert').length || 0,
+        en_cours: data.tickets?.filter((t) => t.status === 'en_cours').length || 0,
+        resolu: data.tickets?.filter((t) => t.status === 'resolu').length || 0,
+        ferme: data.tickets?.filter((t) => t.status === 'ferme').length || 0,
+      }
+      setStats(newStats)
     } catch (error) {
       // Silenced for production
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const statusColors = {
     ouvert: 'bg-green-500/20 text-green-300',
     en_cours: 'bg-kcb-or/20 text-kcb-sable',
     resolu: 'bg-kcb-bronze/20 text-kcb-sable',
     ferme: 'bg-gray-500/20 text-gray-300',
-  };
+  }
 
   const priorityColors = {
     basse: 'bg-kcb-or/20 text-kcb-sable',
     normale: 'bg-gray-500/20 text-gray-300',
     haute: 'bg-orange-500/20 text-orange-300',
     critique: 'bg-red-500/20 text-red-300',
-  };
+  }
 
   if (loading) {
     return (
@@ -63,7 +63,7 @@ export default function SupportTicketTab() {
           <p>Chargement des tickets...</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -80,7 +80,7 @@ export default function SupportTicketTab() {
       {/* Liste des tickets */}
       <div className="bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06] p-6">
         <h3 className="text-xl font-bold text-white mb-4">📋 Tous les tickets</h3>
-        
+
         {tickets.length === 0 ? (
           <div className="text-center py-12">
             <MessageSquare className="w-12 h-12 mx-auto text-kcb-pierre mb-4" />
@@ -102,9 +102,9 @@ export default function SupportTicketTab() {
                     {ticket.priority}
                   </span>
                 </div>
-                
+
                 <p className="text-sm text-kcb-pierre mb-3">{ticket.description}</p>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex gap-2">
                     <span className={`text-xs px-2 py-1 rounded ${statusColors[ticket.status]}`}>
@@ -124,7 +124,7 @@ export default function SupportTicketTab() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 function StatCard({ label, value, color }) {
@@ -133,12 +133,12 @@ function StatCard({ label, value, color }) {
     green: 'bg-green-500/10 border-green-500/30 text-green-300',
     kcbBronze: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
     gray: 'bg-gray-500/10 border-gray-500/30 text-gray-300',
-  };
+  }
 
   return (
     <div className={`border rounded-[4px] p-4 ${colorClasses[color]}`}>
       <div className="text-xs font-medium opacity-75">{label}</div>
       <div className="text-2xl font-bold mt-1">{value}</div>
     </div>
-  );
+  )
 }

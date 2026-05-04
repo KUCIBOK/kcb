@@ -1,76 +1,82 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
-import { DataLoader } from "../components/loaders/PageLoader";
-import { supabase } from "../lib/supabase";
-import RevealOnScroll from "../components/landing/RevealOnScroll";
-import { isPasswordLeaked } from "../lib/hibp";
-import { resetPassword } from "../api/useAuth";
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams, Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
+import { DataLoader } from '../components/loaders/PageLoader'
+import { supabase } from '../lib/supabase'
+import RevealOnScroll from '../components/landing/RevealOnScroll'
+import { isPasswordLeaked } from '../lib/hibp'
+import { resetPassword } from '../api/useAuth'
 
 // Parse le hash Supabase (#access_token=... ou #error=...)
 function parseHash() {
-  const params = new URLSearchParams(window.location.hash.slice(1));
+  const params = new URLSearchParams(window.location.hash.slice(1))
   return {
     accessToken: params.get('access_token'),
-    error:       params.get('error_code') || params.get('error'),
-  };
+    error: params.get('error_code') || params.get('error'),
+  }
 }
 
 export default function ResetPasswordForm() {
-  const { token } = useParams();
-  const navigate  = useNavigate();
+  const { token } = useParams()
+  const navigate = useNavigate()
 
   // Lire le hash immédiatement — avant le premier render
-  const hash = parseHash();
+  const hash = parseHash()
 
-  const [linkError, setLinkError] = useState(hash.error ?? null);
+  const [linkError, setLinkError] = useState(hash.error ?? null)
   // ready = true si : token dans l'URL (ancien flow) OU access_token dans le hash
-  const [ready, setReady] = useState(!!token || (!!hash.accessToken && !hash.error));
+  const [ready, setReady] = useState(!!token || (!!hash.accessToken && !hash.error))
   const [state, setState] = useState({
-    password:        '',
+    password: '',
     confirmPassword: '',
-    error:           '',
-    success:         false,
-    loading:         false,
-  });
+    error: '',
+    success: false,
+    loading: false,
+  })
 
   useEffect(() => {
     // Déjà prêt ou erreur détectée — pas besoin d'écouter
-    if (token || hash.error || hash.accessToken) return;
+    if (token || hash.error || hash.accessToken) return
 
     // Fallback : écouter PASSWORD_RECOVERY si hash pas encore dispo au mount
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') setReady(true);
-      if (event === 'SIGNED_OUT')        setLinkError('access_denied');
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setReady(true)
+      if (event === 'SIGNED_OUT') setLinkError('access_denied')
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (state.password !== state.confirmPassword) {
-      setState(s => ({ ...s, error: 'Les mots de passe ne correspondent pas.' }));
-      return;
+      setState((s) => ({ ...s, error: 'Les mots de passe ne correspondent pas.' }))
+      return
     }
-    setState(s => ({ ...s, error: '', loading: true }));
+    setState((s) => ({ ...s, error: '', loading: true }))
     try {
-      const leaked = await isPasswordLeaked(state.password);
+      const leaked = await isPasswordLeaked(state.password)
       if (leaked) {
-        setState(s => ({
+        setState((s) => ({
           ...s,
           loading: false,
-          error: 'Ce mot de passe a été compromis dans une fuite de données. Choisissez-en un autre.',
-        }));
-        return;
+          error:
+            'Ce mot de passe a été compromis dans une fuite de données. Choisissez-en un autre.',
+        }))
+        return
       }
-      const result = await resetPassword({ password: state.password });
-      if (result.error) { setState(s => ({ ...s, error: result.error, loading: false })); return; }
-      setState(s => ({ ...s, success: true, loading: false }));
-      setTimeout(() => navigate('/sign-in'), 3000);
+      const result = await resetPassword({ password: state.password })
+      if (result.error) {
+        setState((s) => ({ ...s, error: result.error, loading: false }))
+        return
+      }
+      setState((s) => ({ ...s, success: true, loading: false }))
+      setTimeout(() => navigate('/sign-in'), 3000)
     } catch {
-      setState(s => ({ ...s, error: 'Erreur serveur. Veuillez réessayer.', loading: false }));
+      setState((s) => ({ ...s, error: 'Erreur serveur. Veuillez réessayer.', loading: false }))
     }
-  };
+  }
 
   return (
     <>
@@ -80,10 +86,17 @@ export default function ResetPasswordForm() {
       <div className="min-h-screen flex items-center justify-center bg-kcb-noir-deep px-2 py-10">
         <RevealOnScroll>
           <div className="w-full max-w-sm mx-auto">
-
             <div className="text-center mb-7">
-              <Link to="/"><img src="/images/kucibok-white-logo.svg" alt="logo kucibok" className="w-12 h-12 object-cover mx-auto" /></Link>
-              <p className="font-playfair text-xl font-semibold text-white mb-1">Nouveau mot de passe</p>
+              <Link to="/">
+                <img
+                  src="/images/kucibok-white-logo.svg"
+                  alt="logo kucibok"
+                  className="w-12 h-12 object-cover mx-auto"
+                />
+              </Link>
+              <p className="font-playfair text-xl font-semibold text-white mb-1">
+                Nouveau mot de passe
+              </p>
               <p className="text-xs text-kcb-pierre">Entrez un nouveau mot de passe sécurisé</p>
             </div>
 
@@ -134,7 +147,7 @@ export default function ResetPasswordForm() {
                   <input
                     type="password"
                     value={state.password}
-                    onChange={e => setState(s => ({ ...s, password: e.target.value }))}
+                    onChange={(e) => setState((s) => ({ ...s, password: e.target.value }))}
                     required
                     minLength={8}
                     placeholder="Nouveau mot de passe"
@@ -143,7 +156,7 @@ export default function ResetPasswordForm() {
                   <input
                     type="password"
                     value={state.confirmPassword}
-                    onChange={e => setState(s => ({ ...s, confirmPassword: e.target.value }))}
+                    onChange={(e) => setState((s) => ({ ...s, confirmPassword: e.target.value }))}
                     required
                     minLength={8}
                     placeholder="Répétez le mot de passe"
@@ -159,10 +172,9 @@ export default function ResetPasswordForm() {
                 </form>
               </>
             )}
-
           </div>
         </RevealOnScroll>
       </div>
     </>
-  );
+  )
 }

@@ -1,67 +1,74 @@
-import { useState } from "react";
-import { X, Truck, Package, CheckCircle, Loader2 } from "lucide-react";
-import { useDelivery } from "../../store/DeliveryStore";
+import { useState } from 'react'
+import { X, Truck, Package, CheckCircle, Loader2 } from 'lucide-react'
+import { useDelivery } from '../../store/DeliveryStore'
 
-const ORIGIN_COUNTRIES = ["Sénégal", "Côte d'Ivoire", "Bénin", "Nigeria", "France"];
+const ORIGIN_COUNTRIES = ['Sénégal', "Côte d'Ivoire", 'Bénin', 'Nigeria', 'France']
 
 const PACKAGING_ITEMS = [
-  { key: "museum_wrap",     label: "Emballage muséal (papier de soie + film)" },
-  { key: "bubble_wrap",     label: "Protection bulles d'air" },
-  { key: "crate",           label: "Caisse en bois renforcée" },
-  { key: "fragile_label",   label: "Étiquettes « Fragile » et « Haut »" },
-  { key: "humidity_control",label: "Contrôle humidité (silica gel)" },
-];
+  { key: 'museum_wrap', label: 'Emballage muséal (papier de soie + film)' },
+  { key: 'bubble_wrap', label: "Protection bulles d'air" },
+  { key: 'crate', label: 'Caisse en bois renforcée' },
+  { key: 'fragile_label', label: 'Étiquettes « Fragile » et « Haut »' },
+  { key: 'humidity_control', label: 'Contrôle humidité (silica gel)' },
+]
 
 const initialForm = {
-  corridor:        "AF_TO_FR",
-  originCountry:   "",
-  deliveryAddress: "",
-  recipientName:   "",
-  recipientPhone:  "",
-  collectDate:     "",
-  deliveryDate:    "",
-  specialInstructions: "",
-  packageSize:     "medium",
-  packageWeight:   "",
-  deliveryPriority:"standard",
+  corridor: 'AF_TO_FR',
+  originCountry: '',
+  deliveryAddress: '',
+  recipientName: '',
+  recipientPhone: '',
+  collectDate: '',
+  deliveryDate: '',
+  specialInstructions: '',
+  packageSize: 'medium',
+  packageWeight: '',
+  deliveryPriority: 'standard',
   packagingChecklist: {
-    museum_wrap: false, bubble_wrap: false, crate: false,
-    fragile_label: false, humidity_control: false,
+    museum_wrap: false,
+    bubble_wrap: false,
+    crate: false,
+    fragile_label: false,
+    humidity_control: false,
   },
-};
+}
 
 export function RequestShipmentModal({ artwork, isOpen, onClose }) {
-  const { create } = useDelivery();
-  const [form, setForm]       = useState(initialForm);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(null); // trackingId on success
+  const { create } = useDelivery()
+  const [form, setForm] = useState(initialForm)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(null) // trackingId on success
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
-  const set = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
+  const set = (field, value) => setForm((prev) => ({ ...prev, [field]: value }))
   const setChecklist = (key, value) =>
-    setForm(prev => ({ ...prev, packagingChecklist: { ...prev.packagingChecklist, [key]: value } }));
+    setForm((prev) => ({
+      ...prev,
+      packagingChecklist: { ...prev.packagingChecklist, [key]: value },
+    }))
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.originCountry || !form.deliveryAddress || !form.recipientName || !form.recipientPhone) return;
-    setLoading(true);
+    e.preventDefault()
+    if (!form.originCountry || !form.deliveryAddress || !form.recipientName || !form.recipientPhone)
+      return
+    setLoading(true)
     const payload = {
       ...form,
       artworkIds: [artwork._id],
-    };
-    const result = await create(payload);
-    setLoading(false);
-    if (result?._id) {
-      setSuccess(result.trackingId || result._id);
     }
-  };
+    const result = await create(payload)
+    setLoading(false)
+    if (result?._id) {
+      setSuccess(result.trackingId || result._id)
+    }
+  }
 
   const handleClose = () => {
-    setForm(initialForm);
-    setSuccess(null);
-    onClose();
-  };
+    setForm(initialForm)
+    setSuccess(null)
+    onClose()
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -72,7 +79,10 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             <Truck className="w-5 h-5 text-kcb-or" />
             <h2 className="text-white font-semibold">Demande d'expédition transfrontalière</h2>
           </div>
-          <button onClick={handleClose} className="text-kcb-pierre hover:text-white transition p-1 rounded-md hover:bg-kcb-ardoise">
+          <button
+            onClick={handleClose}
+            className="text-kcb-pierre hover:text-white transition p-1 rounded-md hover:bg-kcb-ardoise"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -83,16 +93,20 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
             <h3 className="text-white font-semibold text-xl mb-2">Demande envoyée !</h3>
             <p className="text-kcb-pierre text-sm mb-6">
-              Votre demande d'expédition pour <strong className="text-white">{artwork.title}</strong> a été soumise.
-              L'équipe Kucibok vous contactera sous 48h avec un devis.
+              Votre demande d'expédition pour{' '}
+              <strong className="text-white">{artwork.title}</strong> a été soumise. L'équipe
+              Kucibok vous contactera sous 48h avec un devis.
             </p>
-            {typeof success === "string" && success.length > 10 && (
+            {typeof success === 'string' && success.length > 10 && (
               <div className="bg-kcb-ardoise border border-kcb-or/30 rounded-[4px] p-4 mb-6">
                 <p className="text-kcb-pierre text-xs mb-1">Numéro de suivi</p>
                 <p className="text-kcb-or font-mono font-semibold text-lg">{success}</p>
               </div>
             )}
-            <button onClick={handleClose} className="px-6 py-2.5 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-semibold rounded-md transition">
+            <button
+              onClick={handleClose}
+              className="px-6 py-2.5 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-semibold rounded-md transition"
+            >
               Fermer
             </button>
           </div>
@@ -104,7 +118,11 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             {/* Œuvre concernée */}
             <div className="bg-kcb-ardoise/60 border border-white/[0.06] rounded-[4px] p-3 flex items-center gap-3">
               {artwork.image && (
-                <img src={artwork.image} alt={artwork.title} className="w-12 h-12 object-cover rounded-md shrink-0" />
+                <img
+                  src={artwork.image}
+                  alt={artwork.title}
+                  className="w-12 h-12 object-cover rounded-md shrink-0"
+                />
               )}
               <div>
                 <p className="text-white text-sm font-semibold">{artwork.title}</p>
@@ -117,7 +135,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
               <label className="text-xs text-kcb-pierre font-medium">Direction</label>
               <select
                 value={form.corridor}
-                onChange={e => set("corridor", e.target.value)}
+                onChange={(e) => set('corridor', e.target.value)}
                 className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
               >
                 <option value="AF_TO_FR">Afrique → France</option>
@@ -127,36 +145,46 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
 
             {/* Pays d'origine */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-kcb-pierre font-medium">Pays d'origine <span className="text-red-400">*</span></label>
+              <label className="text-xs text-kcb-pierre font-medium">
+                Pays d'origine <span className="text-red-400">*</span>
+              </label>
               <select
                 required
                 value={form.originCountry}
-                onChange={e => set("originCountry", e.target.value)}
+                onChange={(e) => set('originCountry', e.target.value)}
                 className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
               >
                 <option value="">Sélectionner…</option>
-                {ORIGIN_COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                {ORIGIN_COUNTRIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
               </select>
             </div>
 
             {/* Destinataire */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-kcb-pierre font-medium">Nom du destinataire <span className="text-red-400">*</span></label>
+                <label className="text-xs text-kcb-pierre font-medium">
+                  Nom du destinataire <span className="text-red-400">*</span>
+                </label>
                 <input
                   required
                   value={form.recipientName}
-                  onChange={e => set("recipientName", e.target.value)}
+                  onChange={(e) => set('recipientName', e.target.value)}
                   className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="Jean Dupont"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-kcb-pierre font-medium">Téléphone <span className="text-red-400">*</span></label>
+                <label className="text-xs text-kcb-pierre font-medium">
+                  Téléphone <span className="text-red-400">*</span>
+                </label>
                 <input
                   required
                   value={form.recipientPhone}
-                  onChange={e => set("recipientPhone", e.target.value)}
+                  onChange={(e) => set('recipientPhone', e.target.value)}
                   className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="+33 6 00 00 00 00"
                 />
@@ -165,11 +193,13 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
 
             {/* Adresse de livraison */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-kcb-pierre font-medium">Adresse de livraison <span className="text-red-400">*</span></label>
+              <label className="text-xs text-kcb-pierre font-medium">
+                Adresse de livraison <span className="text-red-400">*</span>
+              </label>
               <input
                 required
                 value={form.deliveryAddress}
-                onChange={e => set("deliveryAddress", e.target.value)}
+                onChange={(e) => set('deliveryAddress', e.target.value)}
                 className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 placeholder="12 rue de l'Art, 75001 Paris, France"
               />
@@ -182,7 +212,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 <input
                   type="date"
                   value={form.collectDate}
-                  onChange={e => set("collectDate", e.target.value)}
+                  onChange={(e) => set('collectDate', e.target.value)}
                   className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 />
               </div>
@@ -191,7 +221,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 <input
                   type="date"
                   value={form.deliveryDate}
-                  onChange={e => set("deliveryDate", e.target.value)}
+                  onChange={(e) => set('deliveryDate', e.target.value)}
                   className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 />
               </div>
@@ -203,7 +233,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 <label className="text-xs text-kcb-pierre font-medium">Taille du colis</label>
                 <select
                   value={form.packageSize}
-                  onChange={e => set("packageSize", e.target.value)}
+                  onChange={(e) => set('packageSize', e.target.value)}
                   className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 >
                   <option value="small">Petit (&lt;50cm)</option>
@@ -219,7 +249,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                   min="0.1"
                   max="500"
                   value={form.packageWeight}
-                  onChange={e => set("packageWeight", e.target.value)}
+                  onChange={(e) => set('packageWeight', e.target.value)}
                   className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="ex: 5"
                 />
@@ -228,7 +258,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 <label className="text-xs text-kcb-pierre font-medium">Priorité</label>
                 <select
                   value={form.deliveryPriority}
-                  onChange={e => set("deliveryPriority", e.target.value)}
+                  onChange={(e) => set('deliveryPriority', e.target.value)}
                   className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 >
                   <option value="standard">Standard</option>
@@ -246,15 +276,17 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                   Protocole emballage muséal
                 </p>
               </div>
-              {PACKAGING_ITEMS.map(item => (
+              {PACKAGING_ITEMS.map((item) => (
                 <label key={item.key} className="flex items-center gap-3 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={form.packagingChecklist[item.key]}
-                    onChange={e => setChecklist(item.key, e.target.checked)}
+                    onChange={(e) => setChecklist(item.key, e.target.checked)}
                     className="accent-kcb-or scale-110"
                   />
-                  <span className="text-sm text-kcb-sable group-hover:text-white transition">{item.label}</span>
+                  <span className="text-sm text-kcb-sable group-hover:text-white transition">
+                    {item.label}
+                  </span>
                 </label>
               ))}
             </div>
@@ -264,7 +296,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
               <label className="text-xs text-kcb-pierre font-medium">Instructions spéciales</label>
               <textarea
                 value={form.specialInstructions}
-                onChange={e => set("specialInstructions", e.target.value)}
+                onChange={(e) => set('specialInstructions', e.target.value)}
                 rows={3}
                 className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or resize-none"
                 placeholder="ex: œuvre fragile, nécessite klimatisation, accès difficile…"
@@ -273,8 +305,8 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
 
             {/* Note CITES */}
             <p className="text-xs text-kcb-pierre bg-kcb-ardoise/60 rounded-[4px] p-3">
-              ℹ️ Si l'œuvre implique des matériaux protégés (ivoire, bois rare…), un certificat CITES sera
-              demandé par les douanes. Kucibok vous accompagne dans cette démarche.
+              ℹ️ Si l'œuvre implique des matériaux protégés (ivoire, bois rare…), un certificat
+              CITES sera demandé par les douanes. Kucibok vous accompagne dans cette démarche.
             </p>
 
             {/* Actions */}
@@ -291,7 +323,11 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 disabled={loading}
                 className="px-5 py-2 text-sm font-semibold bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir rounded-md transition flex items-center gap-2 disabled:opacity-50"
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Truck className="w-4 h-4" />}
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Truck className="w-4 h-4" />
+                )}
                 Soumettre la demande
               </button>
             </div>
@@ -299,5 +335,5 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
         )}
       </div>
     </div>
-  );
+  )
 }

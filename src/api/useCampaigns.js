@@ -1,6 +1,6 @@
-import { utils } from './useAPI';
+import { utils } from './useAPI'
 
-const CAMPAIGN_API = `${utils.api}/campaigns`;
+const CAMPAIGN_API = `${utils.api}/campaigns`
 
 /**
  * Recupere la liste des campagnes avec filtres optionnels.
@@ -9,19 +9,19 @@ const CAMPAIGN_API = `${utils.api}/campaigns`;
  */
 export const getCampaigns = async (filters = {}) => {
   try {
-    const params = new URLSearchParams(filters);
+    const params = new URLSearchParams(filters)
     const response = await fetch(`${CAMPAIGN_API}/campaigns?${params}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere une campagne par ID.
@@ -32,16 +32,16 @@ export const getCampaign = async (id) => {
   try {
     const response = await fetch(`${CAMPAIGN_API}/campaigns/${id}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Cree une nouvelle campagne.
@@ -54,16 +54,16 @@ export const createCampaign = async (data) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour une campagne existante.
@@ -77,16 +77,16 @@ export const updateCampaign = async (id, data) => {
       method: 'PUT',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Supprime une campagne.
@@ -98,16 +98,16 @@ export const deleteCampaign = async (id) => {
     const response = await fetch(`${CAMPAIGN_API}/campaigns/${id}`, {
       method: 'DELETE',
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Envoie un test de campagne a des emails specifiques.
@@ -121,16 +121,16 @@ export const sendTestCampaign = async (id, testEmails) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ testEmails }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Lance l'envoi d'une campagne (immediat ou programme).
@@ -144,16 +144,16 @@ export const sendCampaign = async (id, scheduledAt = null) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ scheduledAt }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere les analytics d'une campagne.
@@ -164,13 +164,13 @@ export const getCampaignAnalytics = async (id) => {
   try {
     const response = await fetch(`${CAMPAIGN_API}/campaigns/${id}/analytics`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}

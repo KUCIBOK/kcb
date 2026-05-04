@@ -1,40 +1,43 @@
-import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { ShieldCheck, SlidersHorizontal, Search, X, Loader2, ArrowLeft, Lock } from "lucide-react";
-import { getCataloguePro } from "../api/useSourcing";
-import { SourcingInquiryModal } from "../components/artworks/SourcingInquiryModal";
-import { Helmet } from "react-helmet";
-import { useAuth } from "../store/AuthContext";
+import { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
+import { ShieldCheck, SlidersHorizontal, Search, X, Loader2, ArrowLeft, Lock } from 'lucide-react'
+import { getCataloguePro } from '../api/useSourcing'
+import { SourcingInquiryModal } from '../components/artworks/SourcingInquiryModal'
+import { Helmet } from 'react-helmet'
+import { useAuth } from '../store/AuthContext'
 
 const AVAILABILITY_LABELS = {
-  available: { label: "Disponible", color: "text-green-400 bg-green-900/30 border-green-800/40" },
-  on_exhibition: { label: "En exposition", color: "text-yellow-400 bg-yellow-900/30 border-yellow-800/40" },
-  on_request: { label: "Sur demande", color: "text-kcb-or bg-kcb-or/10 border-kcb-or/30" },
-  unavailable: { label: "Indisponible", color: "text-red-400 bg-red-900/30 border-red-800/40" },
-};
+  available: { label: 'Disponible', color: 'text-green-400 bg-green-900/30 border-green-800/40' },
+  on_exhibition: {
+    label: 'En exposition',
+    color: 'text-yellow-400 bg-yellow-900/30 border-yellow-800/40',
+  },
+  on_request: { label: 'Sur demande', color: 'text-kcb-or bg-kcb-or/10 border-kcb-or/30' },
+  unavailable: { label: 'Indisponible', color: 'text-red-400 bg-red-900/30 border-red-800/40' },
+}
 
 const AVAILABILITY_OPTIONS = [
-  { value: "", label: "Toutes disponibilités" },
-  { value: "available", label: "Disponible" },
-  { value: "on_exhibition", label: "En exposition" },
-  { value: "on_request", label: "Sur demande" },
-  { value: "unavailable", label: "Indisponible" },
-];
+  { value: '', label: 'Toutes disponibilités' },
+  { value: 'available', label: 'Disponible' },
+  { value: 'on_exhibition', label: 'En exposition' },
+  { value: 'on_request', label: 'Sur demande' },
+  { value: 'unavailable', label: 'Indisponible' },
+]
 
 function validImageUrl(url) {
-  if (!url) return null;
-  if (url.includes('backend.kucibok.com')) return null;
-  return url;
+  if (!url) return null
+  if (url.includes('backend.kucibok.com')) return null
+  return url
 }
 
 const INITIAL_FILTERS = {
-  category: "",
-  availabilityStatus: "",
-  priceMin: "",
-  priceMax: "",
-  search: "",
+  category: '',
+  availabilityStatus: '',
+  priceMin: '',
+  priceMax: '',
+  search: '',
   page: 1,
-};
+}
 
 /**
  * Page Catalogue Certifié — accès professionnel + admin (F3).
@@ -51,7 +54,8 @@ function SubscriptionGate() {
         <div>
           <p className="text-white font-semibold text-xl mb-2">Catalogue B2B — Accès réservé</p>
           <p className="text-kcb-pierre text-sm">
-            Le catalogue professionnel est accessible aux curateurs et galeries disposant d'un abonnement actif.
+            Le catalogue professionnel est accessible aux curateurs et galeries disposant d'un
+            abonnement actif.
           </p>
         </div>
         <Link
@@ -60,74 +64,83 @@ function SubscriptionGate() {
         >
           Voir les plans
         </Link>
-        <Link to="/dashboard/curator" className="text-sm text-kcb-pierre hover:text-white transition flex items-center gap-1">
+        <Link
+          to="/dashboard/curator"
+          className="text-sm text-kcb-pierre hover:text-white transition flex items-center gap-1"
+        >
           <ArrowLeft className="w-4 h-4" />
           Retour au tableau de bord
         </Link>
       </div>
     </div>
-  );
+  )
 }
 
 export default function CataloguePro() {
-  const { subscription } = useAuth();
-  const isSubscriptionActive = subscription?.status === 'active';
+  const { subscription } = useAuth()
+  const isSubscriptionActive = subscription?.status === 'active'
 
-  const [filters, setFilters] = useState(INITIAL_FILTERS);
-  const [pending, setPending] = useState(INITIAL_FILTERS);
-  const [catalogue, setCatalogue] = useState({ data: [], total: 0, pages: 1 });
-  const [loading, setLoading] = useState(true);
-  const [selectedArtwork, setSelectedArtwork] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState(INITIAL_FILTERS)
+  const [pending, setPending] = useState(INITIAL_FILTERS)
+  const [catalogue, setCatalogue] = useState({ data: [], total: 0, pages: 1 })
+  const [loading, setLoading] = useState(true)
+  const [selectedArtwork, setSelectedArtwork] = useState(null)
+  const [showFilters, setShowFilters] = useState(false)
 
   const fetchCatalogue = useCallback(async (params) => {
-    setLoading(true);
-    const result = await getCataloguePro(params);
+    setLoading(true)
+    const result = await getCataloguePro(params)
     if (result?.data) {
-      setCatalogue(result);
+      setCatalogue(result)
     }
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   useEffect(() => {
-    fetchCatalogue(filters);
-  }, [filters, fetchCatalogue]);
+    fetchCatalogue(filters)
+  }, [filters, fetchCatalogue])
 
   const handleApplyFilters = () => {
-    setFilters({ ...pending, page: 1 });
-    setShowFilters(false);
-  };
+    setFilters({ ...pending, page: 1 })
+    setShowFilters(false)
+  }
 
   const handleResetFilters = () => {
-    setPending(INITIAL_FILTERS);
-    setFilters(INITIAL_FILTERS);
-    setShowFilters(false);
-  };
+    setPending(INITIAL_FILTERS)
+    setFilters(INITIAL_FILTERS)
+    setShowFilters(false)
+  }
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    setFilters({ ...filters, search: pending.search, page: 1 });
-  };
+    e.preventDefault()
+    setFilters({ ...filters, search: pending.search, page: 1 })
+  }
 
   const activeFiltersCount = [
     filters.category,
     filters.availabilityStatus,
     filters.priceMin,
     filters.priceMax,
-  ].filter(Boolean).length;
+  ].filter(Boolean).length
 
-  if (!isSubscriptionActive) return <SubscriptionGate />;
+  if (!isSubscriptionActive) return <SubscriptionGate />
 
   return (
     <>
       <Helmet>
         <title>Catalogue Certifié | Kucibok Pro</title>
-        <meta name="description" content="Catalogue B2B d'œuvres certifiées Standard Kucibok — accès professionnel." />
+        <meta
+          name="description"
+          content="Catalogue B2B d'œuvres certifiées Standard Kucibok — accès professionnel."
+        />
       </Helmet>
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link to={-1} className="flex items-center gap-2 text-kcb-pierre hover:text-white text-sm mb-4">
+          <Link
+            to={-1}
+            className="flex items-center gap-2 text-kcb-pierre hover:text-white text-sm mb-4"
+          >
             <ArrowLeft className="w-4 h-4" /> Retour
           </Link>
           <div className="flex items-start justify-between gap-4">
@@ -168,8 +181,8 @@ export default function CataloguePro() {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-3 py-2 rounded-[4px] border text-sm transition ${
               activeFiltersCount > 0
-                ? "border-kcb-or/30 text-kcb-or bg-kcb-or/10"
-                : "border-white/[0.08] text-kcb-pierre hover:text-white hover:border-white/[0.16]"
+                ? 'border-kcb-or/30 text-kcb-or bg-kcb-or/10'
+                : 'border-white/[0.08] text-kcb-pierre hover:text-white hover:border-white/[0.16]'
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -194,7 +207,9 @@ export default function CataloguePro() {
                   className="rounded-[4px] bg-kcb-ardoise border border-white/[0.08] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
                 >
                   {AVAILABILITY_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -241,7 +256,8 @@ export default function CataloguePro() {
         {/* Compteur résultats */}
         {!loading && (
           <p className="text-sm text-kcb-pierre mb-4">
-            {catalogue.total} œuvre{catalogue.total !== 1 ? "s" : ""} certifiée{catalogue.total !== 1 ? "s" : ""}
+            {catalogue.total} œuvre{catalogue.total !== 1 ? 's' : ''} certifiée
+            {catalogue.total !== 1 ? 's' : ''}
           </p>
         )}
 
@@ -260,7 +276,7 @@ export default function CataloguePro() {
             {catalogue.data.map((artwork) => {
               const avail = artwork.availabilityStatus
                 ? AVAILABILITY_LABELS[artwork.availabilityStatus]
-                : null;
+                : null
               return (
                 <div
                   key={artwork._id}
@@ -273,7 +289,10 @@ export default function CataloguePro() {
                         src={validImageUrl(artwork.image)}
                         alt={artwork.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null
+                          e.currentTarget.src = '/images/placeholder-artwork.svg'
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-kcb-pierre text-xs">
@@ -284,12 +303,16 @@ export default function CataloguePro() {
                     {artwork.kucibok_id && (
                       <div className="absolute top-2 left-2 flex items-center gap-1 bg-kcb-noir/90 border border-kcb-or/30 rounded-full px-2 py-0.5">
                         <ShieldCheck className="w-3 h-3 text-kcb-or" />
-                        <span className="text-[10px] text-kcb-or/80 font-mono">{artwork.kucibok_id}</span>
+                        <span className="text-[10px] text-kcb-or/80 font-mono">
+                          {artwork.kucibok_id}
+                        </span>
                       </div>
                     )}
                     {/* Badge disponibilité */}
                     {avail && (
-                      <span className={`absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded-full border font-medium ${avail.color}`}>
+                      <span
+                        className={`absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded-full border font-medium ${avail.color}`}
+                      >
                         {avail.label}
                       </span>
                     )}
@@ -297,14 +320,16 @@ export default function CataloguePro() {
 
                   {/* Infos */}
                   <div className="p-4 flex flex-col flex-1">
-                    <h3 className="text-white font-semibold text-sm leading-snug line-clamp-1">{artwork.title}</h3>
+                    <h3 className="text-white font-semibold text-sm leading-snug line-clamp-1">
+                      {artwork.title}
+                    </h3>
                     <p className="text-kcb-pierre text-xs mt-0.5">{artwork.artist}</p>
                     {artwork.medium && (
                       <p className="text-kcb-pierre text-xs mt-0.5 italic">{artwork.medium}</p>
                     )}
                     {artwork.price > 0 && (
                       <p className="text-white text-sm font-medium mt-2">
-                        {artwork.price.toLocaleString("fr-FR")} {artwork.currency}
+                        {artwork.price.toLocaleString('fr-FR')} {artwork.currency}
                       </p>
                     )}
 
@@ -325,7 +350,7 @@ export default function CataloguePro() {
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         )}
@@ -363,5 +388,5 @@ export default function CataloguePro() {
         />
       )}
     </>
-  );
+  )
 }

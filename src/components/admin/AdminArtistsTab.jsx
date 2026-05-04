@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react"
-import { useArtist } from "../../store/ArtistContext"
-import { useArtworks } from "../../store/ArtworkContext"
-import { ExternalLink, Image, Search, Shield, ChevronLeft, ChevronRight } from "lucide-react"
+import { useMemo, useState } from 'react'
+import { useArtist } from '../../store/ArtistContext'
+import { useArtworks } from '../../store/ArtworkContext'
+import { ExternalLink, Image, Search, Shield, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const PER_PAGE = 25
 
@@ -11,25 +11,26 @@ const PER_PAGE = 25
 export function AdminArtistsTab() {
   const { artists } = useArtist()
   const { approved } = useArtworks()
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     if (!search.trim()) return artists ?? []
     const q = search.toLowerCase()
-    return (artists ?? []).filter(a =>
-      a.name?.toLowerCase().includes(q) ||
-      a.country?.toLowerCase().includes(q) ||
-      a.medium?.toLowerCase().includes(q)
+    return (artists ?? []).filter(
+      (a) =>
+        a.name?.toLowerCase().includes(q) ||
+        a.country?.toLowerCase().includes(q) ||
+        a.medium?.toLowerCase().includes(q)
     )
   }, [artists, search])
 
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE))
-  const paged  = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
   const getStats = (artistId) => {
-    const works     = (approved ?? []).filter(w => w.artist_id === artistId)
-    const certified = works.filter(w => w.kucibok_id)
+    const works = (approved ?? []).filter((w) => w.artist_id === artistId)
+    const certified = works.filter((w) => w.kucibok_id)
     return { total: works.length, certified: certified.length }
   }
 
@@ -38,14 +39,18 @@ export function AdminArtistsTab() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-white text-xl font-semibold">
-          Artistes <span className="text-kcb-pierre text-base font-normal">({filtered.length})</span>
+          Artistes{' '}
+          <span className="text-kcb-pierre text-base font-normal">({filtered.length})</span>
         </h3>
         <div className="relative">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
           <input
             type="text"
             value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1) }}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setPage(1)
+            }}
             placeholder="Nom, pays, médium…"
             className="bg-kcb-ardoise border border-white/[0.06] text-white text-sm rounded-md pl-9 pr-3 py-2 w-64 focus:outline-none focus:ring-1 focus:ring-kcb-or placeholder:text-gray-600"
           />
@@ -66,7 +71,7 @@ export function AdminArtistsTab() {
             </tr>
           </thead>
           <tbody>
-            {paged.map(artist => {
+            {paged.map((artist) => {
               const stats = getStats(artist.id)
               return (
                 <tr
@@ -87,14 +92,14 @@ export function AdminArtistsTab() {
                           {artist.name?.[0]?.toUpperCase() ?? '?'}
                         </div>
                       )}
-                      <span className="text-white font-medium leading-tight">{artist.name ?? '—'}</span>
+                      <span className="text-white font-medium leading-tight">
+                        {artist.name ?? '—'}
+                      </span>
                     </div>
                   </td>
 
                   {/* Country */}
-                  <td className="px-4 py-3 text-kcb-pierre">
-                    {artist.country ?? '—'}
-                  </td>
+                  <td className="px-4 py-3 text-kcb-pierre">{artist.country ?? '—'}</td>
 
                   {/* Medium */}
                   <td className="px-4 py-3 text-kcb-pierre text-xs max-w-[140px] truncate">
@@ -140,7 +145,9 @@ export function AdminArtistsTab() {
             {paged.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-10 text-center text-kcb-pierre">
-                  {search ? 'Aucun artiste correspond à la recherche.' : 'Aucun artiste enregistré.'}
+                  {search
+                    ? 'Aucun artiste correspond à la recherche.'
+                    : 'Aucun artiste enregistré.'}
                 </td>
               </tr>
             )}
@@ -155,15 +162,17 @@ export function AdminArtistsTab() {
           <div className="flex items-center gap-2">
             <button
               disabled={page === 1}
-              onClick={() => setPage(p => p - 1)}
+              onClick={() => setPage((p) => p - 1)}
               className="p-1 rounded border border-white/[0.06] hover:border-white/20 disabled:opacity-30 transition"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="text-white text-xs px-1">{page} / {pages}</span>
+            <span className="text-white text-xs px-1">
+              {page} / {pages}
+            </span>
             <button
               disabled={page === pages}
-              onClick={() => setPage(p => p + 1)}
+              onClick={() => setPage((p) => p + 1)}
               className="p-1 rounded border border-white/[0.06] hover:border-white/20 disabled:opacity-30 transition"
             >
               <ChevronRight className="w-4 h-4" />

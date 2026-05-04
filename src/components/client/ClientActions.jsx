@@ -1,63 +1,63 @@
-import { Edit, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { useClients } from "../../store/ClientContext";
-import { Modal, Input, Button, toast, ConfirmDialog } from "../ui";
+import { Edit, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { useClients } from '../../store/ClientContext'
+import { Modal, Input, Button, toast, ConfirmDialog } from '../ui'
 
 const ClientActions = ({ client, onClientUpdated, onClientDeleted }) => {
-  const { updateClient, deleteClient } = useClients();
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { updateClient, deleteClient } = useClients()
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [editData, setEditData] = useState({
-    nom: client.nom || "",
-    prenom: client.prenom || "",
-    email: client.email || "",
-    telephone: client.telephone || "",
-    ville: client.ville || "",
-  });
+    nom: client.nom || '',
+    prenom: client.prenom || '',
+    email: client.email || '',
+    telephone: client.telephone || '',
+    ville: client.ville || '',
+  })
 
   const handleUpdate = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
 
-    if (editData.telephone && editData.telephone.trim() !== "") {
-      const phoneRegex = /^[\d\s+\-()]+$/;
+    if (editData.telephone && editData.telephone.trim() !== '') {
+      const phoneRegex = /^[\d\s+\-()]+$/
       if (!phoneRegex.test(editData.telephone.trim())) {
-        toast.error('× Numéro de téléphone invalide');
-        setIsLoading(false);
-        return;
+        toast.error('× Numéro de téléphone invalide')
+        setIsLoading(false)
+        return
       }
     }
 
-    const result = await updateClient(client._id, editData);
+    const result = await updateClient(client._id, editData)
 
     if (!result.error) {
-      toast.success('✓ Client modifié');
-      if (onClientUpdated) onClientUpdated(client._id, result);
-      setShowEditModal(false);
+      toast.success('✓ Client modifié')
+      if (onClientUpdated) onClientUpdated(client._id, result)
+      setShowEditModal(false)
     } else {
-      toast.error('× ' + result.error);
+      toast.error('× ' + result.error)
     }
 
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   const handleDelete = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
 
-    const result = await deleteClient(client._id);
+    const result = await deleteClient(client._id)
 
     if (!result.error) {
-      toast.success('✓ Client supprimé');
-      if (onClientDeleted) onClientDeleted(client._id);
-      setShowDeleteModal(false);
+      toast.success('✓ Client supprimé')
+      if (onClientDeleted) onClientDeleted(client._id)
+      setShowDeleteModal(false)
     } else {
-      toast.error('× ' + result.error);
+      toast.error('× ' + result.error)
     }
 
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   return (
     <>
@@ -133,12 +133,7 @@ const ClientActions = ({ client, onClientUpdated, onClientDeleted }) => {
               >
                 Annuler
               </Button>
-              <Button
-                type="submit"
-                disabled={isLoading}
-                loading={isLoading}
-                className="flex-1"
-              >
+              <Button type="submit" disabled={isLoading} loading={isLoading} className="flex-1">
                 Modifier
               </Button>
             </div>
@@ -159,7 +154,7 @@ const ClientActions = ({ client, onClientUpdated, onClientDeleted }) => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default ClientActions;
+export default ClientActions

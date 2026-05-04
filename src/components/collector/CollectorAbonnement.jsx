@@ -1,129 +1,141 @@
-﻿import { useState, useEffect } from "react";
-import { 
-  CreditCard, Check, Zap, Crown, Shield, ShoppingBag, 
-  Package, Clock, ArrowUp, AlertTriangle, Heart, Eye
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../store/AuthContext";
-import { useArtworks } from "../../store/ArtworkContext";
-import { Progress, KPICard, Badge, Button } from "../ui";
+﻿import { useState, useEffect } from 'react'
+import {
+  CreditCard,
+  Check,
+  Zap,
+  Crown,
+  Shield,
+  ShoppingBag,
+  Package,
+  Clock,
+  ArrowUp,
+  AlertTriangle,
+  Heart,
+  Eye,
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../store/AuthContext'
+import { useArtworks } from '../../store/ArtworkContext'
+import { Progress, KPICard, Badge, Button } from '../ui'
 
 // Plan features limits for collectors
 const PLAN_LIMITS = {
   free: {
-    name: "Gratuit",
+    name: 'Gratuit',
     price: 0,
     maxFavorites: 20,
     maxCollectionViews: 100,
     features: [
-      "20 favoris maximum",
-      "100 vues de collection",
-      "Notifications basiques",
-      "Support par email"
-    ]
+      '20 favoris maximum',
+      '100 vues de collection',
+      'Notifications basiques',
+      'Support par email',
+    ],
   },
   enthusiast: {
-    name: "Enthousiaste",
+    name: 'Enthousiaste',
     price: 4900,
     maxFavorites: 100,
     maxCollectionViews: 1000,
     features: [
-      "100 favoris",
-      "1000 vues de collection",
-      "Notifications avancées",
-      "Alertes prix",
-      "Historique complet"
-    ]
+      '100 favoris',
+      '1000 vues de collection',
+      'Notifications avancées',
+      'Alertes prix',
+      'Historique complet',
+    ],
   },
   collector: {
-    name: "Collectionneur",
+    name: 'Collectionneur',
     price: 9900,
     maxFavorites: 500,
     maxCollectionViews: 5000,
     features: [
-      "Favoris illimités",
-      "Vues illimitées",
-      "Notifications en temps réel",
-      "Accès aux ventes privées",
+      'Favoris illimités',
+      'Vues illimitées',
+      'Notifications en temps réel',
+      'Accès aux ventes privées',
       "Estimation d'oeuvres",
-      "conseiller dédié"
-    ]
+      'conseiller dédié',
+    ],
   },
   investor: {
-    name: "Investisseur",
+    name: 'Investisseur',
     price: 19900,
     maxFavorites: -1,
     maxCollectionViews: -1,
     features: [
-      "Tout illimité",
-      "Ventes exclusives",
-      "Analytique portfolio",
-      "Rapports mensuels",
-      "Conseiller VIP",
-      "Formation art"
-    ]
-  }
-};
+      'Tout illimité',
+      'Ventes exclusives',
+      'Analytique portfolio',
+      'Rapports mensuels',
+      'Conseiller VIP',
+      'Formation art',
+    ],
+  },
+}
 
 function getPlanKey(planName) {
-  if (!planName) return 'free';
-  const name = planName.toLowerCase();
-  if (name.includes('gratuit') || name === 'free') return 'free';
-  if (name.includes('enthusiast') || name.includes('enthousiaste')) return 'enthusiast';
-  if (name.includes('collector') || name.includes('collectionneur')) return 'collector';
-  if (name.includes('investor') || name.includes('investisseur')) return 'investor';
-  return 'free';
+  if (!planName) return 'free'
+  const name = planName.toLowerCase()
+  if (name.includes('gratuit') || name === 'free') return 'free'
+  if (name.includes('enthusiast') || name.includes('enthousiaste')) return 'enthusiast'
+  if (name.includes('collector') || name.includes('collectionneur')) return 'collector'
+  if (name.includes('investor') || name.includes('investisseur')) return 'investor'
+  return 'free'
 }
 
 export function CollectorAbonnement() {
-  const { subscription } = useAuth();
-  const { buyed, favorites } = useArtworks();
-  const [loading, setLoading] = useState(true);
+  const { subscription } = useAuth()
+  const { buyed, favorites } = useArtworks()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
-  const planKey = getPlanKey(subscription?.plan?.name);
-  const currentPlan = PLAN_LIMITS[planKey] || PLAN_LIMITS.free;
+  const planKey = getPlanKey(subscription?.plan?.name)
+  const currentPlan = PLAN_LIMITS[planKey] || PLAN_LIMITS.free
 
   // Calculate collector-specific usage
-  const favoritesCount = favorites?.length || 0;
-  const collectionViewsCount = Math.round((favoritesCount * 15)); // Estimate
-  const purchasesCount = buyed?.length || 0;
+  const favoritesCount = favorites?.length || 0
+  const collectionViewsCount = Math.round(favoritesCount * 15) // Estimate
+  const purchasesCount = buyed?.length || 0
 
   // Calculate percentages
-  const favoritesPercent = currentPlan.maxFavorites > 0 
-    ? Math.min((favoritesCount / currentPlan.maxFavorites) * 100, 100) 
-    : 0;
-  const viewsPercent = currentPlan.maxCollectionViews > 0 
-    ? Math.min((collectionViewsCount / currentPlan.maxCollectionViews) * 100, 100) 
-    : 0;
+  const favoritesPercent =
+    currentPlan.maxFavorites > 0
+      ? Math.min((favoritesCount / currentPlan.maxFavorites) * 100, 100)
+      : 0
+  const viewsPercent =
+    currentPlan.maxCollectionViews > 0
+      ? Math.min((collectionViewsCount / currentPlan.maxCollectionViews) * 100, 100)
+      : 0
 
-  const needsUpgrade = favoritesPercent >= 80 || viewsPercent >= 80;
-  const isAtLimit = favoritesPercent >= 100 || viewsPercent >= 100;
+  const needsUpgrade = favoritesPercent >= 80 || viewsPercent >= 80
+  const isAtLimit = favoritesPercent >= 100 || viewsPercent >= 100
 
   const getRecommendedUpgrade = () => {
-    if (planKey === 'free') return 'enthusiast';
-    if (planKey === 'enthusiast') return 'collector';
-    if (planKey === 'collector') return 'investor';
-    return null;
-  };
+    if (planKey === 'free') return 'enthusiast'
+    if (planKey === 'enthusiast') return 'collector'
+    if (planKey === 'collector') return 'investor'
+    return null
+  }
 
-  const recommendedPlan = getRecommendedUpgrade();
-  const recommendedPlanData = recommendedPlan ? PLAN_LIMITS[recommendedPlan] : null;
+  const recommendedPlan = getRecommendedUpgrade()
+  const recommendedPlanData = recommendedPlan ? PLAN_LIMITS[recommendedPlan] : null
 
-  const monthsSubscribed = subscription?.created_at 
+  const monthsSubscribed = subscription?.created_at
     ? Math.floor((new Date() - new Date(subscription.created_at)) / (1000 * 60 * 60 * 24 * 30))
-    : 0;
-  const currentSpent = monthsSubscribed * currentPlan.price;
+    : 0
+  const currentSpent = monthsSubscribed * currentPlan.price
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
       </div>
-    );
+    )
   }
 
   return (
@@ -151,9 +163,7 @@ export function CollectorAbonnement() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Crown className="w-6 h-6 text-yellow-400" />
-              <h2 className="text-2xl font-bold text-white">
-                Plan {currentPlan.name}
-              </h2>
+              <h2 className="text-2xl font-bold text-white">Plan {currentPlan.name}</h2>
               {planKey === 'free' && (
                 <span className="px-2 py-1 bg-kcb-ardoise text-kcb-sable text-xs rounded-full">
                   Actuel
@@ -166,10 +176,9 @@ export function CollectorAbonnement() {
               )}
             </div>
             <p className="text-kcb-pierre">
-              {currentPlan.price === 0 
-                ? "Gratuit pour toujours" 
-                : `${currentPlan.price.toLocaleString()} CFA/mois`
-              }
+              {currentPlan.price === 0
+                ? 'Gratuit pour toujours'
+                : `${currentPlan.price.toLocaleString()} CFA/mois`}
             </p>
           </div>
           {subscription?.currentPeriodEnd && (
@@ -190,7 +199,8 @@ export function CollectorAbonnement() {
           <div>
             <p className="text-white font-medium">Limite atteinte!</p>
             <p className="text-red-200 text-sm">
-              Vous avez atteint les limites de votre plan. Passez à un plan supérieur pour continuer.
+              Vous avez atteint les limites de votre plan. Passez à un plan supérieur pour
+              continuer.
             </p>
             {recommendedPlanData && (
               <Link
@@ -222,11 +232,12 @@ export function CollectorAbonnement() {
             <div className="flex justify-between text-sm mb-3">
               <span className="text-kcb-pierre">Utilisation</span>
               <span className="text-white font-medium">
-                {favoritesCount} / {currentPlan.maxFavorites === -1 ? '∞' : currentPlan.maxFavorites}
+                {favoritesCount} /{' '}
+                {currentPlan.maxFavorites === -1 ? '∞' : currentPlan.maxFavorites}
               </span>
             </div>
-            <Progress 
-              value={favoritesCount} 
+            <Progress
+              value={favoritesCount}
               max={currentPlan.maxFavorites === -1 ? 100 : currentPlan.maxFavorites}
               variant={favoritesPercent >= 80 ? 'danger' : 'primary'}
               size="md"
@@ -249,11 +260,12 @@ export function CollectorAbonnement() {
             <div className="flex justify-between text-sm mb-3">
               <span className="text-kcb-pierre">Utilisation</span>
               <span className="text-white font-medium">
-                {collectionViewsCount} / {currentPlan.maxCollectionViews === -1 ? '∞' : currentPlan.maxCollectionViews}
+                {collectionViewsCount} /{' '}
+                {currentPlan.maxCollectionViews === -1 ? '∞' : currentPlan.maxCollectionViews}
               </span>
             </div>
-            <Progress 
-              value={collectionViewsCount} 
+            <Progress
+              value={collectionViewsCount}
               max={currentPlan.maxCollectionViews === -1 ? 100 : currentPlan.maxCollectionViews}
               variant={viewsPercent >= 80 ? 'danger' : 'info'}
               size="md"
@@ -280,11 +292,10 @@ export function CollectorAbonnement() {
               <Zap className="w-6 h-6 text-yellow-400" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Recommandation d'upgrade
-              </h3>
+              <h3 className="text-lg font-semibold text-white mb-2">Recommandation d'upgrade</h3>
               <p className="text-kcb-pierre mb-4">
-                Vous avez utilisé plus de 80% de vos ressources. Passez à <strong>{recommendedPlanData.name}</strong> pour bénéficier de:
+                Vous avez utilisé plus de 80% de vos ressources. Passez à{' '}
+                <strong>{recommendedPlanData.name}</strong> pour bénéficier de:
               </p>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                 {recommendedPlanData.features.slice(0, 4).map((feature, idx) => (
@@ -299,7 +310,8 @@ export function CollectorAbonnement() {
                 className="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-6 py-2 rounded-[4px] transition font-medium"
               >
                 <ArrowUp className="w-4 h-4" />
-                Passer à {recommendedPlanData.name} - {recommendedPlanData.price.toLocaleString()} CFA/mois
+                Passer à {recommendedPlanData.name} - {recommendedPlanData.price.toLocaleString()}{' '}
+                CFA/mois
               </Link>
             </div>
           </div>
@@ -337,9 +349,7 @@ export function CollectorAbonnement() {
                   {new Date(subscription.created_at).toLocaleDateString('fr-FR')}
                 </p>
               </div>
-              <span className="px-3 py-1 bg-green-700 text-white text-sm rounded-full">
-                Actif
-              </span>
+              <span className="px-3 py-1 bg-green-700 text-white text-sm rounded-full">Actif</span>
             </div>
             {currentSpent > 0 && (
               <div className="flex justify-between items-center py-2">
@@ -364,8 +374,8 @@ export function CollectorAbonnement() {
             Débloquez votre potentiel de collectionneur
           </h3>
           <p className="text-kcb-pierre mb-6 max-w-lg mx-auto">
-            Avec un abonnement premium, accédez à plus de favoris, 
-            des ventes privées et des outils d'analyse de votre collection.
+            Avec un abonnement premium, accédez à plus de favoris, des ventes privées et des outils
+            d'analyse de votre collection.
           </p>
           <Link
             to="/global#pricing"
@@ -377,7 +387,7 @@ export function CollectorAbonnement() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default CollectorAbonnement;
+export default CollectorAbonnement

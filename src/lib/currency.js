@@ -10,16 +10,16 @@
  */
 
 /** Parité fixe XOF/EUR (franc CFA zone UEMOA, arrimé depuis 1999). */
-export const XOF_PER_EUR = 655.957;
+export const XOF_PER_EUR = 655.957
 
 /** Taux EUR/USD approximatif — à mettre à jour si nécessaire. */
-export const USD_PER_EUR = 1.09;
+export const USD_PER_EUR = 1.09
 
 export const CURRENCIES = [
-  { code: 'EUR', label: 'EUR €',  symbol: '€'   },
+  { code: 'EUR', label: 'EUR €', symbol: '€' },
   { code: 'XOF', label: 'XOF CFA', symbol: 'CFA' },
-  { code: 'USD', label: 'USD $',  symbol: '$'   },
-];
+  { code: 'USD', label: 'USD $', symbol: '$' },
+]
 
 /**
  * Convertit un montant depuis XOF vers la devise cible.
@@ -29,12 +29,12 @@ export const CURRENCIES = [
  * @returns {number}
  */
 export function convertFromXOF(xofAmount, targetCurrency) {
-  if (!xofAmount) return 0;
-  if (targetCurrency === 'XOF') return xofAmount;
-  const eur = xofAmount / XOF_PER_EUR;
-  if (targetCurrency === 'EUR') return eur;
-  if (targetCurrency === 'USD') return eur * USD_PER_EUR;
-  return xofAmount;
+  if (!xofAmount) return 0
+  if (targetCurrency === 'XOF') return xofAmount
+  const eur = xofAmount / XOF_PER_EUR
+  if (targetCurrency === 'EUR') return eur
+  if (targetCurrency === 'USD') return eur * USD_PER_EUR
+  return xofAmount
 }
 
 /**
@@ -46,21 +46,22 @@ export function convertFromXOF(xofAmount, targetCurrency) {
  * @returns {string}  ex: "€ 19" | "12 500 XOF" | "$ 21"
  */
 export function fmtMoney(xofAmount, targetCurrency = 'EUR', { compact = false } = {}) {
-  const amount = convertFromXOF(xofAmount, targetCurrency);
+  const amount = convertFromXOF(xofAmount, targetCurrency)
 
-  const localeMap = { EUR: 'fr-FR', XOF: 'fr-FR', USD: 'en-US' };
-  const locale = localeMap[targetCurrency] ?? 'fr-FR';
+  const localeMap = { EUR: 'fr-FR', XOF: 'fr-FR', USD: 'en-US' }
+  const locale = localeMap[targetCurrency] ?? 'fr-FR'
 
   if (compact && Math.abs(amount) >= 1000) {
-    const shortened = amount >= 1_000_000
-      ? `${(amount / 1_000_000).toFixed(1)}M`
-      : `${(amount / 1000).toFixed(amount >= 100_000 ? 0 : 1)}k`;
-    const sym = CURRENCIES.find((c) => c.code === targetCurrency)?.symbol ?? targetCurrency;
+    const shortened =
+      amount >= 1_000_000
+        ? `${(amount / 1_000_000).toFixed(1)}M`
+        : `${(amount / 1000).toFixed(amount >= 100_000 ? 0 : 1)}k`
+    const sym = CURRENCIES.find((c) => c.code === targetCurrency)?.symbol ?? targetCurrency
     return targetCurrency === 'XOF'
       ? `${shortened} ${sym}`
       : targetCurrency === 'USD'
-      ? `${sym} ${shortened}`
-      : `${sym} ${shortened}`;
+        ? `${sym} ${shortened}`
+        : `${sym} ${shortened}`
   }
 
   return new Intl.NumberFormat(locale, {
@@ -68,5 +69,5 @@ export function fmtMoney(xofAmount, targetCurrency = 'EUR', { compact = false } 
     currency: targetCurrency,
     minimumFractionDigits: targetCurrency === 'XOF' ? 0 : 0,
     maximumFractionDigits: targetCurrency === 'XOF' ? 0 : 0,
-  }).format(amount);
+  }).format(amount)
 }

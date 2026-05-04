@@ -1,5 +1,5 @@
-import { utils } from "./useAPI";
-const { api } = utils;
+import { utils } from './useAPI'
+const { api } = utils
 
 /**
  * Crée une demande de mise en relation (sourcing) pour une œuvre.
@@ -10,18 +10,18 @@ const { api } = utils;
 export async function createInquiry(payload) {
   try {
     const response = await fetch(`${api}/sourcing`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...utils.options.headers,
       },
       body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    if (!response.ok) return { error: data?.message || data?.error || "Erreur serveur" };
-    return data;
+    })
+    const data = await response.json()
+    if (!response.ok) return { error: data?.message || data?.error || 'Erreur serveur' }
+    return data
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
 }
 
@@ -34,12 +34,12 @@ export async function getMyInquiries() {
   try {
     const response = await fetch(`${api}/sourcing/mine`, {
       ...utils.options,
-    });
-    const data = await response.json();
-    if (!response.ok) return { error: data?.message || data?.error || "Erreur serveur" };
-    return data;
+    })
+    const data = await response.json()
+    if (!response.ok) return { error: data?.message || data?.error || 'Erreur serveur' }
+    return data
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
 }
 
@@ -52,15 +52,15 @@ export async function getMyInquiries() {
 export async function getCataloguePro(params = {}) {
   try {
     const qs = new URLSearchParams(
-      Object.fromEntries(Object.entries(params).filter(([, v]) => v !== "" && v != null))
-    ).toString();
-    const response = await fetch(`${api}/artworks/catalogue${qs ? `?${qs}` : ""}`, {
+      Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+    ).toString()
+    const response = await fetch(`${api}/artworks/catalogue${qs ? `?${qs}` : ''}`, {
       ...utils.options,
-    });
-    const data = await response.json();
-    if (!response.ok) return { error: data?.message || data?.error || "Erreur serveur" };
-    return data;
+    })
+    const data = await response.json()
+    if (!response.ok) return { error: data?.message || data?.error || 'Erreur serveur' }
+    return data
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
 }

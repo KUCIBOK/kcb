@@ -1,4 +1,4 @@
-import apiService from './ApiService';
+import apiService from './ApiService'
 
 /**
  * Service pour les paiements PayDunya
@@ -14,22 +14,22 @@ class PaymentService {
       const response = await apiService.post('/payments/paydunya-init', {
         type: 'artwork',
         artwork_id: artworkId,
-      });
-      const inner = response?.data ?? response;
+      })
+      const inner = response?.data ?? response
       return {
         success: true,
         data: {
-          paymentUrl:  inner.payment_url,
-          token:       inner.token,
-          ref:         inner.ref,
+          paymentUrl: inner.payment_url,
+          token: inner.token,
+          ref: inner.ref,
           transaction: inner,
         },
-      };
+      }
     } catch (error) {
       return {
         success: false,
-        error: error.message
-      };
+        error: error.message,
+      }
     }
   }
 
@@ -42,22 +42,22 @@ class PaymentService {
       const response = await apiService.post('/payments/paydunya-init', {
         type: 'plan',
         plan_id: planId,
-      });
-      const inner = response?.data ?? response;
+      })
+      const inner = response?.data ?? response
       return {
         success: true,
         data: {
-          paymentUrl:   inner.payment_url,
-          token:        inner.token,
-          ref:          inner.ref,
+          paymentUrl: inner.payment_url,
+          token: inner.token,
+          ref: inner.ref,
           subscription: inner,
         },
-      };
+      }
     } catch (error) {
       return {
         success: false,
-        error: error.message
-      };
+        error: error.message,
+      }
     }
   }
 
@@ -67,16 +67,16 @@ class PaymentService {
    */
   async verifyPayment(token) {
     try {
-      const response = await apiService.post('/payments/paydunya-callback', { token });
+      const response = await apiService.post('/payments/paydunya-callback', { token })
       return {
         success: true,
-        data: response
-      };
+        data: response,
+      }
     } catch (error) {
       return {
         success: false,
-        error: error.message
-      };
+        error: error.message,
+      }
     }
   }
 
@@ -84,7 +84,7 @@ class PaymentService {
    * Rediriger vers PayDunya pour le paiement
    */
   redirectToPayment(paymentUrl) {
-    window.location.href = paymentUrl;
+    window.location.href = paymentUrl
   }
 
   /**
@@ -95,20 +95,20 @@ class PaymentService {
       paymentUrl,
       'PayDunya',
       'width=800,height=600,scrollbars=yes,resizable=yes'
-    );
+    )
 
     // Surveiller la fermeture de la popup
     const timer = setInterval(() => {
       if (popup.closed) {
-        clearInterval(timer);
-        if (onClose) onClose();
+        clearInterval(timer)
+        if (onClose) onClose()
       }
-    }, 1000);
+    }, 1000)
 
-    return popup;
+    return popup
   }
 }
 
 // Export singleton
-const paymentService = new PaymentService();
-export default paymentService;
+const paymentService = new PaymentService()
+export default paymentService

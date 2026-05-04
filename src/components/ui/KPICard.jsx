@@ -1,11 +1,11 @@
-import React from 'react';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import React from 'react'
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 
 /**
  * Design System - KPI Card Component
- * 
+ *
  * Displays key performance indicators with icon, value, and trend
- * 
+ *
  * Features:
  * - Icon with customizable color
  * - Large value display
@@ -23,33 +23,33 @@ export function KPICard({
   loading = false,
   iconColor = 'text-kcb-or',
   iconBgColor = 'bg-kcb-or/10',
-  className = ''
+  className = '',
 }) {
   const getTrendIcon = () => {
-    if (!trend) return null;
-    
+    if (!trend) return null
+
     switch (trend.direction) {
       case 'up':
-        return <TrendingUp className="w-4 h-4" />;
+        return <TrendingUp className="w-4 h-4" />
       case 'down':
-        return <TrendingDown className="w-4 h-4" />;
+        return <TrendingDown className="w-4 h-4" />
       default:
-        return <Minus className="w-4 h-4" />;
+        return <Minus className="w-4 h-4" />
     }
-  };
+  }
 
   const getTrendColor = () => {
-    if (!trend) return 'text-kcb-pierre';
-    
+    if (!trend) return 'text-kcb-pierre'
+
     switch (trend.direction) {
       case 'up':
-        return 'text-green-400';
+        return 'text-green-400'
       case 'down':
-        return 'text-red-400';
+        return 'text-red-400'
       default:
-        return 'text-kcb-pierre';
+        return 'text-kcb-pierre'
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -62,11 +62,13 @@ export function KPICard({
           <div className="h-4 bg-white/[0.08] rounded-[4px] w-32"></div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 hover:border-white/[0.12] transition-all duration-200 ${className}`}>
+    <div
+      className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 hover:border-white/[0.12] transition-all duration-200 ${className}`}
+    >
       {/* Icon and Trend */}
       <div className="flex items-center justify-between mb-4">
         {Icon && (
@@ -84,24 +86,16 @@ export function KPICard({
 
       {/* Value */}
       <div className="mb-1">
-        <div className="text-2xl font-bold text-white">
-          {value}
-        </div>
+        <div className="text-2xl font-bold text-white">{value}</div>
       </div>
 
       {/* Label */}
-      <div className="text-sm text-kcb-pierre">
-        {label}
-      </div>
+      <div className="text-sm text-kcb-pierre">{label}</div>
 
       {/* Subtitle (optional) */}
-      {subtitle && (
-        <div className="text-xs text-kcb-sable mt-2">
-          {subtitle}
-        </div>
-      )}
+      {subtitle && <div className="text-xs text-kcb-sable mt-2">{subtitle}</div>}
     </div>
-  );
+  )
 }
 
-export default KPICard;
+export default KPICard

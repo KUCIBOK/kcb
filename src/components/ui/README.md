@@ -5,12 +5,12 @@ Design System cohérent et réutilisable pour la plateforme KuciBoK.
 ## 📦 Composants Disponibles
 
 ### Button
+
 Boutons avec variants, tailles, états de chargement et icônes.
 
 ```jsx
-import { Button } from '@/components/ui';
-
-<Button variant="primary" size="md" icon={Plus} loading={false}>
+import { Button } from '@/components/ui'
+;<Button variant="primary" size="md" icon={Plus} loading={false}>
   Ajouter
 </Button>
 ```
@@ -21,12 +21,12 @@ import { Button } from '@/components/ui';
 ---
 
 ### Input
+
 Champs de saisie avec validation, icônes et états.
 
 ```jsx
-import { Input } from '@/components/ui';
-
-<Input
+import { Input } from '@/components/ui'
+;<Input
   label="Email"
   type="email"
   placeholder="exemple@email.com"
@@ -39,16 +39,14 @@ import { Input } from '@/components/ui';
 ---
 
 ### Card
+
 Conteneurs de contenu avec header, content et footer.
 
 ```jsx
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui';
-
-<Card variant="elevated" hover>
+import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui'
+;<Card variant="elevated" hover>
   <CardHeader title="Titre" subtitle="Sous-titre" actions={<Button />} />
-  <CardContent>
-    Votre contenu ici
-  </CardContent>
+  <CardContent>Votre contenu ici</CardContent>
   <CardFooter justify="end">
     <Button>Action</Button>
   </CardFooter>
@@ -60,12 +58,12 @@ import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui';
 ---
 
 ### KPICard
+
 Cartes KPI avec icône, valeur, trend et métriques.
 
 ```jsx
-import { KPICard } from '@/components/ui';
-
-<KPICard
+import { KPICard } from '@/components/ui'
+;<KPICard
   icon={Users}
   label="Total Utilisateurs"
   value="2,543"
@@ -80,6 +78,7 @@ import { KPICard } from '@/components/ui';
 ---
 
 ### Badge
+
 Indicateurs de statut et labels.
 
 ```jsx
@@ -98,23 +97,24 @@ import { Badge, StatusBadge } from '@/components/ui';
 ---
 
 ### Toast
+
 Notifications temporaires pour feedback utilisateur.
 
 ```jsx
-import { toast } from '@/components/ui';
+import { toast } from '@/components/ui'
 
 // Simple
-toast.success('Sauvegardé!');
-toast.error('Erreur lors de la sauvegarde');
-toast.warning('Vérifiez vos données');
-toast.info('Nouvelle mise à jour disponible');
+toast.success('Sauvegardé!')
+toast.error('Erreur lors de la sauvegarde')
+toast.warning('Vérifiez vos données')
+toast.info('Nouvelle mise à jour disponible')
 
 // Promise
 toast.promise(fetchData(), {
   loading: 'Chargement...',
   success: 'Données chargées!',
-  error: 'Erreur de chargement'
-});
+  error: 'Erreur de chargement',
+})
 ```
 
 ---
@@ -125,38 +125,20 @@ toast.promise(fetchData(), {
 
 ```css
 /* Primary */
---indigo-400: #818cf8
---indigo-500: #6366f1
---indigo-600: #4f46e5
-
-/* Success */
---green-400: #4ade80
---green-600: #16a34a
-
-/* Warning */
---yellow-400: #facc15
---yellow-600: #ca8a04
-
-/* Danger */
---red-400: #f87171
---red-600: #dc2626
-
-/* Neutral */
---gray-300: #d1d5db
---gray-400: #9ca3af
---gray-700: #374151
---gray-800: #1f2937
---gray-900: #111827
+--indigo-400: #818cf8 --indigo-500: #6366f1 --indigo-600: #4f46e5 /* Success */ --green-400: #4ade80
+  --green-600: #16a34a /* Warning */ --yellow-400: #facc15 --yellow-600: #ca8a04 /* Danger */
+  --red-400: #f87171 --red-600: #dc2626 /* Neutral */ --gray-300: #d1d5db --gray-400: #9ca3af
+  --gray-700: #374151 --gray-800: #1f2937 --gray-900: #111827;
 ```
 
 ### Espacements
 
 ```javascript
 const spacing = {
-  section: 'mb-8',    // Entre sections
-  component: 'mb-6',  // Entre composants
-  element: 'mb-4',    // Entre éléments
-  tight: 'mb-2'       // Espacement serré
+  section: 'mb-8', // Entre sections
+  component: 'mb-6', // Entre composants
+  element: 'mb-4', // Entre éléments
+  tight: 'mb-2', // Espacement serré
 }
 ```
 
@@ -164,7 +146,7 @@ const spacing = {
 
 ```css
 .text-display: text-4xl font-bold
-.text-title: text-2xl font-semibold  
+.text-title: text-2xl font-semibold
 .text-heading: text-lg font-medium
 .text-body: text-base
 .text-caption: text-sm text-gray-400
@@ -179,14 +161,10 @@ Le Design System est déjà installé dans le projet.
 Pour utiliser le ToastProvider, ajoutez-le dans votre App.jsx:
 
 ```jsx
-import { ToastProvider } from './components/ui';
+import { ToastProvider } from './components/ui'
 
 function App() {
-  return (
-    <ToastProvider>
-      {/* Votre application */}
-    </ToastProvider>
-  );
+  return <ToastProvider>{/* Votre application */}</ToastProvider>
 }
 ```
 
@@ -199,9 +177,8 @@ Accédez à `/design-system` pour voir tous les composants en action.
 Ajoutez cette route dans `Router.jsx`:
 
 ```jsx
-import { DesignSystemDemo } from '../components/ui/DesignSystemDemo';
-
-<Route path="/design-system" element={<DesignSystemDemo />} />
+import { DesignSystemDemo } from '../components/ui/DesignSystemDemo'
+;<Route path="/design-system" element={<DesignSystemDemo />} />
 ```
 
 ---
@@ -232,6 +209,7 @@ Pour ajouter un nouveau composant au Design System:
 ## 📝 Changelog
 
 ### v1.0.0 (2024)
+
 - ✅ Button component with variants
 - ✅ Input component with validation
 - ✅ Card component with composition

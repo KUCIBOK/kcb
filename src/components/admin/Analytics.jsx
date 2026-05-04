@@ -32,13 +32,13 @@ export function Analytics({ currency = 'EUR' }) {
   const defaultData = {
     // Revenue & Finance — valeurs en EUR
     mrr: 4303,
-    arr: 51636,    // = MRR × 12 ✓
+    arr: 51636, // = MRR × 12 ✓
     mrrGrowth: 12.5,
     arr_growth: 18.2,
     // Mix: Marketplace 20% / SaaS 40% / Numérisation 10% / Logistique 30%
     revenue_mix: { marketplace: 20, subscriptions: 40, artworks: 10, logistique: 30 },
-    cac: 190,      // Budget marketing 12 700 € ÷ 67 nouveaux abonnés
-    ltv: 600,      // ARPA ÷ churn mensuel 4,5 % = 27 ÷ 0,045
+    cac: 190, // Budget marketing 12 700 € ÷ 67 nouveaux abonnés
+    ltv: 600, // ARPA ÷ churn mensuel 4,5 % = 27 ÷ 0,045
     payback_period: 7, // CAC ÷ ARPA = 190 ÷ 27
     revenue_projection_3m: 4820, // MRR mois prochain = MRR × 1,12
 
@@ -46,20 +46,20 @@ export function Analytics({ currency = 'EUR' }) {
     saas_subscribers: 159,
     arpa: 27,
     saas_segments: {
-      collectionneur: { count: 34,  mrr: 909,  share: 22 },
-      curateur:       { count: 87,  mrr: 2272, share: 55 },
-      galerie:        { count: 43,  mrr: 1117, share: 27 }, // 909+2272+1117 = 4 298 ≈ 4 303 €
+      collectionneur: { count: 34, mrr: 909, share: 22 },
+      curateur: { count: 87, mrr: 2272, share: 55 },
+      galerie: { count: 43, mrr: 1117, share: 27 }, // 909+2272+1117 = 4 298 ≈ 4 303 €
     },
 
     // Utilisateurs & Croissance
     totalUsers: 7154,
-    mau: 5500,     // MAU = DAU ÷ 66,7 % = 3 668 ÷ 0,667
-    dau: 3668,     // NE PAS MODIFIER — DAU/MAU 66,7 %
+    mau: 5500, // MAU = DAU ÷ 66,7 % = 3 668 ÷ 0,667
+    dau: 3668, // NE PAS MODIFIER — DAU/MAU 66,7 %
     acquisition_growth: 15,
     channels: {
-      organic:  { users: 8,  roi: 3.2 },
-      paid:     { users: 10, roi: 1.8 },
-      referral: { users: 5,  roi: 4.1 },
+      organic: { users: 8, roi: 3.2 },
+      paid: { users: 10, roi: 1.8 },
+      referral: { users: 5, roi: 4.1 },
     },
 
     // Contenu & Inventaire
@@ -75,8 +75,8 @@ export function Analytics({ currency = 'EUR' }) {
     artworks_with_cert: 215,
 
     // Marketplace & Ventes — valeurs en EUR
-    gmv: 1707,           // GMV mensuel
-    aov: 279,            // = round(GMV / sales) ✓
+    gmv: 1707, // GMV mensuel
+    aov: 279, // = round(GMV / sales) ✓
     conversion_rate: 3.8,
     views_total: 12450,
     favorites: 856,
@@ -315,13 +315,22 @@ export function Analytics({ currency = 'EUR' }) {
             trend="up"
             color="green"
           />
-          {data.saas_segments && Object.entries(data.saas_segments).map(([seg, info]) => (
-            <div key={seg} className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-              <p className="text-kcb-pierre text-sm mb-1 capitalize">{seg} <span className="text-kcb-or">({info.share}%)</span></p>
-              <p className="text-2xl font-bold text-white">{info.count} <span className="text-base font-normal text-kcb-pierre">abonnés</span></p>
-              <p className="text-green-300 font-semibold mt-1">{fmt(info.mrr)} MRR</p>
-            </div>
-          ))}
+          {data.saas_segments &&
+            Object.entries(data.saas_segments).map(([seg, info]) => (
+              <div
+                key={seg}
+                className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4"
+              >
+                <p className="text-kcb-pierre text-sm mb-1 capitalize">
+                  {seg} <span className="text-kcb-or">({info.share}%)</span>
+                </p>
+                <p className="text-2xl font-bold text-white">
+                  {info.count}{' '}
+                  <span className="text-base font-normal text-kcb-pierre">abonnés</span>
+                </p>
+                <p className="text-green-300 font-semibold mt-1">{fmt(info.mrr)} MRR</p>
+              </div>
+            ))}
         </div>
       </Section>
 

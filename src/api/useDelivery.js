@@ -4,9 +4,9 @@
  * @module useDelivery
  */
 
-import { utils } from './useAPI';
+import { utils } from './useAPI'
 
-const { api } = utils;
+const { api } = utils
 
 /**
  * GET /api/delivery/track/:trackingId — Tracking public (sans auth).
@@ -18,12 +18,12 @@ export async function getDeliveryByTracking(trackingId) {
   try {
     const response = await fetch(`${api}/delivery/track/${trackingId}`, {
       headers: { 'Content-Type': 'application/json' },
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Numéro de suivi introuvable' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Numéro de suivi introuvable' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -34,12 +34,12 @@ export async function getDeliveryByTracking(trackingId) {
  */
 export async function getDeliveries() {
   try {
-    const response = await fetch(`${api}/delivery`, { ...utils.options });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body;
+    const response = await fetch(`${api}/delivery`, { ...utils.options })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -49,7 +49,7 @@ export async function getDeliveries() {
  * @returns {Promise<{ data: object[], pagination: object } | { error: string }>}
  */
 export async function getMyDeliveries() {
-  return getDeliveries();
+  return getDeliveries()
 }
 
 /**
@@ -60,12 +60,12 @@ export async function getMyDeliveries() {
  */
 export async function getDelivery(id) {
   try {
-    const response = await fetch(`${api}/delivery/${id}`, { ...utils.options });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Livraison introuvable' };
-    return body?.data ?? body;
+    const response = await fetch(`${api}/delivery/${id}`, { ...utils.options })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Livraison introuvable' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -80,13 +80,13 @@ export async function createDelivery(payload) {
     const response = await fetch(`${api}/delivery`, {
       ...utils.options,
       method: 'POST',
-      body:   JSON.stringify(payload),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+      body: JSON.stringify(payload),
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -102,13 +102,13 @@ export async function changeDeliveryStatus(id, payload) {
     const response = await fetch(`${api}/delivery/${id}`, {
       ...utils.options,
       method: 'PATCH',
-      body:   JSON.stringify(payload),
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+      body: JSON.stringify(payload),
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }
 
@@ -120,7 +120,7 @@ export async function changeDeliveryStatus(id, payload) {
  * @returns {Promise<object | { error: string }>}
  */
 export async function updateDelivery(id, payload) {
-  return changeDeliveryStatus(id, payload);
+  return changeDeliveryStatus(id, payload)
 }
 
 /**
@@ -134,11 +134,11 @@ export async function deleteDelivery(id) {
     const response = await fetch(`${api}/delivery/${id}`, {
       ...utils.options,
       method: 'DELETE',
-    });
-    const body = await response.json();
-    if (!response.ok) return { error: body?.error || 'Erreur serveur' };
-    return body?.data ?? body;
+    })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    return body?.data ?? body
   } catch (err) {
-    return { error: err.message };
+    return { error: err.message }
   }
 }

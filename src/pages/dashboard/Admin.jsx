@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useAuth } from "../../store/AuthContext";
-import { CURRENCIES } from "../../lib/currency";
-import { ArtworksList } from "../../components/artworks/ArtworksList";
-import { useArtworks } from "../../store/ArtworkContext";
+import { useState } from 'react'
+import { useAuth } from '../../store/AuthContext'
+import { CURRENCIES } from '../../lib/currency'
+import { ArtworksList } from '../../components/artworks/ArtworksList'
+import { useArtworks } from '../../store/ArtworkContext'
 import {
   ChartColumn,
   CheckCheck,
@@ -25,183 +25,167 @@ import {
   LayoutDashboard,
   Settings,
   MessageSquare,
-  X
-} from "lucide-react";
-import DashboardSidebar from "../../components/shared/DashboardSidebar";
-import { BlogTab } from "../../components/admin/BlogTab";
-import { UsersTab } from "../../components/users/UsersTab";
-import { Analytics } from "../../components/admin/Analytics";
-import { PlansTab } from "../../components/plans/PlansTab";
-import { CategoryTab } from "../../components/category/CategoryTab";
-import { LogsTab } from "../../components/logsComponents/LogsTab";
-import { SubscriptionTab } from "../../components/subscriptions/SusbscriptionsTab";
-import { Link } from "react-router-dom";
-import { AuctionTab } from "../../components/professional/AuctionTab";
-import { useNumerisation } from "../../store/NumerisationStore";
-import { NumerisationList } from "../../components/numerisation/NumeristionList";
-import ClientsTab from "../../components/admin/ClientsTab";
-import { CampainTab } from "../../components/admin/CampainTab";
-import GalleriesTab from "../../components/admin/GalleriesTab";
-import SupportTicketTab from "../../components/admin/SupportTicketTab";
-import LogidooDashboard from "../../components/admin/LogidooDashboard";
-import { AdminArtistsTab } from "../../components/admin/AdminArtistsTab";
+  X,
+} from 'lucide-react'
+import DashboardSidebar from '../../components/shared/DashboardSidebar'
+import { BlogTab } from '../../components/admin/BlogTab'
+import { UsersTab } from '../../components/users/UsersTab'
+import { Analytics } from '../../components/admin/Analytics'
+import { PlansTab } from '../../components/plans/PlansTab'
+import { CategoryTab } from '../../components/category/CategoryTab'
+import { LogsTab } from '../../components/logsComponents/LogsTab'
+import { SubscriptionTab } from '../../components/subscriptions/SusbscriptionsTab'
+import { Link } from 'react-router-dom'
+import { AuctionTab } from '../../components/professional/AuctionTab'
+import { useNumerisation } from '../../store/NumerisationStore'
+import { NumerisationList } from '../../components/numerisation/NumeristionList'
+import ClientsTab from '../../components/admin/ClientsTab'
+import { CampainTab } from '../../components/admin/CampainTab'
+import GalleriesTab from '../../components/admin/GalleriesTab'
+import SupportTicketTab from '../../components/admin/SupportTicketTab'
+import LogidooDashboard from '../../components/admin/LogidooDashboard'
+import { AdminArtistsTab } from '../../components/admin/AdminArtistsTab'
 export default function Admin() {
-  const { pending, approved, rejected } = useArtworks();
-  const { numerisations } = useNumerisation();
-  const [toggle, setToggle] = useState(false);
-  const { user, loading } = useAuth();
-  const [tab, setTab] = useState(0);
-  const [currency, setCurrency] = useState('EUR');
+  const { pending, approved, rejected } = useArtworks()
+  const { numerisations } = useNumerisation()
+  const [toggle, setToggle] = useState(false)
+  const { user, loading } = useAuth()
+  const [tab, setTab] = useState(0)
+  const [currency, setCurrency] = useState('EUR')
 
   // Menu structure with categories
   const menuStructure = [
     {
-      category: "Tableau de Bord",
+      category: 'Tableau de Bord',
       icon: <LayoutDashboard className="w-4 h-4" />,
-      items: [
-        { name: "Dashboard", icon: <TrendingUp className="w-4 h-4" />, index: 0 }
-      ]
+      items: [{ name: 'Dashboard', icon: <TrendingUp className="w-4 h-4" />, index: 0 }],
     },
     {
-      category: "Gestion Œuvres",
+      category: 'Gestion Œuvres',
       icon: <Palette className="w-4 h-4" />,
       items: [
-        { name: "En attente", icon: <Clock className="w-4 h-4" />, index: 1 },
-        { name: "Approuvées", icon: <CheckCheck className="w-4 h-4" />, index: 2 },
-        { name: "Rejetées", icon: <X className="w-4 h-4" />, index: 3 },
-        { name: "Numérisations", icon: <Scan className="w-4 h-4" />, index: 5 },
-        { name: "Enchères", icon: <Gavel className="w-4 h-4" />, index: 6 }
-      ]
+        { name: 'En attente', icon: <Clock className="w-4 h-4" />, index: 1 },
+        { name: 'Approuvées', icon: <CheckCheck className="w-4 h-4" />, index: 2 },
+        { name: 'Rejetées', icon: <X className="w-4 h-4" />, index: 3 },
+        { name: 'Numérisations', icon: <Scan className="w-4 h-4" />, index: 5 },
+        { name: 'Enchères', icon: <Gavel className="w-4 h-4" />, index: 6 },
+      ],
     },
     {
-      category: "Utilisateurs & Clients",
+      category: 'Utilisateurs & Clients',
       icon: <Users className="w-4 h-4" />,
       items: [
-        { name: "Utilisateurs", icon: <Users className="w-4 h-4" />, index: 4 },
-        { name: "Artistes", icon: <Palette className="w-4 h-4" />, index: 17 },
-        { name: "Portefeuille clients", icon: <ContactRound className="w-4 h-4" />, index: 7 },
-        { name: "Galeries scrapées", icon: <GalleryHorizontalEnd className="w-4 h-4" />, index: 16 }
-      ]
+        { name: 'Utilisateurs', icon: <Users className="w-4 h-4" />, index: 4 },
+        { name: 'Artistes', icon: <Palette className="w-4 h-4" />, index: 17 },
+        { name: 'Portefeuille clients', icon: <ContactRound className="w-4 h-4" />, index: 7 },
+        {
+          name: 'Galeries scrapées',
+          icon: <GalleryHorizontalEnd className="w-4 h-4" />,
+          index: 16,
+        },
+      ],
     },
     {
-      category: "Marketing & Communication",
+      category: 'Marketing & Communication',
       icon: <Mail className="w-4 h-4" />,
       items: [
-        { name: "Articles de blog", icon: <FileText className="w-4 h-4" />, index: 8 },
-        { name: "Campagnes Email", icon: <Mail className="w-4 h-4" />, index: 15 },
-        { name: "Support & Tickets", icon: <MessageSquare className="w-4 h-4" />, index: 10 }
-      ]
+        { name: 'Articles de blog', icon: <FileText className="w-4 h-4" />, index: 8 },
+        { name: 'Campagnes Email', icon: <Mail className="w-4 h-4" />, index: 15 },
+        { name: 'Support & Tickets', icon: <MessageSquare className="w-4 h-4" />, index: 10 },
+      ],
     },
     {
-      category: "Opérations",
+      category: 'Opérations',
       icon: <Settings className="w-4 h-4" />,
       items: [
-        { name: "Logistiques", icon: <Truck className="w-4 h-4" />, index: 9 },
-        { name: "Catégories", icon: <FileText className="w-4 h-4" />, index: 12 },
-        { name: "Logs", icon: <ChartColumn className="w-4 h-4" />, index: 14 }
-      ]
+        { name: 'Logistiques', icon: <Truck className="w-4 h-4" />, index: 9 },
+        { name: 'Catégories', icon: <FileText className="w-4 h-4" />, index: 12 },
+        { name: 'Logs', icon: <ChartColumn className="w-4 h-4" />, index: 14 },
+      ],
     },
     {
-      category: "Abonnements & Plans",
+      category: 'Abonnements & Plans',
       icon: <CreditCard className="w-4 h-4" />,
       items: [
-        { name: "Plans", icon: <CreditCard className="w-4 h-4" />, index: 11 },
-        { name: "Abonnements", icon: <Users className="w-4 h-4" />, index: 13 }
-      ]
-    }
-  ];
+        { name: 'Plans', icon: <CreditCard className="w-4 h-4" />, index: 11 },
+        { name: 'Abonnements', icon: <Users className="w-4 h-4" />, index: 13 },
+      ],
+    },
+  ]
 
   // Get current page info for breadcrumb
   const getCurrentPageInfo = () => {
     for (const menu of menuStructure) {
-      const item = menu.items.find(i => i.index === tab);
+      const item = menu.items.find((i) => i.index === tab)
       if (item) {
-        return { category: menu.category, page: item.name };
+        return { category: menu.category, page: item.name }
       }
     }
-    return { category: "Dashboard", page: "Dashboard" };
-  };
+    return { category: 'Dashboard', page: 'Dashboard' }
+  }
 
   const renderTab = () => {
     switch (tab) {
       case 0:
-        return <Analytics currency={currency} />;
+        return <Analytics currency={currency} />
       case 1:
-        return (
-          <ArtworksList
-            user={user}
-            title="En attente d'examen"
-            artworks={pending}
-          />
-        );
+        return <ArtworksList user={user} title="En attente d'examen" artworks={pending} />
       case 2:
-        return (
-          <ArtworksList
-            user={user}
-            title="Oeuvres approuvées"
-            artworks={approved}
-          />
-        );
+        return <ArtworksList user={user} title="Oeuvres approuvées" artworks={approved} />
       case 3:
-        return (
-          <ArtworksList
-            user={user}
-            title="Oeuvres rejetées"
-            artworks={rejected}
-          />
-        );
+        return <ArtworksList user={user} title="Oeuvres rejetées" artworks={rejected} />
       case 4:
-        return <UsersTab />;
+        return <UsersTab />
       case 5:
         return (
           <div>
             <h3 className="text-2xl text-white mb-4">Demandes de livraison</h3>
             <NumerisationList numerisations={numerisations} />
           </div>
-        );
+        )
       case 6:
-        return <AuctionTab />;
+        return <AuctionTab />
       case 7:
-        return <ClientsTab />;
+        return <ClientsTab />
       case 8:
-        return <BlogTab />;
+        return <BlogTab />
       case 9:
-        return <LogidooDashboard />;
+        return <LogidooDashboard />
       case 10:
         return (
           <div>
             <h3 className="text-2xl text-white mb-4">Support Client & Tickets</h3>
             <SupportTicketTab />
           </div>
-        );
+        )
       case 11:
-        return <PlansTab />;
+        return <PlansTab />
       case 12:
-        return <CategoryTab />;
+        return <CategoryTab />
       case 13:
-        return <SubscriptionTab />;
+        return <SubscriptionTab />
       case 14:
-        return <LogsTab />;
+        return <LogsTab />
       case 15:
-        return <CampainTab />;
+        return <CampainTab />
       case 16:
-        return <GalleriesTab />;
+        return <GalleriesTab />
       case 17:
-        return <AdminArtistsTab />;
+        return <AdminArtistsTab />
       default:
         return (
           <div className="text-center text-kcb-pierre">
             Cette fonctionnalité n'est pas encore disponible.
           </div>
-        );
+        )
     }
-  };
+  }
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-kcb-noir">
         <div className="w-8 h-8 border-2 border-kcb-or border-t-transparent rounded-full animate-spin" />
       </div>
-    );
+    )
   }
 
   return (
@@ -216,10 +200,10 @@ export default function Admin() {
           toggle={toggle}
           setToggle={setToggle}
           cta={{
-            to: "/dashboard/artist",
-            label: "Artiste",
+            to: '/dashboard/artist',
+            label: 'Artiste',
             icon: <Palette className="w-4 h-4" />,
-            className: "bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-pierre",
+            className: 'bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-pierre',
           }}
         />
         {/* Main content */}
@@ -251,10 +235,7 @@ export default function Admin() {
           </div>
 
           <div className="lg:hidden flex justify-end mb-4">
-            <button
-              onClick={() => setToggle(!toggle)}
-              className="text-kcb-pierre hover:text-white"
-            >
+            <button onClick={() => setToggle(!toggle)} className="text-kcb-pierre hover:text-white">
               <Menu className="w-6 h-6" />
               <span className="sr-only">Toggle menu</span>
             </button>
@@ -263,5 +244,5 @@ export default function Admin() {
         </main>
       </div>
     </>
-  );
+  )
 }

@@ -1,11 +1,11 @@
-import React from 'react';
-import { CreditCard, Smartphone, Banknote } from 'lucide-react';
+import React from 'react'
+import { CreditCard, Smartphone, Banknote } from 'lucide-react'
 
-const PaymentMethodSelector = ({ 
-  selectedMethod, 
-  onMethodChange, 
+const PaymentMethodSelector = ({
+  selectedMethod,
+  onMethodChange,
   showTitle = true,
-  className = "" 
+  className = '',
 }) => {
   const paymentMethods = [
     {
@@ -15,7 +15,7 @@ const PaymentMethodSelector = ({
       icon: CreditCard,
       color: 'text-orange-500',
       available: true,
-      popular: true
+      popular: true,
     },
     {
       id: 'flutterwave',
@@ -24,7 +24,7 @@ const PaymentMethodSelector = ({
       icon: CreditCard,
       color: 'text-yellow-500',
       available: false,
-      popular: false
+      popular: false,
     },
     {
       id: 'cinetpay',
@@ -33,7 +33,7 @@ const PaymentMethodSelector = ({
       icon: Smartphone,
       color: 'text-blue-500',
       available: false,
-      popular: false
+      popular: false,
     },
     {
       id: 'bank_transfer',
@@ -42,35 +42,31 @@ const PaymentMethodSelector = ({
       icon: Banknote,
       color: 'text-green-500',
       available: false,
-      popular: false
-    }
-  ];
+      popular: false,
+    },
+  ]
 
   return (
     <div className={`space-y-3 ${className}`}>
       {showTitle && (
-        <label className="block text-sm font-medium text-kcb-sable">
-          Méthode de paiement
-        </label>
+        <label className="block text-sm font-medium text-kcb-sable">Méthode de paiement</label>
       )}
-      
+
       <div className="space-y-2">
         {paymentMethods.map((method) => {
-          const IconComponent = method.icon;
-          
+          const IconComponent = method.icon
+
           return (
             <label
               key={method.id}
               className={`
                 flex items-center p-3 border rounded-[4px] transition-colors relative
-                ${method.available 
-                  ? 'border-white/[0.06] cursor-pointer hover:bg-kcb-ardoise' 
-                  : 'border-white/[0.06] cursor-not-allowed opacity-50'
+                ${
+                  method.available
+                    ? 'border-white/[0.06] cursor-pointer hover:bg-kcb-ardoise'
+                    : 'border-white/[0.06] cursor-not-allowed opacity-50'
                 }
-                ${selectedMethod === method.id 
-                  ? 'border-kcb-or bg-kcb-or/10' 
-                  : ''
-                }
+                ${selectedMethod === method.id ? 'border-kcb-or bg-kcb-or/10' : ''}
               `}
             >
               <input
@@ -82,7 +78,7 @@ const PaymentMethodSelector = ({
                 disabled={!method.available}
                 className="w-4 h-4 text-kcb-or"
               />
-              
+
               <div className="ml-3 flex items-center gap-2 flex-1">
                 <IconComponent className={`w-5 h-5 ${method.color}`} />
                 <div className="flex-1">
@@ -99,22 +95,23 @@ const PaymentMethodSelector = ({
               </div>
 
               {!method.available && (
-                <span className="text-xs text-kcb-pierre ml-2">
-                  Bientôt disponible
-                </span>
+                <span className="text-xs text-kcb-pierre ml-2">Bientôt disponible</span>
               )}
             </label>
-          );
+          )
         })}
       </div>
 
       {/* Informations de sécurité */}
       <div className="text-xs text-kcb-pierre bg-kcb-ardoise/50 rounded-[4px] p-3 mt-4">
         <p className="font-medium text-kcb-pierre mb-1">🔒 Paiement sécurisé</p>
-        <p>Toutes les transactions sont cryptées et sécurisées. Vos données bancaires ne sont jamais stockées sur nos serveurs.</p>
+        <p>
+          Toutes les transactions sont cryptées et sécurisées. Vos données bancaires ne sont jamais
+          stockées sur nos serveurs.
+        </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PaymentMethodSelector;
+export default PaymentMethodSelector

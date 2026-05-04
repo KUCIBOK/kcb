@@ -1,7 +1,7 @@
-import { memo } from "react";
-import { ArtistCard } from "./ArtistCard";
-import { Search } from "lucide-react";
-import RevealOnScroll from "../decoratives/RevealOnScroll";
+import { memo } from 'react'
+import { ArtistCard } from './ArtistCard'
+import { Search } from 'lucide-react'
+import RevealOnScroll from '../decoratives/RevealOnScroll'
 
 export const ArtistList = memo(({ artists }) => {
   return (
@@ -28,5 +28,5 @@ export const ArtistList = memo(({ artists }) => {
         </div>
       )}
     </>
-  );
-});
+  )
+})

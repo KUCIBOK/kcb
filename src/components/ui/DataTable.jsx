@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './Button';
-import { Input } from './Input';
-import { Badge } from './Badge';
+import React, { useState } from 'react'
+import { ChevronUp, ChevronDown, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from './Button'
+import { Input } from './Input'
+import { Badge } from './Badge'
 
 /**
  * Design System - DataTable Component
- * 
+ *
  * Advanced table with sorting, filtering, pagination, and selection
- * 
+ *
  * Features:
  * - Column sorting
  * - Search/filter
@@ -30,78 +30,76 @@ export function DataTable({
   pageSize = 10,
   onRowClick,
   onSelectionChange,
-  emptyMessage = "Aucune donnée disponible",
-  className = ''
+  emptyMessage = 'Aucune donnée disponible',
+  className = '',
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedRows, setSelectedRows] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1)
+  const [sortColumn, setSortColumn] = useState(null)
+  const [sortDirection, setSortDirection] = useState('asc')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedRows, setSelectedRows] = useState(new Set())
 
   // Sorting
   const handleSort = (columnId) => {
     if (sortColumn === columnId) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
-      setSortColumn(columnId);
-      setSortDirection('asc');
+      setSortColumn(columnId)
+      setSortDirection('asc')
     }
-  };
+  }
 
   // Filtering
   const filteredData = searchQuery
-    ? data.filter(row =>
-        columns.some(col =>
-          String(row[col.accessor])
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
+    ? data.filter((row) =>
+        columns.some((col) =>
+          String(row[col.accessor]).toLowerCase().includes(searchQuery.toLowerCase())
         )
       )
-    : data;
+    : data
 
   // Sorting
   const sortedData = sortColumn
     ? [...filteredData].sort((a, b) => {
-        const aVal = a[sortColumn];
-        const bVal = b[sortColumn];
-        
-        if (aVal === bVal) return 0;
-        
-        const comparison = aVal > bVal ? 1 : -1;
-        return sortDirection === 'asc' ? comparison : -comparison;
+        const aVal = a[sortColumn]
+        const bVal = b[sortColumn]
+
+        if (aVal === bVal) return 0
+
+        const comparison = aVal > bVal ? 1 : -1
+        return sortDirection === 'asc' ? comparison : -comparison
       })
-    : filteredData;
+    : filteredData
 
   // Pagination
-  const totalPages = Math.ceil(sortedData.length / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
+  const totalPages = Math.ceil(sortedData.length / pageSize)
+  const startIndex = (currentPage - 1) * pageSize
   const paginatedData = pagination
     ? sortedData.slice(startIndex, startIndex + pageSize)
-    : sortedData;
+    : sortedData
 
   // Selection
   const toggleRowSelection = (rowId) => {
-    const newSelection = new Set(selectedRows);
+    const newSelection = new Set(selectedRows)
     if (newSelection.has(rowId)) {
-      newSelection.delete(rowId);
+      newSelection.delete(rowId)
     } else {
-      newSelection.add(rowId);
+      newSelection.add(rowId)
     }
-    setSelectedRows(newSelection);
-    onSelectionChange?.(Array.from(newSelection));
-  };
+    setSelectedRows(newSelection)
+    onSelectionChange?.(Array.from(newSelection))
+  }
 
   const toggleAllSelection = () => {
     if (selectedRows.size === paginatedData.length) {
-      setSelectedRows(new Set());
-      onSelectionChange?.([]);
+      setSelectedRows(new Set())
+      onSelectionChange?.([])
     } else {
-      const allIds = new Set(paginatedData.map((_, idx) => idx));
-      setSelectedRows(allIds);
-      onSelectionChange?.(Array.from(allIds));
+      const allIds = new Set(paginatedData.map((_, idx) => idx))
+      setSelectedRows(allIds)
+      onSelectionChange?.(Array.from(allIds))
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -113,11 +111,13 @@ export function DataTable({
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden ${className}`}>
+    <div
+      className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden ${className}`}
+    >
       {/* Header with search */}
       {searchable && (
         <div className="p-4 border-b border-white/[0.06]">
@@ -125,8 +125,8 @@ export function DataTable({
             placeholder="Rechercher..."
             value={searchQuery}
             onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
+              setSearchQuery(e.target.value)
+              setCurrentPage(1)
             }}
             leftIcon={Search}
           />
@@ -158,13 +158,13 @@ export function DataTable({
                 >
                   <div className="flex items-center gap-2">
                     {column.header}
-                    {column.sortable && sortColumn === column.accessor && (
-                      sortDirection === 'asc' ? (
+                    {column.sortable &&
+                      sortColumn === column.accessor &&
+                      (sortDirection === 'asc' ? (
                         <ChevronUp className="w-4 h-4" />
                       ) : (
                         <ChevronDown className="w-4 h-4" />
-                      )
-                    )}
+                      ))}
                   </div>
                 </th>
               ))}
@@ -218,7 +218,8 @@ export function DataTable({
       {pagination && totalPages > 1 && (
         <div className="px-4 py-3 border-t border-white/[0.06] flex items-center justify-between">
           <div className="text-sm text-kcb-pierre">
-            Affichage {startIndex + 1}-{Math.min(startIndex + pageSize, sortedData.length)} sur {sortedData.length}
+            Affichage {startIndex + 1}-{Math.min(startIndex + pageSize, sortedData.length)} sur{' '}
+            {sortedData.length}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -242,7 +243,7 @@ export function DataTable({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default DataTable;
+export default DataTable

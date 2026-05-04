@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from 'react'
 import {
   Mail,
   Phone,
@@ -13,25 +13,25 @@ import {
   Trash2,
   MessageSquare,
   Clock,
-} from "lucide-react";
+} from 'lucide-react'
 import {
   updateClient,
   addNote,
   deleteNote,
   addInteraction,
   deleteInteraction,
-} from "../../api/useCrm";
+} from '../../api/useCrm'
 
 export function ClientDetail({ client, onClientUpdated }) {
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [newNote, setNewNote] = useState("");
+  const [editing, setEditing] = useState(false)
+  const [formData, setFormData] = useState({})
+  const [newNote, setNewNote] = useState('')
   const [newInteraction, setNewInteraction] = useState({
-    type: "email",
-    description: "",
-    notes: "",
-  });
-  const [loading, setLoading] = useState(false);
+    type: 'email',
+    description: '',
+    notes: '',
+  })
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setFormData({
@@ -43,73 +43,71 @@ export function ClientDetail({ client, onClientUpdated }) {
       address: client.address,
       status: client.status,
       segment: client.segment,
-      interests: client.interests?.join(", ") || "",
+      interests: client.interests?.join(', ') || '',
       nextFollowUp: client.nextFollowUp
         ? new Date(client.nextFollowUp).toISOString().slice(0, 16)
-        : "",
-    });
-  }, [client]);
+        : '',
+    })
+  }, [client])
 
   const handleSave = async () => {
-    setLoading(true);
+    setLoading(true)
     const updates = {
       ...formData,
-      interests: formData.interests
-        ? formData.interests.split(",").map((i) => i.trim())
-        : [],
-    };
-
-    const result = await updateClient(client._id, updates);
-    if (!result.error) {
-      onClientUpdated();
+      interests: formData.interests ? formData.interests.split(',').map((i) => i.trim()) : [],
     }
-    setLoading(false);
-    setEditing(false);
-  };
+
+    const result = await updateClient(client._id, updates)
+    if (!result.error) {
+      onClientUpdated()
+    }
+    setLoading(false)
+    setEditing(false)
+  }
 
   const handleAddNote = async () => {
-    if (!newNote.trim()) return;
-    const result = await addNote(client._id, newNote);
+    if (!newNote.trim()) return
+    const result = await addNote(client._id, newNote)
     if (!result.error) {
-      setNewNote("");
-      onClientUpdated();
+      setNewNote('')
+      onClientUpdated()
     }
-  };
+  }
 
   const handleDeleteNote = async (noteId) => {
-    const result = await deleteNote(client._id, noteId);
+    const result = await deleteNote(client._id, noteId)
     if (!result.error) {
-      onClientUpdated();
+      onClientUpdated()
     }
-  };
+  }
 
   const handleAddInteraction = async () => {
-    if (!newInteraction.description.trim()) return;
-    const result = await addInteraction(client._id, newInteraction);
+    if (!newInteraction.description.trim()) return
+    const result = await addInteraction(client._id, newInteraction)
     if (!result.error) {
       setNewInteraction({
-        type: "email",
-        description: "",
-        notes: "",
-      });
-      onClientUpdated();
+        type: 'email',
+        description: '',
+        notes: '',
+      })
+      onClientUpdated()
     }
-  };
+  }
 
   const handleDeleteInteraction = async (interactionId) => {
-    const result = await deleteInteraction(client._id, interactionId);
+    const result = await deleteInteraction(client._id, interactionId)
     if (!result.error) {
-      onClientUpdated();
+      onClientUpdated()
     }
-  };
+  }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   return (
     <div className="space-y-6">
@@ -128,9 +126,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             ) : (
               <h1 className="text-2xl font-bold text-white flex items-center gap-2">
                 {client.name}
-                {client.status === "vip" && (
-                  <Crown className="w-5 h-5 text-yellow-400" />
-                )}
+                {client.status === 'vip' && <Crown className="w-5 h-5 text-yellow-400" />}
               </h1>
             )}
 
@@ -146,7 +142,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                     className="bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm"
                   />
                 ) : (
-                  <span>{client.email || "Non renseigné"}</span>
+                  <span>{client.email || 'Non renseigné'}</span>
                 )}
               </div>
               <div className="flex items-center gap-2 text-kcb-pierre">
@@ -160,7 +156,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                     className="bg-kcb-noir border border-white/[0.06] rounded px-2 py-1 text-white text-sm"
                   />
                 ) : (
-                  <span>{client.phone || "Non renseigné"}</span>
+                  <span>{client.phone || 'Non renseigné'}</span>
                 )}
               </div>
               <div className="flex items-center gap-2 text-kcb-pierre">
@@ -187,7 +183,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                 ) : (
                   <span>
                     {client.city && `${client.city}, `}
-                    {client.country || "Non renseigné"}
+                    {client.country || 'Non renseigné'}
                   </span>
                 )}
               </div>
@@ -211,7 +207,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                   className="flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-[4px] transition disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" />
-                  {loading ? "Sauvegarde..." : "Enregistrer"}
+                  {loading ? 'Sauvegarde...' : 'Enregistrer'}
                 </button>
               </>
             ) : (
@@ -246,17 +242,16 @@ export function ClientDetail({ client, onClientUpdated }) {
               <p className="mt-1">
                 <span
                   className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                    client.status === "vip"
-                      ? "bg-yellow-900/50 text-yellow-200"
-                      : client.status === "client"
-                      ? "bg-green-900/50 text-green-200"
-                      : client.status === "prospect"
-                      ? "bg-kcb-or/20 text-kcb-sable"
-                      : "bg-kcb-ardoise/50 text-kcb-sable"
+                    client.status === 'vip'
+                      ? 'bg-yellow-900/50 text-yellow-200'
+                      : client.status === 'client'
+                        ? 'bg-green-900/50 text-green-200'
+                        : client.status === 'prospect'
+                          ? 'bg-kcb-or/20 text-kcb-sable'
+                          : 'bg-kcb-ardoise/50 text-kcb-sable'
                   }`}
                 >
-                  {client.status.charAt(0).toUpperCase() +
-                    client.status.slice(1)}
+                  {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
                 </span>
               </p>
             )}
@@ -281,10 +276,10 @@ export function ClientDetail({ client, onClientUpdated }) {
             ) : (
               <p className="mt-1 text-white">
                 {client.segment
-                  ?.replace(/-/g, " ")
-                  .split(" ")
+                  ?.replace(/-/g, ' ')
+                  .split(' ')
                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
+                  .join(' ')}
               </p>
             )}
           </div>
@@ -302,8 +297,8 @@ export function ClientDetail({ client, onClientUpdated }) {
             ) : (
               <p className="mt-1 text-white">
                 {client.nextFollowUp
-                  ? new Date(client.nextFollowUp).toLocaleDateString("fr-FR")
-                  : "Non planifiée"}
+                  ? new Date(client.nextFollowUp).toLocaleDateString('fr-FR')
+                  : 'Non planifiée'}
               </p>
             )}
           </div>
@@ -314,22 +309,20 @@ export function ClientDetail({ client, onClientUpdated }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-kcb-ardoise rounded-[4px] p-4">
           <h3 className="text-kcb-pierre text-sm font-medium">Total achats</h3>
-          <p className="text-2xl font-bold text-white mt-1">
-            {client.totalPurchases}
-          </p>
+          <p className="text-2xl font-bold text-white mt-1">{client.totalPurchases}</p>
         </div>
         <div className="bg-kcb-ardoise rounded-[4px] p-4">
           <h3 className="text-kcb-pierre text-sm font-medium">Dépenses totales</h3>
           <p className="text-2xl font-bold text-white mt-1">
-            {client.totalSpent?.toLocaleString("fr-FR")} CFA
+            {client.totalSpent?.toLocaleString('fr-FR')} CFA
           </p>
         </div>
         <div className="bg-kcb-ardoise rounded-[4px] p-4">
           <h3 className="text-kcb-pierre text-sm font-medium">Dernière interaction</h3>
           <p className="text-white mt-1">
             {client.lastInteraction
-              ? new Date(client.lastInteraction).toLocaleDateString("fr-FR")
-              : "Jamais"}
+              ? new Date(client.lastInteraction).toLocaleDateString('fr-FR')
+              : 'Jamais'}
           </p>
         </div>
       </div>
@@ -350,11 +343,11 @@ export function ClientDetail({ client, onClientUpdated }) {
                 <div>
                   <p className="text-white font-medium">{purchase.title}</p>
                   <p className="text-xs text-kcb-pierre">
-                    {new Date(purchase.date).toLocaleDateString("fr-FR")}
+                    {new Date(purchase.date).toLocaleDateString('fr-FR')}
                   </p>
                 </div>
                 <p className="text-green-400 font-semibold">
-                  {purchase.amount?.toLocaleString("fr-FR")} CFA
+                  {purchase.amount?.toLocaleString('fr-FR')} CFA
                 </p>
               </div>
             ))}
@@ -371,7 +364,7 @@ export function ClientDetail({ client, onClientUpdated }) {
           </h2>
           <button
             onClick={() => {
-              document.getElementById("add-interaction-modal").showModal();
+              document.getElementById('add-interaction-modal').showModal()
             }}
             className="flex items-center gap-2 px-3 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] text-sm transition"
           >
@@ -394,16 +387,12 @@ export function ClientDetail({ client, onClientUpdated }) {
                         {interaction.type}
                       </span>
                       <span className="text-xs text-kcb-pierre">
-                        {new Date(interaction.date).toLocaleDateString("fr-FR")}
+                        {new Date(interaction.date).toLocaleDateString('fr-FR')}
                       </span>
                     </div>
-                    <p className="text-white font-medium">
-                      {interaction.description}
-                    </p>
+                    <p className="text-white font-medium">{interaction.description}</p>
                     {interaction.notes && (
-                      <p className="text-kcb-pierre text-sm mt-1">
-                        {interaction.notes}
-                      </p>
+                      <p className="text-kcb-pierre text-sm mt-1">{interaction.notes}</p>
                     )}
                   </div>
                   <button
@@ -416,9 +405,7 @@ export function ClientDetail({ client, onClientUpdated }) {
               </div>
             ))
           ) : (
-            <p className="text-kcb-pierre text-center py-8">
-              Aucune interaction enregistrée
-            </p>
+            <p className="text-kcb-pierre text-center py-8">Aucune interaction enregistrée</p>
           )}
         </div>
       </div>
@@ -460,8 +447,8 @@ export function ClientDetail({ client, onClientUpdated }) {
                   <div className="flex-1">
                     <p className="text-white">{note.content}</p>
                     <p className="text-xs text-kcb-pierre mt-2">
-                      Par {note.author?.name} •{" "}
-                      {new Date(note.created_at).toLocaleDateString("fr-FR")}
+                      Par {note.author?.name} •{' '}
+                      {new Date(note.created_at).toLocaleDateString('fr-FR')}
                     </p>
                   </div>
                   <button
@@ -474,9 +461,7 @@ export function ClientDetail({ client, onClientUpdated }) {
               </div>
             ))
           ) : (
-            <p className="text-kcb-pierre text-center py-8">
-              Aucune note enregistrée
-            </p>
+            <p className="text-kcb-pierre text-center py-8">Aucune note enregistrée</p>
           )}
         </div>
       </div>
@@ -484,9 +469,7 @@ export function ClientDetail({ client, onClientUpdated }) {
       {/* Add Interaction Modal */}
       <dialog id="add-interaction-modal" className="modal">
         <div className="modal-box bg-kcb-ardoise border border-white/[0.06]">
-          <h3 className="font-bold text-lg text-white mb-4">
-            Ajouter une interaction
-          </h3>
+          <h3 className="font-bold text-lg text-white mb-4">Ajouter une interaction</h3>
           <div className="space-y-4">
             <div>
               <label className="block text-sm text-kcb-sable mb-2">Type</label>
@@ -509,9 +492,7 @@ export function ClientDetail({ client, onClientUpdated }) {
             </div>
 
             <div>
-              <label className="block text-sm text-kcb-sable mb-2">
-                Description
-              </label>
+              <label className="block text-sm text-kcb-sable mb-2">Description</label>
               <input
                 type="text"
                 value={newInteraction.description}
@@ -559,7 +540,7 @@ export function ClientDetail({ client, onClientUpdated }) {
         </div>
       </dialog>
     </div>
-  );
+  )
 }
 
-export default ClientDetail;
+export default ClientDetail

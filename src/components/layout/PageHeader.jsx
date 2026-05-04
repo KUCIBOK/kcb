@@ -21,9 +21,7 @@ export default function PageHeader({ label, title, subtitle, className = '', chi
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-3 text-kcb-sable text-base max-w-2xl leading-relaxed">
-            {subtitle}
-          </p>
+          <p className="mt-3 text-kcb-sable text-base max-w-2xl leading-relaxed">{subtitle}</p>
         )}
         {children}
       </div>

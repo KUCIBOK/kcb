@@ -35,7 +35,9 @@ export async function getTransactionById(id) {
 
 export async function getTransactionByRef(ref) {
   try {
-    const response = await fetch(`${api}/transaction/ref/${encodeURIComponent(ref)}`, { ...utils.options })
+    const response = await fetch(`${api}/transaction/ref/${encodeURIComponent(ref)}`, {
+      ...utils.options,
+    })
     const body = await response.json()
     const transaction = body?.data ?? body
     if (transaction?.id || transaction?._id) {

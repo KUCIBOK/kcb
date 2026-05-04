@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { useArtworks } from "../../store/ArtworkContext";
-import { Camera, PenBox } from "lucide-react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { useCategoryStore } from "../../store/CategoryStore";
-import { Modal, Input, Select, Button, toast } from "../ui";
+import { useState } from 'react'
+import { useArtworks } from '../../store/ArtworkContext'
+import { Camera, PenBox } from 'lucide-react'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+import { useCategoryStore } from '../../store/CategoryStore'
+import { Modal, Input, Select, Button, toast } from '../ui'
 
 export function UpdateArtworkAction({ artwork }) {
   const [state, setState] = useState({
     modal: false,
-  });
+  })
 
   return (
     <>
@@ -28,64 +28,63 @@ export function UpdateArtworkAction({ artwork }) {
         />
       )}
     </>
-  );
+  )
 }
 
 function UpdateArtworkModal({ artwork, closeModal }) {
-  const { updateArtwork } = useArtworks();
-  const { categories } = useCategoryStore();
+  const { updateArtwork } = useArtworks()
+  const { categories } = useCategoryStore()
   const [state, setState] = useState({
     ...artwork,
     loading: false,
-    error: "",
+    error: '',
     show: artwork?.image,
-  });
+  })
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      setState({ ...state, loading: true });
-      let charge = { ...state };
-      delete charge.loading;
-      delete charge.error;
-      delete charge.show;
-      delete charge.modal;
-      const formData = new FormData();
+      setState({ ...state, loading: true })
+      let charge = { ...state }
+      delete charge.loading
+      delete charge.error
+      delete charge.show
+      delete charge.modal
+      const formData = new FormData()
       Object.keys(charge).forEach((key) => {
-        formData.append(key, charge[key]);
-      });
-      const updated = await updateArtwork(artwork?.id, formData);
+        formData.append(key, charge[key])
+      })
+      const updated = await updateArtwork(artwork?.id, formData)
       if (updated?.id) {
-        toast.success('✓ Œuvre mise à jour');
-        closeModal();
+        toast.success('✓ Œuvre mise à jour')
+        closeModal()
       } else {
-        toast.error('× Erreur lors de la mise à jour');
-        setState({ ...state, loading: false, error: updated?.error });
+        toast.error('× Erreur lors de la mise à jour')
+        setState({ ...state, loading: false, error: updated?.error })
       }
     } catch (error) {
-      toast.error('× Erreur serveur');
-      setState({ ...state, loading: false });
+      toast.error('× Erreur serveur')
+      setState({ ...state, loading: false })
     }
-  };
+  }
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
-        setState({ ...state, image: file, show: reader.result });
-      };
-      reader.readAsDataURL(file);
+        setState({ ...state, image: file, show: reader.result })
+      }
+      reader.readAsDataURL(file)
     }
-  };
-  const categoryOptions = categories.map(cat => ({ value: cat.title, label: cat.title }));
-  
+  }
+  const categoryOptions = categories.map((cat) => ({ value: cat.title, label: cat.title }))
+
   return (
-    <Modal
-      isOpen={true}
-      onClose={closeModal}
-      title="Modifier l'œuvre"
-      size="lg"
-    >
-      <form onSubmit={handleSubmit} method="post" className="space-y-4 max-h-[70vh] overflow-y-auto">
+    <Modal isOpen={true} onClose={closeModal} title="Modifier l'œuvre" size="lg">
+      <form
+        onSubmit={handleSubmit}
+        method="post"
+        className="space-y-4 max-h-[70vh] overflow-y-auto"
+      >
         {/* Image Upload */}
         <div className="flex flex-col items-center">
           {state?.image ? (
@@ -114,7 +113,7 @@ function UpdateArtworkModal({ artwork, closeModal }) {
             onChange={handleFileChange}
           />
         </div>
-  
+
         {/* Form Fields */}
         <Input
           label="Titre"
@@ -124,7 +123,7 @@ function UpdateArtworkModal({ artwork, closeModal }) {
           minLength={3}
           required
         />
-  
+
         <Input
           label="Artiste"
           value={state.artist}
@@ -132,22 +131,22 @@ function UpdateArtworkModal({ artwork, closeModal }) {
           placeholder="Nom de l'artiste"
           required
         />
-  
+
         <Select
           label="Catégorie"
           options={categoryOptions}
           value={state.category}
           onChange={(value) => {
-            const cat = categories.find(c => c.title === value);
+            const cat = categories.find((c) => c.title === value)
             setState({
               ...state,
               category: value,
-              categoryId: cat?._id
-            });
+              categoryId: cat?._id,
+            })
           }}
           required
         />
-  
+
         <Input
           label="Prix"
           type="number"
@@ -157,7 +156,7 @@ function UpdateArtworkModal({ artwork, closeModal }) {
           min={1}
           required
         />
-  
+
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-kcb-sable mb-2">Description</label>
@@ -169,7 +168,7 @@ function UpdateArtworkModal({ artwork, closeModal }) {
             placeholder="Parlez-nous de votre œuvre"
           />
         </div>
-  
+
         {/* Mensurations */}
         <div>
           <label className="block text-sm font-medium text-kcb-sable mb-2">Mensurations</label>
@@ -200,7 +199,7 @@ function UpdateArtworkModal({ artwork, closeModal }) {
             />
           </div>
         </div>
-  
+
         {/* For Sale Checkbox */}
         <div className="flex items-center gap-2">
           <input
@@ -214,25 +213,17 @@ function UpdateArtworkModal({ artwork, closeModal }) {
             Mettre en vente
           </label>
         </div>
-  
+
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={closeModal}
-          >
+          <Button type="button" variant="secondary" onClick={closeModal}>
             Annuler
           </Button>
-          <Button
-            type="submit"
-            disabled={state.loading}
-            loading={state.loading}
-          >
+          <Button type="submit" disabled={state.loading} loading={state.loading}>
             Enregistrer
           </Button>
         </div>
       </form>
     </Modal>
-  );
+  )
 }

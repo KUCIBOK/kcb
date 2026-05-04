@@ -50,7 +50,8 @@ function SubscriptionGate() {
       <div>
         <p className="text-white font-semibold text-lg mb-1">Fonctionnalité Premium</p>
         <p className="text-kcb-pierre text-sm max-w-md">
-          Cette fonctionnalité nécessite un abonnement actif. Choisissez un plan pour débloquer l'accès.
+          Cette fonctionnalité nécessite un abonnement actif. Choisissez un plan pour débloquer
+          l'accès.
         </p>
       </div>
       <Link

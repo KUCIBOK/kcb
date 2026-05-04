@@ -1,56 +1,46 @@
-import { useState } from "react";
-import { useAuth } from "../../../store/AuthContext";
-import { utils } from "../../../api/useAPI";
+import { useState } from 'react'
+import { useAuth } from '../../../store/AuthContext'
+import { utils } from '../../../api/useAPI'
 
-export default function AuctionBidForm({
-  currentPrice,
-  auctionId,
-  onBidSuccess,
-}) {
-  const { user } = useAuth();
-  const [bidAmount, setBidAmount] = useState(currentPrice + 1000);
-  const [bidError, setBidError] = useState("");
-  const [bidSuccess, setBidSuccess] = useState("");
+export default function AuctionBidForm({ currentPrice, auctionId, onBidSuccess }) {
+  const { user } = useAuth()
+  const [bidAmount, setBidAmount] = useState(currentPrice + 1000)
+  const [bidError, setBidError] = useState('')
+  const [bidSuccess, setBidSuccess] = useState('')
 
   const handlePlaceBid = async (e) => {
-    e.preventDefault();
-    setBidError("");
-    setBidSuccess("");
+    e.preventDefault()
+    setBidError('')
+    setBidSuccess('')
 
-    if (!user) return setBidError("Vous devez être connecté pour enchérir");
+    if (!user) return setBidError('Vous devez être connecté pour enchérir')
     if (bidAmount <= currentPrice) {
-      return setBidError(
-        `Le montant doit être supérieur à ${currentPrice} FCFA`
-      );
+      return setBidError(`Le montant doit être supérieur à ${currentPrice} FCFA`)
     }
 
     try {
       const response = await fetch(`${utils.api}/bid`, {
-        method: "POST",
+        method: 'POST',
         headers: utils.options.headers,
         body: JSON.stringify({ auctionId, amount: bidAmount }),
-      });
+      })
 
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.message || "Erreur lors de l'enchère");
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || "Erreur lors de l'enchère")
 
-      setBidSuccess("Enchère placée avec succès !");
-      setBidAmount(currentPrice + 1000);
-      onBidSuccess();
+      setBidSuccess('Enchère placée avec succès !')
+      setBidAmount(currentPrice + 1000)
+      onBidSuccess()
     } catch (error) {
-      setBidError(error.message || "Erreur lors de la soumission");
+      setBidError(error.message || 'Erreur lors de la soumission')
     }
-  };
+  }
 
   return (
     <div className="bg-kcb-ardoise/50 p-4 rounded-[4px] border border-white/[0.06]/50">
       <form onSubmit={handlePlaceBid} className="space-y-3">
         <div>
-          <label
-            htmlFor="bidAmount"
-            className="block text-sm font-medium text-kcb-pierre mb-1"
-          >
+          <label htmlFor="bidAmount" className="block text-sm font-medium text-kcb-pierre mb-1">
             Votre enchère (min. {currentPrice + 1000} FCFA)
           </label>
           <input
@@ -73,5 +63,5 @@ export default function AuctionBidForm({
         </button>
       </form>
     </div>
-  );
+  )
 }

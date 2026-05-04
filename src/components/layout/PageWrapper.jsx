@@ -12,9 +12,7 @@ export default function PageWrapper({ children, className = '', grain = false })
   return (
     <div className={`bg-kcb-noir-deep min-h-screen text-white font-dm-sans ${className}`}>
       {grain && <div className="grain-overlay pointer-events-none fixed inset-0 z-0" />}
-      <div className={grain ? 'relative z-10' : ''}>
-        {children}
-      </div>
+      <div className={grain ? 'relative z-10' : ''}>{children}</div>
     </div>
   )
 }

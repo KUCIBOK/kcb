@@ -97,7 +97,9 @@ export default function GlobalCatalogueSection() {
                       alt={item.title}
                       className="absolute inset-0 w-full h-full object-cover opacity-80 transition-all duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-hover:opacity-100"
                       loading="lazy"
-                      onError={(e) => { e.currentTarget.src = '/images/placeholder-artwork.svg'; }}
+                      onError={(e) => {
+                        e.currentTarget.src = '/images/placeholder-artwork.svg'
+                      }}
                     />
                   ) : (
                     <div

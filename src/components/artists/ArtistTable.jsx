@@ -1,10 +1,10 @@
-import { Eye, Search, Users, Edit } from "lucide-react";
-import { Fragment, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { UpdateArtistAction } from "./UpdateArtistAction";
-import RevealOnScroll from "../decoratives/RevealOnScroll";
-import { ArtistCard } from "./ArtistCard";
-import { DataTable, Button, Badge } from "../ui";
+import { Eye, Search, Users, Edit } from 'lucide-react'
+import { Fragment, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { UpdateArtistAction } from './UpdateArtistAction'
+import RevealOnScroll from '../decoratives/RevealOnScroll'
+import { ArtistCard } from './ArtistCard'
+import { DataTable, Button, Badge } from '../ui'
 
 export function ArtistTable({ artists }) {
   const columns = [
@@ -20,25 +20,23 @@ export function ArtistTable({ artists }) {
             className="h-full w-full rounded-full object-cover"
           />
         </div>
-      )
+      ),
     },
     {
       header: 'Nom',
       accessor: 'name',
-      sortable: true
+      sortable: true,
     },
     {
       header: 'Pays',
       accessor: 'country',
-      sortable: true
+      sortable: true,
     },
     {
       header: 'Oeuvres approuvées',
       accessor: 'artworkCount',
       sortable: true,
-      render: (value) => (
-        <Badge variant="info">{value || 0}</Badge>
-      )
+      render: (value) => <Badge variant="info">{value || 0}</Badge>,
     },
     {
       header: 'Actions',
@@ -52,9 +50,9 @@ export function ArtistTable({ artists }) {
           </Link>
           <UpdateArtistAction artist={row} />
         </div>
-      )
-    }
-  ];
+      ),
+    },
+  ]
 
   return (
     <DataTable
@@ -65,5 +63,5 @@ export function ArtistTable({ artists }) {
       pageSize={10}
       emptyMessage="Aucun artiste trouvé"
     />
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import { utils } from './useAPI';
+import { utils } from './useAPI'
 
-const CONTACT_API = `${utils.api}/contacts`;
+const CONTACT_API = `${utils.api}/contacts`
 
 // ===== CONTACTS =====
 
@@ -11,19 +11,19 @@ const CONTACT_API = `${utils.api}/contacts`;
  */
 export const getContacts = async (filters = {}) => {
   try {
-    const params = new URLSearchParams(filters);
+    const params = new URLSearchParams(filters)
     const response = await fetch(`${CONTACT_API}/contacts?${params}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere un contact par ID.
@@ -34,16 +34,16 @@ export const getContact = async (id) => {
   try {
     const response = await fetch(`${CONTACT_API}/contacts/${id}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Cree un nouveau contact.
@@ -56,16 +56,16 @@ export const createContact = async (data) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour un contact existant.
@@ -79,16 +79,16 @@ export const updateContact = async (id, data) => {
       method: 'PUT',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Supprime un contact.
@@ -100,16 +100,16 @@ export const deleteContact = async (id) => {
     const response = await fetch(`${CONTACT_API}/contacts/${id}`, {
       method: 'DELETE',
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Importe des contacts en masse dans une liste.
@@ -123,16 +123,16 @@ export const importContacts = async (contacts, listId) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ contacts, listId }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Desinscrit un contact avec motif.
@@ -146,16 +146,16 @@ export const unsubscribeContact = async (id, reason) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ reason }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere les statistiques globales des contacts.
@@ -165,16 +165,16 @@ export const getContactStats = async () => {
   try {
     const response = await fetch(`${CONTACT_API}/contacts/stats`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 // ===== LISTS =====
 
@@ -185,19 +185,19 @@ export const getContactStats = async () => {
  */
 export const getLists = async (filters = {}) => {
   try {
-    const params = new URLSearchParams(filters);
+    const params = new URLSearchParams(filters)
     const response = await fetch(`${CONTACT_API}/lists?${params}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere une liste par ID.
@@ -208,16 +208,16 @@ export const getList = async (id) => {
   try {
     const response = await fetch(`${CONTACT_API}/lists/${id}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Cree une nouvelle liste de contacts.
@@ -230,16 +230,16 @@ export const createList = async (data) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour une liste existante.
@@ -253,16 +253,16 @@ export const updateList = async (id, data) => {
       method: 'PUT',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Supprime une liste de contacts.
@@ -274,16 +274,16 @@ export const deleteList = async (id) => {
     const response = await fetch(`${CONTACT_API}/lists/${id}`, {
       method: 'DELETE',
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour le RSVP d'un contact dans une liste.
@@ -305,16 +305,16 @@ export const updateRSVP = async (listId, contactId, status, guestsCount, notes) 
         guestsCount,
         notes,
       }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 // ===== CRM SYNC =====
 
@@ -335,16 +335,16 @@ export const syncFromCRM = async (crmContactId, listId, tags) => {
         listId,
         tags,
       }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Synchronise plusieurs contacts CRM en masse.
@@ -363,16 +363,16 @@ export const bulkSyncFromCRM = async (crmContactIds, listId, tags) => {
         listId,
         tags,
       }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Verifie le statut de synchronisation d'un contact CRM.
@@ -383,13 +383,13 @@ export const checkCRMSync = async (crmContactId) => {
   try {
     const response = await fetch(`${CONTACT_API}/sync/crm/${crmContactId}/check`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}

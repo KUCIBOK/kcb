@@ -4,9 +4,9 @@
  * @module error
  */
 
-import { utils } from './useAPI';
+import { utils } from './useAPI'
 
-const { api } = utils;
+const { api } = utils
 
 /**
  * Envoie un rapport d'erreur critique à l'admin via l'API.
@@ -20,7 +20,7 @@ export async function sendErrorReport(payload) {
       ...utils.options,
       method: 'POST',
       body: JSON.stringify(payload),
-    });
+    })
   } catch {
     // Silencieux — ne pas re-throw une erreur de signalement d'erreur
   }

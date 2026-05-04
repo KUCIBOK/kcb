@@ -1,21 +1,18 @@
-import { Link } from "react-router-dom";
-import {Images, Palette, ShieldUser} from "lucide-react";
+import { Link } from 'react-router-dom'
+import { Images, Palette, ShieldUser } from 'lucide-react'
 
 export default function Community() {
   return (
     <section className="min-h-screen px-4 md:px-10 lg:px-20 py-16 bg-kcb-noir text-white">
       <div className="grid lg:grid-cols-3 gap-10 items-start">
         <div className="lg:col-span-2 relative md:sticky top-16 self-start h-fit bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Rejoignez Notre Communauté
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Rejoignez Notre Communauté</h2>
           <p className="text-lg text-kcb-pierre">
-            Que vous soyez artiste, collectionneur ou expert en art, une place
-            vous attend dans l’écosystème Kucibok. Plongez dans un univers où
-            chaque talent trouve sa valeur : créez et exposez vos œuvres
-            numériques, collectionnez des pièces uniques issues de l’art
-            africain contemporain, ou contribuez à l’authentification et à la
-            traçabilité des créations pour renforcer la confiance sur le marché.
+            Que vous soyez artiste, collectionneur ou expert en art, une place vous attend dans
+            l’écosystème Kucibok. Plongez dans un univers où chaque talent trouve sa valeur : créez
+            et exposez vos œuvres numériques, collectionnez des pièces uniques issues de l’art
+            africain contemporain, ou contribuez à l’authentification et à la traçabilité des
+            créations pour renforcer la confiance sur le marché.
           </p>
         </div>
 
@@ -31,13 +28,10 @@ export default function Community() {
             </div>
 
             <p className="text-sm text-kcb-pierre mb-4">
-              Créez et vendez vos œuvres numériques à une audience mondiale
-              passionnée d'art africain.
+              Créez et vendez vos œuvres numériques à une audience mondiale passionnée d'art
+              africain.
             </p>
-            <Link
-              to="/africa"
-              className="text-sm text-kcb-or hover:underline"
-            >
+            <Link to="/africa" className="text-sm text-kcb-or hover:underline">
               En savoir plus →
             </Link>
           </div>
@@ -51,13 +45,10 @@ export default function Community() {
               <h3 className="text-xl font-semibold mb-2"> Collectionneurs</h3>
             </div>
             <p className="text-sm text-kcb-pierre mb-4">
-              Découvrez et collectionnez des œuvres d'art extraordinaires créés
-              par des artistes talentueux.
+              Découvrez et collectionnez des œuvres d'art extraordinaires créés par des artistes
+              talentueux.
             </p>
-            <Link
-              to="/global"
-              className="text-sm text-kcb-bronze hover:underline"
-            >
+            <Link to="/global" className="text-sm text-kcb-bronze hover:underline">
               En savoir plus →
             </Link>
           </div>
@@ -68,24 +59,18 @@ export default function Community() {
               <div className="w-[50px] h-[50px] rounded-full bg-kcb-silver p-3 flex items-center justify-center">
                 <ShieldUser className="w-8 h-8 text-kcb-noir" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">
-                {" "}
-                Professionnels de l'art
-              </h3>
+              <h3 className="text-xl font-semibold mb-2"> Professionnels de l'art</h3>
             </div>
             <p className="text-sm text-kcb-pierre mb-4">
-              Utilisez votre expertise pour authentifier les œuvres et maintenir
-              l'intégrité du marché.
+              Utilisez votre expertise pour authentifier les œuvres et maintenir l'intégrité du
+              marché.
             </p>
-            <Link
-              to="/global"
-              className="text-sm text-kcb-silver hover:underline"
-            >
+            <Link to="/global" className="text-sm text-kcb-silver hover:underline">
               En savoir plus →
             </Link>
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

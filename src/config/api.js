@@ -1,5 +1,5 @@
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}`;
-const API_KEY = import.meta.env.VITE_API_KEY;
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}`
+const API_KEY = import.meta.env.VITE_API_KEY
 
 /**
  * Client fetch minimal utilise uniquement pour sendErrorReport (Error500).
@@ -10,16 +10,16 @@ const API_KEY = import.meta.env.VITE_API_KEY;
  * @returns {Promise<Response>} La reponse fetch brute
  */
 const apiClient = async (path, options = {}) => {
-  const url = `${API_BASE_URL}${path}`;
+  const url = `${API_BASE_URL}${path}`
   const response = await fetch(url, {
     ...options,
     headers: {
-      "kcb-api-key": API_KEY,
-      "Content-Type": "application/json",
+      'kcb-api-key': API_KEY,
+      'Content-Type': 'application/json',
       ...options.headers,
     },
-  });
-  return response;
-};
+  })
+  return response
+}
 
-export default apiClient;
+export default apiClient

@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react"
-import { CreditCard, Check, Crown, Zap, ArrowRight, Loader2, AlertTriangle } from "lucide-react"
-import { Link } from "react-router-dom"
-import { useAuth } from "../../store/AuthContext"
-import { getAllPlans } from "../../api/usePlans"
+import { useState, useEffect } from 'react'
+import { CreditCard, Check, Crown, Zap, ArrowRight, Loader2, AlertTriangle } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../store/AuthContext'
+import { getAllPlans } from '../../api/usePlans'
 
 /** Formate une date d'expiration en français. */
 const formatDate = (dateStr) => {
-  if (!dateStr) return "—"
-  return new Date(dateStr).toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
+  if (!dateStr) return '—'
+  return new Date(dateStr).toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
   })
 }
 
 /** Badge de statut d'abonnement. */
 function SubscriptionStatusBadge({ status }) {
-  if (status === "active") {
+  if (status === 'active') {
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
         <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
@@ -59,7 +59,9 @@ export function ArtistAbonnementTab() {
       setLoading(false)
     }
     fetchPlans()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   /** Détermine si un plan est celui de l'utilisateur. */
@@ -69,7 +71,7 @@ export function ArtistAbonnementTab() {
 
   /** Features à afficher pour l'abonnement actuel. */
   const currentPlanFeatures = currentPlan?.features ?? []
-  const hasSubscription = !!subscription?.planId && subscription?.status === "active"
+  const hasSubscription = !!subscription?.planId && subscription?.status === 'active'
 
   return (
     <div className="space-y-6">
@@ -80,7 +82,9 @@ export function ArtistAbonnementTab() {
         </div>
         <div>
           <h2 className="text-xl font-bold text-white">Abonnement</h2>
-          <p className="text-sm text-kcb-pierre">Gérez votre plan et accédez aux fonctionnalités premium</p>
+          <p className="text-sm text-kcb-pierre">
+            Gérez votre plan et accédez aux fonctionnalités premium
+          </p>
         </div>
       </div>
 
@@ -95,7 +99,7 @@ export function ArtistAbonnementTab() {
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-lg font-bold text-white">
-                {currentPlan?.name ?? "Plan actif"}
+                {currentPlan?.name ?? 'Plan actif'}
               </span>
               <SubscriptionStatusBadge status={subscription.status} />
             </div>
@@ -104,8 +108,8 @@ export function ArtistAbonnementTab() {
                 <p className="text-xs text-kcb-pierre mb-1">Prix</p>
                 <p className="text-white font-semibold">
                   {currentPlan?.price != null
-                    ? `${currentPlan.price.toLocaleString("fr-FR")} ${currentPlan.currency ?? "FCFA"} / mois`
-                    : "—"}
+                    ? `${currentPlan.price.toLocaleString('fr-FR')} ${currentPlan.currency ?? 'FCFA'} / mois`
+                    : '—'}
                 </p>
               </div>
               <div className="bg-kcb-ardoise/50 rounded-[4px] px-4 py-3">
@@ -118,7 +122,9 @@ export function ArtistAbonnementTab() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div>
               <p className="text-white font-semibold text-lg">Plan Gratuit</p>
-              <p className="text-kcb-pierre text-sm mt-0.5">Accès aux fonctionnalités de base de Kucibok</p>
+              <p className="text-kcb-pierre text-sm mt-0.5">
+                Accès aux fonctionnalités de base de Kucibok
+              </p>
             </div>
             <Link
               to="/africa"
@@ -164,7 +170,9 @@ export function ArtistAbonnementTab() {
             {error}
           </div>
         ) : plans.length === 0 ? (
-          <p className="text-kcb-pierre text-sm text-center py-6">Aucun plan disponible pour l'instant.</p>
+          <p className="text-kcb-pierre text-sm text-center py-6">
+            Aucun plan disponible pour l'instant.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {plans.map((plan) => {
@@ -174,8 +182,8 @@ export function ArtistAbonnementTab() {
                   key={plan._id}
                   className={`relative flex flex-col rounded-[4px] border p-5 transition-all duration-200 ${
                     active
-                      ? "border-kcb-or bg-kcb-or/10 ring-1 ring-kcb-or/40"
-                      : "border-white/[0.06] bg-kcb-ardoise/30 hover:border-white/[0.08]"
+                      ? 'border-kcb-or bg-kcb-or/10 ring-1 ring-kcb-or/40'
+                      : 'border-white/[0.06] bg-kcb-ardoise/30 hover:border-white/[0.08]'
                   }`}
                 >
                   {/* Badge plan actuel */}
@@ -192,8 +200,8 @@ export function ArtistAbonnementTab() {
                     <h4 className="text-white font-semibold text-base">{plan.name}</h4>
                     <p className="text-kcb-or font-bold text-xl mt-1">
                       {plan.price != null
-                        ? `${plan.price.toLocaleString("fr-FR")} ${plan.currency ?? "FCFA"}`
-                        : "Gratuit"}
+                        ? `${plan.price.toLocaleString('fr-FR')} ${plan.currency ?? 'FCFA'}`
+                        : 'Gratuit'}
                       {plan.price > 0 && (
                         <span className="text-kcb-pierre text-sm font-normal"> / mois</span>
                       )}

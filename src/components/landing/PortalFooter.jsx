@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom"
-import { useLang } from "../../store/LangContext"
-import { africaT } from "../../i18n/africa"
-import { globalT } from "../../i18n/global"
+import { Link } from 'react-router-dom'
+import { useLang } from '../../store/LangContext'
+import { africaT } from '../../i18n/africa'
+import { globalT } from '../../i18n/global'
 
 /**
  * Portal-specific footer with 4-column layout.
@@ -10,7 +10,7 @@ import { globalT } from "../../i18n/global"
  */
 export default function PortalFooter({ portal }) {
   const { lang } = useLang()
-  const cfg = portal === "africa" ? africaT[lang].footer : globalT[lang].footer
+  const cfg = portal === 'africa' ? africaT[lang].footer : globalT[lang].footer
 
   return (
     <footer className="pt-20 pb-10 border-t border-white/[0.03]">
@@ -41,7 +41,9 @@ export default function PortalFooter({ portal }) {
                   <li key={j}>
                     {link.hash ? (
                       <button
-                        onClick={() => document.getElementById(link.hash)?.scrollIntoView({ behavior: "smooth" })}
+                        onClick={() =>
+                          document.getElementById(link.hash)?.scrollIntoView({ behavior: 'smooth' })
+                        }
                         className="text-[13px] text-kcb-pierre transition-colors hover:text-white"
                       >
                         {link.label}
@@ -67,10 +69,16 @@ export default function PortalFooter({ portal }) {
             &copy; {new Date().getFullYear()} {cfg.copyright}
           </p>
           <div className="flex gap-6">
-            <Link to="/privacy-policy" className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors">
+            <Link
+              to="/privacy-policy"
+              className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors"
+            >
               {cfg.privacy}
             </Link>
-            <Link to="/terms-and-conditions" className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors">
+            <Link
+              to="/terms-and-conditions"
+              className="text-[11px] text-kcb-pierre no-underline hover:text-kcb-sable transition-colors"
+            >
               {cfg.terms}
             </Link>
           </div>

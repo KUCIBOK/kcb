@@ -17,9 +17,7 @@ export default function LegalPage({ label, title, subtitle, children }) {
     <PageWrapper>
       <PageHeader label={label} title={title} subtitle={subtitle} />
       <main className="px-[clamp(24px,5vw,80px)] py-12">
-        <div className="max-w-4xl mx-auto space-y-8">
-          {children}
-        </div>
+        <div className="max-w-4xl mx-auto space-y-8">{children}</div>
       </main>
     </PageWrapper>
   )
@@ -38,14 +36,8 @@ export default function LegalPage({ label, title, subtitle, children }) {
 export function LegalSection({ title, children, className = '' }) {
   return (
     <section className={`bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 ${className}`}>
-      {title && (
-        <h2 className="font-playfair text-xl font-semibold text-white mb-4">
-          {title}
-        </h2>
-      )}
-      <div className="text-kcb-sable text-sm leading-relaxed space-y-3">
-        {children}
-      </div>
+      {title && <h2 className="font-playfair text-xl font-semibold text-white mb-4">{title}</h2>}
+      <div className="text-kcb-sable text-sm leading-relaxed space-y-3">{children}</div>
     </section>
   )
 }

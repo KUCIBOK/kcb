@@ -5,7 +5,9 @@ const { api } = utils
 
 /** Retourne les headers avec le token Supabase frais (jamais de cache). */
 async function authHeaders() {
-  const { data: { session } } = await supabase.auth.getSession()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
   return {
     'Content-Type': 'application/json',
     'kcb-api-key': import.meta.env.VITE_API_KEY,

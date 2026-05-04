@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useId } from 'react';
-import { X } from 'lucide-react';
-import { Button } from './Button';
+import React, { useEffect, useRef, useId } from 'react'
+import { X } from 'lucide-react'
+import { Button } from './Button'
 
 /**
  * Design System - Modal Component
- * 
+ *
  * Overlay modal/dialog for forms, confirmations, and content
- * 
+ *
  * Features:
  * - Backdrop with click-to-close
  * - ESC key to close
@@ -21,8 +21,8 @@ const sizes = {
   md: 'max-w-lg',
   lg: 'max-w-2xl',
   xl: 'max-w-4xl',
-  full: 'max-w-7xl'
-};
+  full: 'max-w-7xl',
+}
 
 export function Modal({
   isOpen,
@@ -34,76 +34,80 @@ export function Modal({
   closeOnBackdrop = true,
   closeOnEsc = true,
   showCloseButton = true,
-  className = ''
+  className = '',
 }) {
-  const titleId = useId();
-  const dialogRef = useRef(null);
-  const previousFocusRef = useRef(null);
+  const titleId = useId()
+  const dialogRef = useRef(null)
+  const previousFocusRef = useRef(null)
 
   // Handle ESC key
   useEffect(() => {
-    if (!isOpen || !closeOnEsc) return;
+    if (!isOpen || !closeOnEsc) return
 
     const handleEsc = (e) => {
-      if (e.key === 'Escape') onClose?.();
-    };
+      if (e.key === 'Escape') onClose?.()
+    }
 
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
-  }, [isOpen, closeOnEsc, onClose]);
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [isOpen, closeOnEsc, onClose])
 
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''
     }
     return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
 
   // Focus trap and restore focus on close
   useEffect(() => {
-    if (!isOpen) return;
-    previousFocusRef.current = document.activeElement;
-    const dialog = dialogRef.current;
+    if (!isOpen) return
+    previousFocusRef.current = document.activeElement
+    const dialog = dialogRef.current
     if (dialog) {
-      const focusable = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (focusable.length) focusable[0].focus();
+      const focusable = dialog.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length) focusable[0].focus()
     }
     return () => {
-      previousFocusRef.current?.focus();
-    };
-  }, [isOpen]);
+      previousFocusRef.current?.focus()
+    }
+  }, [isOpen])
 
   // Trap Tab key inside modal
   useEffect(() => {
-    if (!isOpen) return;
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+    if (!isOpen) return
+    const dialog = dialogRef.current
+    if (!dialog) return
 
     const handleTab = (e) => {
-      if (e.key !== 'Tab') return;
-      const focusable = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (!focusable.length) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
+      if (e.key !== 'Tab') return
+      const focusable = dialog.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (!focusable.length) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
       if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
+        e.preventDefault()
+        last.focus()
       } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
+        e.preventDefault()
+        first.focus()
       }
-    };
+    }
 
-    dialog.addEventListener('keydown', handleTab);
-    return () => dialog.removeEventListener('keydown', handleTab);
-  }, [isOpen]);
+    dialog.addEventListener('keydown', handleTab)
+    return () => dialog.removeEventListener('keydown', handleTab)
+  }, [isOpen])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -128,7 +132,9 @@ export function Modal({
           {(title || showCloseButton) && (
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
               {title && (
-                <h3 id={titleId} className="text-lg font-semibold text-white">{title}</h3>
+                <h3 id={titleId} className="text-lg font-semibold text-white">
+                  {title}
+                </h3>
               )}
               {showCloseButton && (
                 <button
@@ -143,9 +149,7 @@ export function Modal({
           )}
 
           {/* Content */}
-          <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
-            {children}
-          </div>
+          <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">{children}</div>
 
           {/* Footer */}
           {footer && (
@@ -156,7 +160,7 @@ export function Modal({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 /**
@@ -172,12 +176,12 @@ export function ConfirmDialog({
   confirmText = 'Confirmer',
   cancelText = 'Annuler',
   variant = 'danger', // 'danger', 'primary', 'warning'
-  loading = false
+  loading = false,
 }) {
   const handleConfirm = () => {
-    onConfirm?.();
-    if (!loading) onClose?.();
-  };
+    onConfirm?.()
+    if (!loading) onClose?.()
+  }
 
   return (
     <Modal
@@ -190,11 +194,7 @@ export function ConfirmDialog({
           <Button variant="ghost" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button
-            variant={variant}
-            onClick={handleConfirm}
-            loading={loading}
-          >
+          <Button variant={variant} onClick={handleConfirm} loading={loading}>
             {confirmText}
           </Button>
         </>
@@ -202,7 +202,7 @@ export function ConfirmDialog({
     >
       <p className="text-kcb-sable">{message}</p>
     </Modal>
-  );
+  )
 }
 
-export default Modal;
+export default Modal

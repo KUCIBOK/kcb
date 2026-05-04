@@ -1,49 +1,49 @@
-﻿import { useState, useEffect } from 'react';
-import { Plus, Send, MessageSquare, AlertCircle } from 'lucide-react';
-import { utils } from '../../api/useAPI';
+﻿import { useState, useEffect } from 'react'
+import { Plus, Send, MessageSquare, AlertCircle } from 'lucide-react'
+import { utils } from '../../api/useAPI'
 
 export default function SupportTicketUser() {
-  const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [tickets, setTickets] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTicket, setSelectedTicket] = useState(null)
   const [formData, setFormData] = useState({
     category: 'autre',
     priority: 'normale',
     subject: '',
     description: '',
-  });
-  const [newResponse, setNewResponse] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  })
+  const [newResponse, setNewResponse] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    loadTickets();
-  }, []);
+    loadTickets()
+  }, [])
 
   const loadTickets = async () => {
     try {
       const response = await fetch(`${utils.api}/support-tickets/my-tickets`, {
         headers: utils.options.headers,
-      });
-      const data = await response.json();
-      setTickets(data.tickets || []);
+      })
+      const data = await response.json()
+      setTickets(data.tickets || [])
     } catch (error) {
       // Silenced for production
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleCreateTicket = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    
+    e.preventDefault()
+    setSubmitting(true)
+
     try {
       const response = await fetch(`${utils.api}/support-tickets/create`, {
         method: 'POST',
         headers: utils.options.headers,
         body: JSON.stringify(formData),
-      });
+      })
 
       if (response.ok) {
         setFormData({
@@ -51,19 +51,19 @@ export default function SupportTicketUser() {
           priority: 'normale',
           subject: '',
           description: '',
-        });
-        setIsModalOpen(false);
-        loadTickets();
+        })
+        setIsModalOpen(false)
+        loadTickets()
       }
     } catch (error) {
       // Silenced for production
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   const handleAddResponse = async () => {
-    if (!newResponse.trim()) return;
+    if (!newResponse.trim()) return
 
     try {
       const response = await fetch(
@@ -73,39 +73,39 @@ export default function SupportTicketUser() {
           headers: utils.options.headers,
           body: JSON.stringify({ message: newResponse }),
         }
-      );
+      )
 
       if (response.ok) {
-        const data = await response.json();
-        setSelectedTicket(data.ticket);
-        setNewResponse('');
-        loadTickets();
+        const data = await response.json()
+        setSelectedTicket(data.ticket)
+        setNewResponse('')
+        loadTickets()
       }
     } catch (error) {
       // Silenced for production
     }
-  };
+  }
 
   const statusColors = {
     ouvert: 'bg-green-500/20 text-green-300',
     en_cours: 'bg-kcb-or/10 text-kcb-or',
     resolu: 'bg-kcb-bronze/10 text-kcb-bronze',
     ferme: 'bg-gray-500/20 text-kcb-sable',
-  };
+  }
 
   const priorityColors = {
     basse: 'bg-kcb-or/10 text-kcb-or',
     normale: 'bg-gray-500/20 text-kcb-sable',
     haute: 'bg-orange-500/20 text-orange-300',
     critique: 'bg-red-500/20 text-red-300',
-  };
+  }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-kcb-pierre">Chargement...</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -148,14 +148,14 @@ export default function SupportTicketUser() {
                         : 'bg-kcb-ardoise border-white/[0.06] hover:border-white/[0.08]'
                     }`}
                   >
-                    <div className="text-xs font-mono text-kcb-pierre mb-1">
-                      {ticket.ticketId}
-                    </div>
+                    <div className="text-xs font-mono text-kcb-pierre mb-1">{ticket.ticketId}</div>
                     <div className="font-medium text-white text-sm line-clamp-2">
                       {ticket.subject}
                     </div>
                     <div className="flex gap-1 mt-2">
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${statusColors[ticket.status]}`}>
+                      <span
+                        className={`text-xs px-1.5 py-0.5 rounded ${statusColors[ticket.status]}`}
+                      >
                         {ticket.status}
                       </span>
                     </div>
@@ -175,7 +175,9 @@ export default function SupportTicketUser() {
                   <div className="text-xs text-kcb-pierre mb-1">{selectedTicket.ticketId}</div>
                   <h3 className="text-xl font-bold text-white">{selectedTicket.subject}</h3>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded ${priorityColors[selectedTicket.priority]}`}>
+                <span
+                  className={`text-xs px-2 py-1 rounded ${priorityColors[selectedTicket.priority]}`}
+                >
                   {selectedTicket.priority}
                 </span>
               </div>
@@ -208,11 +210,11 @@ export default function SupportTicketUser() {
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-xs font-semibold ${
-                        response.responderType === 'admin'
-                          ? 'text-kcb-or'
-                          : 'text-kcb-sable'
-                      }`}>
+                      <span
+                        className={`text-xs font-semibold ${
+                          response.responderType === 'admin' ? 'text-kcb-or' : 'text-kcb-sable'
+                        }`}
+                      >
                         {response.responderName}
                       </span>
                       <span className="text-xs text-kcb-pierre">
@@ -262,9 +264,7 @@ export default function SupportTicketUser() {
 
             <form onSubmit={handleCreateTicket} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">
-                  Catégorie
-                </label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Catégorie</label>
                 <select
                   name="category"
                   value={formData.category}
@@ -281,9 +281,7 @@ export default function SupportTicketUser() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">
-                  Priorité
-                </label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Priorité</label>
                 <select
                   name="priority"
                   value={formData.priority}
@@ -298,9 +296,7 @@ export default function SupportTicketUser() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">
-                  Sujet
-                </label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Sujet</label>
                 <input
                   type="text"
                   name="subject"
@@ -314,9 +310,7 @@ export default function SupportTicketUser() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">
-                  Description
-                </label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
@@ -349,5 +343,5 @@ export default function SupportTicketUser() {
         </div>
       )}
     </div>
-  );
+  )
 }

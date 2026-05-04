@@ -20,7 +20,7 @@ import {
 /** Fisher-Yates — identique à useArtworks.js */
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(Math.random() * (i + 1))
     ;[arr[i], arr[j]] = [arr[j], arr[i]]
   }
   return arr
@@ -109,16 +109,16 @@ export const ArtworksContextProvider = ({ children }) => {
             getRejectedArtworks(),
           ])
           const allArtworks = [
-            ...(Array.isArray(pending)  ? pending  : []),
+            ...(Array.isArray(pending) ? pending : []),
             ...(Array.isArray(approved) ? approved : []),
             ...(Array.isArray(rejected) ? rejected : []),
           ]
           setState((prev) => ({
             ...prev,
-            artworks:  allArtworks,
-            pending:   Array.isArray(pending)  ? [...pending].reverse()  : [],
-            approved:  Array.isArray(approved) ? [...approved].reverse() : [],
-            rejected:  Array.isArray(rejected) ? [...rejected].reverse() : [],
+            artworks: allArtworks,
+            pending: Array.isArray(pending) ? [...pending].reverse() : [],
+            approved: Array.isArray(approved) ? [...approved].reverse() : [],
+            rejected: Array.isArray(rejected) ? [...rejected].reverse() : [],
           }))
         }
         if (user?.role == 'artist' && artistProfile?.id) {
@@ -149,175 +149,174 @@ export const ArtworksContextProvider = ({ children }) => {
       getProfileArtworks()
     }
   }, [user?._id, user?.role, artistProfile?.id, curatorProfile?._id])
-  const contextValue = useMemo(() => ({
-        artworks: state.artworks,
-        forSale: state.forSale,
-        buyed: state.buyed,
-        pending: state.pending,
-        approved: state.approved,
-        rejected: state.rejected,
-        myArtworks: state.myArtworks,
-        featured: state?.featured,
-        categoryFeatured: state?.categoryFeatured,
-        loading: state.loading,
-        setArtworkState: setState,
-        artworkState: state,
-        approveArtwork: async (id, status) => {
-          try {
-            const artwork = await setArtworkStatus(id, status)
-            if (artwork?._id) {
-              if (artwork?.status == 'approved') {
-                setState((prev) => ({
-                  ...prev,
-                  pending: prev.pending?.filter((d) => d._id !== id),
-                  rejected: prev.rejected?.filter((d) => d._id !== id),
-                  approved: [artwork, ...prev.approved],
-                }))
-              } else {
-                setState((prev) => ({
-                  ...prev,
-                  pending: prev.pending?.filter((item) => item._id !== artwork._id),
-                  approved: prev.approved?.filter((item) => item._id !== artwork._id),
-                  rejected: [artwork, ...prev.rejected],
-                }))
-              }
+  const contextValue = useMemo(
+    () => ({
+      artworks: state.artworks,
+      forSale: state.forSale,
+      buyed: state.buyed,
+      pending: state.pending,
+      approved: state.approved,
+      rejected: state.rejected,
+      myArtworks: state.myArtworks,
+      featured: state?.featured,
+      categoryFeatured: state?.categoryFeatured,
+      loading: state.loading,
+      setArtworkState: setState,
+      artworkState: state,
+      approveArtwork: async (id, status) => {
+        try {
+          const artwork = await setArtworkStatus(id, status)
+          if (artwork?._id) {
+            if (artwork?.status == 'approved') {
+              setState((prev) => ({
+                ...prev,
+                pending: prev.pending?.filter((d) => d._id !== id),
+                rejected: prev.rejected?.filter((d) => d._id !== id),
+                approved: [artwork, ...prev.approved],
+              }))
+            } else {
+              setState((prev) => ({
+                ...prev,
+                pending: prev.pending?.filter((item) => item._id !== artwork._id),
+                approved: prev.approved?.filter((item) => item._id !== artwork._id),
+                rejected: [artwork, ...prev.rejected],
+              }))
+            }
 
-              makeToast(
-                'Félicitations ',
-                'success',
-                `L'oeuvre a été ${status == 'approved' ? 'approuvée' : 'rejetée'} avec succès`
-              )
-              await createLog({
-                description: `L'oeuvre ${artwork?._id} a été ${status === 'approved' ? 'approuvée' : 'rejetée'}`,
-                userId: user?._id,
-              })
-              return artwork
-            }
-            makeToast('Erreur', 'warning', artwork?.error)
-          } catch (error) {
-            makeToast('Erreur', 'warning', error.message)
-          }
-        },
-        submitArtwork: async (artwork) => {
-          try {
-            const data = await submitArtwork(artwork)
-            if (data?.id) {
-              setState((prev) => ({
-                ...prev,
-                myArtworks: [...prev.myArtworks, { ...data, status: 'pending' }],
-              }))
-              makeToast('Félicitations ', 'success', `L'oeuvre a été soumise avec succès`)
-              await createLog({
-                description: `L'oeuvre ${data?.id} a été soumise`,
-                userId: user?.id,
-              })
-              return data
-            }
-            makeToast('Erreur', 'warning', data?.error)
-            return data
-          } catch (error) {
-            makeToast('Erreur', 'warning', error.message)
-            return {
-              error: error.message,
-            }
-          }
-        },
-        updateArtwork: async (id, payload) => {
-          try {
-            const artwork = await updateArtwork(id, payload)
-            if (artwork?.id) {
-              setState((prev) => ({
-                ...prev,
-                myArtworks: prev.myArtworks?.map((d) => (d.id === id ? artwork : d)),
-              }))
-              makeToast('Succès', 'success', 'Oeuvre mise à jour avec succès')
-              await createLog({
-                description: `L'oeuvre ${artwork?.id} a été mise à jour`,
-                userId: user?.id,
-              })
-              return artwork
-            }
-            makeToast('Erreur', 'warning', artwork?.error || "Impossible de mettre à jour l'oeuvre")
-            return {
-              error: artwork?.error || artwork?.message,
-            }
-          } catch (error) {
-            makeToast('Erreur', 'warning', error.message)
-            return {
-              error: error.message,
-            }
-          }
-        },
-        purchaseArtwork: async (artwork, payload) => {
-          try {
-            const data = await purchaseArtwork(artwork, payload)
-            if (data?.id) {
-              setState((prev) => ({
-                ...prev,
-                forSale: prev.forSale?.filter(
-                  (item) => item._id != artwork?.id && item.id != artwork?.id
-                ),
-              }))
-              makeToast('Félicitations ', 'success', `Vous avez acheté une oeuvre`)
-              await createLog({
-                description: `L'oeuvre ${artwork?._id} a été achetée`,
-                userId: user?._id,
-              })
-              return data
-            }
-            return {
-              error: data?.error || data?.message,
-            }
-          } catch (error) {
-            makeToast('Erreur', 'warning', error.message)
-            return {
-              error: error.message,
-            }
-          }
-        },
-        modifyEtherscan: async (id, etherscan) => {
-          try {
-            const artwork = await updateEtherscan(id, etherscan)
-            if (!artwork?._id) return { error: artwork?.error }
-            if (artwork?.status == 'pending')
-              setState((prev) => ({
-                ...prev,
-                pending: prev.pending?.map((d) => (d._id === id ? artwork : d)),
-              }))
-            if (artwork?.status == 'rejected')
-              setState((prev) => ({
-                ...prev,
-                rejected: prev.rejected?.map((d) => (d._id === id ? artwork : d)),
-              }))
-            if (artwork?.status == 'approved')
-              setState((prev) => ({
-                ...prev,
-                approved: prev.approved?.map((d) => (d._id === id ? artwork : d)),
-              }))
             makeToast(
-              'Succès',
+              'Félicitations ',
               'success',
-              "L'adresse etherscan de l'oeuvre a été modifiée avec succès"
+              `L'oeuvre a été ${status == 'approved' ? 'approuvée' : 'rejetée'} avec succès`
             )
             await createLog({
-              description: `L'adresse etherscan de l'oeuvre ${artwork?._id} a été modifiée`,
+              description: `L'oeuvre ${artwork?._id} a été ${status === 'approved' ? 'approuvée' : 'rejetée'}`,
               userId: user?._id,
             })
             return artwork
-          } catch (error) {
-            return {
-              error: error.message,
-            }
           }
-        },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [state, user, makeToast])
-
-  return (
-    <ArtworksContext.Provider value={contextValue}>
-      {children}
-    </ArtworksContext.Provider>
+          makeToast('Erreur', 'warning', artwork?.error)
+        } catch (error) {
+          makeToast('Erreur', 'warning', error.message)
+        }
+      },
+      submitArtwork: async (artwork) => {
+        try {
+          const data = await submitArtwork(artwork)
+          if (data?.id) {
+            setState((prev) => ({
+              ...prev,
+              myArtworks: [...prev.myArtworks, { ...data, status: 'pending' }],
+            }))
+            makeToast('Félicitations ', 'success', `L'oeuvre a été soumise avec succès`)
+            await createLog({
+              description: `L'oeuvre ${data?.id} a été soumise`,
+              userId: user?.id,
+            })
+            return data
+          }
+          makeToast('Erreur', 'warning', data?.error)
+          return data
+        } catch (error) {
+          makeToast('Erreur', 'warning', error.message)
+          return {
+            error: error.message,
+          }
+        }
+      },
+      updateArtwork: async (id, payload) => {
+        try {
+          const artwork = await updateArtwork(id, payload)
+          if (artwork?.id) {
+            setState((prev) => ({
+              ...prev,
+              myArtworks: prev.myArtworks?.map((d) => (d.id === id ? artwork : d)),
+            }))
+            makeToast('Succès', 'success', 'Oeuvre mise à jour avec succès')
+            await createLog({
+              description: `L'oeuvre ${artwork?.id} a été mise à jour`,
+              userId: user?.id,
+            })
+            return artwork
+          }
+          makeToast('Erreur', 'warning', artwork?.error || "Impossible de mettre à jour l'oeuvre")
+          return {
+            error: artwork?.error || artwork?.message,
+          }
+        } catch (error) {
+          makeToast('Erreur', 'warning', error.message)
+          return {
+            error: error.message,
+          }
+        }
+      },
+      purchaseArtwork: async (artwork, payload) => {
+        try {
+          const data = await purchaseArtwork(artwork, payload)
+          if (data?.id) {
+            setState((prev) => ({
+              ...prev,
+              forSale: prev.forSale?.filter(
+                (item) => item._id != artwork?.id && item.id != artwork?.id
+              ),
+            }))
+            makeToast('Félicitations ', 'success', `Vous avez acheté une oeuvre`)
+            await createLog({
+              description: `L'oeuvre ${artwork?._id} a été achetée`,
+              userId: user?._id,
+            })
+            return data
+          }
+          return {
+            error: data?.error || data?.message,
+          }
+        } catch (error) {
+          makeToast('Erreur', 'warning', error.message)
+          return {
+            error: error.message,
+          }
+        }
+      },
+      modifyEtherscan: async (id, etherscan) => {
+        try {
+          const artwork = await updateEtherscan(id, etherscan)
+          if (!artwork?._id) return { error: artwork?.error }
+          if (artwork?.status == 'pending')
+            setState((prev) => ({
+              ...prev,
+              pending: prev.pending?.map((d) => (d._id === id ? artwork : d)),
+            }))
+          if (artwork?.status == 'rejected')
+            setState((prev) => ({
+              ...prev,
+              rejected: prev.rejected?.map((d) => (d._id === id ? artwork : d)),
+            }))
+          if (artwork?.status == 'approved')
+            setState((prev) => ({
+              ...prev,
+              approved: prev.approved?.map((d) => (d._id === id ? artwork : d)),
+            }))
+          makeToast(
+            'Succès',
+            'success',
+            "L'adresse etherscan de l'oeuvre a été modifiée avec succès"
+          )
+          await createLog({
+            description: `L'adresse etherscan de l'oeuvre ${artwork?._id} a été modifiée`,
+            userId: user?._id,
+          })
+          return artwork
+        } catch (error) {
+          return {
+            error: error.message,
+          }
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }),
+    [state, user, makeToast]
   )
+
+  return <ArtworksContext.Provider value={contextValue}>{children}</ArtworksContext.Provider>
 }
 
 export function useArtworks() {

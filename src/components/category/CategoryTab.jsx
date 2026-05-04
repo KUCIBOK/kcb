@@ -1,15 +1,12 @@
-import { Plus } from "lucide-react";
-import { useCategoryStore } from "../../store/CategoryStore";
-import { useState } from "react";
-import { CategoryList } from "./CategoryList";
-import { Modal, Input, Button, toast } from "../ui";
-
-
-
+import { Plus } from 'lucide-react'
+import { useCategoryStore } from '../../store/CategoryStore'
+import { useState } from 'react'
+import { CategoryList } from './CategoryList'
+import { Modal, Input, Button, toast } from '../ui'
 
 export function CategoryTab() {
-  const { categories } = useCategoryStore();
-  const [showModal, setShowModal] = useState(false);
+  const { categories } = useCategoryStore()
+  const [showModal, setShowModal] = useState(false)
   return (
     <section>
       <div className="rounded-[4px] bg-kcb-ardoise p-4 md:p-6 mb-6 shadow-md">
@@ -26,42 +23,36 @@ export function CategoryTab() {
       </div>
       {showModal && <AddCategoryModal closeModal={() => setShowModal(false)} />}
     </section>
-  );
+  )
 }
 
-
 function AddCategoryModal({ closeModal }) {
-  const { addCategory } = useCategoryStore();
+  const { addCategory } = useCategoryStore()
   const [state, setState] = useState({
-    title: "",
-    loading: false
-  });
+    title: '',
+    loading: false,
+  })
 
   const handleAddCategory = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      setState({ ...state, loading: true });
-      const category = await addCategory({ title: state.title });
+      setState({ ...state, loading: true })
+      const category = await addCategory({ title: state.title })
       if (category?._id) {
-        toast.success('✓ Catégorie ajoutée');
-        closeModal();
+        toast.success('✓ Catégorie ajoutée')
+        closeModal()
       } else {
-        toast.error('× ' + (category?.error || 'Erreur'));
+        toast.error('× ' + (category?.error || 'Erreur'))
       }
-      setState({ ...state, loading: false });
+      setState({ ...state, loading: false })
     } catch (error) {
-      toast.error('× Erreur serveur');
-      setState({ ...state, loading: false });
+      toast.error('× Erreur serveur')
+      setState({ ...state, loading: false })
     }
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={closeModal}
-      title="Ajouter une catégorie"
-      size="sm"
-    >
+    <Modal isOpen={true} onClose={closeModal} title="Ajouter une catégorie" size="sm">
       <form onSubmit={handleAddCategory} className="space-y-4">
         <Input
           label="Titre de la catégorie"
@@ -73,22 +64,14 @@ function AddCategoryModal({ closeModal }) {
         />
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={closeModal}
-          >
+          <Button type="button" variant="secondary" onClick={closeModal}>
             Annuler
           </Button>
-          <Button
-            type="submit"
-            disabled={state.loading}
-            loading={state.loading}
-          >
+          <Button type="submit" disabled={state.loading} loading={state.loading}>
             Ajouter
           </Button>
         </div>
       </form>
     </Modal>
-  );
+  )
 }

@@ -30,7 +30,8 @@ export default function SubscriptionSuccess() {
       } else {
         setState((prev) => ({
           ...prev,
-          error: 'Abonnement introuvable. Si vous venez de payer, patientez quelques secondes puis rechargez la page.',
+          error:
+            'Abonnement introuvable. Si vous venez de payer, patientez quelques secondes puis rechargez la page.',
           loading: false,
         }))
       }
@@ -70,7 +71,7 @@ export default function SubscriptionSuccess() {
     )
   }
 
-  const fmt = (dateStr) => dateStr ? new Date(dateStr).toLocaleDateString('fr-FR') : '—'
+  const fmt = (dateStr) => (dateStr ? new Date(dateStr).toLocaleDateString('fr-FR') : '—')
 
   return (
     <div className="min-h-screen bg-kcb-noir-deep py-12 px-4">
@@ -96,12 +97,15 @@ export default function SubscriptionSuccess() {
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span className="text-kcb-pierre">Montant</span>
                 <span className="text-white font-medium">
-                  {state.subscription?.amount?.toLocaleString('fr-FR')} {state.subscription?.currency}
+                  {state.subscription?.amount?.toLocaleString('fr-FR')}{' '}
+                  {state.subscription?.currency}
                 </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span className="text-kcb-pierre">Date de début</span>
-                <span className="text-white font-medium">{fmt(state.subscription?.start_date)}</span>
+                <span className="text-white font-medium">
+                  {fmt(state.subscription?.start_date)}
+                </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-white/[0.06]">
                 <span className="text-kcb-pierre">Date de fin</span>
@@ -109,7 +113,9 @@ export default function SubscriptionSuccess() {
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-kcb-pierre">Prochain paiement</span>
-                <span className="text-white font-medium">{fmt(state.subscription?.next_payment_date)}</span>
+                <span className="text-white font-medium">
+                  {fmt(state.subscription?.next_payment_date)}
+                </span>
               </div>
             </div>
           </div>
@@ -147,7 +153,8 @@ export default function SubscriptionSuccess() {
 
           <div className="mt-8 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] p-4">
             <p className="text-kcb-or text-sm">
-              <strong>Note :</strong> Vous recevrez un email de confirmation avec les détails de votre abonnement.
+              <strong>Note :</strong> Vous recevrez un email de confirmation avec les détails de
+              votre abonnement.
             </p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   Plus,
   Link as LinkIcon,
@@ -15,8 +15,8 @@ import {
   Twitter,
   Zap,
   X,
-} from "lucide-react";
-import { ConfirmDialog, toast } from "../ui";
+} from 'lucide-react'
+import { ConfirmDialog, toast } from '../ui'
 import {
   getIntegrations,
   connectIntegration,
@@ -24,190 +24,190 @@ import {
   syncIntegration,
   disconnectIntegration,
   getIntegrationStats,
-} from "../../api/useIntegration";
+} from '../../api/useIntegration'
 
 const INTEGRATION_CONFIGS = {
   logidoo: {
-    name: "Logidoo",
+    name: 'Logidoo',
     icon: Zap,
-    color: "from-yellow-500 to-orange-500",
-    description: "Intégration logistique en temps réel",
+    color: 'from-yellow-500 to-orange-500',
+    description: 'Intégration logistique en temps réel',
     fields: [
-      { name: "accessToken", label: "Access Token", type: "password" },
-      { name: "refreshToken", label: "Refresh Token", type: "password" },
+      { name: 'accessToken', label: 'Access Token', type: 'password' },
+      { name: 'refreshToken', label: 'Refresh Token', type: 'password' },
     ],
   },
   gmail: {
-    name: "Gmail",
+    name: 'Gmail',
     icon: Mail,
-    color: "from-red-500 to-pink-500",
-    description: "Gestion des emails",
+    color: 'from-red-500 to-pink-500',
+    description: 'Gestion des emails',
     fields: [
-      { name: "email", label: "Adresse email", type: "email" },
-      { name: "accessToken", label: "Access Token OAuth", type: "password" },
+      { name: 'email', label: 'Adresse email', type: 'email' },
+      { name: 'accessToken', label: 'Access Token OAuth', type: 'password' },
     ],
   },
   outlook: {
-    name: "Outlook",
+    name: 'Outlook',
     icon: Mail,
-    color: "from-kcb-or to-kcb-bronze",
-    description: "Email Microsoft",
+    color: 'from-kcb-or to-kcb-bronze',
+    description: 'Email Microsoft',
     fields: [
-      { name: "email", label: "Adresse Outlook", type: "email" },
-      { name: "accessToken", label: "Access Token", type: "password" },
+      { name: 'email', label: 'Adresse Outlook', type: 'email' },
+      { name: 'accessToken', label: 'Access Token', type: 'password' },
     ],
   },
   google_calendar: {
-    name: "Google Calendar",
+    name: 'Google Calendar',
     icon: Calendar,
-    color: "from-kcb-or to-kcb-bronze",
-    description: "Calendrier synchronisé",
+    color: 'from-kcb-or to-kcb-bronze',
+    description: 'Calendrier synchronisé',
     fields: [
-      { name: "accessToken", label: "Access Token", type: "password" },
-      { name: "calendarId", label: "ID du calendrier", type: "text" },
+      { name: 'accessToken', label: 'Access Token', type: 'password' },
+      { name: 'calendarId', label: 'ID du calendrier', type: 'text' },
     ],
   },
   instagram: {
-    name: "Instagram",
+    name: 'Instagram',
     icon: Instagram,
-    color: "from-kcb-or to-kcb-bronze",
-    description: "Réseau social professionnel",
+    color: 'from-kcb-or to-kcb-bronze',
+    description: 'Réseau social professionnel',
     fields: [
-      { name: "accessToken", label: "Access Token", type: "password" },
-      { name: "businessAccountId", label: "ID du compte business", type: "text" },
+      { name: 'accessToken', label: 'Access Token', type: 'password' },
+      { name: 'businessAccountId', label: 'ID du compte business', type: 'text' },
     ],
   },
   facebook: {
-    name: "Facebook",
+    name: 'Facebook',
     icon: Facebook,
-    color: "from-kcb-or to-kcb-or/70",
-    description: "Gestion des pages Facebook",
+    color: 'from-kcb-or to-kcb-or/70',
+    description: 'Gestion des pages Facebook',
     fields: [
-      { name: "accessToken", label: "Access Token", type: "password" },
-      { name: "pageId", label: "ID de la page", type: "text" },
+      { name: 'accessToken', label: 'Access Token', type: 'password' },
+      { name: 'pageId', label: 'ID de la page', type: 'text' },
     ],
   },
   twitter: {
-    name: "Twitter/X",
+    name: 'Twitter/X',
     icon: Twitter,
-    color: "from-gray-700 to-black",
-    description: "Partage sur X/Twitter",
+    color: 'from-gray-700 to-black',
+    description: 'Partage sur X/Twitter',
     fields: [
-      { name: "apiKey", label: "API Key", type: "password" },
-      { name: "apiSecret", label: "API Secret", type: "password" },
-      { name: "accessToken", label: "Access Token", type: "password" },
+      { name: 'apiKey', label: 'API Key', type: 'password' },
+      { name: 'apiSecret', label: 'API Secret', type: 'password' },
+      { name: 'accessToken', label: 'Access Token', type: 'password' },
     ],
   },
   webhook: {
-    name: "Webhooks",
+    name: 'Webhooks',
     icon: Zap,
-    color: "from-green-500 to-teal-500",
-    description: "Intégrations personnalisées",
+    color: 'from-green-500 to-teal-500',
+    description: 'Intégrations personnalisées',
     fields: [
-      { name: "webhookUrl", label: "URL du webhook", type: "url" },
-      { name: "webhookSecret", label: "Secret du webhook", type: "password" },
+      { name: 'webhookUrl', label: 'URL du webhook', type: 'url' },
+      { name: 'webhookSecret', label: 'Secret du webhook', type: 'password' },
     ],
   },
-};
+}
 
 export function Integrations() {
-  const [integrations, setIntegrations] = useState([]);
-  const [stats, setStats] = useState({ total: 0, connected: 0 });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [selectedIntegration, setSelectedIntegration] = useState(null);
-  const [formData, setFormData] = useState({});
-  const [syncing, setSyncing] = useState(null);
-  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
-  const [integrationToDisconnect, setIntegrationToDisconnect] = useState(null);
+  const [integrations, setIntegrations] = useState([])
+  const [stats, setStats] = useState({ total: 0, connected: 0 })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [selectedIntegration, setSelectedIntegration] = useState(null)
+  const [formData, setFormData] = useState({})
+  const [syncing, setSyncing] = useState(null)
+  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false)
+  const [integrationToDisconnect, setIntegrationToDisconnect] = useState(null)
 
   useEffect(() => {
-    loadIntegrations();
-    loadStats();
-  }, []);
+    loadIntegrations()
+    loadStats()
+  }, [])
 
   const loadIntegrations = async () => {
-    setLoading(true);
-    setError("");
-    const data = await getIntegrations();
+    setLoading(true)
+    setError('')
+    const data = await getIntegrations()
     if (!data.error) {
-      setIntegrations(data);
+      setIntegrations(data)
     } else {
-      setError(data.error);
+      setError(data.error)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const loadStats = async () => {
-    const data = await getIntegrationStats();
+    const data = await getIntegrationStats()
     if (!data.error) {
-      setStats(data);
+      setStats(data)
     }
-  };
+  }
 
   const handleConnect = async (integrationName) => {
-    setSelectedIntegration(integrationName);
-    setFormData({});
-    setShowModal(true);
-  };
+    setSelectedIntegration(integrationName)
+    setFormData({})
+    setShowModal(true)
+  }
 
   const handleSaveIntegration = async (e) => {
-    e.preventDefault();
-    setError("");
+    e.preventDefault()
+    setError('')
 
-    const result = await connectIntegration(selectedIntegration, formData);
+    const result = await connectIntegration(selectedIntegration, formData)
 
     if (!result.error) {
-      await loadIntegrations();
-      await loadStats();
-      setShowModal(false);
-      setFormData({});
+      await loadIntegrations()
+      await loadStats()
+      setShowModal(false)
+      setFormData({})
     } else {
-      setError(result.error);
+      setError(result.error)
     }
-  };
+  }
 
   const handleSync = async (id) => {
-    setSyncing(id);
-    setError("");
-    const result = await syncIntegration(id);
-    setSyncing(null);
+    setSyncing(id)
+    setError('')
+    const result = await syncIntegration(id)
+    setSyncing(null)
 
     if (result.error) {
-      setError(result.error);
+      setError(result.error)
     } else {
-      await loadIntegrations();
+      await loadIntegrations()
     }
-  };
+  }
 
   const handleDisconnect = async (id) => {
-    setIntegrationToDisconnect(id);
-    setShowDisconnectConfirm(true);
-  };
+    setIntegrationToDisconnect(id)
+    setShowDisconnectConfirm(true)
+  }
 
   const confirmDisconnect = async () => {
-    setError("");
-    const result = await disconnectIntegration(integrationToDisconnect);
+    setError('')
+    const result = await disconnectIntegration(integrationToDisconnect)
 
     if (!result.error) {
-      toast.success('✓ Intégration déconnectée');
-      await loadIntegrations();
-      await loadStats();
+      toast.success('✓ Intégration déconnectée')
+      await loadIntegrations()
+      await loadStats()
     } else {
-      setError(result.error);
-      toast.error('× Erreur lors de la déconnexion');
+      setError(result.error)
+      toast.error('× Erreur lors de la déconnexion')
     }
-    setShowDisconnectConfirm(false);
-    setIntegrationToDisconnect(null);
-  };
+    setShowDisconnectConfirm(false)
+    setIntegrationToDisconnect(null)
+  }
 
   const getConnectedIntegration = (name) => {
-    return integrations.find((i) => i.name === name && i.isConnected);
-  };
+    return integrations.find((i) => i.name === name && i.isConnected)
+  }
 
-  const config = selectedIntegration ? INTEGRATION_CONFIGS[selectedIntegration] : null;
-  const isConnected = getConnectedIntegration(selectedIntegration);
+  const config = selectedIntegration ? INTEGRATION_CONFIGS[selectedIntegration] : null
+  const isConnected = getConnectedIntegration(selectedIntegration)
 
   return (
     <div className="space-y-6 px-4 md:px-0">
@@ -247,8 +247,8 @@ export function Integrations() {
       {!loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Object.entries(INTEGRATION_CONFIGS).map(([key, config]) => {
-            const connected = getConnectedIntegration(key);
-            const Icon = config.icon;
+            const connected = getConnectedIntegration(key)
+            const Icon = config.icon
 
             return (
               <div
@@ -260,27 +260,22 @@ export function Integrations() {
                   <div className={`p-3 rounded-[4px] bg-gradient-to-br ${config.color}`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  {connected && (
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                  )}
+                  {connected && <CheckCircle className="w-5 h-5 text-green-400" />}
                 </div>
 
                 {/* Info */}
-                <h3 className="text-lg font-bold text-white mb-1">
-                  {config.name}
-                </h3>
-                <p className="text-sm text-kcb-pierre mb-4">
-                  {config.description}
-                </p>
+                <h3 className="text-lg font-bold text-white mb-1">{config.name}</h3>
+                <p className="text-sm text-kcb-pierre mb-4">{config.description}</p>
 
                 {/* Status */}
                 {connected && (
                   <div className="mb-4 text-xs text-kcb-pierre">
-                    <p>Connectée depuis {new Date(connected.connectedAt).toLocaleDateString("fr-FR")}</p>
+                    <p>
+                      Connectée depuis {new Date(connected.connectedAt).toLocaleDateString('fr-FR')}
+                    </p>
                     {connected.lastSync && (
                       <p>
-                        Dernière sync:{" "}
-                        {new Date(connected.lastSync).toLocaleDateString("fr-FR")}
+                        Dernière sync: {new Date(connected.lastSync).toLocaleDateString('fr-FR')}
                       </p>
                     )}
                   </div>
@@ -290,29 +285,29 @@ export function Integrations() {
                 {connected?.syncStatus && (
                   <div
                     className={`mb-4 text-xs p-2 rounded ${
-                      connected.syncStatus === "success"
-                        ? "bg-green-500/20 text-green-300"
-                        : connected.syncStatus === "error"
-                        ? "bg-red-500/20 text-red-300"
-                        : "bg-yellow-500/20 text-yellow-300"
+                      connected.syncStatus === 'success'
+                        ? 'bg-green-500/20 text-green-300'
+                        : connected.syncStatus === 'error'
+                          ? 'bg-red-500/20 text-red-300'
+                          : 'bg-yellow-500/20 text-yellow-300'
                     }`}
                   >
-                    {connected.syncStatus === "syncing" && (
+                    {connected.syncStatus === 'syncing' && (
                       <div className="flex items-center gap-1">
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         Synchronisation en cours...
                       </div>
                     )}
-                    {connected.syncStatus === "success" && (
+                    {connected.syncStatus === 'success' && (
                       <div className="flex items-center gap-1">
                         <CheckCircle className="w-3 h-3" />
                         Synchronisé avec succès
                       </div>
                     )}
-                    {connected.syncStatus === "error" && (
+                    {connected.syncStatus === 'error' && (
                       <div className="flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" />
-                        {connected.syncErrorMessage || "Erreur de synchronisation"}
+                        {connected.syncErrorMessage || 'Erreur de synchronisation'}
                       </div>
                     )}
                   </div>
@@ -336,9 +331,7 @@ export function Integrations() {
                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-700/80 hover:bg-green-600 text-white rounded-[4px] transition text-sm disabled:opacity-50"
                       >
                         <RefreshCw
-                          className={`w-4 h-4 ${
-                            syncing === connected._id ? "animate-spin" : ""
-                          }`}
+                          className={`w-4 h-4 ${syncing === connected._id ? 'animate-spin' : ''}`}
                         />
                         Synchroniser
                       </button>
@@ -353,7 +346,7 @@ export function Integrations() {
                   )}
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       ) : (
@@ -368,14 +361,10 @@ export function Integrations() {
           <div className="bg-kcb-ardoise rounded-[4px] max-w-md w-full p-6 border border-white/[0.06]">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div
-                  className={`p-2 rounded-[4px] bg-gradient-to-br ${config.color}`}
-                >
+                <div className={`p-2 rounded-[4px] bg-gradient-to-br ${config.color}`}>
                   {<config.icon className="w-5 h-5 text-white" />}
                 </div>
-                <h2 className="text-2xl font-bold text-white">
-                  Connecter {config.name}
-                </h2>
+                <h2 className="text-2xl font-bold text-white">Connecter {config.name}</h2>
               </div>
               <button
                 onClick={() => setShowModal(false)}
@@ -394,7 +383,7 @@ export function Integrations() {
                   <input
                     type={field.type}
                     name={field.name}
-                    value={formData[field.name] || ""}
+                    value={formData[field.name] || ''}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -439,7 +428,7 @@ export function Integrations() {
         variant="danger"
       />
     </div>
-  );
+  )
 }
 
-export default Integrations;
+export default Integrations

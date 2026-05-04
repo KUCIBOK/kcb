@@ -7,7 +7,7 @@ describe('useAPI — utils', () => {
     setSupabaseToken(null)
   })
 
-  it("options contient le header Content-Type JSON", () => {
+  it('options contient le header Content-Type JSON', () => {
     const { headers } = utils.options
     expect(headers['Content-Type']).toBe('application/json')
   })

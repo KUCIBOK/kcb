@@ -197,7 +197,9 @@ describe('SignUpUser', () => {
   it('succès — retourne { user, message }', async () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ data: { user: { id: 'uuid-1234', email: 'nouveau@kcb.com', role: 'artist' } } }),
+      json: async () => ({
+        data: { user: { id: 'uuid-1234', email: 'nouveau@kcb.com', role: 'artist' } },
+      }),
     })
 
     const result = await SignUpUser({
@@ -207,12 +209,16 @@ describe('SignUpUser', () => {
       name: 'Amara Diallo',
     })
 
-    expect(result.user).toMatchObject({ _id: 'uuid-1234', id: 'uuid-1234', email: 'nouveau@kcb.com' })
+    expect(result.user).toMatchObject({
+      _id: 'uuid-1234',
+      id: 'uuid-1234',
+      email: 'nouveau@kcb.com',
+    })
     expect(result.message).toBe('Inscription réussie. Vérifiez votre adresse email pour continuer.')
     expect(result.error).toBeUndefined()
   })
 
-  it('email déjà utilisé — retourne le message brut de l\'API', async () => {
+  it("email déjà utilisé — retourne le message brut de l'API", async () => {
     global.fetch.mockResolvedValueOnce({
       ok: false,
       json: async () => ({ error: 'Un compte existe déjà avec cet email.' }),
@@ -249,7 +255,9 @@ describe('SignUpUser', () => {
   it('artiste avec image — appelle uploadProfileImage et retourne imageUrl', async () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ data: { user: { id: 'artist-uuid', email: 'artiste@kcb.com', role: 'artist' } } }),
+      json: async () => ({
+        data: { user: { id: 'artist-uuid', email: 'artiste@kcb.com', role: 'artist' } },
+      }),
     })
     uploadProfileImage.mockResolvedValueOnce({
       url: 'https://cdn.kcb.com/profiles/artist-uuid/avatar.jpg',
@@ -275,7 +283,9 @@ describe('SignUpUser', () => {
   it("artiste avec échec upload — retourne quand même l'utilisateur (non-bloquant)", async () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ data: { user: { id: 'artist-uuid-2', email: 'artiste2@kcb.com', role: 'artist' } } }),
+      json: async () => ({
+        data: { user: { id: 'artist-uuid-2', email: 'artiste2@kcb.com', role: 'artist' } },
+      }),
     })
     uploadProfileImage.mockResolvedValueOnce({ error: 'Stockage indisponible' })
 
@@ -297,7 +307,9 @@ describe('SignUpUser', () => {
   it("n'appelle pas uploadProfileImage si le rôle n'est pas artiste", async () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ data: { user: { id: 'uuid-1234', email: 'curator@kcb.com', role: 'curator' } } }),
+      json: async () => ({
+        data: { user: { id: 'uuid-1234', email: 'curator@kcb.com', role: 'curator' } },
+      }),
     })
 
     const fakeFile = new File(['contenu'], 'photo.jpg', { type: 'image/jpeg' })

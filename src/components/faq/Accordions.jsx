@@ -1,16 +1,13 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 const AccordionItem = ({ question, answer, isOpen, onClick }) => {
   return (
     <div className="border-b border-white/[0.06] pb-4">
-      <button
-        className="flex justify-between items-center w-full text-left"
-        onClick={onClick}
-      >
+      <button className="flex justify-between items-center w-full text-left" onClick={onClick}>
         <h3 className="text-lg font-medium text-white">{question}</h3>
         <svg
           className={`fill-kcb-or shrink-0 ml-4 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
+            isOpen ? 'rotate-180' : ''
           }`}
           width="16"
           height="16"
@@ -23,14 +20,14 @@ const AccordionItem = ({ question, answer, isOpen, onClick }) => {
             height="2"
             rx="1"
             className={`transform origin-center transition duration-200 ${
-              isOpen ? "rotate-90 opacity-0" : "rotate-0"
+              isOpen ? 'rotate-90 opacity-0' : 'rotate-0'
             }`}
           />
         </svg>
       </button>
       <div
         className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         }`}
       >
         <div className="overflow-hidden">
@@ -38,15 +35,15 @@ const AccordionItem = ({ question, answer, isOpen, onClick }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default function Accordions({ faqs }) {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState(null)
 
   const handleItemClick = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+    setOpenIndex(openIndex === index ? null : index)
+  }
 
   return (
     <div className="space-y-4 w-full">
@@ -60,5 +57,5 @@ export default function Accordions({ faqs }) {
         />
       ))}
     </div>
-  );
+  )
 }

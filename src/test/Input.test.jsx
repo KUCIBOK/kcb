@@ -13,12 +13,12 @@ describe('Input', () => {
     expect(screen.getByPlaceholderText('Entrez votre email')).toBeInTheDocument()
   })
 
-  it('affiche le message d\'erreur', () => {
+  it("affiche le message d'erreur", () => {
     render(<Input error="Champ obligatoire" />)
     expect(screen.getByText('Champ obligatoire')).toBeInTheDocument()
   })
 
-  it('affiche le helperText quand pas d\'erreur', () => {
+  it("affiche le helperText quand pas d'erreur", () => {
     render(<Input helperText="Format: nom@email.com" />)
     expect(screen.getByText('Format: nom@email.com')).toBeInTheDocument()
   })
@@ -34,7 +34,7 @@ describe('Input', () => {
     expect(screen.getByRole('textbox')).toBeDisabled()
   })
 
-  it('affiche l\'astérisque rouge quand required=true', () => {
+  it("affiche l'astérisque rouge quand required=true", () => {
     render(<Input label="Nom" required />)
     expect(screen.getByText('*')).toBeInTheDocument()
   })
@@ -51,7 +51,7 @@ describe('Input', () => {
     expect(screen.getByDisplayValue('')).toHaveAttribute('type', 'password')
   })
 
-  it('applique une bordure rouge en état d\'erreur', () => {
+  it("applique une bordure rouge en état d'erreur", () => {
     render(<Input error="Erreur" />)
     expect(screen.getByRole('textbox').className).toContain('border-red-500')
   })

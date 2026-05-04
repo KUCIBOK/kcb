@@ -1,5 +1,5 @@
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 
 /**
  * Wrapper that reveals children with a fade-up animation when scrolled into view.
@@ -8,9 +8,9 @@ import { motion, useInView } from "framer-motion"
  * @param {number} [props.delay=0] - Delay in seconds before animation starts
  * @param {string} [props.className] - Additional CSS classes
  */
-export default function RevealOnScroll({ children, delay = 0, className = "" }) {
+export default function RevealOnScroll({ children, delay = 0, className = '' }) {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-60px" })
+  const isInView = useInView(ref, { once: true, margin: '-60px' })
 
   return (
     <motion.div

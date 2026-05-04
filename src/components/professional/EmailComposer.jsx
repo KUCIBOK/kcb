@@ -1,26 +1,35 @@
-import { useState, useEffect } from "react";
-import { 
-  Plus, Trash2, Save, Eye, 
-  Type, Image as ImageIcon, MousePointer, Minus, 
-  Layout, Mail, Send, Users
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input, Card, CardHeader, CardContent, toast } from "../ui";
+import { useState, useEffect } from 'react'
+import {
+  Plus,
+  Trash2,
+  Save,
+  Eye,
+  Type,
+  Image as ImageIcon,
+  MousePointer,
+  Minus,
+  Layout,
+  Mail,
+  Send,
+  Users,
+} from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Button, Input, Card, CardHeader, CardContent, toast } from '../ui'
 
 export function EmailComposer() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [emailName, setEmailName] = useState('Nouvel email');
-  const [subject, setSubject] = useState('');
-  const [preheader, setPreheader] = useState('');
-  const [showCampaignModal, setShowCampaignModal] = useState(false);
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [emailName, setEmailName] = useState('Nouvel email')
+  const [subject, setSubject] = useState('')
+  const [preheader, setPreheader] = useState('')
+  const [showCampaignModal, setShowCampaignModal] = useState(false)
 
   return (
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <Card className="mb-6">
-          <CardHeader 
+          <CardHeader
             title="Email Marketing Composer"
             subtitle="Créez des emails professionnels pour votre galerie"
           />
@@ -55,7 +64,7 @@ export function EmailComposer() {
         {/* Templates disponibles */}
         <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Templates Disponibles</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TemplateCard
               title="Nouvelle Exposition"
@@ -81,7 +90,7 @@ export function EmailComposer() {
         {/* Blocs disponibles */}
         <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">Blocs de Construction</h2>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <BlockCard icon={<Layout />} label="Hero" />
             <BlockCard icon={<Type />} label="Texte" />
@@ -100,18 +109,14 @@ export function EmailComposer() {
               <Button variant="secondary" icon={Eye}>
                 Prévisualiser
               </Button>
-              <Button 
-                variant="primary" 
+              <Button
+                variant="primary"
                 icon={Save}
                 onClick={() => toast.success('Email sauvegardé!')}
               >
                 Sauvegarder
               </Button>
-              <Button 
-                variant="success"
-                icon={Send}
-                onClick={() => setShowCampaignModal(true)}
-              >
+              <Button variant="success" icon={Send} onClick={() => setShowCampaignModal(true)}>
                 Créer Campagne
               </Button>
             </div>
@@ -121,9 +126,12 @@ export function EmailComposer() {
             <div className="text-center">
               <Mail className="w-16 h-16 text-kcb-pierre mx-auto mb-4" />
               <p className="text-kcb-pierre mb-2">Constructeur d'email drag & drop</p>
-              <p className="text-kcb-pierre text-sm">Fonctionnalité avancée en cours de développement</p>
+              <p className="text-kcb-pierre text-sm">
+                Fonctionnalité avancée en cours de développement
+              </p>
               <p className="text-kcb-pierre text-sm mt-4">
-                Cette interface permettra de créer des emails visuellement<br />
+                Cette interface permettra de créer des emails visuellement
+                <br />
                 avec des blocs réutilisables, des templates et des merge tags
               </p>
             </div>
@@ -172,24 +180,24 @@ export function EmailComposer() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // Campaign Modal
 function CampaignModal({ onClose, emailName, subject, preheader }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleCreateCampaign = () => {
     // Navigate to Campaigns tab with pre-filled data
-    onClose();
-    alert('Redirection vers l\'onglet Campagnes pour configurer les destinataires et envoyer');
-  };
+    onClose()
+    alert("Redirection vers l'onglet Campagnes pour configurer les destinataires et envoyer")
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-6 w-full max-w-md">
         <h3 className="text-xl font-bold text-white mb-4">Créer une Campagne</h3>
-        
+
         <div className="space-y-4">
           <div className="bg-kcb-ardoise rounded-[4px] p-4">
             <p className="text-sm text-kcb-pierre mb-2">Email préparé:</p>
@@ -226,30 +234,30 @@ function CampaignModal({ onClose, emailName, subject, preheader }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function TemplateCard({ title, description, icon, color }) {
   return (
     <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4 hover:border-kcb-or transition cursor-pointer group">
-      <div className={`w-12 h-12 ${color} rounded-[4px] flex items-center justify-center mb-3 text-white group-hover:scale-110 transition`}>
+      <div
+        className={`w-12 h-12 ${color} rounded-[4px] flex items-center justify-center mb-3 text-white group-hover:scale-110 transition`}
+      >
         {icon}
       </div>
       <h3 className="text-white font-semibold mb-1">{title}</h3>
       <p className="text-kcb-pierre text-sm">{description}</p>
     </div>
-  );
+  )
 }
 
 function BlockCard({ icon, label }) {
   return (
     <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4 hover:border-kcb-or transition cursor-pointer text-center group">
-      <div className="text-kcb-pierre group-hover:text-kcb-or transition mb-2">
-        {icon}
-      </div>
+      <div className="text-kcb-pierre group-hover:text-kcb-or transition mb-2">{icon}</div>
       <p className="text-kcb-pierre text-sm">{label}</p>
     </div>
-  );
+  )
 }
 
-export default EmailComposer;
+export default EmailComposer

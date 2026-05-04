@@ -1,16 +1,16 @@
-import { Link } from "react-router-dom"
-import RevealOnScroll from "../RevealOnScroll"
-import SectionLabel from "../SectionLabel"
-import { useLang } from "../../../store/LangContext"
-import { africaT } from "../../../i18n/africa"
+import { Link } from 'react-router-dom'
+import RevealOnScroll from '../RevealOnScroll'
+import SectionLabel from '../SectionLabel'
+import { useLang } from '../../../store/LangContext'
+import { africaT } from '../../../i18n/africa'
 
 const CERT_FIELDS = [
-  { label: "Artiste", value: "Ibrahim Maïga" },
-  { label: "Titre", value: "Harmattan Series #4" },
-  { label: "Année", value: "2024" },
-  { label: "Technique", value: "Acrylique sur toile" },
-  { label: "Dimensions", value: "80 × 60 cm" },
-  { label: "Provenance", value: "Dakar, Sénégal" },
+  { label: 'Artiste', value: 'Ibrahim Maïga' },
+  { label: 'Titre', value: 'Harmattan Series #4' },
+  { label: 'Année', value: '2024' },
+  { label: 'Technique', value: 'Acrylique sur toile' },
+  { label: 'Dimensions', value: '80 × 60 cm' },
+  { label: 'Provenance', value: 'Dakar, Sénégal' },
 ]
 
 export default function AfricaCertSection() {
@@ -21,7 +21,6 @@ export default function AfricaCertSection() {
     <section className="py-16 md:py-36 bg-kcb-noir-deep">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 lg:gap-24 items-center">
-
           {/* ── Left column — text ─────────────────────────────────────── */}
           <RevealOnScroll>
             <div>
@@ -41,13 +40,11 @@ export default function AfricaCertSection() {
                   <li key={b} className="flex items-start gap-3">
                     <span
                       className="mt-[3px] flex-shrink-0 font-jetbrains text-[10px] leading-none"
-                      style={{ color: "var(--accent)" }}
+                      style={{ color: 'var(--accent)' }}
                     >
                       ◆
                     </span>
-                    <span className="font-dm-sans text-[14px] text-white/80 leading-snug">
-                      {b}
-                    </span>
+                    <span className="font-dm-sans text-[14px] text-white/80 leading-snug">{b}</span>
                   </li>
                 ))}
               </ul>
@@ -57,8 +54,8 @@ export default function AfricaCertSection() {
                 to="/sign-up?role=artist"
                 className="inline-flex items-center gap-2 font-jetbrains text-[11px] tracking-[0.15em] uppercase px-7 py-3.5 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
                 style={{
-                  background: "var(--accent)",
-                  color: "#000",
+                  background: 'var(--accent)',
+                  color: '#000',
                   fontWeight: 600,
                 }}
               >
@@ -69,16 +66,13 @@ export default function AfricaCertSection() {
 
           {/* ── Right column — certificate mock ────────────────────────── */}
           <RevealOnScroll delay={0.15}>
-            <div
-              className="relative"
-              style={{ animation: "kcb-float-1 4s ease-in-out infinite" }}
-            >
+            <div className="relative" style={{ animation: 'kcb-float-1 4s ease-in-out infinite' }}>
               <div
                 className="relative overflow-hidden border border-kcb-or/20 p-5 md:p-8"
                 style={{
-                  background: "linear-gradient(145deg, #0a0d14 0%, #0f1218 100%)",
+                  background: 'linear-gradient(145deg, #0a0d14 0%, #0f1218 100%)',
                   boxShadow:
-                    "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.05), inset 0 1px 0 rgba(201,168,76,0.07)",
+                    '0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.05), inset 0 1px 0 rgba(201,168,76,0.07)',
                 }}
               >
                 {/* Watermark */}
@@ -89,9 +83,9 @@ export default function AfricaCertSection() {
                   <span
                     className="font-playfair text-[120px] font-bold leading-none"
                     style={{
-                      color: "rgba(201,168,76,0.03)",
-                      transform: "rotate(-20deg)",
-                      userSelect: "none",
+                      color: 'rgba(201,168,76,0.03)',
+                      transform: 'rotate(-20deg)',
+                      userSelect: 'none',
                     }}
                   >
                     KCB
@@ -103,8 +97,8 @@ export default function AfricaCertSection() {
                   className="absolute left-0 w-full h-px pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.5) 40%, rgba(201,168,76,0.7) 50%, rgba(201,168,76,0.5) 60%, transparent 100%)",
-                    animation: "kcb-cert-scan 3.5s linear infinite",
+                      'linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.5) 40%, rgba(201,168,76,0.7) 50%, rgba(201,168,76,0.5) 60%, transparent 100%)',
+                    animation: 'kcb-cert-scan 3.5s linear infinite',
                   }}
                 />
 
@@ -112,13 +106,13 @@ export default function AfricaCertSection() {
                 <div className="relative z-10 text-center mb-5">
                   <p
                     className="font-jetbrains text-[8px] tracking-[0.2em] uppercase"
-                    style={{ color: "rgba(201,168,76,0.6)" }}
+                    style={{ color: 'rgba(201,168,76,0.6)' }}
                   >
                     KUCIBOK BRIDGE
                   </p>
                   <p
                     className="font-jetbrains text-[7px] tracking-[0.18em] uppercase mt-0.5"
-                    style={{ color: "rgba(201,168,76,0.4)" }}
+                    style={{ color: 'rgba(201,168,76,0.4)' }}
                   >
                     CERTIFICAT D'AUTHENTICITÉ
                   </p>
@@ -129,7 +123,7 @@ export default function AfricaCertSection() {
                   className="relative z-10 w-full h-px mb-5"
                   style={{
                     background:
-                      "linear-gradient(90deg, transparent, rgba(201,168,76,0.3) 30%, rgba(201,168,76,0.5) 50%, rgba(201,168,76,0.3) 70%, transparent)",
+                      'linear-gradient(90deg, transparent, rgba(201,168,76,0.3) 30%, rgba(201,168,76,0.5) 50%, rgba(201,168,76,0.3) 70%, transparent)',
                   }}
                 />
 
@@ -137,46 +131,46 @@ export default function AfricaCertSection() {
                 <div
                   className="relative z-10 w-full mb-5 overflow-hidden"
                   style={{
-                    height: "120px",
-                    background: "#0d1018",
-                    border: "1px solid rgba(201,168,76,0.08)",
+                    height: '120px',
+                    background: '#0d1018',
+                    border: '1px solid rgba(201,168,76,0.08)',
                   }}
                 >
                   {/* Abstract composition */}
                   <div
                     className="absolute"
                     style={{
-                      width: "55%",
-                      height: "85%",
-                      top: "8%",
-                      left: "5%",
-                      background: "linear-gradient(135deg, #3d2b10 0%, #2a1c08 100%)",
+                      width: '55%',
+                      height: '85%',
+                      top: '8%',
+                      left: '5%',
+                      background: 'linear-gradient(135deg, #3d2b10 0%, #2a1c08 100%)',
                     }}
                   />
                   <div
                     className="absolute"
                     style={{
-                      width: "30%",
-                      height: "60%",
-                      top: "20%",
-                      right: "10%",
-                      background: "linear-gradient(135deg, #1a2030 0%, #121620 100%)",
+                      width: '30%',
+                      height: '60%',
+                      top: '20%',
+                      right: '10%',
+                      background: 'linear-gradient(135deg, #1a2030 0%, #121620 100%)',
                     }}
                   />
                   <div
                     className="absolute"
                     style={{
-                      width: "18%",
-                      height: "35%",
-                      bottom: "12%",
-                      left: "40%",
-                      background: "rgba(201,168,76,0.12)",
+                      width: '18%',
+                      height: '35%',
+                      bottom: '12%',
+                      left: '40%',
+                      background: 'rgba(201,168,76,0.12)',
                     }}
                   />
                   {/* Corner mark */}
                   <div
                     className="absolute bottom-2 right-2 font-jetbrains text-[7px]"
-                    style={{ color: "rgba(201,168,76,0.3)" }}
+                    style={{ color: 'rgba(201,168,76,0.3)' }}
                   >
                     KCB VERIFIED
                   </div>
@@ -186,13 +180,13 @@ export default function AfricaCertSection() {
                 <div className="relative z-10 text-center mb-5">
                   <p
                     className="font-jetbrains text-[7px] tracking-[0.18em] uppercase mb-1"
-                    style={{ color: "rgba(201,168,76,0.4)" }}
+                    style={{ color: 'rgba(201,168,76,0.4)' }}
                   >
                     IDENTIFIANT UNIQUE
                   </p>
                   <p
                     className="font-jetbrains text-xl font-bold tracking-[0.06em]"
-                    style={{ color: "var(--accent, #C9A84C)" }}
+                    style={{ color: 'var(--accent, #C9A84C)' }}
                   >
                     KCB-8B4F2A1C
                   </p>
@@ -203,7 +197,7 @@ export default function AfricaCertSection() {
                   className="relative z-10 w-full h-px mb-5"
                   style={{
                     background:
-                      "linear-gradient(90deg, transparent, rgba(201,168,76,0.15) 30%, rgba(201,168,76,0.25) 50%, rgba(201,168,76,0.15) 70%, transparent)",
+                      'linear-gradient(90deg, transparent, rgba(201,168,76,0.15) 30%, rgba(201,168,76,0.25) 50%, rgba(201,168,76,0.15) 70%, transparent)',
                   }}
                 />
 
@@ -213,7 +207,7 @@ export default function AfricaCertSection() {
                     <div key={field.label}>
                       <p
                         className="font-jetbrains text-[7px] uppercase tracking-[0.12em] mb-0.5"
-                        style={{ color: "rgba(201,168,76,0.4)" }}
+                        style={{ color: 'rgba(201,168,76,0.4)' }}
                       >
                         {field.label}
                       </p>
@@ -227,14 +221,14 @@ export default function AfricaCertSection() {
                 {/* Bottom bar */}
                 <div
                   className="relative z-10 flex items-center justify-between pt-4"
-                  style={{ borderTop: "1px solid rgba(201,168,76,0.08)" }}
+                  style={{ borderTop: '1px solid rgba(201,168,76,0.08)' }}
                 >
                   <div className="flex items-center gap-1.5">
                     <span
                       className="block w-1.5 h-1.5 rounded-full"
                       style={{
-                        background: "#34d399",
-                        animation: "kcb-cert-pulse 2s ease-in-out infinite",
+                        background: '#34d399',
+                        animation: 'kcb-cert-pulse 2s ease-in-out infinite',
                       }}
                     />
                     <span className="font-jetbrains text-[8px] tracking-[0.12em] text-emerald-400">
@@ -243,7 +237,7 @@ export default function AfricaCertSection() {
                   </div>
                   <span
                     className="font-jetbrains text-[8px] tracking-[0.08em]"
-                    style={{ color: "rgba(201,168,76,0.35)" }}
+                    style={{ color: 'rgba(201,168,76,0.35)' }}
                   >
                     14.03.2026
                   </span>
@@ -254,12 +248,11 @@ export default function AfricaCertSection() {
               <div
                 className="absolute -inset-px rounded-[1px] pointer-events-none"
                 style={{
-                  boxShadow: "0 0 60px rgba(201,168,76,0.06)",
+                  boxShadow: '0 0 60px rgba(201,168,76,0.06)',
                 }}
               />
             </div>
           </RevealOnScroll>
-
         </div>
       </div>
     </section>

@@ -1,42 +1,42 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { DataLoader } from "../components/loaders/PageLoader";
-import AuctionArtworkInfo from "../components/auction/auctionDetails/AuctionArtworkInfo";
-import AuctionBidInfo from "../components/auction/auctionDetails/AuctionBidInfo";
-import AuctionBidForm from "../components/auction/auctionDetails/AuctionBidCount";
-import AuctionBidHistory from "../components/auction/auctionDetails/AuctionBidHistory";
+import { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { DataLoader } from '../components/loaders/PageLoader'
+import AuctionArtworkInfo from '../components/auction/auctionDetails/AuctionArtworkInfo'
+import AuctionBidInfo from '../components/auction/auctionDetails/AuctionBidInfo'
+import AuctionBidForm from '../components/auction/auctionDetails/AuctionBidCount'
+import AuctionBidHistory from '../components/auction/auctionDetails/AuctionBidHistory'
 
 export default function AuctionDetails() {
-  const { id } = useParams();
-  const [auction, setAuction] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { id } = useParams()
+  const [auction, setAuction] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const fetchAuctionDetails = async () => {
     try {
-      const res = await fetch(`/api/auction/${id}/details`);
+      const res = await fetch(`/api/auction/${id}/details`)
       if (!res.ok) {
-        throw new Error(`Erreur ${res.status}`);
+        throw new Error(`Erreur ${res.status}`)
       }
-      const data = await res.json();
+      const data = await res.json()
       setAuction({
         ...data,
         bids: Array.isArray(data.bids) ? data.bids : [],
         bidCount: data.bidCount || data.bids?.length || 0,
-      });
+      })
     } catch (err) {
-      setError("Erreur lors du chargement de l'enchère");
+      setError("Erreur lors du chargement de l'enchère")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchAuctionDetails();
-  }, [id]);
+    fetchAuctionDetails()
+  }, [id])
 
-  if (loading) return <DataLoader />;
-  if (error) return <ErrorDisplay message={error} />;
+  if (loading) return <DataLoader />
+  if (error) return <ErrorDisplay message={error} />
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -65,7 +65,7 @@ export default function AuctionDetails() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function Breadcrumb({ title }) {
@@ -85,7 +85,7 @@ function Breadcrumb({ title }) {
         </li>
       </ol>
     </nav>
-  );
+  )
 }
 
 function ErrorDisplay({ message }) {
@@ -102,5 +102,5 @@ function ErrorDisplay({ message }) {
         </Link>
       </div>
     </div>
-  );
+  )
 }

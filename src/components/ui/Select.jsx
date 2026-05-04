@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useId } from 'react';
-import { ChevronDown, Check } from 'lucide-react';
+import React, { useState, useRef, useEffect, useId } from 'react'
+import { ChevronDown, Check } from 'lucide-react'
 
 /**
  * Design System - Select Component
- * 
+ *
  * Custom dropdown select with search and multi-select support
- * 
+ *
  * Features:
  * - Single or multi-select mode
  * - Search/filter options
@@ -31,72 +31,70 @@ export function Select({
   className = '',
   ...props
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [focusedIndex, setFocusedIndex] = useState(-1);
-  const selectRef = useRef(null);
-  const listboxRef = useRef(null);
-  const labelId = useId();
-  const listboxId = useId();
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [focusedIndex, setFocusedIndex] = useState(-1)
+  const selectRef = useRef(null)
+  const listboxRef = useRef(null)
+  const labelId = useId()
+  const listboxId = useId()
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectRef.current && !selectRef.current.contains(event.target)) {
-        setIsOpen(false);
+        setIsOpen(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Filter options based on search
   const filteredOptions = searchQuery
-    ? options.filter(opt =>
-        opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : options;
+    ? options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    : options
 
   // Get selected option(s) label
   const getSelectedLabel = () => {
     if (multiple) {
-      if (!value || value.length === 0) return placeholder;
-      const selectedOptions = options.filter(opt => value.includes(opt.value));
-      return selectedOptions.map(opt => opt.label).join(', ');
+      if (!value || value.length === 0) return placeholder
+      const selectedOptions = options.filter((opt) => value.includes(opt.value))
+      return selectedOptions.map((opt) => opt.label).join(', ')
     } else {
-      const selectedOption = options.find(opt => opt.value === value);
-      return selectedOption ? selectedOption.label : placeholder;
+      const selectedOption = options.find((opt) => opt.value === value)
+      return selectedOption ? selectedOption.label : placeholder
     }
-  };
+  }
 
   // Handle option selection
   const handleSelect = (optionValue) => {
     if (multiple) {
       const newValue = value?.includes(optionValue)
-        ? value.filter(v => v !== optionValue)
-        : [...(value || []), optionValue];
-      onChange?.(newValue);
+        ? value.filter((v) => v !== optionValue)
+        : [...(value || []), optionValue]
+      onChange?.(newValue)
     } else {
-      onChange?.(optionValue);
-      setIsOpen(false);
+      onChange?.(optionValue)
+      setIsOpen(false)
     }
-  };
+  }
 
   // Check if option is selected
   const isSelected = (optionValue) => {
     if (multiple) {
-      return value?.includes(optionValue);
+      return value?.includes(optionValue)
     }
-    return value === optionValue;
-  };
+    return value === optionValue
+  }
 
   // Border colors based on state
-  let borderStyles = 'border-white/[0.08] focus-within:border-kcb-or';
+  let borderStyles = 'border-white/[0.08] focus-within:border-kcb-or'
   if (error) {
-    borderStyles = 'border-red-500';
+    borderStyles = 'border-red-500'
   } else if (success) {
-    borderStyles = 'border-green-500';
+    borderStyles = 'border-green-500'
   }
 
   return (
@@ -114,13 +112,13 @@ export function Select({
           type="button"
           onClick={() => !disabled && setIsOpen(!isOpen)}
           onKeyDown={(e) => {
-            if (disabled) return;
+            if (disabled) return
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-              e.preventDefault();
-              if (!isOpen) setIsOpen(true);
-              setFocusedIndex(0);
+              e.preventDefault()
+              if (!isOpen) setIsOpen(true)
+              setFocusedIndex(0)
             } else if (e.key === 'Escape' && isOpen) {
-              setIsOpen(false);
+              setIsOpen(false)
             }
           }}
           disabled={disabled}
@@ -142,13 +140,9 @@ export function Select({
           `}
           {...props}
         >
-          <span className={value ? 'text-white' : 'text-kcb-sable'}>
-            {getSelectedLabel()}
-          </span>
+          <span className={value ? 'text-white' : 'text-kcb-sable'}>{getSelectedLabel()}</span>
           <ChevronDown
-            className={`w-4 h-4 transition-transform duration-200 ${
-              isOpen ? 'rotate-180' : ''
-            }`}
+            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
@@ -161,19 +155,20 @@ export function Select({
             aria-labelledby={label ? labelId : undefined}
             onKeyDown={(e) => {
               if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                setFocusedIndex((prev) => Math.min(prev + 1, filteredOptions.length - 1));
+                e.preventDefault()
+                setFocusedIndex((prev) => Math.min(prev + 1, filteredOptions.length - 1))
               } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                setFocusedIndex((prev) => Math.max(prev - 1, 0));
+                e.preventDefault()
+                setFocusedIndex((prev) => Math.max(prev - 1, 0))
               } else if (e.key === 'Enter' && focusedIndex >= 0) {
-                e.preventDefault();
-                handleSelect(filteredOptions[focusedIndex].value);
+                e.preventDefault()
+                handleSelect(filteredOptions[focusedIndex].value)
               } else if (e.key === 'Escape') {
-                setIsOpen(false);
+                setIsOpen(false)
               }
             }}
-            className="absolute z-50 w-full mt-2 bg-kcb-ardoise border border-white/[0.08] rounded-[4px] shadow-xl max-h-60 overflow-hidden">
+            className="absolute z-50 w-full mt-2 bg-kcb-ardoise border border-white/[0.08] rounded-[4px] shadow-xl max-h-60 overflow-hidden"
+          >
             {/* Search input */}
             {searchable && (
               <div className="p-2 border-b border-white/[0.06]">
@@ -214,9 +209,7 @@ export function Select({
                     `}
                   >
                     <span>{option.label}</span>
-                    {isSelected(option.value) && (
-                      <Check className="w-4 h-4 text-kcb-or" />
-                    )}
+                    {isSelected(option.value) && <Check className="w-4 h-4 text-kcb-or" />}
                   </button>
                 ))
               )}
@@ -226,14 +219,10 @@ export function Select({
       </div>
 
       {/* Error/Success message */}
-      {error && (
-        <p className="mt-1 text-sm text-red-400">{error}</p>
-      )}
-      {success && (
-        <p className="mt-1 text-sm text-green-400">{success}</p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+      {success && <p className="mt-1 text-sm text-green-400">{success}</p>}
     </div>
-  );
+  )
 }
 
-export default Select;
+export default Select

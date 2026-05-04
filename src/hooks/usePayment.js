@@ -1,29 +1,29 @@
-import { useState, useCallback } from 'react';
-import paymentService from '../services/PaymentService';
-import { toast } from 'sonner';
+import { useState, useCallback } from 'react'
+import paymentService from '../services/PaymentService'
+import { toast } from 'sonner'
 
 /**
  * Hook pour gérer les paiements PayDunya
  */
 export const usePayment = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   /**
    * Initier un paiement pour un artwork
    */
   const payForArtwork = useCallback(async (artworkId, options = {}) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      const result = await paymentService.initArtworkPayment(artworkId);
+      const result = await paymentService.initArtworkPayment(artworkId)
 
       if (!result.success) {
-        throw new Error(result.error);
+        throw new Error(result.error)
       }
 
-      const { paymentUrl, token, transaction } = result.data;
+      const { paymentUrl, token, transaction } = result.data
 
       // Option de redirection directe ou popup
       if (options.usePopup) {
@@ -31,114 +31,111 @@ export const usePayment = () => {
         paymentService.openPaymentWindow(paymentUrl, () => {
           // Callback quand la popup se ferme
           if (options.onPopupClose) {
-            options.onPopupClose(token, transaction);
+            options.onPopupClose(token, transaction)
           }
-        });
+        })
       } else {
         // Redirection directe
-        paymentService.redirectToPayment(paymentUrl);
+        paymentService.redirectToPayment(paymentUrl)
       }
 
       return {
         success: true,
         token,
         transaction,
-        paymentUrl
-      };
-
+        paymentUrl,
+      }
     } catch (err) {
-      const errorMessage = err.message || 'Erreur lors de l\'initialisation du paiement';
-      setError(errorMessage);
-      toast.error(errorMessage);
-      
+      const errorMessage = err.message || "Erreur lors de l'initialisation du paiement"
+      setError(errorMessage)
+      toast.error(errorMessage)
+
       return {
         success: false,
-        error: errorMessage
-      };
+        error: errorMessage,
+      }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [])
 
   /**
    * Initier un paiement pour un abonnement
    */
   const payForSubscription = useCallback(async (subscriptionId, options = {}) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      const result = await paymentService.initSubscriptionPayment(subscriptionId);
+      const result = await paymentService.initSubscriptionPayment(subscriptionId)
 
       if (!result.success) {
-        throw new Error(result.error);
+        throw new Error(result.error)
       }
 
-      const { paymentUrl, token, subscription } = result.data;
+      const { paymentUrl, token, subscription } = result.data
 
       // Option de redirection directe ou popup
       if (options.usePopup) {
         paymentService.openPaymentWindow(paymentUrl, () => {
           if (options.onPopupClose) {
-            options.onPopupClose(token, subscription);
+            options.onPopupClose(token, subscription)
           }
-        });
+        })
       } else {
-        paymentService.redirectToPayment(paymentUrl);
+        paymentService.redirectToPayment(paymentUrl)
       }
 
       return {
         success: true,
         token,
         subscription,
-        paymentUrl
-      };
-
+        paymentUrl,
+      }
     } catch (err) {
-      const errorMessage = err.message || 'Erreur lors de l\'initialisation du paiement';
-      setError(errorMessage);
-      toast.error(errorMessage);
-      
+      const errorMessage = err.message || "Erreur lors de l'initialisation du paiement"
+      setError(errorMessage)
+      toast.error(errorMessage)
+
       return {
         success: false,
-        error: errorMessage
-      };
+        error: errorMessage,
+      }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [])
 
   /**
    * Vérifier le statut d'un paiement
    */
   const verifyPayment = useCallback(async (token) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      const result = await paymentService.verifyPayment(token);
+      const result = await paymentService.verifyPayment(token)
 
       if (!result.success) {
-        throw new Error(result.error);
+        throw new Error(result.error)
       }
 
       return {
         success: true,
-        data: result.data
-      };
-
+        data: result.data,
+      }
     } catch (err) {
-      const errorMessage = err.message || 'Erreur lors de la vérification du paiement';
-      setError(errorMessage);
-      
+      const errorMessage = err.message || 'Erreur lors de la vérification du paiement'
+      setError(errorMessage)
+
       return {
         success: false,
-        error: errorMessage
-      };
+        error: errorMessage,
+      }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [])
 
   return {
     loading,
@@ -146,8 +143,8 @@ export const usePayment = () => {
     payForArtwork,
     payForSubscription,
     verifyPayment,
-    clearError: () => setError(null)
-  };
-};
+    clearError: () => setError(null),
+  }
+}
 
-export default usePayment;
+export default usePayment

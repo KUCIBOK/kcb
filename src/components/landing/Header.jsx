@@ -1,15 +1,15 @@
-import { memo, useState } from "react"
-import { Link, useLocation } from "react-router-dom"
-import { useAuth } from "../../store/AuthContext"
-import { UserLinks } from "./UserLinks"
-import { Menu, X } from "lucide-react"
+import { memo, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../../store/AuthContext'
+import { UserLinks } from './UserLinks'
+import { Menu, X } from 'lucide-react'
 
 const LINKS = [
-  { name: "Catalogue", path: "/africa/catalogue" },
-  { name: "Artistes", path: "/africa/artists" },
-  { name: "Blog", path: "/africa/blog" },
-  { name: "FAQ", path: "/africa/faq" },
-  { name: "Contact", path: "/africa/contact" },
+  { name: 'Catalogue', path: '/africa/catalogue' },
+  { name: 'Artistes', path: '/africa/artists' },
+  { name: 'Blog', path: '/africa/blog' },
+  { name: 'FAQ', path: '/africa/faq' },
+  { name: 'Contact', path: '/africa/contact' },
 ]
 
 /**
@@ -40,7 +40,7 @@ export const Header = memo(() => {
               key={link.path}
               to={link.path}
               className={`text-xs font-medium tracking-[0.06em] uppercase no-underline transition-colors ${
-                isActive(link.path) ? "text-white" : "text-kcb-pierre hover:text-white"
+                isActive(link.path) ? 'text-white' : 'text-kcb-pierre hover:text-white'
               }`}
             >
               {link.name}
@@ -100,7 +100,7 @@ export const Header = memo(() => {
               to={link.path}
               onClick={() => setOpen(false)}
               className={`text-sm no-underline transition-colors ${
-                isActive(link.path) ? "text-white" : "text-kcb-pierre hover:text-white"
+                isActive(link.path) ? 'text-white' : 'text-kcb-pierre hover:text-white'
               }`}
             >
               {link.name}

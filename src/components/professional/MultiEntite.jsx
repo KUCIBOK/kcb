@@ -1,14 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-  Plus,
-  Building2,
-  Edit,
-  Trash2,
-  Users,
-  ChevronDown,
-  Save,
-  X,
-} from "lucide-react";
+import { useState, useEffect } from 'react'
+import { Plus, Building2, Edit, Trash2, Users, ChevronDown, Save, X } from 'lucide-react'
 import {
   getEntities,
   createEntity,
@@ -16,135 +7,135 @@ import {
   deleteEntity,
   addMember,
   removeMember,
-} from "../../api/useEntity";
-import { ConfirmDialog, toast, Modal, Input, Select, Button } from "../ui";
+} from '../../api/useEntity'
+import { ConfirmDialog, toast, Modal, Input, Select, Button } from '../ui'
 
 export function MultiEntite() {
-  const [entities, setEntities] = useState([]);
-  const [selectedEntity, setSelectedEntity] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [error, setError] = useState("");
-  const [showDeleteEntityConfirm, setShowDeleteEntityConfirm] = useState(false);
-  const [entityToDelete, setEntityToDelete] = useState(null);
-  const [showDeleteMemberConfirm, setShowDeleteMemberConfirm] = useState(false);
-  const [view, setView] = useState("list");
-  const [memberToDelete, setMemberToDelete] = useState(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [entities, setEntities] = useState([])
+  const [selectedEntity, setSelectedEntity] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [formData, setFormData] = useState({})
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [error, setError] = useState('')
+  const [showDeleteEntityConfirm, setShowDeleteEntityConfirm] = useState(false)
+  const [entityToDelete, setEntityToDelete] = useState(null)
+  const [showDeleteMemberConfirm, setShowDeleteMemberConfirm] = useState(false)
+  const [view, setView] = useState('list')
+  const [memberToDelete, setMemberToDelete] = useState(null)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   useEffect(() => {
-    loadEntities();
-  }, []);
+    loadEntities()
+  }, [])
 
   const loadEntities = async () => {
-    setLoading(true);
-    setError("");
-    const data = await getEntities();
+    setLoading(true)
+    setError('')
+    const data = await getEntities()
     if (!data.error) {
-      setEntities(data);
+      setEntities(data)
       if (data.length > 0 && !selectedEntity) {
-        setSelectedEntity(data[0]);
-        setFormData(data[0]);
+        setSelectedEntity(data[0])
+        setFormData(data[0])
       }
     } else {
-      setError(data.error);
+      setError(data.error)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const handleCreateEntity = async (e) => {
-    e.preventDefault();
-    const result = await createEntity(formData);
+    e.preventDefault()
+    const result = await createEntity(formData)
     if (!result.error) {
-      toast.success('✓ Entité créée avec succès');
-      await loadEntities();
-      setShowCreateModal(false);
+      toast.success('✓ Entité créée avec succès')
+      await loadEntities()
+      setShowCreateModal(false)
       setFormData({
-        type: "gallery",
+        type: 'gallery',
         address: {},
         socialMedia: {},
-      });
+      })
     } else {
-      toast.error('× ' + (result.error || 'Échec de la création'));
+      toast.error('× ' + (result.error || 'Échec de la création'))
     }
-  };
+  }
 
   const handleUpdateEntity = async () => {
-    const result = await updateEntity(selectedEntity._id, formData);
+    const result = await updateEntity(selectedEntity._id, formData)
     if (!result.error) {
-      toast.success('✓ Entité mise à jour');
-      await loadEntities();
-      setShowEditModal(false);
-      setEditing(false);
+      toast.success('✓ Entité mise à jour')
+      await loadEntities()
+      setShowEditModal(false)
+      setEditing(false)
     } else {
-      toast.error('× ' + (result.error || 'Échec de la mise à jour'));
+      toast.error('× ' + (result.error || 'Échec de la mise à jour'))
     }
-  };
+  }
 
   const handleDeleteEntity = async (id) => {
-    setEntityToDelete(id);
-    setShowDeleteEntityConfirm(true);
-  };
+    setEntityToDelete(id)
+    setShowDeleteEntityConfirm(true)
+  }
 
   const confirmDeleteEntity = async () => {
-    setError("");
-    const result = await deleteEntity(entityToDelete);
+    setError('')
+    const result = await deleteEntity(entityToDelete)
     if (!result.error) {
-      toast.success('✓ Entité supprimée');
-      await loadEntities();
-      setSelectedEntity(null);
-      setView("list");
+      toast.success('✓ Entité supprimée')
+      await loadEntities()
+      setSelectedEntity(null)
+      setView('list')
     } else {
-      setError(result.error);
-      toast.error('× Erreur lors de la suppression');
+      setError(result.error)
+      toast.error('× Erreur lors de la suppression')
     }
-    setShowDeleteEntityConfirm(false);
-    setEntityToDelete(null);
-  };
+    setShowDeleteEntityConfirm(false)
+    setEntityToDelete(null)
+  }
 
   const handleRemoveMember = async (memberId) => {
-    setMemberToDelete(memberId);
-    setShowDeleteMemberConfirm(true);
-  };
+    setMemberToDelete(memberId)
+    setShowDeleteMemberConfirm(true)
+  }
 
   const confirmRemoveMember = async () => {
-    setError("");
-    const result = await removeMember(selectedEntity._id, memberToDelete);
+    setError('')
+    const result = await removeMember(selectedEntity._id, memberToDelete)
     if (!result.error) {
-      toast.success('✓ Membre retiré');
-      await loadEntities();
+      toast.success('✓ Membre retiré')
+      await loadEntities()
     } else {
-      setError(result.error);
-      toast.error('× Erreur lors du retrait');
+      setError(result.error)
+      toast.error('× Erreur lors du retrait')
     }
-    setShowDeleteMemberConfirm(false);
-    setMemberToDelete(null);
-  };
+    setShowDeleteMemberConfirm(false)
+    setMemberToDelete(null)
+  }
 
   const handleSelectEntity = (entity) => {
-    setSelectedEntity(entity);
-    setFormData(entity);
-    setEditing(false);
-    setShowDropdown(false);
-  };
+    setSelectedEntity(entity)
+    setFormData(entity)
+    setEditing(false)
+    setShowDropdown(false)
+  }
 
   const handleFormChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   if (loading && entities.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kcb-or"></div>
       </div>
-    );
+    )
   }
 
   return (
@@ -153,19 +144,17 @@ export function MultiEntite() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Multi-Entité</h1>
-          <p className="text-kcb-pierre">
-            Gérez plusieurs galeries et structures avec facilité
-          </p>
+          <p className="text-kcb-pierre">Gérez plusieurs galeries et structures avec facilité</p>
         </div>
-        {view === "list" && (
+        {view === 'list' && (
           <button
             onClick={() => {
-              setView("create");
+              setView('create')
               setFormData({
-                type: "gallery",
+                type: 'gallery',
                 address: {},
                 socialMedia: {},
-              });
+              })
             }}
             className="flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-4 py-2 rounded-[4px] transition"
           >
@@ -183,7 +172,7 @@ export function MultiEntite() {
       )}
 
       {/* Entity Selector */}
-      {entities.length > 0 && view === "list" && (
+      {entities.length > 0 && view === 'list' && (
         <div className="bg-kcb-ardoise rounded-[4px] p-4">
           <div className="relative">
             <button
@@ -192,13 +181,9 @@ export function MultiEntite() {
             >
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
-                <span>{selectedEntity?.name || "Sélectionner une entité"}</span>
+                <span>{selectedEntity?.name || 'Sélectionner une entité'}</span>
               </div>
-              <ChevronDown
-                className={`w-4 h-4 transition ${
-                  showDropdown ? "rotate-180" : ""
-                }`}
-              />
+              <ChevronDown className={`w-4 h-4 transition ${showDropdown ? 'rotate-180' : ''}`} />
             </button>
 
             {showDropdown && (
@@ -209,8 +194,8 @@ export function MultiEntite() {
                     onClick={() => handleSelectEntity(entity)}
                     className={`w-full text-left px-4 py-3 transition flex items-center gap-2 ${
                       selectedEntity?._id === entity._id
-                        ? "bg-kcb-or text-kcb-noir"
-                        : "text-kcb-sable hover:bg-white/[0.08]"
+                        ? 'bg-kcb-or text-kcb-noir'
+                        : 'text-kcb-sable hover:bg-white/[0.08]'
                     }`}
                   >
                     <Building2 className="w-4 h-4" />
@@ -227,7 +212,7 @@ export function MultiEntite() {
       )}
 
       {/* List View */}
-      {view === "list" && selectedEntity && (
+      {view === 'list' && selectedEntity && (
         <div className="space-y-6">
           {/* Entity Details */}
           <div className="bg-kcb-ardoise rounded-[4px] p-6">
@@ -240,8 +225,8 @@ export function MultiEntite() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
-                      setEditing(true);
-                      setFormData(selectedEntity);
+                      setEditing(true)
+                      setFormData(selectedEntity)
                     }}
                     className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition"
                   >
@@ -262,13 +247,11 @@ export function MultiEntite() {
             {editing ? (
               <form className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-kcb-sable mb-2">
-                    Nom
-                  </label>
+                  <label className="block text-sm font-medium text-kcb-sable mb-2">Nom</label>
                   <input
                     type="text"
                     name="name"
-                    value={formData.name || ""}
+                    value={formData.name || ''}
                     onChange={handleFormChange}
                     className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                   />
@@ -280,7 +263,7 @@ export function MultiEntite() {
                   </label>
                   <textarea
                     name="description"
-                    value={formData.description || ""}
+                    value={formData.description || ''}
                     onChange={handleFormChange}
                     rows={3}
                     className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
@@ -289,13 +272,11 @@ export function MultiEntite() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-kcb-sable mb-2">
-                      Email
-                    </label>
+                    <label className="block text-sm font-medium text-kcb-sable mb-2">Email</label>
                     <input
                       type="email"
                       name="email"
-                      value={formData.email || ""}
+                      value={formData.email || ''}
                       onChange={handleFormChange}
                       className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                     />
@@ -308,7 +289,7 @@ export function MultiEntite() {
                     <input
                       type="tel"
                       name="phone"
-                      value={formData.phone || ""}
+                      value={formData.phone || ''}
                       onChange={handleFormChange}
                       className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                     />
@@ -316,13 +297,11 @@ export function MultiEntite() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-kcb-sable mb-2">
-                    Site web
-                  </label>
+                  <label className="block text-sm font-medium text-kcb-sable mb-2">Site web</label>
                   <input
                     type="url"
                     name="website"
-                    value={formData.website || ""}
+                    value={formData.website || ''}
                     onChange={handleFormChange}
                     className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                   />
@@ -391,17 +370,15 @@ export function MultiEntite() {
                   >
                     <div className="flex-1">
                       <p className="text-white font-medium">
-                        {member.userId?.name || "Utilisateur inconnu"}
+                        {member.userId?.name || 'Utilisateur inconnu'}
                       </p>
-                      <p className="text-sm text-kcb-pierre">
-                        {member.userId?.email}
-                      </p>
+                      <p className="text-sm text-kcb-pierre">{member.userId?.email}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="px-3 py-1 bg-kcb-or/20 text-kcb-or rounded-full text-sm">
                         {member.role}
                       </span>
-                      {member.role !== "owner" && (
+                      {member.role !== 'owner' && (
                         <button
                           onClick={() => handleRemoveMember(member._id)}
                           className="p-1 hover:bg-red-900/50 rounded transition"
@@ -421,21 +398,17 @@ export function MultiEntite() {
       )}
 
       {/* Create View */}
-      {view === "create" && (
+      {view === 'create' && (
         <div className="max-w-2xl mx-auto bg-kcb-ardoise rounded-[4px] p-6">
-          <h2 className="text-2xl font-bold text-white mb-6">
-            Créer une nouvelle entité
-          </h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Créer une nouvelle entité</h2>
 
           <form onSubmit={handleCreateEntity} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-kcb-sable mb-2">
-                Nom *
-              </label>
+              <label className="block text-sm font-medium text-kcb-sable mb-2">Nom *</label>
               <input
                 type="text"
                 name="name"
-                value={formData.name || ""}
+                value={formData.name || ''}
                 onChange={handleFormChange}
                 required
                 className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
@@ -443,12 +416,10 @@ export function MultiEntite() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-kcb-sable mb-2">
-                Type
-              </label>
+              <label className="block text-sm font-medium text-kcb-sable mb-2">Type</label>
               <select
                 name="type"
-                value={formData.type || "gallery"}
+                value={formData.type || 'gallery'}
                 onChange={handleFormChange}
                 className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
               >
@@ -461,12 +432,10 @@ export function MultiEntite() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-kcb-sable mb-2">
-                Description
-              </label>
+              <label className="block text-sm font-medium text-kcb-sable mb-2">Description</label>
               <textarea
                 name="description"
-                value={formData.description || ""}
+                value={formData.description || ''}
                 onChange={handleFormChange}
                 rows={3}
                 className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
@@ -475,26 +444,22 @@ export function MultiEntite() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">
-                  Email
-                </label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Email</label>
                 <input
                   type="email"
                   name="email"
-                  value={formData.email || ""}
+                  value={formData.email || ''}
                   onChange={handleFormChange}
                   className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">
-                  Téléphone
-                </label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Téléphone</label>
                 <input
                   type="tel"
                   name="phone"
-                  value={formData.phone || ""}
+                  value={formData.phone || ''}
                   onChange={handleFormChange}
                   className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
                 />
@@ -502,13 +467,11 @@ export function MultiEntite() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-kcb-sable mb-2">
-                Site web
-              </label>
+              <label className="block text-sm font-medium text-kcb-sable mb-2">Site web</label>
               <input
                 type="url"
                 name="website"
-                value={formData.website || ""}
+                value={formData.website || ''}
                 onChange={handleFormChange}
                 className="w-full px-4 py-2 bg-kcb-noir border border-white/[0.06] rounded-[4px] text-white focus:border-kcb-or focus:outline-none"
               />
@@ -524,8 +487,8 @@ export function MultiEntite() {
               <button
                 type="button"
                 onClick={() => {
-                  setView("list");
-                  setFormData({});
+                  setView('list')
+                  setFormData({})
                 }}
                 className="flex-1 px-4 py-2 bg-kcb-ardoise hover:bg-white/[0.08] text-white rounded-[4px] transition font-medium"
               >
@@ -537,21 +500,19 @@ export function MultiEntite() {
       )}
 
       {/* Empty State */}
-      {entities.length === 0 && view === "list" && (
+      {entities.length === 0 && view === 'list' && (
         <div className="bg-kcb-ardoise rounded-[4px] p-8 text-center">
           <Building2 className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
           <p className="text-kcb-pierre mb-2">Aucune entité créée</p>
-          <p className="text-kcb-pierre text-sm mb-4">
-            Créez votre première galerie ou structure
-          </p>
+          <p className="text-kcb-pierre text-sm mb-4">Créez votre première galerie ou structure</p>
           <button
             onClick={() => {
-              setView("create");
+              setView('create')
               setFormData({
-                type: "gallery",
+                type: 'gallery',
                 address: {},
                 socialMedia: {},
-              });
+              })
             }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir rounded-[4px] transition"
           >
@@ -585,7 +546,7 @@ export function MultiEntite() {
         variant="danger"
       />
     </div>
-  );
+  )
 }
 
-export default MultiEntite;
+export default MultiEntite

@@ -1,6 +1,6 @@
-import { utils } from "./useAPI";
+import { utils } from './useAPI'
 
-const INTEGRATION_API = `${utils.api}/integrations`;
+const INTEGRATION_API = `${utils.api}/integrations`
 
 /**
  * Recupere toutes les integrations configurees.
@@ -10,16 +10,16 @@ export const getIntegrations = async () => {
   try {
     const response = await fetch(INTEGRATION_API, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere une integration par ID.
@@ -30,16 +30,16 @@ export const getIntegration = async (id) => {
   try {
     const response = await fetch(`${INTEGRATION_API}/${id}`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Connecte une nouvelle integration.
@@ -54,16 +54,16 @@ export const connectIntegration = async (name, credentials, settings = {}) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, credentials, settings }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Met a jour les parametres d'une integration.
@@ -77,16 +77,16 @@ export const updateIntegration = async (id, settings) => {
       method: 'PUT',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ settings }),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Declenche une synchronisation pour une integration.
@@ -99,16 +99,16 @@ export const syncIntegration = async (id) => {
       method: 'POST',
       headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Deconnecte (supprime) une integration.
@@ -120,16 +120,16 @@ export const disconnectIntegration = async (id) => {
     const response = await fetch(`${INTEGRATION_API}/${id}`, {
       method: 'DELETE',
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
 
 /**
  * Recupere les statistiques des integrations.
@@ -139,13 +139,13 @@ export const getIntegrationStats = async () => {
   try {
     const response = await fetch(`${INTEGRATION_API}/stats`, {
       headers: utils.options.headers,
-    });
+    })
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return { error: errData.message || `Erreur ${response.status}` };
+      const errData = await response.json().catch(() => ({}))
+      return { error: errData.message || `Erreur ${response.status}` }
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    return { error: error.message };
+    return { error: error.message }
   }
-};
+}
