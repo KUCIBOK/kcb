@@ -460,6 +460,9 @@ export default async function handler(req, res) {
     // ── /api/transaction/fail/:id ──────────────────────────────────────────────
     if (s0 === 'transaction' && s1 === 'fail' && s2) return await routeTransactionStatus(req, res, s2, 'failed');
 
+    // ── /api/transaction/ref/:ref ──────────────────────────────────────────────
+    if (s0 === 'transaction' && s1 === 'ref' && s2) return await routeTransactionByRef(req, res, decodeURIComponent(s2));
+
     // ── /api/transaction/:id ───────────────────────────────────────────────────
     if (s0 === 'transaction' && s1) return await routeTransactionById(req, res, s1);
 
@@ -1122,8 +1125,6 @@ async function authSignup(req, res) {
 
       if (sendError) {
         console.error('[signup] Resend send error:', sendError.message ?? JSON.stringify(sendError));
-      } else {
-        console.log('[signup] Welcome email sent to:', email);
       }
     }
   } catch (err) {
@@ -2517,17 +2518,22 @@ async function routeNumerisationMy(req, res) {
 async function routeNumerisationById(req, res, id) {
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
 
   if (req.method === 'GET') {
-    const { data, error } = await supabaseAdmin.from('numerisation_requests').select('*').eq('id', id).single();
+    let query = supabaseAdmin.from('numerisation_requests').select('*').eq('id', id);
+    if (role !== 'admin') query = query.eq('user_id', userId);
+    const { data, error } = await query.single();
     if (error || !data) return fail(res, 'Demande introuvable', 404);
     return ok(res, { ...data, _id: data.id });
   }
 
   if (req.method === 'PUT') {
     const { notes } = req.body ?? {};
-    const { data, error } = await supabaseAdmin
-      .from('numerisation_requests').update({ notes }).eq('id', id).select().single();
+    let query = supabaseAdmin.from('numerisation_requests').update({ notes }).eq('id', id);
+    if (role !== 'admin') query = query.eq('user_id', userId);
+    const { data, error } = await query.select().single();
     if (error) return fail(res, error.message);
     return ok(res, { ...data, _id: data.id });
   }
@@ -2552,7 +2558,8 @@ async function routeNumerisationStatus(req, res, id) {
   if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
   const { status } = req.body ?? {};
-  if (!status) return fail(res, 'status requis');
+  const VALID_NR_STATUSES = ['pending', 'in_progress', 'completed', 'cancelled'];
+  if (!status || !VALID_NR_STATUSES.includes(status)) return fail(res, 'statut invalide');
 
   const { data, error } = await supabaseAdmin
     .from('numerisation_requests').update({ status }).eq('id', id).select().single();
@@ -2738,12 +2745,13 @@ async function routePaydunyaCallback(req, res) {
     const verified = await verifyRes.json();
     if (verified.status !== 'completed') return fail(res, 'Paiement non complété');
 
-    // Idempotence — ignorer si le webhook a déjà été traité (double appel PayDunya)
-    const { data: existingTx } = await supabaseAdmin
-      .from('transactions').select('id').eq('payment_ref', token).maybeSingle();
-    if (existingTx) return ok(res, { received: true });
+    const { user_id, type, ref: customRef, artwork_id, plan_id } = verified.custom_data ?? {};
 
-    const { user_id, type, artwork_id, plan_id } = verified.custom_data ?? {};
+    // Idempotence — ignorer si le webhook a déjà été traité (double appel PayDunya)
+    const paymentRef = customRef ?? token;
+    const { data: existingTx } = await supabaseAdmin
+      .from('transactions').select('id').eq('payment_ref', paymentRef).maybeSingle();
+    if (existingTx) return ok(res, { received: true });
 
     if (!user_id) {
       console.error('[PAYDUNYA] user_id manquant dans custom_data', { token });
@@ -2754,7 +2762,8 @@ async function routePaydunyaCallback(req, res) {
       await supabaseAdmin
         .from('artworks')
         .update({ sold: true, sold_at: new Date().toISOString(), for_sale: false })
-        .eq('id', artwork_id);
+        .eq('id', artwork_id)
+        .eq('sold', false);
 
       const { data: artwork } = await supabaseAdmin
         .from('artworks').select('price, currency, user_id').eq('id', artwork_id).single();
@@ -2768,7 +2777,7 @@ async function routePaydunyaCallback(req, res) {
           currency:       artwork.currency,
           status:         'completed',
           payment_method: 'paydunya',
-          payment_ref:    token,
+          payment_ref:    paymentRef,
         });
         // Code 23505 = unique_violation — webhook traité deux fois simultanément, ignorer
         if (txError && txError.code !== '23505') {
@@ -2995,23 +3004,21 @@ async function routeCampaignSend(req, res) {
   const { Resend } = await import('resend');
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const BATCH_SIZE = 50;
   let sent = 0;
   let failed = 0;
 
-  for (let i = 0; i < emails.length; i += BATCH_SIZE) {
-    const batch = emails.slice(i, i + BATCH_SIZE);
+  for (const email of emails) {
     try {
       await resend.emails.send({
         from:    FROM_EMAIL,
-        to:      batch,
+        to:      email,
         subject: campaign.subject,
         html:    campaign.content,
       });
-      sent += batch.length;
+      sent++;
     } catch (err) {
-      console.error('[RESEND] Batch failed:', err?.message);
-      failed += batch.length;
+      console.error('[RESEND] Email failed:', err?.message);
+      failed++;
     }
   }
 
@@ -3548,6 +3555,14 @@ async function routeBlogFiltered(req, res, filter) {
 async function routeBlogByUser(req, res, userId, status) {
   if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
 
+  if (status === 'draft' || status === 'archived') {
+    const authResult = await requireAuth(req);
+    if (authResult.error) return fail(res, authResult.error, authResult.status);
+    const requesterId = authResult.user.id;
+    const requesterRole = await getDbRole(requesterId);
+    if (requesterRole !== 'admin' && requesterId !== userId) return fail(res, 'Accès interdit', 403);
+  }
+
   let query = supabaseAdmin
     .from('blog_posts')
     .select('*')
@@ -3685,6 +3700,28 @@ async function routeTransactionById(req, res, id) {
 }
 
 /**
+ * GET /api/transaction/ref/:ref — Récupère une transaction par sa référence de paiement.
+ */
+async function routeTransactionByRef(req, res, ref) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+  const role = await getDbRole(userId);
+
+  let query = supabaseAdmin
+    .from('transactions')
+    .select('*, artworks(title, image, kucibok_id, price, currency), buyer:buyer_id(name, email), seller:seller_id(name, email)')
+    .eq('payment_ref', ref);
+
+  if (role !== 'admin') query = query.or(`buyer_id.eq.${userId},seller_id.eq.${userId}`);
+
+  const { data, error } = await query.single();
+  if (error || !data) return notFound(res, 'Transaction');
+  return ok(res, { ...data, _id: data.id });
+}
+
+/**
  * GET /api/transaction/fail/:id — Marque une transaction comme échouée et retourne les détails.
  */
 async function routeTransactionStatus(req, res, id, status) {
@@ -3798,6 +3835,9 @@ async function routeReview(req, res) {
   const { artwork_id, rating, comment } = req.body ?? {};
   if (!artwork_id) return fail(res, 'artwork_id requis');
   if (!rating || rating < 1 || rating > 5) return fail(res, 'rating requis (1-5)');
+
+  const { data: existing } = await supabaseAdmin.from('reviews').select('id').eq('artwork_id', artwork_id).eq('user_id', authResult.user.id).maybeSingle();
+  if (existing) return fail(res, 'Vous avez déjà noté cette œuvre', 409);
 
   const { data, error } = await supabaseAdmin
     .from('reviews')
@@ -4347,15 +4387,15 @@ async function routeEntityById(req, res, id) {
   }
 
   if (req.method === 'PUT') {
-    const body = req.body ?? {};
-    const { data, error } = await supabaseAdmin.from('entities').update(body).eq('id', id).select().single();
+    const { name, type, description, logo } = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('entities').update({ name, type, description, logo }).eq('id', id).eq('owner_id', authResult.user.id).select().single();
     if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
     return ok(res, { ...data, _id: data.id });
   }
 
   if (req.method === 'DELETE') {
     await supabaseAdmin.from('entity_members').delete().eq('entity_id', id);
-    const { error } = await supabaseAdmin.from('entities').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('entities').delete().eq('id', id).eq('owner_id', authResult.user.id);
     if (error) return fail(res, error.message);
     return ok(res, { deleted: true });
   }
@@ -4370,6 +4410,10 @@ async function routeEntitySwitch(req, res, id) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
   const authResult = await requireAuth(req);
   if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const userId = authResult.user.id;
+
+  const { data: membership } = await supabaseAdmin.from('entity_members').select('id').eq('entity_id', id).eq('user_id', userId).single();
+  if (!membership) return fail(res, 'Non membre de cette entité', 403);
 
   const { data, error } = await supabaseAdmin.from('entities').select('*').eq('id', id).single();
   if (error || !data) return notFound(res, 'Entité');
@@ -4484,7 +4528,7 @@ async function routeIntegrationSync(req, res, id) {
   if (authResult.error) return fail(res, authResult.error, authResult.status);
 
   const { data, error } = await supabaseAdmin.from('integrations')
-    .update({ last_synced_at: new Date().toISOString() }).eq('id', id).select().single();
+    .update({ last_synced_at: new Date().toISOString() }).eq('id', id).eq('user_id', authResult.user.id).select().single();
   if (error || !data) return notFound(res, 'Intégration');
   return ok(res, { ...data, _id: data.id, synced: true });
 }

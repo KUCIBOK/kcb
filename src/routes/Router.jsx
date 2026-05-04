@@ -233,7 +233,7 @@ export function Router() {
               <Route path="/artwork-checkout/:id" element={<Suspense fallback={<PageLoader />}><ArtworkCheckout /></Suspense>} />
               <Route path="/subscription-checkout/:id" element={<Suspense fallback={<PageLoader />}><SubscriptionPlanCheckout /></Suspense>} />
             </Route>
-            <Route path="/artwork-purchase-success/:transactionId" element={<Suspense fallback={<PageLoader />}><ArtworkPurchaseSuccess /></Suspense>} />
+            <Route path="/artwork-purchase-success" element={<Suspense fallback={<PageLoader />}><ArtworkPurchaseSuccess /></Suspense>} />
             <Route path="/artwork-purchase-failed/:transactionId" element={<Suspense fallback={<PageLoader />}><ArtworkPurchaseFailed /></Suspense>} />
             <Route path="/artwork-success/:transactionId" element={<Suspense fallback={<PageLoader />}><PayDunyaSuccess /></Suspense>} />
             <Route path="/artwork-failed/:transactionId" element={<Suspense fallback={<PageLoader />}><PayDunyaFailed /></Suspense>} />

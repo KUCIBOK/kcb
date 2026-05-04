@@ -1,13 +1,14 @@
 import { useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { purchaseArtwork } from "../api/useArtworks";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { getTransactionByRef } from "../api/useTransaction";
 import { useState } from "react";
 import { CheckCircle, Eye, XCircle } from "lucide-react";
 import { DataLoader } from "../components/loaders/PageLoader";
 import RevealOnScroll from "../components/landing/RevealOnScroll";
 
 export default function ArtworkPurchaseSuccess(){
-    const {transactionId} = useParams()
+    const [searchParams] = useSearchParams()
+    const ref = searchParams.get('ref')
     const [state, setState] = useState({
         artwork : {},
         transaction : {},
@@ -17,21 +18,26 @@ export default function ArtworkPurchaseSuccess(){
     const navigate = useNavigate()
     useEffect(() => {
         const validateArtworkPurchase = async function () {
-            const data = await purchaseArtwork(transactionId)
-            if(data?.error){
+            if (!ref) {
                 navigate('/account')
+                return
             }
-            if(data?.artwork && data?.transaction){
+            const data = await getTransactionByRef(ref)
+            if(data?.error){
+                setState(prev => ({ ...prev, loading: false, error: data.error }))
+                return
+            }
+            if(data?.id || data?._id){
                 setState(prev => ({
                     ...prev,
                     loading : false,
-                    artwork : data?.artwork,
-                    transaction : data?.transaction
+                    artwork : data?.artworks || {},
+                    transaction : data
                 }))
             }
         }
         validateArtworkPurchase()
-    }, [transactionId])
+    }, [ref])
     return (
         <>
         <RevealOnScroll>
@@ -41,8 +47,8 @@ export default function ArtworkPurchaseSuccess(){
                 <CheckCircle className="text-green-600/80 w-8 h-8" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2 text-center">Achat réussi</h1>
-            <p className="text-kcb-pierre text-sm text-center mb-6">Félicitations ! Vous êtes maintenant propriétaire de cette œuvre d'art.</p></>) 
-            : 
+            <p className="text-kcb-pierre text-sm text-center mb-6">Félicitations ! Vous êtes maintenant propriétaire de cette œuvre d'art.</p></>)
+            :
             (<>
                 <div className="rounded-full bg-red-100 w-16 h-16 flex justify-center items-center mb-4">
                     <XCircle className="text-red-600/80 w-8 h-8" />
@@ -57,7 +63,6 @@ export default function ArtworkPurchaseSuccess(){
                         <img src={state?.artwork?.image} alt={state?.artwork?.title} className="rounded-[4px] w-20 h-20 object-cover border border-white/[0.06]" />
                         <div>
                             <div className="font-playfair font-semibold text-white text-lg mb-1">{state?.artwork?.title}</div>
-                            <div className="text-xs text-kcb-pierre mb-1">Édition #{state?.artwork?.edition?.number}/{state?.artwork?.edition?.total}</div>
                             <div className="font-semibold text-kcb-or text-sm">{state?.artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {state?.artwork?.currency}</div>
                         </div>
                     </div>
