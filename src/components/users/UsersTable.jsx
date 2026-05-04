@@ -75,7 +75,7 @@ export function UsersTable({ users }) {
                     {users?.length >= 1 ? (
                         <tbody>
                             {state.set.map((item, index) => (
-                                <Fragment key={item._id || index}>
+                                <Fragment key={item.id || item._id || index}>
                                     <UsersTableItem user={item} />
                                 </Fragment>
                             ))}

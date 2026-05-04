@@ -63,7 +63,7 @@ export function ArtistNumerisationTab() {
   /** Met à jour artworkTitle en synchronisation avec artworkId sélectionné. */
   const handleArtworkChange = (e) => {
     const selectedId = e.target.value
-    const artwork = myArtworks?.find((a) => a._id === selectedId)
+    const artwork = myArtworks?.find((a) => (a.id || a._id) === selectedId)
     setForm((prev) => ({
       ...prev,
       artworkId: selectedId,

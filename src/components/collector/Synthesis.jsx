@@ -133,7 +133,7 @@ export function Synthesis() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {lastAcquisitions.map((artwork) => (
               <div
-                key={artwork._id}
+                key={artwork.id || artwork._id}
                 className="flex items-center gap-3 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise-cool p-3 hover:border-white/[0.06] transition-colors duration-200"
               >
                 {/* Thumbnail */}
