@@ -7,13 +7,14 @@ export async function createCategory(payload){
             ...utils.options,
             method : 'POST',
             body : JSON.stringify(payload)
-        }) 
-        const category = await response.json()
-        if(category?._id){
+        })
+        const body = await response.json()
+        const category = body?.data ?? body
+        if(category?.id){
             return category
         }
         return {
-            error : category?.message || category?.error
+            error : body?.error || body?.message
         }
     } catch (error) {
         return {
@@ -25,18 +26,19 @@ export async function createCategory(payload){
 export async function getAllCategories(){
     try {
         const response = await fetch(`${api}/category`, {...utils.options})
-        const categories = await response.json()
-        if(categories?.length > 0){
+        const body = await response.json()
+        const categories = body?.data ?? body
+        if(Array.isArray(categories) && categories.length > 0){
             return categories
         }
         return {
-            error : categories?.message || categories?.error || "No categories found"
+            error : body?.error || "No categories found"
         }
     } catch (error) {
         return {
             error : error.message
         }
-        
+
     }
 }
 
@@ -46,17 +48,18 @@ export async function deleteCategory(id){
             ...utils.options,
             method : 'DELETE'
         })
-        const category = await response.json()
-        if(category?._id){
+        const body = await response.json()
+        const category = body?.data ?? body
+        if(category?.id){
             return category
         }
         return {
-            error : category?.message || category?.error || "Category not found"
+            error : body?.error || body?.message || "Category not found"
         }
     } catch (error) {
         return {
             error : error.message
         }
-        
+
     }
 }

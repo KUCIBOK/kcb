@@ -76,7 +76,7 @@ export function AddNumerisation(){
                     >
                     <option value="" disabled selected>Sélectionnez la catégorie</option>
                     {categories.map(category => (
-                        <option key={category._id} value={category.title}>{category.title}</option>
+                        <option key={category.id} value={category.name}>{category.name}</option>
                     ))}
                     </select>
                     

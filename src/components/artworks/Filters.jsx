@@ -51,7 +51,7 @@ export const Filters = ({ state, setState }) => {
                         >
                             <option value="all">Toutes</option>
                             {categories.map((category, idx) => (
-                                <option key={idx} value={category.title}>{category.title}</option>
+                                <option key={idx} value={category.name}>{category.name}</option>
                             ))}
                         </select>
                     </div>

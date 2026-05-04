@@ -415,6 +415,9 @@ export default async function handler(req, res) {
     // ── /api/blog ────────────────────────────────────────────────────────────
     if (s0 === 'blog') return await routeBlog(req, res);
 
+    // ── /api/categories/:id (+ alias /api/category/:id) ─────────────────────
+    if ((s0 === 'categories' || s0 === 'category') && s1) return await routeCategoryById(req, res, s1);
+
     // ── /api/categories (+ alias /api/category) ──────────────────────────────
     if (s0 === 'categories' || s0 === 'category') return await routeCategories(req, res);
 
@@ -1604,9 +1607,9 @@ async function routeArtworks(req, res) {
         title,
         description:    description ?? null,
         image,
-        medium:         medium ?? null,
-        condition:      condition ?? null,
-        provenance:     provenance ?? null,
+        medium:         medium || null,
+        condition:      condition || null,
+        provenance:     provenance || null,
         height:         height ? Number(height) : null,
         width:          width  ? Number(width)  : null,
         weight:         weight ? Number(weight) : null,
@@ -1614,7 +1617,7 @@ async function routeArtworks(req, res) {
         currency:       currency ?? 'XOF',
         category:       category ?? null,
         tags:           (() => { if (!tags) return []; if (Array.isArray(tags)) return tags; try { const p = JSON.parse(tags); return Array.isArray(p) ? p : [String(p)]; } catch { return String(tags).split(',').map(t => t.trim()).filter(Boolean); } })(),
-        for_sale:            !!for_sale,
+        for_sale:            for_sale === true || for_sale === 'true',
         availability_status: availability_status ?? 'available',
         edition_number:      edition_number ? Number(edition_number) : 1,
         edition_total:  edition_total  ? Number(edition_total)  : 1,
@@ -2008,6 +2011,23 @@ async function routeCategories(req, res) {
   }
 
   return fail(res, 'Méthode non autorisée', 405);
+}
+
+/**
+ * DELETE /api/categories/:id — Supprime une catégorie (admin).
+ */
+async function routeCategoryById(req, res, id) {
+  if (req.method !== 'DELETE') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const { data, error } = await supabaseAdmin
+    .from('categories').delete().eq('id', id).select().single();
+  if (error) return fail(res, error.message);
+  return ok(res, data);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
