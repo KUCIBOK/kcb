@@ -55,7 +55,7 @@ function DefineAuctionModal({ artwork, closeModal }) {
         method: 'POST',
         headers: { ...utils.options.headers, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          artworkId: artwork._id,
+          artworkId: artwork.id || artwork._id,
           startingPrice: Number(state.startingPrice),
           startTime: state.startTime,
           endTime: state.endTime,

@@ -22,7 +22,7 @@ export function CollectionProvider({ children }) {
   useEffect(() => {
     // Attendre que AuthContext ait fini de résoudre la session
     if (authLoading) return
-    if (!user?._id) {
+    if (!user?.id) {
       setState((prev) => ({ ...prev, loading: false }))
       return
     }
@@ -42,7 +42,7 @@ export function CollectionProvider({ children }) {
     fetchCollections().finally(() => {
       setState((prev) => ({ ...prev, loading: false }))
     })
-  }, [user?._id, authLoading])
+  }, [user?.id, authLoading])
   return (
     <CollectionContext.Provider
       value={{

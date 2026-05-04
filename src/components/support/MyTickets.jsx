@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useSupportTickets } from '../../hooks/useSupportTickets';
 import { MessageSquare, Plus, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import CreateTicketModal from './CreateTicketModal';
@@ -144,7 +144,7 @@ export default function MyTickets() {
               {/* Métadonnées */}
               <div className="flex items-center justify-between text-xs text-kcb-pierre">
                 <span>
-                  {new Date(ticket.createdAt).toLocaleDateString('fr-FR')}
+                  {new Date(ticket.created_at).toLocaleDateString('fr-FR')}
                 </span>
                 <span className="flex items-center gap-1">
                   <MessageSquare className="w-3 h-3" />

@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+﻿import { User } from "lucide-react";
 import { UserTableItemActions } from "./UsersTableItemActions";
 
 export function UsersTableItem({user}){
@@ -26,7 +26,7 @@ export function UsersTableItem({user}){
                 )}
             </td>
             <td className="text-white/60 text-xs align-middle">{user?.telephone || <span className="text-kcb-pierre">Non renseigné</span>}</td>
-            <td className="text-white/60 text-xs align-middle">{new Date(user?.createdAt).toLocaleDateString()}</td>
+            <td className="text-white/60 text-xs align-middle">{new Date(user?.created_at).toLocaleDateString()}</td>
             <td className="align-middle">
                 {user?.status === "published" && <span className="inline-block rounded-full bg-green-700/10 text-green-400 px-2 py-0.5 text-xs font-medium">Publié</span>}
                 {user?.status === "archived" && <span className="inline-block rounded-full bg-amber-700/10 text-amber-400 px-2 py-0.5 text-xs font-medium">Archivé</span>}

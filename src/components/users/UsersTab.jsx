@@ -1,4 +1,4 @@
-import { Hammer, Image, Plus, Shield, User, Users } from 'lucide-react'
+﻿import { Hammer, Image, Plus, Shield, User, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useUsersContext } from '../../store/UsersStore'
 import { UsersTable } from './UsersTable'
@@ -22,7 +22,7 @@ export function UsersTab() {
           ...prev,
           visitor: visitors,
           visitorsThisMonth: visitors.filter(
-            (visitor) => new Date(visitor.createdAt).getMonth() === new Date().getMonth()
+            (visitor) => new Date(visitor.created_at).getMonth() === new Date().getMonth()
           ),
         }))
       }

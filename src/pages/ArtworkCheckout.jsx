@@ -29,13 +29,13 @@ export default function ArtworkCheckout(){
         const fetchArtwork = async () => {
             try {
                 const data = await getArtworkById(id)
-                if (data?._id) {
+                if (data?.id) {
                     if (data.sold) {
                         setArtwork(prev => ({ ...prev, loading: false, error: 'Cette œuvre a déjà été vendue.' }))
                         return
                     }
                     const artistData = data?.artist_id ? await getArtistById(data.artist_id) : null;
-                    setArtwork({ ...data, artist: artistData?._id ? artistData : null, loading: false })
+                    setArtwork({ ...data, artist: artistData?.id ? artistData : null, loading: false })
                     return
                 }
                 setArtwork(prev => ({ ...prev, loading: false, error: data?.error || 'Œuvre introuvable' }))
@@ -49,12 +49,12 @@ export default function ArtworkCheckout(){
     }, [id]);
 
     const handlePayment = async () => {
-        if (!user?._id) {
+        if (!user?.id) {
             toast.error("Vous devez être connecté pour acheter une œuvre");
             return;
         }
 
-        if (!artwork?._id) {
+        if (!artwork?.id) {
             toast.error("Œuvre introuvable");
             return;
         }
@@ -133,7 +133,7 @@ export default function ArtworkCheckout(){
                             />
 
                             <button
-                                disabled={!user?._id || paymentLoading || artwork?.loading}
+                                disabled={!user?.id || paymentLoading || artwork?.loading}
                                 onClick={handlePayment}
                                 className="rounded-md flex justify-center items-center gap-2 w-full bg-kcb-or hover:bg-kcb-bronze transition shadow py-2 text-kcb-noir font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
                             >
@@ -145,7 +145,7 @@ export default function ArtworkCheckout(){
                                 )}
                             </button>
                             
-                            {!user?._id && (
+                            {!user?.id && (
                                 <p className="flex items-center text-xs text-kcb-pierre mt-2">
                                     <AlertCircle className="w-4 h-4 mr-2" />
                                     Vous devez être connecté pour acheter une œuvre.

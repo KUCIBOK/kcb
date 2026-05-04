@@ -1,4 +1,4 @@
-import { useState } from "react"
+﻿import { useState } from "react"
 import {Eye} from "lucide-react"
 import { Modal } from "../ui"
 
@@ -54,7 +54,7 @@ function SeeModal({numerisation, closeModal}){
                 </div>
                 <div className="flex justify-between">
                     <span className="text-kcb-pierre">Date:</span>
-                    <span className="text-white">{new Date(numerisation.createdAt).toLocaleDateString('fr-Fr')}</span>
+                    <span className="text-white">{new Date(numerisation.created_at).toLocaleDateString('fr-Fr')}</span>
                 </div>
                 <div className="flex justify-between">
                     <span className="text-kcb-pierre">Statut:</span>

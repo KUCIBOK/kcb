@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import {
   Mail,
   Phone,
@@ -461,7 +461,7 @@ export function ClientDetail({ client, onClientUpdated }) {
                     <p className="text-white">{note.content}</p>
                     <p className="text-xs text-kcb-pierre mt-2">
                       Par {note.author?.name} •{" "}
-                      {new Date(note.createdAt).toLocaleDateString("fr-FR")}
+                      {new Date(note.created_at).toLocaleDateString("fr-FR")}
                     </p>
                   </div>
                   <button

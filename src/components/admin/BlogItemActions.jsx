@@ -19,7 +19,7 @@ export function BlogItemActions({post}) {
                 ...prev,
                 loading : true
             }))
-            const published = await publishPost(post?._id)
+            const published = await publishPost(post?.id || post?._id)
             if(published?._id || published?.id){
                 setState(prev => ({
                     ...prev,
@@ -40,7 +40,7 @@ export function BlogItemActions({post}) {
                 ...prev,
                 loading : true
             }))
-            const published = await archivePost(post?._id)
+            const published = await archivePost(post?.id || post?._id)
             if(published?._id || published?.id){
                 setState(prev => ({
                     ...prev,
@@ -59,7 +59,7 @@ export function BlogItemActions({post}) {
         <>
         <div className="flex items-center gap-1">
             <Link
-                to={`/blog/${post?._id || post?.id}`}
+                to={`/blog/${post?.id || post?._id || post?.id}`}
                 className="rounded-full bg-kcb-ardoise p-2 hover:bg-white/[0.08] transition flex items-center justify-center shadow-none border-none"
                 title="Voir l'article"
             >
@@ -123,7 +123,7 @@ function UpdatePostModal({post, closeModal}){
                 }
                 formData.append(key, charge[key])
             })
-            const updated = await updatePost(post?._id, formData)
+            const updated = await updatePost(post?.id || post?._id, formData)
             if(updated?._id){
                 toast.success('✓ Article mis à jour');
                 closeModal()

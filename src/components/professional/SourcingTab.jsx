@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { Search, Filter, MessageSquare, ChevronDown, ChevronUp, Send, Inbox } from 'lucide-react'
 import { getMyInquiries } from '../../api/useSourcing'
 import { KPICard, SkeletonTable, EmptyState } from '../ui'
@@ -129,7 +129,7 @@ function InquiryCard({ inquiry }) {
         <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
           <PurposeBadge purpose={inquiry.purpose} />
           <StatusBadge status={inquiry.status} />
-          <span className="text-xs text-kcb-pierre">{formatDate(inquiry.createdAt)}</span>
+          <span className="text-xs text-kcb-pierre">{formatDate(inquiry.created_at)}</span>
           <button
             onClick={() => setExpanded((v) => !v)}
             className="flex items-center gap-1 text-xs text-kcb-or hover:text-kcb-or/80 transition-colors ml-2"

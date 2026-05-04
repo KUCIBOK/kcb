@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useAuth } from "../../store/AuthContext";
 import { Camera, Copy } from "lucide-react";
 import ReactQuill from "react-quill";
@@ -82,7 +82,7 @@ export const Profile = () => {
       }
       const updatedUser = await updateUser(userPayload);
       const updatedArtist = await updateArtist(formData);
-      if (updatedUser?._id || updatedArtist?._id || updatedArtist?.userId) {
+      if (updatedUser?.id || updatedUser?._id || updatedArtist?.id || updatedArtist?._id || updatedArtist?.userId) {
         setState(prev => ({ ...prev, loading: false, error: "" }));
         toast.success("Profil mis à jour !");
       } else {
@@ -283,7 +283,7 @@ export const Profile = () => {
               <div className="w-full pt-4 border-t border-white/[0.06] space-y-2">
                 <div className="flex justify-between text-xs text-kcb-pierre">
                   <span>Compte créé</span>
-                  <span>{new Date(user?.createdAt)?.toLocaleDateString()}</span>
+                  <span>{new Date(user?.created_at)?.toLocaleDateString()}</span>
                 </div>
                 <div className="flex justify-between text-xs text-kcb-pierre">
                   <span>Oeuvres publiées</span>

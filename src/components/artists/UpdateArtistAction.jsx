@@ -76,8 +76,8 @@ function Modal({ closeModal, artist }) {
       formData.append("facebook", charge.socials.facebook);
       formData.append("twitter", charge.socials.twitter);
       formData.append("instagram", charge.socials.instagram);
-      const updated = await update(artist?._id, formData);
-      if (updated?._id) {
+      const updated = await update(artist?.id, formData);
+      if (updated?.id) {
         closeModal();
       }
       setState({ ...state, loading: false, error: artist?.error });

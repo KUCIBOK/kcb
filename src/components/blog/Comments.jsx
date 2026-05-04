@@ -21,8 +21,8 @@ export function Comments({ post, setPostState, postState }) {
     e.preventDefault()
     setState((s) => ({ ...s, error: '', loading: true }))
     try {
-      if (user?._id) {
-        const updatedPost = await addComment(post?._id, {
+      if (user?.id) {
+        const updatedPost = await addComment(post?.id || post?._id, {
           authorId: user?.id,
           content: state?.content,
         })

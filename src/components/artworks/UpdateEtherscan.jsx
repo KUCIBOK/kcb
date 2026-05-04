@@ -72,8 +72,8 @@ function EtherscanModal({ artwork, closeModal }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setState({ ...state, loading: true });
-        const updated = await modifyEtherscan(artwork?._id, state?.etherscan);
-        if (updated?._id) {
+        const updated = await modifyEtherscan(artwork?.id, state?.etherscan);
+        if (updated?.id) {
             toast.success('✓ Adresse blockchain mise à jour');
             closeModal();
         } else {

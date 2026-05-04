@@ -4154,8 +4154,8 @@ async function routeContactById(req, res, id) {
   }
 
   if (req.method === 'PUT') {
-    const body = req.body ?? {};
-    const { data, error } = await supabaseAdmin.from('contacts').update(body).eq('id', id).eq('user_id', userId).select().single();
+    const { name, email, phone, tags, list_id } = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('contacts').update({ name, email, phone, tags, list_id }).eq('id', id).eq('user_id', userId).select().single();
     if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
     return ok(res, { ...data, _id: data.id });
   }
@@ -4261,8 +4261,8 @@ async function routeContactListById(req, res, id) {
   }
 
   if (req.method === 'PUT') {
-    const body = req.body ?? {};
-    const { data, error } = await supabaseAdmin.from('contact_lists').update(body).eq('id', id).eq('user_id', userId).select().single();
+    const { name, description } = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('contact_lists').update({ name, description }).eq('id', id).eq('user_id', userId).select().single();
     if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
     return ok(res, { ...data, _id: data.id });
   }
@@ -4504,8 +4504,8 @@ async function routeIntegrationById(req, res, id) {
   }
 
   if (req.method === 'PUT') {
-    const body = req.body ?? {};
-    const { data, error } = await supabaseAdmin.from('integrations').update(body).eq('id', id).eq('user_id', userId).select().single();
+    const { name, config, enabled } = req.body ?? {};
+    const { data, error } = await supabaseAdmin.from('integrations').update({ name, config, enabled }).eq('id', id).eq('user_id', userId).select().single();
     if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
     return ok(res, { ...data, _id: data.id });
   }
@@ -4691,8 +4691,8 @@ async function routeCampaignsCrud(req, res, id, action) {
       return ok(res, { ...data, _id: data.id });
     }
     if (req.method === 'PUT') {
-      const body = req.body ?? {};
-      const { data, error } = await supabaseAdmin.from('campaigns').update(body).eq('id', id).eq('user_id', userId).select().single();
+      const { name, subject, content, html_content, list_id } = req.body ?? {};
+      const { data, error } = await supabaseAdmin.from('campaigns').update({ name, subject, content, html_content, list_id }).eq('id', id).eq('user_id', userId).select().single();
       if (error || !data) return fail(res, error?.message ?? 'Non trouvé');
       return ok(res, { ...data, _id: data.id });
     }

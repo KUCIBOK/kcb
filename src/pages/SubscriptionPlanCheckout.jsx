@@ -37,7 +37,7 @@ export default function SubscriptionPlanCheckout(){
     }
 
     const handlePayment = async () => {
-        if (!user?._id) {
+        if (!user?.id) {
             toast.error("Vous devez être connecté pour souscrire à un abonnement")
             return
         }
@@ -64,7 +64,7 @@ export default function SubscriptionPlanCheckout(){
         window.scrollTo(0, 0);
         const fetchPlan = async () =>{
             const plan = await getPlanById(id)
-            if(plan?._id){
+            if(plan?.id){
                 setState(prev => ({...prev, plan : plan, error : "", loading : false}))
                 return
             }
@@ -136,7 +136,7 @@ export default function SubscriptionPlanCheckout(){
                                 <ShieldCheck/> Paiement sécurisé
                             </h3>
 
-                            {user?._id && user?.role === state?.plan?.role && (
+                            {user?.id && user?.role === state?.plan?.role && (
                                 <PaymentMethodSelector
                                     selectedMethod={state.paymentMethod}
                                     onMethodChange={handlePaymentMethodChange}
@@ -145,11 +145,11 @@ export default function SubscriptionPlanCheckout(){
                             )}
 
                             <button
-                                disabled={!user?._id || user?.role !== state?.plan?.role || paymentLoading}
+                                disabled={!user?.id || user?.role !== state?.plan?.role || paymentLoading}
                                 onClick={handlePayment}
                                 className="rounded-md flex justify-center items-center gap-2 w-full bg-kcb-or hover:bg-kcb-bronze transition shadow py-2 text-kcb-noir font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                {!user?._id ? (
+                                {!user?.id ? (
                                     <Lock className="w-6 h-6 my-2" />
                                 ) : user?.role !== state?.plan?.role ? (
                                     <Lock className="w-6 h-6 my-2" />
@@ -163,14 +163,14 @@ export default function SubscriptionPlanCheckout(){
                                 )}
                             </button>
 
-                            {!user?._id && (
+                            {!user?.id && (
                                 <p className="flex items-center text-xs text-kcb-pierre mt-2">
                                     <AlertCircle className="w-4 h-4 mr-2" />
                                     Vous devez être inscrit pour souscrire à un abonnement
                                 </p>
                             )}
 
-                            {user?._id && user?.role !== state?.plan?.role && (
+                            {user?.id && user?.role !== state?.plan?.role && (
                                 <p className="flex items-center text-xs text-kcb-pierre mt-2">
                                     <AlertCircle className="w-4 h-4 mr-2" />
                                     Ce plan n'est pas compatible avec votre type de compte

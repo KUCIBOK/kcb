@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { getAllSubscriptions } from '../../api/useSubscriptions'
 import { useArtworks } from '../../store/ArtworkContext'
 import { useUsersContext } from '../../store/UsersStore'
@@ -69,7 +69,7 @@ export function Synthesis({ setTab, setToggle }) {
             ...prev,
             visitors: visitors,
             visitorsThisMonth: visitors.filter(
-              (visitor) => new Date(visitor.createdAt).getMonth() === new Date().getMonth()
+              (visitor) => new Date(visitor.created_at).getMonth() === new Date().getMonth()
             ),
             AverageVisitTime:
               visitors
@@ -80,13 +80,13 @@ export function Synthesis({ setTab, setToggle }) {
               visitors
                 ?.filter(
                   (visitor) =>
-                    new Date(visitor.createdAt).getMonth() === new Date().getMonth() &&
+                    new Date(visitor.created_at).getMonth() === new Date().getMonth() &&
                     visitor?.visitTime != 0
                 )
                 .reduce((acc, visitor) => acc + visitor.visitTime, 0) /
                 visitors?.filter(
                   (visitor) =>
-                    new Date(visitor.createdAt).getMonth() === new Date().getMonth() &&
+                    new Date(visitor.created_at).getMonth() === new Date().getMonth() &&
                     visitor?.visitTime != 0
                 )?.length || 0,
           }))

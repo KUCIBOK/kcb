@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+﻿import { useState, useEffect, useCallback } from "react"
 import { Scan, Plus, X, Loader2, CheckCircle, Clock, RefreshCw, Trash2, AlertCircle } from "lucide-react"
 import { getMyNumerisationRequests, createNumerisation, deleteNumerisationRequest } from "../../api/useNumerisation"
 import { useArtworks } from "../../store/ArtworkContext"
@@ -313,7 +313,7 @@ export function ArtistNumerisationTab() {
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-sm font-medium truncate">{req.artworkTitle || "Œuvre sans titre"}</p>
                   <p className="text-kcb-pierre text-xs mt-0.5">
-                    {req.createdAt ? new Date(req.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
+                    {req.created_at ? new Date(req.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
                     {req.priority === "urgent" && (
                       <span className="ml-2 text-orange-400 font-medium">· Urgent</span>
                     )}

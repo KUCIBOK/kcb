@@ -26,12 +26,13 @@ export async function createUser(payload) {
             method : "POST",
             body : JSON.stringify(payload)
         })
-        const user = await response.json()
-        if(user?._id){
+        const body = await response.json()
+        const user = body?.data ?? body
+        if(user?.id || user?._id){
             return user
         }
         return {
-            error : user?.message || user?.error
+            error : body?.message || body?.error
         }
     } catch (error) {
         return {
@@ -40,22 +41,20 @@ export async function createUser(payload) {
     }
 }
 
-export async function updateUser(id, payload){ //✅
+export async function updateUser(id, payload){
     try {
-        const { api, options } = utils
         const response = await fetch(`${api}/auth/${id}`, {
             ...utils.options,
             method : 'PUT',
-            body : JSON.stringify({
-                ...payload
-            })
+            body : JSON.stringify(payload)
         })
-        const user = await response.json()
-        if(user?.role || user?.id){
+        const body = await response.json()
+        const user = body?.data ?? body
+        if(user?.role || user?.id || user?._id){
             return user
         }
         return {
-            error : user?.message 
+            error : body?.message || body?.error
         }
     } catch (error) {
         return {
@@ -64,19 +63,19 @@ export async function updateUser(id, payload){ //✅
     }
 }
 
-export async function deleteUser(id){ //✅
+export async function deleteUser(id){
     try {
-        const { api, options } = utils
         const response = await fetch(`${api}/auth/${id}`, {
             ...utils.options,
             method : 'DELETE',
         })
-        const user = await response.json()
-        if(user?._id){
+        const body = await response.json()
+        const user = body?.data ?? body
+        if(user?.id || user?._id){
             return user
         }
         return {
-            error : user?.message 
+            error : body?.message || body?.error
         }
     } catch (error) {
         return {
@@ -88,19 +87,19 @@ export async function deleteUser(id){ //✅
 export async function setUserStatus(id) {
     try {
         const response = await fetch(`${api}/auth/status/${id}`, {...utils.options})
-        const user = await response.json()
-        if(user?._id){
+        const body = await response.json()
+        const user = body?.data ?? body
+        if(user?.id || user?._id){
             return user
         }
         return {
-            error : user?.error || user?.message
+            error : body?.error || body?.message
         }
     } catch (error) {
         return {
             error : error.message
         }
     }
-    
 }
 
 export async function exportExcelData(){

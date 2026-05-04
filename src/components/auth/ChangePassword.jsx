@@ -32,7 +32,7 @@ function ChangePasswordModal({closeModal}){
                 oldPassword : state.oldPassword,
                 newPassword : state.newPassword
             })
-            if(user?._id){
+            if(user?.id || user?._id){
                 toast.success('✓ Mot de passe modifié');
                 closeModal()
             } else {
