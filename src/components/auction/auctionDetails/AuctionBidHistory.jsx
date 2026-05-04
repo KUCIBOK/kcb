@@ -1,4 +1,4 @@
-import { History } from "lucide-react";
+﻿import { History } from "lucide-react";
 
 export default function AuctionBidHistory({ bids }) {
   return (
@@ -28,7 +28,7 @@ export default function AuctionBidHistory({ bids }) {
             </thead>
             <tbody className="divide-y divide-white/[0.06]/50">
               {bids.map((bid) => (
-                <tr key={bid._id}>
+                <tr key={bid.id || bid._id}>
                   <td className="px-4 py-3 text-white">{bid.amount} FCFA</td>
                   <td className="px-4 py-3 text-white">
                     {bid.bidder?.name ||
@@ -37,7 +37,7 @@ export default function AuctionBidHistory({ bids }) {
                         : "Anonyme")}
                   </td>
                   <td className="px-4 py-3 text-kcb-pierre">
-                    {new Date(bid.createdAt).toLocaleString()}
+                    {new Date(bid.created_at).toLocaleString()}
                   </td>
                 </tr>
               ))}

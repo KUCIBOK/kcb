@@ -43,8 +43,8 @@ export default function SubscriptionFailed() {
 
         setState(prev => ({
           ...prev,
-          subscription: failResult.sub,
-          plan: failResult.plan,
+          subscription: failResult,
+          plan: failResult.plans || null,
           loading: false
         }))
 
@@ -64,7 +64,7 @@ export default function SubscriptionFailed() {
 
   const handleRetry = () => {
     // Rediriger vers la page de checkout pour réessayer
-    window.location.href = `/subscription-checkout/${state.plan?._id}`
+    window.location.href = `/subscription-checkout/${state.plan?.id}`
   }
 
   if (state.loading) {
@@ -139,7 +139,7 @@ export default function SubscriptionFailed() {
             <div className="flex justify-between items-center py-2">
               <span className="text-kcb-pierre">Date de tentative</span>
               <span className="text-white font-medium">
-                {new Date(state.subscription?.createdAt).toLocaleDateString('fr-FR')}
+                {new Date(state.subscription?.created_at).toLocaleDateString('fr-FR')}
               </span>
             </div>
           </div>

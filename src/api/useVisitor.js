@@ -8,13 +8,14 @@ export async function createVisitor(payload) {
       body: JSON.stringify(payload),
     })
 
-    const visitor = await response.json()
-    if (visitor?._id) {
+    const body = await response.json()
+    const visitor = body?.data ?? body
+    if (visitor?.id || visitor?._id) {
       return visitor
     }
 
     return {
-      error: visitor?.message || 'Failed to create visitor',
+      error: body?.message || 'Failed to create visitor',
     }
   } catch (error) {
     return {

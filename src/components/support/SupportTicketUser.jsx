@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Plus, Send, MessageSquare, AlertCircle } from 'lucide-react';
 import { utils } from '../../api/useAPI';
 
@@ -216,7 +216,7 @@ export default function SupportTicketUser() {
                         {response.responderName}
                       </span>
                       <span className="text-xs text-kcb-pierre">
-                        {new Date(response.createdAt).toLocaleDateString('fr-FR')}
+                        {new Date(response.created_at).toLocaleDateString('fr-FR')}
                       </span>
                     </div>
                     <p className="text-sm text-kcb-sable">{response.message}</p>

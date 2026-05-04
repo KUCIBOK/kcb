@@ -18,13 +18,13 @@ export const ApproveAction = memo(({artwork}) => {
 
     const setStatus = async (status) => {
         setState(prev => ({...prev, loading: true, confirmApprove: false, confirmReject: false}))
-        const updated = await approveArtwork(artwork?._id, status)
-        if(updated?._id){
+        const updated = await approveArtwork(artwork?.id, status)
+        if(updated?.id){
             createLog({
                 description: status === 'approved'
-                    ? `Approbation de l'œuvre "${artwork?.title}" (KCB: ${artwork?.kucibok_id || artwork?._id})`
-                    : `Rejet de l'œuvre "${artwork?.title}" (KCB: ${artwork?.kucibok_id || artwork?._id})`,
-                userId: adminUser?._id,
+                    ? `Approbation de l'œuvre "${artwork?.title}" (KCB: ${artwork?.kucibok_id || artwork?.id})`
+                    : `Rejet de l'œuvre "${artwork?.title}" (KCB: ${artwork?.kucibok_id || artwork?.id})`,
+                userId: adminUser?.id,
             })
             setState(prev => ({...prev, loading: false}))
         } else {

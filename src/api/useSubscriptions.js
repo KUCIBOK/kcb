@@ -8,17 +8,14 @@ export async function createSubscription(payload) {
       method: 'POST',
       body: JSON.stringify(payload),
     })
-    const sub = await response.json()
-    if (sub?._id) {
+    const body = await response.json()
+    const sub = body?.data ?? body
+    if (sub?.id || sub?._id) {
       return sub
     }
-    return {
-      error: sub?.error || sub?.messsage,
-    }
+    return { error: body?.error || body?.message }
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
@@ -28,17 +25,14 @@ export async function failSubscription(subId) {
       ...utils.options,
       method: 'POST',
     })
-    const { sub, plan, error, message } = await response.json()
-    if (sub?._id && plan?._id) {
-      return { sub, plan }
+    const body = await response.json()
+    const sub = body?.data ?? body
+    if (sub?.id || sub?._id) {
+      return sub
     }
-    return {
-      error: error || message,
-    }
+    return { error: body?.error || body?.message }
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
@@ -48,61 +42,47 @@ export async function activateSubscription(subId) {
       ...utils.options,
       method: 'POST',
     })
-    const { sub, plan, error, message } = await response.json()
-    if (sub?._id && plan?._id) {
-      return { sub, plan }
+    const body = await response.json()
+    const sub = body?.data ?? body
+    if (sub?.id || sub?._id) {
+      return sub
     }
-    return {
-      error: error || message,
-    }
+    return { error: body?.error || body?.message }
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
 export async function getSubById(id) {
   try {
     const response = await fetch(`${api}/subscription/${id}`, { ...utils.options })
-    const sub = await response.json()
-    if (sub?._id) {
+    const body = await response.json()
+    const sub = body?.data ?? body
+    if (sub?.id || sub?._id) {
       return sub
     }
-    return {
-      error: sub?.error || sub?.messsage,
-    }
+    return { error: body?.error || body?.message }
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
-// Alias pour compatibilité avec les imports
 export const getSubscriptionById = getSubById
 
 export async function getAllSubscriptions() {
   try {
     const response = await fetch(`${api}/subscription`, { ...utils.options })
-    const subscriptions = await response.json()
-    if (subscriptions?.length > 0) {
+    const body = await response.json()
+    const subscriptions = body?.data ?? body
+    if (Array.isArray(subscriptions) && subscriptions.length > 0) {
       return subscriptions
     }
-    return {
-      error: subscriptions?.message || subscriptions?.error,
-    }
+    return { error: body?.message || body?.error }
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
-/**
- * Annule l'abonnement actif de l'utilisateur connecté.
- * @returns {Promise<{data?: object, error?: string}>}
- */
 export async function cancelMySubscription() {
   try {
     const response = await fetch(`${api}/subscription/cancel`, {
@@ -117,19 +97,12 @@ export async function cancelMySubscription() {
   }
 }
 
-/**
- * Récupère l'abonnement actif de l'utilisateur connecté.
- * Retourne null si aucun abonnement actif ou en cas d'erreur.
- *
- * @returns {Promise<object|null>}
- */
 export async function getMySubscription() {
   try {
     const response = await fetch(`${api}/subscription`, { ...utils.options })
     const body = await response.json()
     const sub = body?.data
     if (!sub) return null
-    // Normalise la jointure Supabase : plans -> plan
     if (sub.plans && !sub.plan) sub.plan = sub.plans
     return sub
   } catch {

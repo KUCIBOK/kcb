@@ -121,8 +121,8 @@ export const ArtworksContextProvider = ({ children }) => {
             rejected:  Array.isArray(rejected) ? [...rejected].reverse() : [],
           }))
         }
-        if (user?.role == 'artist' && artistProfile?._id) {
-          const myArtworks = await getMyArtworks(artistProfile?._id)
+        if (user?.role == 'artist' && artistProfile?.id) {
+          const myArtworks = await getMyArtworks(artistProfile?.id)
           setState((prev) => ({
             ...prev,
             myArtworks: myArtworks?.length > 0 ? myArtworks : [],
@@ -148,7 +148,7 @@ export const ArtworksContextProvider = ({ children }) => {
       }
       getProfileArtworks()
     }
-  }, [user?._id, user?.role, artistProfile?._id, curatorProfile?._id])
+  }, [user?._id, user?.role, artistProfile?.id, curatorProfile?._id])
   const contextValue = useMemo(() => ({
         artworks: state.artworks,
         forSale: state.forSale,

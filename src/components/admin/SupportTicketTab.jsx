@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { MessageSquare, Plus, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { utils } from '../../api/useAPI';
 
@@ -115,7 +115,7 @@ export default function SupportTicketTab() {
                     </span>
                   </div>
                   <div className="text-xs text-kcb-pierre">
-                    {new Date(ticket.createdAt).toLocaleDateString('fr-FR')}
+                    {new Date(ticket.created_at).toLocaleDateString('fr-FR')}
                   </div>
                 </div>
               </div>

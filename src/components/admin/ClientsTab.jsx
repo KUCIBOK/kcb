@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Search, Users } from "lucide-react";
+﻿import { ChevronLeft, ChevronRight, Search, Users } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 import { useClients } from "../../store/ClientContext";
 import { utils } from "../../api/useAPI";
@@ -56,7 +56,7 @@ const ClientsTab = () => {
   useEffect(() => {
     if (clients.length > 0) {
       const sortedClients = [...clients].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
       setFilteredClients(sortedClients);
       setCurrentSet(sortedClients.slice(0, 50));
@@ -239,7 +239,7 @@ const ClientsTab = () => {
                       )}
                     </td>
                     <td className="py-2 text-kcb-pierre">
-                      {new Date(client.createdAt).toLocaleDateString()}
+                      {new Date(client.created_at).toLocaleDateString()}
                     </td>
                   </tr>
                 </Fragment>

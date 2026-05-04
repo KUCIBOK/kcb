@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+﻿import { useEffect, useState } from "react"
 import { getAllLog } from "../../api/useLog"
 import { getUserById } from "../../api/useAuth"
 import { DataLoader } from "../loaders/PageLoader"
@@ -58,7 +58,7 @@ export function LogsTab() {
                 >
                   <td className="py-2 px-1 md:px-2 align-top max-w-xs truncate">{log.description}</td>
                   <td className="py-2 px-1 md:px-2 align-top whitespace-nowrap text-kcb-pierre">
-                    {new Date(log.createdAt).toLocaleString()}
+                    {new Date(log.created_at).toLocaleString()}
                   </td>
                   <td className="py-2 px-1 md:px-2 align-top">
                     <UserInfo id={log.userId} />

@@ -202,7 +202,7 @@ export async function getUserProfile(id) {
     const body = await response.json()
     // Les Vercel Functions retournent { data: {...} }
     const data = body?.data ?? body
-    if (data?._id || data?.userId) return data
+    if (data?.id || data?._id || data?.userId) return data
     return { error: body?.error ?? 'Profil introuvable' }
   } catch (err) {
     return { error: err.message }

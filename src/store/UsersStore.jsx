@@ -50,7 +50,7 @@ export function UserProvider({ children }) {
     } else {
       setState((prev) => ({ ...prev, loading: false })) // eslint-disable-line react-hooks/set-state-in-effect
     }
-  }, [user?._id])
+  }, [user?.id])
 
   return (
     <UserContext.Provider
@@ -91,7 +91,7 @@ export function UserProvider({ children }) {
             makeToast('Succès', 'success', "L'utilisateur a été ajouté avec succès")
             await createLog({
               description: `L'utilisateur ${user?.name} a été ajouté`,
-              userId: admin?._id,
+              userId: admin?.id,
             })
             return user
           } catch (error) {
@@ -111,31 +111,31 @@ export function UserProvider({ children }) {
             if (user?.role == 'admin')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                admins: [user, ...prev.admins.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                admins: [user, ...prev.admins.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'artist')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                artists: [user, ...prev.artists.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                artists: [user, ...prev.artists.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'buyer')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                buyers: [user, ...prev.buyers.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                buyers: [user, ...prev.buyers.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'curator')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                curators: [user, ...prev.curators.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                curators: [user, ...prev.curators.filter((item) => item?.id != user?.id)],
               }))
             makeToast('Succès', 'success', "L'utilisateur a été mis à jour avec succès")
             await createLog({
               description: `L'utilisateur ${user?.name} a été mis à jour`,
-              userId: admin?._id,
+              userId: admin?.id,
             })
             return user
           } catch (error) {
@@ -147,7 +147,7 @@ export function UserProvider({ children }) {
         deleteUser: async (id) => {
           try {
             const user = await deleteUser(id)
-            if (!user?._id) {
+            if (!user?.id) {
               return {
                 error: user?.error || user?.message,
               }
@@ -155,31 +155,31 @@ export function UserProvider({ children }) {
             if (user?.role == 'admin')
               setState((prev) => ({
                 ...prev,
-                users: [...prev.users.filter((item) => item?._id != user?._id)],
-                admins: [...prev.admins.filter((item) => item?._id != user?._id)],
+                users: [...prev.users.filter((item) => item?.id != user?.id)],
+                admins: [...prev.admins.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'artist')
               setState((prev) => ({
                 ...prev,
-                users: [...prev.users.filter((item) => item?._id != user?._id)],
-                artists: [...prev.artists.filter((item) => item?._id != user?._id)],
+                users: [...prev.users.filter((item) => item?.id != user?.id)],
+                artists: [...prev.artists.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'buyer')
               setState((prev) => ({
                 ...prev,
-                users: [...prev.users.filter((item) => item?._id != user?._id)],
-                buyers: [...prev.buyers.filter((item) => item?._id != user?._id)],
+                users: [...prev.users.filter((item) => item?.id != user?.id)],
+                buyers: [...prev.buyers.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'curator')
               setState((prev) => ({
                 ...prev,
-                users: [...prev.users.filter((item) => item?._id != user?._id)],
-                curators: [...prev.curators.filter((item) => item?._id != user?._id)],
+                users: [...prev.users.filter((item) => item?.id != user?.id)],
+                curators: [...prev.curators.filter((item) => item?.id != user?.id)],
               }))
             makeToast('Succès', 'success', "L'utilisateur a été supprimé avec succès")
             await createLog({
               description: `L'utilisateur ${user?.name} a été supprimé`,
-              userId: admin?._id,
+              userId: admin?.id,
             })
             return user
           } catch (error) {
@@ -191,7 +191,7 @@ export function UserProvider({ children }) {
         setStatus: async (id) => {
           try {
             const user = await setUserStatus(id)
-            if (!user?._id) {
+            if (!user?.id) {
               return {
                 error: user?.error || user?.message,
               }
@@ -199,26 +199,26 @@ export function UserProvider({ children }) {
             if (user?.role == 'admin')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                admins: [user, ...prev.admins.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                admins: [user, ...prev.admins.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'artist')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                artists: [user, ...prev.artists.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                artists: [user, ...prev.artists.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'buyer')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                buyers: [user, ...prev.buyers.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                buyers: [user, ...prev.buyers.filter((item) => item?.id != user?.id)],
               }))
             if (user?.role == 'curator')
               setState((prev) => ({
                 ...prev,
-                users: [user, ...prev.users.filter((item) => item?._id != user?._id)],
-                curators: [user, ...prev.curators.filter((item) => item?._id != user?._id)],
+                users: [user, ...prev.users.filter((item) => item?.id != user?.id)],
+                curators: [user, ...prev.curators.filter((item) => item?.id != user?.id)],
               }))
             makeToast(
               'Succès',
@@ -227,7 +227,7 @@ export function UserProvider({ children }) {
             )
             await createLog({
               description: `L'utilisateur ${user?.name} a été ${user?.isActive ? 'activé' : 'suspendu'}`,
-              userId: admin?._id,
+              userId: admin?.id,
             })
             return user
           } catch (error) {

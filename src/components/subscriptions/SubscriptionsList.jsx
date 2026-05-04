@@ -47,7 +47,7 @@ function UserInfo({ id }) {
         const fetchUser = async () => {
             try {
                 const user = await getUserById(id);
-                if (user?._id) {
+                if (user?.id || user?._id) {
                     setState(user);
                 } else {
                     setState({ name: 'Utilisateur inconnu', email: '' });

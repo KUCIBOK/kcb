@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { utils } from '../../api/useAPI';
 import {
   Truck,
@@ -240,7 +240,7 @@ export default function LogidooDashboard() {
                       </div>
                       <p className="text-sm text-kcb-sable mt-1">{alert.message}</p>
                       <div className="flex items-center gap-4 mt-2 text-xs text-kcb-pierre">
-                        <span>{formatDate(alert.createdAt)}</span>
+                        <span>{formatDate(alert.created_at)}</span>
                         {alert.trackingId && (
                           <span className="flex items-center gap-1">
                             <Package className="w-3 h-3" /> {alert.trackingId}

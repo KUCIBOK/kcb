@@ -53,8 +53,8 @@ function UpdateArtworkModal({ artwork, closeModal }) {
       Object.keys(charge).forEach((key) => {
         formData.append(key, charge[key]);
       });
-      const updated = await updateArtwork(artwork?._id, formData);
-      if (updated?._id) {
+      const updated = await updateArtwork(artwork?.id, formData);
+      if (updated?.id) {
         toast.success('✓ Œuvre mise à jour');
         closeModal();
       } else {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { DollarSign, TrendingUp, ShoppingBag, ArrowUpRight, Filter, Loader2, RefreshCw } from "lucide-react";
 import { utils } from "../../api/useAPI";
 import { KPICard } from "../ui";
@@ -72,7 +72,7 @@ function computeKPIs(transactions) {
   const commissions = completed.reduce((sum, t) => {
     return sum + (t.commission != null ? t.commission : t.amount * 0.10);
   }, 0);
-  const countThisMonth = transactions.filter((t) => toYearMonth(t.createdAt) === thisMonth).length;
+  const countThisMonth = transactions.filter((t) => toYearMonth(t.created_at) === thisMonth).length;
   const avgValue = completed.length > 0 ? Math.round(gmv / completed.length) : 0;
 
   return { gmv, commissions, countThisMonth, avgValue };
@@ -94,7 +94,7 @@ function computeMonthlyData(transactions) {
   }
 
   transactions.forEach((t) => {
-    const key = toYearMonth(t.createdAt);
+    const key = toYearMonth(t.created_at);
     const entry = months.find((m) => m.month === key);
     if (!entry) return;
     if (t.status === "completed") {
@@ -140,14 +140,14 @@ export function RevenueTab() {
   }, [loadTransactions]);
 
   // Months available for the filter dropdown
-  const availableMonths = [...new Set(transactions.map((t) => toYearMonth(t.createdAt)))].sort().reverse();
+  const availableMonths = [...new Set(transactions.map((t) => toYearMonth(t.created_at)))].sort().reverse();
 
   // Filtered transactions (sorted newest first)
   const filtered = transactions
     .filter((t) => filterType === "all" || t.type === filterType)
     .filter((t) => filterStatus === "all" || t.status === filterStatus)
-    .filter((t) => filterMonth === "all" || toYearMonth(t.createdAt) === filterMonth)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    .filter((t) => filterMonth === "all" || toYearMonth(t.created_at) === filterMonth)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   const kpis = computeKPIs(transactions);
   const monthlyData = computeMonthlyData(transactions);
@@ -287,7 +287,7 @@ export function RevenueTab() {
                   return (
                     <tr key={t._id} className="border-b border-white/[0.06]/60 hover:bg-kcb-ardoise/30 transition">
                       <td className="px-4 py-3 text-kcb-sable whitespace-nowrap">
-                        {new Date(t.createdAt).toLocaleDateString("fr-FR", {
+                        {new Date(t.created_at).toLocaleDateString("fr-FR", {
                           day: "2-digit", month: "short", year: "numeric"
                         })}
                       </td>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { 
   CreditCard, Check, Zap, Crown, Shield, ShoppingBag, 
   Package, Clock, ArrowUp, AlertTriangle, Heart, Eye
@@ -113,8 +113,8 @@ export function CollectorAbonnement() {
   const recommendedPlan = getRecommendedUpgrade();
   const recommendedPlanData = recommendedPlan ? PLAN_LIMITS[recommendedPlan] : null;
 
-  const monthsSubscribed = subscription?.createdAt 
-    ? Math.floor((new Date() - new Date(subscription.createdAt)) / (1000 * 60 * 60 * 24 * 30))
+  const monthsSubscribed = subscription?.created_at 
+    ? Math.floor((new Date() - new Date(subscription.created_at)) / (1000 * 60 * 60 * 24 * 30))
     : 0;
   const currentSpent = monthsSubscribed * currentPlan.price;
 
@@ -334,7 +334,7 @@ export function CollectorAbonnement() {
               <div>
                 <p className="text-white">Abonnement started</p>
                 <p className="text-sm text-kcb-pierre">
-                  {new Date(subscription.createdAt).toLocaleDateString('fr-FR')}
+                  {new Date(subscription.created_at).toLocaleDateString('fr-FR')}
                 </p>
               </div>
               <span className="px-3 py-1 bg-green-700 text-white text-sm rounded-full">

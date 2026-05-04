@@ -50,7 +50,7 @@ export function PlanProvider({ children }) {
         addPlan: async (plan) => {
           try {
             const newPlan = await createPlan(plan)
-            if (newPlan?._id) {
+            if (newPlan?.id) {
               setState((prev) => ({
                 ...prev,
                 plans: [newPlan, ...prev.plans],
@@ -62,7 +62,7 @@ export function PlanProvider({ children }) {
               makeToast('Succès', 'success', 'Le plan a été ajouté avec succès')
               await createLog({
                 description: `Le plan ${plan?.name} a été ajouté`,
-                userId: user?._id,
+                userId: user?.id,
               })
               return newPlan
             }
@@ -74,23 +74,23 @@ export function PlanProvider({ children }) {
         updatePlan: async (id, payload) => {
           try {
             const plan = await updatePlan(id, payload)
-            if (plan?._id) {
+            if (plan?.id) {
               setState((prev) => ({
                 ...prev,
-                plans: prev.plans.map((p) => (p._id === id ? plan : p)),
+                plans: prev.plans.map((p) => (p.id === id ? plan : p)),
                 buyerPlans:
                   plan?.role === 'buyer'
-                    ? [plan, ...prev.buyerPlans.filter((item) => item?._id != plan?._id)]
+                    ? [plan, ...prev.buyerPlans.filter((item) => item?.id != plan?.id)]
                     : prev.buyerPlans,
                 curatorPlans:
                   plan?.role === 'curator'
-                    ? [plan, ...prev.curatorPlans.filter((item) => item?._id != plan?._id)]
+                    ? [plan, ...prev.curatorPlans.filter((item) => item?.id != plan?.id)]
                     : prev.curatorPlans,
               }))
               makeToast('Succès', 'success', 'Le plan a été mis à jour avec succès')
               await createLog({
                 description: `Le plan ${plan?.name} a été modifié`,
-                userId: user?._id,
+                userId: user?.id,
               })
               return plan
             }
@@ -102,17 +102,17 @@ export function PlanProvider({ children }) {
         deletePlan: async (id) => {
           try {
             const plan = await deletePlan(id)
-            if (plan?._id) {
+            if (plan?.id) {
               setState((prev) => ({
                 ...prev,
-                plans: prev.plans.filter((p) => p._id != id),
-                buyerPlans: prev.buyerPlans.filter((item) => item?._id != id),
-                curatorPlans: prev.curatorPlans.filter((item) => item?._id != id),
+                plans: prev.plans.filter((p) => p.id != id),
+                buyerPlans: prev.buyerPlans.filter((item) => item?.id != id),
+                curatorPlans: prev.curatorPlans.filter((item) => item?.id != id),
               }))
               makeToast('Succès', 'success', 'Le plan a été supprimé avec succès')
               await createLog({
                 description: `Le plan ${plan?.name} a été supprimé`,
-                userId: user?._id,
+                userId: user?.id,
               })
               return plan
             }

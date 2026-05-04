@@ -7,7 +7,7 @@ import RevealOnScroll from "../components/landing/RevealOnScroll";
 
 export default function ArtworkPurchaseFailed(){
     const {transactionId} = useParams()
-    const [params, setParams] = useSearchParams()
+    const [params] = useSearchParams()
     const num_transaction_from_gu = params.get("num_transaction_from_gu");
     const num_command = params.get("num_command");
     const amount = params.get("amount");
@@ -21,17 +21,22 @@ export default function ArtworkPurchaseFailed(){
     })
     useEffect(() => {
         const failArtworkPurchase = async function () {
+            if (!transactionId) {
+                setState(prev => ({...prev, loading: false}))
+                return
+            }
             const data = await failTransaction(transactionId)
             if(data?.error){
                 navigate('/explore')
                 setState(prev => ({...prev, loading : false}))
+                return
             }
-            if(data?.artwork && data?.transaction){
+            if(data?.id || data?._id){
                 setState(prev => ({
                     ...prev,
                     loading : false,
-                    artwork : data?.artwork,
-                    transaction : data?.transaction,
+                    artwork : { ...(data?.artworks || {}), _id: data.artwork_id },
+                    transaction : data,
                     error : ""
                 }))
             }
@@ -57,8 +62,7 @@ export default function ArtworkPurchaseFailed(){
                         <img src={state?.artwork?.image} alt={state?.artwork?.title} className="rounded-[4px] w-20 h-20 object-cover border border-white/[0.06]" />
                         <div>
                             <div className="font-playfair font-semibold text-white text-lg mb-1">{state?.artwork?.title}</div>
-                            <div className="text-xs text-kcb-pierre mb-1">Édition #{state?.artwork?.edition?.number}/{state?.artwork?.edition?.total}</div>
-                            <div className="font-semibold text-kcb-or text-sm">{state?.artwork?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {state?.artwork?.currency}</div>
+                            <div className="font-semibold text-kcb-or text-sm">{state?.transaction?.amount?.toLocaleString('fr-FR').replace(/\s/g, ' ')} {state?.transaction?.currency}</div>
                         </div>
                     </div>
                 ) : (

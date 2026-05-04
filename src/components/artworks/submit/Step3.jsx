@@ -38,7 +38,7 @@ export const Step3 = memo(({formState, setFormState}) => {
                     {user?.role == "curator" && (
                         <div className="grid mt-4">
                             <label htmlFor="artist" className="text-xs text-white font-semibold">Artiste</label>
-                            <select onChange={(e) => setFormState({...formState, artist : e.target.value, artistId : myArtists.find(item => item?.name == e.target.value)?._id})} name="artist" id="artist" className="rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] p-2 text-sm" required>
+                            <select onChange={(e) => setFormState({...formState, artist : e.target.value, artistId : myArtists.find(item => item?.name == e.target.value)?.id})} name="artist" id="artist" className="rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] p-2 text-sm" required>
                                 <option>Vos artistes</option>
                                 {myArtists?.length > 0 ? myArtists?.map((artist, index) => (
                                     <option key={index} value={artist?.name}> {artist?.name} </option>
