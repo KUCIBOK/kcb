@@ -10,14 +10,17 @@ export const usePayment = () => {
   const [error, setError] = useState(null)
 
   /**
-   * Initier un paiement pour un artwork
+   * Initier un paiement pour un artwork.
+   * @param {string} artworkId
+   * @param {object} options { usePopup, onPopupClose }
+   * @param {{name:string,email:string,phone?:string}|null} guest Infos invité (requis si non connecté côté backend).
    */
-  const payForArtwork = useCallback(async (artworkId, options = {}) => {
+  const payForArtwork = useCallback(async (artworkId, options = {}, guest = null) => {
     setLoading(true)
     setError(null)
 
     try {
-      const result = await paymentService.initArtworkPayment(artworkId)
+      const result = await paymentService.initArtworkPayment(artworkId, guest)
 
       if (!result.success) {
         throw new Error(result.error)

@@ -6,15 +6,16 @@ import apiService from './ApiService'
 class PaymentService {
   /**
    * Initialiser un paiement PayDunya pour un artwork.
-   * Route backend : POST /api/payments/paydunya-init { type, artwork_id }
+   * Route backend : POST /api/payments/paydunya-init { type, artwork_id, guest? }
+   * @param {string} artworkId
+   * @param {{name:string,email:string,phone?:string}|null} guest Infos invité, requis si non authentifié.
    */
-  async initArtworkPayment(artworkId) {
+  async initArtworkPayment(artworkId, guest = null) {
     try {
+      const body = { type: 'artwork', artwork_id: artworkId }
+      if (guest) body.guest = guest
       // apiService retourne { data: { payment_url, token, ref } }
-      const response = await apiService.post('/payments/paydunya-init', {
-        type: 'artwork',
-        artwork_id: artworkId,
-      })
+      const response = await apiService.post('/payments/paydunya-init', body)
       const inner = response?.data ?? response
       return {
         success: true,
