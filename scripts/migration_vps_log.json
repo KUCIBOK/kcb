@@ -1,0 +1,2671 @@
+{
+  "finishedAt": "2026-05-05T15:06:41.260Z",
+  "mode": "live",
+  "scope": "all",
+  "total": 300,
+  "summary": {
+    "migrated": 277,
+    "error": 21,
+    "updated-existing-storage": 2
+  },
+  "results": [
+    {
+      "table": "artworks",
+      "id": "6ef7a203-ea02-445d-aea1-a9d66343a7e6",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/738263536.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/738263536.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/738263536.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d22d7578-600f-41a7-b68c-39c917d452d9",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/349831649.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/349831649.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/349831649.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d9525812-5602-43ba-acd5-81a9f0a22e99",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/4179558894.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/4179558894.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/4179558894.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "eefd69ae-ae41-43a5-9d2a-622e8c6f3068",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/1484390889.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/1484390889.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/1484390889.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d815c37d-b8e0-4874-9091-2b52b1954ba2",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/9981.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/9981.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/9981.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "b6e8190f-0a66-4425-be5e-a9c8d270e11e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/9991.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/9991.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/9991.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "4e54cc0b-6737-480c-890c-cd1be9c4871a",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/9990.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/9990.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/9990.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "0592fb87-22dd-46e0-a70e-68b910f4ae74",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/9985.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/9985.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/9985.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "c1861065-f6d8-492b-9bb0-545cc0e590fd",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/23000598.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/23000598.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/23000598.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "96639609-10c1-4648-959d-b32a7c2acf35",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/23000597.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/23000597.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/23000597.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "37d9f2ce-6eaf-4c1b-81f3-d5b5379270d7",
+      "oldUrl": "https://backend.kucibok.com/uploads/2022/02/23000588.png.png",
+      "status": "migrated",
+      "target": "legacy/2022/02/23000588.png.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2022/02/23000588.png.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d4d6bcf6-892f-4dfa-9707-596cc2063cf7",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/WhatsApp-Image-2022-07-04-at-12.46.06.jpeg",
+      "status": "migrated",
+      "target": "legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.46.06.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.46.06.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "4c2aa257-ec09-46c6-b837-a99ad05abf82",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/unnamed-5.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/04/unnamed-5.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/unnamed-5.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "725997ff-7dd8-47b4-b3f1-edfc872a9d5e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/WhatsApp-Image-2022-07-04-at-12.46.05.jpeg",
+      "status": "migrated",
+      "target": "legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.46.05.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.46.05.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "4d0f48b3-5fd5-4fe8-92f8-679dcd7a34af",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/692297e0f56c24b9f22f4b6f43763491.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/04/692297e0f56c24b9f22f4b6f43763491.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/692297e0f56c24b9f22f4b6f43763491.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "44bf399b-6293-43d0-b50c-cc5f38e64bcf",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/WhatsApp-Image-2022-07-04-at-12.55.04-1.jpeg",
+      "status": "migrated",
+      "target": "legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.55.04-1.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.55.04-1.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "dc77865c-a8d6-4a7c-97af-e7d13353e27e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/WhatsApp-Image-2022-07-04-at-12.45.55-1.jpeg",
+      "status": "migrated",
+      "target": "legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.45.55-1.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/WhatsApp-Image-2022-07-04-at-12.45.55-1.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "2279d76a-931b-440a-a9ca-30b0f3baf736",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/141.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/04/141.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/141.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "e2f6173d-bd37-48fe-99ed-5b884c3f1e24",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/caf7c50a-d681-4085-bb7c-fa7be06e54c4.jpeg1761743631029.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/caf7c50a-d681-4085-bb7c-fa7be06e54c4.jpeg1761743631029.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/caf7c50a-d681-4085-bb7c-fa7be06e54c4.jpeg1761743631029.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "d98d4745-7f6a-46e8-89e0-fdc3df26e569",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/1-17.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/04/1-17.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/1-17.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "ee57c978-792e-4ec0-b3cb-d2dbc296b97e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/1-22.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/1-22.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/1-22.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "e11cd6d7-a786-489b-880a-6a20f91b5cbd",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/1-13.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/04/1-13.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/1-13.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "0fcd3bf6-197f-4eab-9ee9-e0e518da5690",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/04/1-11.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/04/1-11.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/04/1-11.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "a37add79-6d0f-4854-811c-6e3616550f53",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/06/139.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/06/139.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/06/139.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "ea457c56-8e35-48f2-a55f-625860ff29f7",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/08/1-3.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/08/1-3.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/08/1-3.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "cedeed2b-5485-48ee-b205-e41810141434",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/08/a-man-wearing-a-hazmat-suit-and-gasmask-in-desert-2.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/08/a-man-wearing-a-hazmat-suit-and-gasmask-in-desert-2.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/08/a-man-wearing-a-hazmat-suit-and-gasmask-in-desert-2.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "098b2068-d52a-4236-8a28-6e54d766f539",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/08/branching-tree-in-desert.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/08/branching-tree-in-desert.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/08/branching-tree-in-desert.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "6953acc2-5622-43ef-93cd-a3fccc510c48",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/08/1-15.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/08/1-15.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/08/1-15.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "da792d5d-20c6-4845-a2f7-fdad2b62d7a5",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/mask-tribal-afrika-vodoo-tribu-Video-game-icon-de-19.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/mask-tribal-afrika-vodoo-tribu-Video-game-icon-de-19.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/mask-tribal-afrika-vodoo-tribu-Video-game-icon-de-19.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "528e361a-b82a-4f5d-ab6c-3575beb8b849",
+      "oldUrl": "https://backend.kucibok.com/uploads/2023/08/lady-4628418_1280.jpg",
+      "status": "migrated",
+      "target": "legacy/2023/08/lady-4628418_1280.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2023/08/lady-4628418_1280.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "6948e303-8d27-4979-b443-fd81549b6a01",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/a-beautiful-full-body-woman-with-an-african-mask-5.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/a-beautiful-full-body-woman-with-an-african-mask-5.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/a-beautiful-full-body-woman-with-an-african-mask-5.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "c9511142-f21c-442c-bedb-d266dda19454",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/a-man-wearing-a-gasmask-4.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/a-man-wearing-a-gasmask-4.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/a-man-wearing-a-gasmask-4.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "781f2989-616d-446c-967e-c6e50bb5000c",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/a-man-wearing-a-gasmask-3.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/a-man-wearing-a-gasmask-3.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/a-man-wearing-a-gasmask-3.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "4a2978e8-6f6b-4e3b-83e8-2796f3ce7ef1",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/portrait-of-an-absurdly-beautiful-18.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/portrait-of-an-absurdly-beautiful-18.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/portrait-of-an-absurdly-beautiful-18.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "a938c9c8-7b9a-48a6-ae53-fdbe6a074356",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/portrait-of-an-absurdly-beautiful-2.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/portrait-of-an-absurdly-beautiful-2.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/portrait-of-an-absurdly-beautiful-2.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "aeeef314-eead-4d4a-9ded-9981051d54dd",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/a-beautiful-cyborg-made-of-african-ceremonial-mask-3.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/a-beautiful-cyborg-made-of-african-ceremonial-mask-3.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/a-beautiful-cyborg-made-of-african-ceremonial-mask-3.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "d39c179a-9895-4d8d-9141-cc2887658318",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "f6555d37-831a-41fa-94f8-fef828365600",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-2.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-2.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-2.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "963bc16b-1f4b-4766-b31c-bba345e35f00",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-1.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-1.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/An-analog-1970-photography-of-a-nomad-anf-a-camel-1.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "9fe09233-35e4-431f-b568-74f5dd71c5e0",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/photography-face-profil-portrait-of-a-beautifull-b-1.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/photography-face-profil-portrait-of-a-beautifull-b-1.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/photography-face-profil-portrait-of-a-beautifull-b-1.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "e7157f0a-20fd-4c11-af13-fcda5d2b84eb",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/Masque-Songye-Art-Africain_hqth.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/Masque-Songye-Art-Africain_hqth.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/Masque-Songye-Art-Africain_hqth.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "7a9e83bd-6d0b-408b-8116-c23e37ef4cc5",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/Masque-Baoule-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/Masque-Baoule-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/Masque-Baoule-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "edf24938-bd3e-467f-8f2f-9f7bc3082510",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/Masque-Igbo-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/Masque-Igbo-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/Masque-Igbo-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "95a08852-ebf0-44cf-9adc-173bb76a3c84",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/Masque-Lwena-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/Masque-Lwena-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/Masque-Lwena-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "424b6e80-9172-4893-9562-c4593e1420be",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/Couple-Kanyok-Art-Africain_img-2.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/Couple-Kanyok-Art-Africain_img-2.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/Couple-Kanyok-Art-Africain_img-2.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "e8ca0cc3-b9b1-457b-83ee-3cbe14326cfb",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/Statue-Ashanti-Art-Africain_img-2.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/Statue-Ashanti-Art-Africain_img-2.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/Statue-Ashanti-Art-Africain_img-2.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "7eefce27-9f53-4cae-9426-962a5a84f602",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/img_x1920_5ff09ab310bd74-04167816-82371618.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/img_x1920_5ff09ab310bd74-04167816-82371618.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/img_x1920_5ff09ab310bd74-04167816-82371618.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "c7e9f9dc-017b-4e91-ac3b-0345f4c7fab8",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/img_x500_49493_65238d7972a5a9-79622972-44229649.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/img_x500_49493_65238d7972a5a9-79622972-44229649.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/img_x500_49493_65238d7972a5a9-79622972-44229649.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "4851d4af-d9fb-43b4-a132-a7a66cff0eac",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_5720.jpeg1761823942892.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_5720.jpeg1761823942892.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_5720.jpeg1761823942892.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f59526a6-48ba-4871-9cc4-7c82c02c8822",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/img_x1920_58791_659533c5217da5-71270283-37946475.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/img_x1920_58791_659533c5217da5-71270283-37946475.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/img_x1920_58791_659533c5217da5-71270283-37946475.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "304c5a0d-c3d1-4e1e-98de-5d5f4af21c7a",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/b99af0a0830aecadb53f0c3710c6f861.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/b99af0a0830aecadb53f0c3710c6f861.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/b99af0a0830aecadb53f0c3710c6f861.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "ad1d2fea-09d5-4751-a3ad-42267cc7d2e1",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/WhatsApp-Image-2024-01-26-at-01.40.21.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/01/WhatsApp-Image-2024-01-26-at-01.40.21.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/WhatsApp-Image-2024-01-26-at-01.40.21.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "56a31609-8624-41b6-b088-f34d617b4d8b",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/WhatsApp-Image-2024-01-26-at-01.40.22.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/01/WhatsApp-Image-2024-01-26-at-01.40.22.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/WhatsApp-Image-2024-01-26-at-01.40.22.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "4f1b2ee5-5bd5-4f47-9fdc-512f1ae9d7ef",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/unnamed-1.png",
+      "status": "migrated",
+      "target": "legacy/2024/01/unnamed-1.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/unnamed-1.png"
+    },
+    {
+      "table": "artworks",
+      "id": "529f954d-f297-40a2-8a2e-968d0de63f01",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/unnamed-2.png",
+      "status": "migrated",
+      "target": "legacy/2024/01/unnamed-2.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/unnamed-2.png"
+    },
+    {
+      "table": "artworks",
+      "id": "4ba365e3-a039-4a00-a7ee-833067328f14",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/unnamed-3.png",
+      "status": "migrated",
+      "target": "legacy/2024/01/unnamed-3.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/unnamed-3.png"
+    },
+    {
+      "table": "artworks",
+      "id": "14562e50-48ae-4093-a6a1-8fc63b9e8d2c",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/unnamed-4.png",
+      "status": "migrated",
+      "target": "legacy/2024/01/unnamed-4.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/unnamed-4.png"
+    },
+    {
+      "table": "artworks",
+      "id": "4162b531-8529-4279-b7c9-8851b2adfbab",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/8cf6c76f-fd43-4fff-8ce6-3943cc3c23b4.jpeg1761743740407.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/8cf6c76f-fd43-4fff-8ce6-3943cc3c23b4.jpeg1761743740407.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/8cf6c76f-fd43-4fff-8ce6-3943cc3c23b4.jpeg1761743740407.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "8bc7c72a-e3fc-4c10-8362-11a23a6c1f29",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/traditional_african_hunter_statuette.png",
+      "status": "migrated",
+      "target": "legacy/2024/01/traditional_african_hunter_statuette.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/traditional_african_hunter_statuette.png"
+    },
+    {
+      "table": "artworks",
+      "id": "493f6def-3ba1-4eee-b440-a46819e60417",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/15ae76c7b6da4035875cd7fc77441ffb.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/01/15ae76c7b6da4035875cd7fc77441ffb.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/15ae76c7b6da4035875cd7fc77441ffb.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "7c0df8f8-0ebf-4fdc-a900-2fd961a62837",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/d.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/d.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/d.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "fa349db7-ac4a-406b-9fff-f617b8a4efb7",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/faaa.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/faaa.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/faaa.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "75e71137-b02a-4741-b399-b3b703954b73",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/DSC_0597.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/DSC_0597.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/DSC_0597.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "14d0b54e-9d24-4bdf-a005-545707c841ba",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/DSC_0609.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/DSC_0609.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/DSC_0609.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "b2126197-da18-4a82-b3b4-1459d16af0b3",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/doole-force-888.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/doole-force-888.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/doole-force-888.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "0a7f07e4-3564-4bd5-a22f-9ece53818346",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/JUROOM-HUIT-888.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/JUROOM-HUIT-888.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/JUROOM-HUIT-888.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "9f3fe116-7310-4408-9ad0-db6ad40f6a3a",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/melantan-fourmi-888.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/melantan-fourmi-888.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/melantan-fourmi-888.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "dfee58b0-208d-4cc9-8542-3e69471a0c3e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/01/IMG_20231101_195605_005.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/01/IMG_20231101_195605_005.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/01/IMG_20231101_195605_005.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "713cb34f-24cd-44f4-bc1e-d1a6056bac27",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/02/Masque-Guere-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/02/Masque-Guere-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/02/Masque-Guere-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "5708df65-a91f-4683-8964-b6dcc2da0d49",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/02/enlarge_Atilla.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/02/enlarge_Atilla.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/02/enlarge_Atilla.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "afd4f930-a354-43bb-b129-b16ab53dde15",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/02/74e0d3f716b6f09150cd71592961ac5a.jpg",
+      "status": "error",
+      "reason": "upload: The object exceeded the maximum allowed size"
+    },
+    {
+      "table": "artworks",
+      "id": "63f79de1-1e4e-4660-a78c-3628b09b1212",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/02/8d7f9efaf56cf42c6b5236795707f277.webp",
+      "status": "migrated",
+      "target": "legacy/2024/02/8d7f9efaf56cf42c6b5236795707f277.webp",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/02/8d7f9efaf56cf42c6b5236795707f277.webp"
+    },
+    {
+      "table": "artworks",
+      "id": "16f7ad57-81a8-4dda-91fa-ddac7b314532",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/02/JediKnight_In_the_center_of_the_image_stands_a_powerful_African_92153d78-d30f-4486-84d2-4b2730beee27.png",
+      "status": "migrated",
+      "target": "legacy/2024/02/JediKnight_In_the_center_of_the_image_stands_a_powerful_African_92153d78-d30f-4486-84d2-4b2730beee27.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/02/JediKnight_In_the_center_of_the_image_stands_a_powerful_African_92153d78-d30f-4486-84d2-4b2730beee27.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d3562316-1242-4a64-a992-ba85214db878",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/02/JediKnight_In_the_center_of_the_image_stands_a_powerful_African_a3ecb9d7-eb06-445f-91d4-3ee0add9bb39.png",
+      "status": "migrated",
+      "target": "legacy/2024/02/JediKnight_In_the_center_of_the_image_stands_a_powerful_African_a3ecb9d7-eb06-445f-91d4-3ee0add9bb39.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/02/JediKnight_In_the_center_of_the_image_stands_a_powerful_African_a3ecb9d7-eb06-445f-91d4-3ee0add9bb39.png"
+    },
+    {
+      "table": "artworks",
+      "id": "583780ea-5444-4727-bccc-1c766bc3e185",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/04/55b66d77dd381364b22cc85937834715.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/04/55b66d77dd381364b22cc85937834715.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/04/55b66d77dd381364b22cc85937834715.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "0247b313-6865-4f30-8068-d0afe43157a2",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/05/jfkf.avif",
+      "status": "error",
+      "reason": "upload: mime type image/avif is not supported"
+    },
+    {
+      "table": "artworks",
+      "id": "c0510dd2-6e8f-450c-bb84-7ae07a96233d",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/05/kskd.avif",
+      "status": "error",
+      "reason": "upload: mime type image/avif is not supported"
+    },
+    {
+      "table": "artworks",
+      "id": "568dce4c-c70d-4b4d-82f0-6a7fb26aac5e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/AWgXw9J50yMysFJY9tLyaHfjWnoFd0_c1BsBELtsiJM.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/06/AWgXw9J50yMysFJY9tLyaHfjWnoFd0_c1BsBELtsiJM.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/AWgXw9J50yMysFJY9tLyaHfjWnoFd0_c1BsBELtsiJM.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "a7db8500-5321-4293-8004-86e055825a68",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/b-f7IKuJuGHbZOWEj0k-1eLr_vOh0-9cCG3TVDiUfrg.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/06/b-f7IKuJuGHbZOWEj0k-1eLr_vOh0-9cCG3TVDiUfrg.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/b-f7IKuJuGHbZOWEj0k-1eLr_vOh0-9cCG3TVDiUfrg.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "66596b91-aca6-4857-913f-f26026a512f3",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/img_0400-1.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/06/img_0400-1.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/img_0400-1.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "214b9b44-0ac1-44b8-b636-df85e8db1990",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/1000897407.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/06/1000897407.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/1000897407.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "188bc144-c82c-4e06-acd4-0cfad4cf8828",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/1000901316.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/06/1000901316.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/1000901316.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "457cf39f-4d23-403a-b181-02f7b238e797",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/1000901325.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/06/1000901325.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/1000901325.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "a980285c-0003-4088-8c8a-97bb200cd475",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/1000901333-1.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/06/1000901333-1.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/1000901333-1.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "26006164-aab4-48d4-9219-032e935b8e6e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/06/1000901343.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/06/1000901343.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/06/1000901343.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "11d2ad9f-1d3b-44c2-b97e-0e3eb67f70a1",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/image-3.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/07/image-3.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/image-3.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "d515d2f7-dacd-454b-99ed-35f6ee01ac86",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0617.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0617.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0617.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "9dd68048-b248-47a9-b56d-81da62a2ae60",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0618.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0618.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0618.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "aceccf2d-c9fc-48dc-99d1-3537900681b7",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0623.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0623.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0623.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "4f59d504-3086-483b-bde2-f7b0289a9137",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0627.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0627.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0627.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "1389599b-8713-4a11-8fd8-406f348896a6",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0629.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0629.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0629.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "02ab00af-7453-4fae-93e8-4e6f20caebde",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0630.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0630.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0630.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "5479f21a-c059-4868-af05-9d26c67ca8ad",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0620-1.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0620-1.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0620-1.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "d37cca41-3ec3-49e8-bfbe-2c19406ffd7b",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0631.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0631.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0631.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "6a66491a-eb98-4aed-9a95-05889d0727e1",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0632.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0632.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0632.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "7809d711-95cc-4627-8205-6258105aea32",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0639.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0639.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0639.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "3a37dc57-61a9-408c-ab38-3fc9adff1549",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0640.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0640.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0640.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "412377f2-2be9-4691-8634-d3970646e797",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0658.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0658.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0658.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "9f22872d-0264-41cb-bf23-404ccba3f268",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0657.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0657.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0657.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "b41181a1-eac6-454b-ad41-ef7b8a3bbe05",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0691.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0691.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0691.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c8ec0f44-a917-4b3c-9755-e5b9ddb06138",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/IMG_0697-1.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/IMG_0697-1.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/IMG_0697-1.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "11bf04c6-b35b-4243-936e-99289c912fb4",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0698.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0698.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0698.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "51786ddb-9241-45f7-91f5-568096fbd2a2",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0702.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0702.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0702.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "ad4983cd-a964-4a2c-9662-66a292604254",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/07/img_0699.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/07/img_0699.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/07/img_0699.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "b96ac137-1b98-4fae-993b-cafa0c89c556",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/11/IMG_3959-scaled-1.webp",
+      "status": "migrated",
+      "target": "legacy/2024/11/IMG_3959-scaled-1.webp",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/11/IMG_3959-scaled-1.webp"
+    },
+    {
+      "table": "artworks",
+      "id": "3568ecfd-b0e5-49da-8f15-25f788cfe7af",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/11/MED_2930-1.webp",
+      "status": "migrated",
+      "target": "legacy/2024/11/MED_2930-1.webp",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/11/MED_2930-1.webp"
+    },
+    {
+      "table": "artworks",
+      "id": "b37862a2-9f2c-46db-b447-05d674c8374c",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/11/IMG_7575-scaled-1.webp",
+      "status": "migrated",
+      "target": "legacy/2024/11/IMG_7575-scaled-1.webp",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/11/IMG_7575-scaled-1.webp"
+    },
+    {
+      "table": "artworks",
+      "id": "ac5ae862-9c33-4952-90d4-c8f1e1b883fe",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/11/22fbb17f-c7c6-45bd-ad8d-00ddc4042413.webp",
+      "status": "migrated",
+      "target": "legacy/2024/11/22fbb17f-c7c6-45bd-ad8d-00ddc4042413.webp",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/11/22fbb17f-c7c6-45bd-ad8d-00ddc4042413.webp"
+    },
+    {
+      "table": "artworks",
+      "id": "e63171b3-348b-479c-8562-515599db460d",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/11/Sculpture-Yoruba-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/11/Sculpture-Yoruba-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/11/Sculpture-Yoruba-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "a4d212af-3b21-40c2-963f-e78face01ca6",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/Masque-Dogon-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/Masque-Dogon-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/Masque-Dogon-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "49d36a0e-fab8-49bf-b58c-69583e164c73",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/3352f162815aef2ed5542c04671f435c.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/3352f162815aef2ed5542c04671f435c.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/3352f162815aef2ed5542c04671f435c.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "d71bedb2-1a71-4708-9f74-c42d555b194c",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/OIP-2.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/12/OIP-2.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/OIP-2.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f8c3ddb6-d3bc-46aa-8c61-baf49f5807fe",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/art-thandiwe-muriu-15-768x1152-1.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/art-thandiwe-muriu-15-768x1152-1.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/art-thandiwe-muriu-15-768x1152-1.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "a76333f6-b065-47e7-aab4-05411aec2838",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/OIP-3.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/12/OIP-3.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/OIP-3.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "1602b436-d945-44e2-9487-08b630f54e11",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/African-Beauty-In-The-Style-Of-Henri-Matisse-71699602-1.png",
+      "status": "migrated",
+      "target": "legacy/2024/12/African-Beauty-In-The-Style-Of-Henri-Matisse-71699602-1.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/African-Beauty-In-The-Style-Of-Henri-Matisse-71699602-1.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d8b80cc3-ef1c-4e50-af97-28543b8cd6e3",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/young-parents-are-holding-a-small-child-vector.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/young-parents-are-holding-a-small-child-vector.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/young-parents-are-holding-a-small-child-vector.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "daa58434-12b2-466c-b5c2-361144c4a48b",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/pregnant-african-american-woman-profile-modern-maternity-clipart-expecting-mother-illustration-on-a-gentle-pastel-backdrop-vector.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/pregnant-african-american-woman-profile-modern-maternity-clipart-expecting-mother-illustration-on-a-gentle-pastel-backdrop-vector.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/pregnant-african-american-woman-profile-modern-maternity-clipart-expecting-mother-illustration-on-a-gentle-pastel-backdrop-vector.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "30e4b7e5-fb10-483e-a50a-cc5251a4242f",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/OIP-4.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/12/OIP-4.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/OIP-4.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "3feb9780-e1d8-4fe6-bc97-31a051133449",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/R-2.jpeg",
+      "status": "migrated",
+      "target": "legacy/2024/12/R-2.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/R-2.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "9ac537c3-405e-4a33-9c7f-119fc76bf5af",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/istockphoto-1358297376-612x612-1.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/istockphoto-1358297376-612x612-1.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/istockphoto-1358297376-612x612-1.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "82ab5c3a-a92b-4055-9f3c-a2ca01ea6b06",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/istockphoto-1266643071-612x612-1.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/istockphoto-1266643071-612x612-1.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/istockphoto-1266643071-612x612-1.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "db86a1dc-4056-4096-9c9c-1fc88e89de2e",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/12/336170387ceaf2d3e5316e6630d6fbab.jpg",
+      "status": "migrated",
+      "target": "legacy/2024/12/336170387ceaf2d3e5316e6630d6fbab.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2024/12/336170387ceaf2d3e5316e6630d6fbab.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "e198220e-fcb6-4a04-93ea-65cd899e7201",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/01/Statue-Temne-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2025/01/Statue-Temne-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/01/Statue-Temne-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "349839fc-fee0-4f85-84a1-738dab4be1e7",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_33.png1759233151506.png",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_33.png1759233151506.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_33.png1759233151506.png"
+    },
+    {
+      "table": "artworks",
+      "id": "b9d51f97-30af-4781-a9ce-990b0b120862",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/01/Peigne-Sao-Art-Africain_img.jpg",
+      "status": "migrated",
+      "target": "legacy/2025/01/Peigne-Sao-Art-Africain_img.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/01/Peigne-Sao-Art-Africain_img.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "82d627d2-2897-42a6-aa37-f95a3b80cdd8",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/01/Scarification-1024x576-1.webp",
+      "status": "migrated",
+      "target": "legacy/2025/01/Scarification-1024x576-1.webp",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/01/Scarification-1024x576-1.webp"
+    },
+    {
+      "table": "artworks",
+      "id": "30d4eede-2994-4e8c-b518-faa633a87504",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/02/On-es-ensemble-sunu-mber.jpg",
+      "status": "migrated",
+      "target": "legacy/2025/02/On-es-ensemble-sunu-mber.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/02/On-es-ensemble-sunu-mber.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "a34194ed-1afc-4a23-819e-d06bf0bda6eb",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/02/dtdt.jpg",
+      "status": "migrated",
+      "target": "legacy/2025/02/dtdt.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/02/dtdt.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "b44609ad-ee77-42b6-a1ea-f806860eb6e5",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/02/cvnngv.jpg",
+      "status": "migrated",
+      "target": "legacy/2025/02/cvnngv.jpg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/02/cvnngv.jpg"
+    },
+    {
+      "table": "artworks",
+      "id": "5b612ae5-f4db-4b3d-83f9-290cf23ccbbb",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/03/Capture-decran-2025-03-18-110751.png",
+      "status": "migrated",
+      "target": "legacy/2025/03/Capture-decran-2025-03-18-110751.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/03/Capture-decran-2025-03-18-110751.png"
+    },
+    {
+      "table": "artworks",
+      "id": "479502d4-5460-43b8-963d-4e2d9d587a46",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/03/Capture-decran-2025-03-18-110811.png",
+      "status": "migrated",
+      "target": "legacy/2025/03/Capture-decran-2025-03-18-110811.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/03/Capture-decran-2025-03-18-110811.png"
+    },
+    {
+      "table": "artworks",
+      "id": "cb0b4379-1bd7-47dc-90df-4cd6a0b51534",
+      "oldUrl": "https://backend.kucibok.com/uploads/2025/03/Capture-decran-2025-03-18-110834.png",
+      "status": "migrated",
+      "target": "legacy/2025/03/Capture-decran-2025-03-18-110834.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/03/Capture-decran-2025-03-18-110834.png"
+    },
+    {
+      "table": "artworks",
+      "id": "8cb8603d-2c6d-46d3-b1a2-f51de53c822c",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/jizrael-2.png1748865648196.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/jizrael-2.png1748865648196.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/jizrael-2.png1748865648196.png"
+    },
+    {
+      "table": "artworks",
+      "id": "8f885025-2ca9-4ae5-badd-dc0c3845b8e9",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/jizrael-6.png1748867099795.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/jizrael-6.png1748867099795.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/jizrael-6.png1748867099795.png"
+    },
+    {
+      "table": "artworks",
+      "id": "c2d2d354-9310-4051-b1e3-3d8816901a97",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Capture_dâÃ©cran_2025-05-25_182554.png1748968512960.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/6/Capture_dâÃ©cran_2025-05-25_182554.png1748968512960.png"
+    },
+    {
+      "table": "artworks",
+      "id": "b81d9b90-2147-451d-9229-034ab394335b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Picsart_25-05-07_19-56-36-645_(1).jpg1751119521269.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/6/Picsart_25-05-07_19-56-36-645_(1).jpg1751119521269.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/Picsart_25-05-07_19-56-36-645_(1).jpg1751119521269.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "42afbc0c-59cf-4f54-99dc-c188223d72ab",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Picsart_25-05-07_20-05-24-432_(1).jpg1751119534441.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/6/Picsart_25-05-07_20-05-24-432_(1).jpg1751119534441.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/Picsart_25-05-07_20-05-24-432_(1).jpg1751119534441.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "63880061-1efd-4826-94de-c60a14d38775",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Picsart_25-05-07_20-14-12-062_(1).jpg1751119546347.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/6/Picsart_25-05-07_20-14-12-062_(1).jpg1751119546347.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/Picsart_25-05-07_20-14-12-062_(1).jpg1751119546347.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f4b28fd5-c7b8-48fc-a119-af8e8ae8d146",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Picsart_25-05-07_19-46-51-281_(1).jpg1751138116499.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/6/Picsart_25-05-07_19-46-51-281_(1).jpg1751138116499.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/Picsart_25-05-07_19-46-51-281_(1).jpg1751138116499.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "aed67311-661b-48c2-868d-8506d644b641",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Capture_dâÃ©cran_2025-05-25_182929.png1748969090046.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/6/Capture_dâÃ©cran_2025-05-25_182929.png1748969090046.png"
+    },
+    {
+      "table": "artworks",
+      "id": "bca685bf-8a8d-4150-98ec-4d13ec99f4bb",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/1759351064072.jpg1760455320954.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/1759351064072.jpg1760455320954.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/1759351064072.jpg1760455320954.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "94924c98-acfc-4611-afa6-a958e0e6a2cb",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/1.png1752047932625.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/1.png1752047932625.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/1.png1752047932625.png"
+    },
+    {
+      "table": "artworks",
+      "id": "58bce769-2b98-4b34-9009-1cc208247237",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/0C59BD44-7911-4247-98CE-5B5F2D64EA73.jpeg1751592181175.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/0C59BD44-7911-4247-98CE-5B5F2D64EA73.jpeg1751592181175.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/0C59BD44-7911-4247-98CE-5B5F2D64EA73.jpeg1751592181175.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "26bb09f0-3d57-4868-b3d5-b113d01a6f0a",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/IMG_8056.jpeg1752022182218.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/IMG_8056.jpeg1752022182218.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/IMG_8056.jpeg1752022182218.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "a368e90c-63fa-42e5-926f-cfcd0648e695",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/9425B788-C9DE-4AD7-A4B6-98DA646A5426.jpeg1752061805822.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/9425B788-C9DE-4AD7-A4B6-98DA646A5426.jpeg1752061805822.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/9425B788-C9DE-4AD7-A4B6-98DA646A5426.jpeg1752061805822.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "5fe8cb4d-9b5e-432b-9a12-cab27ce043ff",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/A1CD1BCE-F2BC-4243-A749-3682C7F2D3D4.jpeg1752061812163.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/A1CD1BCE-F2BC-4243-A749-3682C7F2D3D4.jpeg1752061812163.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/A1CD1BCE-F2BC-4243-A749-3682C7F2D3D4.jpeg1752061812163.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "42f711a6-4f3b-4cbc-b00e-45dcbf74ab43",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/B9E9DDC4-7065-4BF9-8F00-54D4777EDA8B.jpeg1752061838555.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/B9E9DDC4-7065-4BF9-8F00-54D4777EDA8B.jpeg1752061838555.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/B9E9DDC4-7065-4BF9-8F00-54D4777EDA8B.jpeg1752061838555.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "9fd25ae6-638b-406e-a254-000a8ffc05ee",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/1D69C0DA-6583-45A8-BA53-20E79217B765.jpeg1752061867273.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/1D69C0DA-6583-45A8-BA53-20E79217B765.jpeg1752061867273.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/1D69C0DA-6583-45A8-BA53-20E79217B765.jpeg1752061867273.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "53e8ad89-30d9-40fb-8eaf-8ef811c8741a",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/BDBF0B6F-5131-44D7-9DB7-BA00BDCE8C24.jpeg1752061873342.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/BDBF0B6F-5131-44D7-9DB7-BA00BDCE8C24.jpeg1752061873342.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/BDBF0B6F-5131-44D7-9DB7-BA00BDCE8C24.jpeg1752061873342.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c42dfb35-0e51-403c-a92c-e07e2bd6aa12",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/ceedo.jpg1752077972967.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/ceedo.jpg1752077972967.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/ceedo.jpg1752077972967.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c8aefb04-c889-4b01-beb2-a9d4792d8244",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/ceer.jpg1752078464371.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/ceer.jpg1752078464371.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/ceer.jpg1752078464371.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "6e09ea59-4c7a-4c99-b62e-abe3a3f36d83",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/IMG_5455.jpeg1752080186427.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/IMG_5455.jpeg1752080186427.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/IMG_5455.jpeg1752080186427.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "afbbcfeb-e5d5-4a5b-9443-683c08fc0438",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/6_IMG_E8351.JPG1752080649272.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/6_IMG_E8351.JPG1752080649272.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/6_IMG_E8351.JPG1752080649272.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "bc393955-559d-4760-8ec6-6b6a7cbac953",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/10_IMG_5952.JPG1752081065861.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/10_IMG_5952.JPG1752081065861.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/10_IMG_5952.JPG1752081065861.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "bd5a3d54-c604-4953-bcc5-14d3eebf80d6",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/inbound5891912152768702220.jpg1752243606898.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/inbound5891912152768702220.jpg1752243606898.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/inbound5891912152768702220.jpg1752243606898.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "9ea42fef-4aa7-4664-a243-c2f898077f35",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/inbound6415894719154546199.jpg1752264497401.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/inbound6415894719154546199.jpg1752264497401.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/inbound6415894719154546199.jpg1752264497401.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "44cab795-6a74-4094-a5cb-93aebab1de79",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_0029.jpeg1761665153295.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_0029.jpeg1761665153295.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_0029.jpeg1761665153295.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f4a0bf46-1245-47be-b2de-a66a85445be6",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/inbound2036602302176101362.jpg1752265077335.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/inbound2036602302176101362.jpg1752265077335.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/inbound2036602302176101362.jpg1752265077335.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "6bc787c3-d39d-4653-a9d1-9bf0b0901bf6",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/inbound1511631564657603920.jpg1752265577402.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/inbound1511631564657603920.jpg1752265577402.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/inbound1511631564657603920.jpg1752265577402.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "32173e2d-af58-468c-bf77-8172a265acd8",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/ACC92604-2227-4D67-B2AC-E2A6F654E3D5.jpeg1752469995904.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/ACC92604-2227-4D67-B2AC-E2A6F654E3D5.jpeg1752469995904.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/ACC92604-2227-4D67-B2AC-E2A6F654E3D5.jpeg1752469995904.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "082c263e-a7d7-48c0-80f2-0ed7e9c0ca10",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Citadelle_du_Passage142_x_92_cm_Ã_la_frontiÃ¨re_du_jour_et_de_la_nuit,_une_ville_se_dresse._Elle__(2).jpg1753718390485.jpeg",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Citadelle_du_Passage142_x_92_cm_Ã_la_frontiÃ¨re_du_jour_et_de_la_nuit,_une_ville_se_dresse._Elle__(2).jpg1753718390485.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f5568e92-1bfa-4125-8fb7-e09f8f340991",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Design_sans_titre_(2).png1753719024073.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/Design_sans_titre_(2).png1753719024073.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/Design_sans_titre_(2).png1753719024073.png"
+    },
+    {
+      "table": "artworks",
+      "id": "810149f4-d433-4d55-8255-50284f98eac5",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Design_sans_titre_(4).png1753719517168.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/Design_sans_titre_(4).png1753719517168.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/Design_sans_titre_(4).png1753719517168.png"
+    },
+    {
+      "table": "artworks",
+      "id": "581d5ca2-6109-41a4-8292-2f49348282a1",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Design_sans_titre_(8).png1753721412050.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/Design_sans_titre_(8).png1753721412050.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/Design_sans_titre_(8).png1753721412050.png"
+    },
+    {
+      "table": "artworks",
+      "id": "5f86673b-4aa8-4413-aa48-be8fe055aca6",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Design_sans_titre_(10).png1753721870758.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/Design_sans_titre_(10).png1753721870758.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/Design_sans_titre_(10).png1753721870758.png"
+    },
+    {
+      "table": "artworks",
+      "id": "4b0241ba-56c2-46e5-9543-61dff116f537",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Design_sans_titre_(11).png1753722406714.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/Design_sans_titre_(11).png1753722406714.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/Design_sans_titre_(11).png1753722406714.png"
+    },
+    {
+      "table": "artworks",
+      "id": "c5838fd9-0842-41ea-b741-caf2edf5f974",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/FLUX_RT_MOUVEMENT_90_x_75_cm.jpg1753902784239.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/FLUX_RT_MOUVEMENT_90_x_75_cm.jpg1753902784239.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/FLUX_RT_MOUVEMENT_90_x_75_cm.jpg1753902784239.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "82a47484-f579-417d-968a-46e3514d18e8",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/LumiÃ¨re_dâÃbÃ¨ne110_x_85_cm_Au_centre_de_cette_Åuvre,_une_femme_majestueuse_se_tient_debout,_sa_p.jpg1753902790728.jpeg",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/LumiÃ¨re_dâÃbÃ¨ne110_x_85_cm_Au_centre_de_cette_Åuvre,_une_femme_majestueuse_se_tient_debout,_sa_p.jpg1753902790728.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "2f8f5465-4dd6-42e7-9bb9-5304214fe67e",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Le_Stigmate_Silencieux_93_x_60_cm_Le_tableau_met_en_scÃ¨ne_une_jeune__fille__au_gros_ventre_rond,.jpg1753902815494.jpeg",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Le_Stigmate_Silencieux_93_x_60_cm_Le_tableau_met_en_scÃ¨ne_une_jeune__fille__au_gros_ventre_rond,.jpg1753902815494.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "8569507a-c7ce-4864-bed0-cb882af5c3d6",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Le_sexisme_135_x_90_cm_Cette_Åuvre_peut_Ãªtre_dÃ©crite_comme_une_reprÃ©sentation_visuelle_du_sexism.jpg1753902818703.jpeg",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Le_sexisme_135_x_90_cm_Cette_Åuvre_peut_Ãªtre_dÃ©crite_comme_une_reprÃ©sentation_visuelle_du_sexism.jpg1753902818703.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f579c0a5-3a13-471a-a882-49ed4c9f5172",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Lâhomme_aux_lunettes_95_x_80_cm_Cette_Åuvre_est_une_reprÃ©sentation_intense_dâun_vieil_homme_port.jpg1753902823134.jpeg",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Lâhomme_aux_lunettes_95_x_80_cm_Cette_Åuvre_est_une_reprÃ©sentation_intense_dâun_vieil_homme_port.jpg1753902823134.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "900ed514-f458-439f-88b6-4c2089b3d6f5",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_2322.jpeg1761665803716.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_2322.jpeg1761665803716.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_2322.jpeg1761665803716.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "d5062cdc-3c56-4e6d-9785-c155aefc9f0d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/LE_VIEIL_HOMME__Le_tableau_reprÃ©sente_un_vieil_homme_dans__une_piÃ¨ce_sombre_aux_couleurs_ocres,_.jpg1753902829950.jpeg",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/LE_VIEIL_HOMME__Le_tableau_reprÃ©sente_un_vieil_homme_dans__une_piÃ¨ce_sombre_aux_couleurs_ocres,_.jpg1753902829950.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "7038a252-a72f-4389-a4f1-769acacf0949",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/IMG_0198.jpg1754110612953.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/IMG_0198.jpg1754110612953.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/IMG_0198.jpg1754110612953.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c9fd3ddb-797d-4efa-aeec-8671590808dd",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/daammmmmmmmmnnnnnnnnnnnnnn.png1754155256365.png",
+      "status": "migrated",
+      "target": "legacy/2025/8/daammmmmmmmmnnnnnnnnnnnnnn.png1754155256365.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/daammmmmmmmmnnnnnnnnnnnnnn.png1754155256365.png"
+    },
+    {
+      "table": "artworks",
+      "id": "47361924-7319-444f-b731-f388a07f93ee",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/IMG_0202.jpg1754618448382.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/IMG_0202.jpg1754618448382.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/IMG_0202.jpg1754618448382.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "9f347e80-cce8-49b3-8a7c-3230cbbe5849",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/Kalissa__vente_au_bord_de_la_route_2023.jpg1755951971045.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/Kalissa__vente_au_bord_de_la_route_2023.jpg1755951971045.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/Kalissa__vente_au_bord_de_la_route_2023.jpg1755951971045.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "d28671fa-eaa6-4b7c-a4ba-227820f327c2",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/9.jpg1756208408834.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/9.jpg1756208408834.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/9.jpg1756208408834.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "303a825f-f0b2-49f2-bf14-cffd40957c27",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/IMG_3340.jpeg1754779299157.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/IMG_3340.jpeg1754779299157.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/IMG_3340.jpeg1754779299157.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "cfead97d-6201-4fae-9a41-48095127ff7d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/7.jpg1756211172587.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/7.jpg1756211172587.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/7.jpg1756211172587.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "23b9b22e-f6df-4c19-b963-2b203fa01373",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_2_.png1759147446108.png",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_2_.png1759147446108.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_2_.png1759147446108.png"
+    },
+    {
+      "table": "artworks",
+      "id": "8483cd1c-cbd6-4529-9b2d-d3e16aa9eb31",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_18.png1759085846457.png",
+      "status": "error",
+      "reason": "upload: The object exceeded the maximum allowed size"
+    },
+    {
+      "table": "artworks",
+      "id": "e121afab-1338-4085-94fb-1050e27dfc2d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMG_2213.jpeg1757705932661.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMG_2213.jpeg1757705932661.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMG_2213.jpeg1757705932661.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "b20973fb-046d-4c82-bb98-68cc29cff120",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMG_2214.jpeg1757707120276.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMG_2214.jpeg1757707120276.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMG_2214.jpeg1757707120276.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "3be66725-36cf-4ac3-9723-4a8b5079d13d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMG_2212.jpeg1757707384907.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMG_2212.jpeg1757707384907.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMG_2212.jpeg1757707384907.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "7e0f5560-1b9c-4a0c-8e1c-6423088d447d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMG_2208.jpeg1757707859705.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMG_2208.jpeg1757707859705.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMG_2208.jpeg1757707859705.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "ab7e5543-4499-4da2-abfd-7f3717deb592",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_13__(1).jpg1758208933162.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_13__(1).jpg1758208933162.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_13__(1).jpg1758208933162.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "a39581f4-6c93-47f2-bef7-2c3dedc55631",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_12.jpg1758208940052.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_12.jpg1758208940052.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_12.jpg1758208940052.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "80df2118-368a-4c93-bc89-80552e22e5d4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_10_(1).jpg1758208949661.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_10_(1).jpg1758208949661.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_10_(1).jpg1758208949661.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "61a8f8f0-ef7c-45d8-a0dc-7c39953cf15a",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_8_(2).jpg1758208964571.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_8_(2).jpg1758208964571.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_8_(2).jpg1758208964571.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c3947437-5a35-4a9d-bed2-8e42f4ecdf9b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_4.jpg1758208996877.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_4.jpg1758208996877.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_4.jpg1758208996877.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "02ace930-6110-4678-8771-651f8740072d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_3.jpg1758209005294.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_3.jpg1758209005294.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_3.jpg1758209005294.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "97261800-dd6c-40d3-a804-8301bfa3c9c9",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_14_(1).jpg1758209655044.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_14_(1).jpg1758209655044.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_14_(1).jpg1758209655044.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "e090dd72-d5ae-44e4-8980-5ede276fc096",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_13__(1).jpg1758209663044.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_13__(1).jpg1758209663044.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_13__(1).jpg1758209663044.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "0ee96bea-3045-4bb1-96b4-5430b1d09933",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_11_(1).jpg1758209675035.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_11_(1).jpg1758209675035.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_11_(1).jpg1758209675035.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "759dc0e3-1eed-4a4a-bf6c-0fb808e8d983",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_8_(2).jpg1758209692444.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_8_(2).jpg1758209692444.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_8_(2).jpg1758209692444.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "88fa2840-85b6-4a47-8f0d-8e4256bf52fd",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_6.jpg1758209715955.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_6.jpg1758209715955.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_6.jpg1758209715955.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "13711521-7d3f-4c22-9579-4e629c75d179",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_3.jpg1758209734314.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_3.jpg1758209734314.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_3.jpg1758209734314.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "1d1f97b6-23c3-4153-89d5-c1da5c938e89",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAGE_2.jpg1758209744038.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAGE_2.jpg1758209744038.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAGE_2.jpg1758209744038.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "3905597a-eb22-4d4f-ac71-89ff21472f94",
+      "oldUrl": "https://backend.kucibok.com/uploads/2024/09/4yma_Very_beautiful_archemic_symbol_of_half_sun_and_half_moon__1ec447c1-0ae6-48e5-8c9d-b3315d1d514e.png",
+      "status": "error",
+      "reason": "upload: The object exceeded the maximum allowed size"
+    },
+    {
+      "table": "artworks",
+      "id": "64d71141-a8a8-4ef8-a8f0-146ef5eb2d77",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_2321.jpeg1761691883057.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_2321.jpeg1761691883057.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_2321.jpeg1761691883057.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "809758bd-5317-44b7-bb34-383df584f9b4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/FB_IMG_1742856721671.jpg1758473283213.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/FB_IMG_1742856721671.jpg1758473283213.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/FB_IMG_1742856721671.jpg1758473283213.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "4f990470-84b4-4196-ae5a-bebcdcd580f5",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/FB_IMG_1751805731487.jpg1758474466105.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/9/FB_IMG_1751805731487.jpg1758474466105.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/FB_IMG_1751805731487.jpg1758474466105.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "60b887bf-4a28-4481-8e61-5e1073bd8cac",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMAG32.png1759152687946.png",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMAG32.png1759152687946.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMAG32.png1759152687946.png"
+    },
+    {
+      "table": "artworks",
+      "id": "5e05ef28-9964-4b6f-bb23-dd5b571e8d0c",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/1e8dc34d-20b7-4368-879c-c44a8a7e1c3b.jpeg1761743461264.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/1e8dc34d-20b7-4368-879c-c44a8a7e1c3b.jpeg1761743461264.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/1e8dc34d-20b7-4368-879c-c44a8a7e1c3b.jpeg1761743461264.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "b5b572b7-a0dd-4069-8206-688428f20ded",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/da11b230-baf8-4ca5-b348-673abb69a78a.jpeg1761744375360.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/da11b230-baf8-4ca5-b348-673abb69a78a.jpeg1761744375360.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/da11b230-baf8-4ca5-b348-673abb69a78a.jpeg1761744375360.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "751146f5-8ad7-4002-90a8-f84ea511fe15",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_4995.jpeg1761744489014.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_4995.jpeg1761744489014.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_4995.jpeg1761744489014.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c070f6c4-2fd7-445a-969f-22e21a501249",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_4996.jpeg1761744817527.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_4996.jpeg1761744817527.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_4996.jpeg1761744817527.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "a4249815-7412-421f-afe5-5dc2af4f1dad",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_6070.jpeg1761745294341.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_6070.jpeg1761745294341.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_6070.jpeg1761745294341.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "fa9fd016-718b-4e7e-a595-9e5da973a52b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_5731.jpeg1761747230347.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_5731.jpeg1761747230347.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_5731.jpeg1761747230347.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "afc4eb9d-1d96-45eb-b375-3631de7aef4b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/510b0ed9-0dd0-4c8c-8da5-76bac01fb460.jpeg1761823085792.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/510b0ed9-0dd0-4c8c-8da5-76bac01fb460.jpeg1761823085792.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/510b0ed9-0dd0-4c8c-8da5-76bac01fb460.jpeg1761823085792.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "e5e34b38-3d75-4f7e-a7bc-789943ba5fc7",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_6066.jpeg1761823465114.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_6066.jpeg1761823465114.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_6066.jpeg1761823465114.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "fa50331b-bc39-431a-b891-35ec7d17b8e0",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_5729.jpeg1761823588381.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_5729.jpeg1761823588381.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_5729.jpeg1761823588381.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "22f843c6-1a9a-40f6-8eaf-629acc8d5f1f",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_6069.jpeg1761823193524.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_6069.jpeg1761823193524.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_6069.jpeg1761823193524.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "317c8546-c40b-4568-9e90-f685a42c6ab5",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/11/b4547f66-c197-480e-9ed0-e8d4f6387f03-1_all_10250.jpg1763733422338.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/11/b4547f66-c197-480e-9ed0-e8d4f6387f03-1_all_10250.jpg1763733422338.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/11/b4547f66-c197-480e-9ed0-e8d4f6387f03-1_all_10250.jpg1763733422338.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "820cea48-b948-43d6-92f3-c444c0828816",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/64ABCC45-F130-4DE4-8686-6FF5DC6E46E1_L0_001-22_05_2025_17_01_51.jpg1752724550608.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/64ABCC45-F130-4DE4-8686-6FF5DC6E46E1_L0_001-22_05_2025_17_01_51.jpg1752724550608.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/64ABCC45-F130-4DE4-8686-6FF5DC6E46E1_L0_001-22_05_2025_17_01_51.jpg1752724550608.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "7ed42f0a-1b06-4216-90ac-2b860b149cc8",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Capture_dâÃ©cran_2025-06-02_153540.png1752724547898.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Capture_dâÃ©cran_2025-06-02_153540.png1752724547898.png"
+    },
+    {
+      "table": "artworks",
+      "id": "dfc5a35d-c769-4f30-a974-578996d82950",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/B5702BC1-4983-46BE-9412-D9DFEBAB61F6_L0_001-21_05_2025_16_18_03.jpg1752724549605.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/B5702BC1-4983-46BE-9412-D9DFEBAB61F6_L0_001-21_05_2025_16_18_03.jpg1752724549605.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/B5702BC1-4983-46BE-9412-D9DFEBAB61F6_L0_001-21_05_2025_16_18_03.jpg1752724549605.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "114846c7-5657-47ca-bcc8-40d8553382b4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/12/1000106254.png1766052142342.png",
+      "status": "migrated",
+      "target": "legacy/2025/12/1000106254.png1766052142342.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/12/1000106254.png1766052142342.png"
+    },
+    {
+      "table": "artworks",
+      "id": "1a70186c-55b9-46ce-9801-e1c3751df036",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/F2E58183-589D-4DDE-900A-E31E80F527CC_L0_001-22_05_2025_17_01_56.jpg1752724550818.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/F2E58183-589D-4DDE-900A-E31E80F527CC_L0_001-22_05_2025_17_01_56.jpg1752724550818.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/F2E58183-589D-4DDE-900A-E31E80F527CC_L0_001-22_05_2025_17_01_56.jpg1752724550818.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c144008f-e2e1-4542-bac2-014cecf41f15",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Capture_dâÃ©cran_2025-06-02_153524.png1752724551572.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Capture_dâÃ©cran_2025-06-02_153524.png1752724551572.png"
+    },
+    {
+      "table": "artworks",
+      "id": "1d4c34ab-281b-4909-8e16-27287cf51a28",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/22EF5343-F527-4907-A668-DD33EB001828_L0_001-22_05_2025_17_09_24.jpg1752724551766.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/22EF5343-F527-4907-A668-DD33EB001828_L0_001-22_05_2025_17_09_24.jpg1752724551766.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/22EF5343-F527-4907-A668-DD33EB001828_L0_001-22_05_2025_17_09_24.jpg1752724551766.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "bbd2dd7b-34cf-4093-be0b-b944450abad9",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/FB54483E-19D2-4BC1-B2C4-0C644863BC42_L0_001-22_05_2025_17_19_26.jpg1752724552216.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/FB54483E-19D2-4BC1-B2C4-0C644863BC42_L0_001-22_05_2025_17_19_26.jpg1752724552216.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/FB54483E-19D2-4BC1-B2C4-0C644863BC42_L0_001-22_05_2025_17_19_26.jpg1752724552216.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "2cf978d9-9944-4ec5-9583-df9165efacf0",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/DE21CABD-016F-40CF-AA25-4671969709FB_L0_001-22_05_2025_17_40_26.jpg1752724552471.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/DE21CABD-016F-40CF-AA25-4671969709FB_L0_001-22_05_2025_17_40_26.jpg1752724552471.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/DE21CABD-016F-40CF-AA25-4671969709FB_L0_001-22_05_2025_17_40_26.jpg1752724552471.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "07eaf9f8-92c1-427b-9c53-b8771904e498",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/78274B12-188F-4B09-9FA3-C29DC0A39CE7_L0_001-22_05_2025_17_40_45.jpg1752724554304.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/78274B12-188F-4B09-9FA3-C29DC0A39CE7_L0_001-22_05_2025_17_40_45.jpg1752724554304.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/78274B12-188F-4B09-9FA3-C29DC0A39CE7_L0_001-22_05_2025_17_40_45.jpg1752724554304.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "907d84fd-e3c8-411f-b243-5892ab158385",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/F449A2D0-36B5-4F17-BC7D-DD1ECE989E4A_L0_001-22_05_2025_18_02_26.jpg1752724554808.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/F449A2D0-36B5-4F17-BC7D-DD1ECE989E4A_L0_001-22_05_2025_18_02_26.jpg1752724554808.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/F449A2D0-36B5-4F17-BC7D-DD1ECE989E4A_L0_001-22_05_2025_18_02_26.jpg1752724554808.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "52bd3658-e9a6-4b25-8e00-258ef7585d32",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/8A79454E-2E96-45B9-85ED-32DA60F36DF7_L0_001-22_05_2025_18_03_54.jpg1752724555124.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/8A79454E-2E96-45B9-85ED-32DA60F36DF7_L0_001-22_05_2025_18_03_54.jpg1752724555124.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/8A79454E-2E96-45B9-85ED-32DA60F36DF7_L0_001-22_05_2025_18_03_54.jpg1752724555124.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "370b49ca-674f-42b5-85a9-0a801db8c6a4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/JB.png1752724555691.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/JB.png1752724555691.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/JB.png1752724555691.png"
+    },
+    {
+      "table": "artworks",
+      "id": "0df666d9-e6b2-4037-a501-e622eec218e3",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/554.png1752724557897.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/554.png1752724557897.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/554.png1752724557897.png"
+    },
+    {
+      "table": "artworks",
+      "id": "1c43f7c6-f85f-43ca-9082-61e140a7449b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/22.png1752724559551.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/22.png1752724559551.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/22.png1752724559551.png"
+    },
+    {
+      "table": "artworks",
+      "id": "e7f9fe0b-914a-4610-9f3e-77d0e13d112c",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/2F.png1752724561508.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/2F.png1752724561508.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/2F.png1752724561508.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d49a61ca-3a77-4d1d-8866-33f3cb3726fe",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/6E.png1752724562092.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/6E.png1752724562092.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/6E.png1752724562092.png"
+    },
+    {
+      "table": "artworks",
+      "id": "3fcd2151-35b3-42a7-a043-a0271edf9ee1",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/6R.png1752724563468.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/6R.png1752724563468.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/6R.png1752724563468.png"
+    },
+    {
+      "table": "artworks",
+      "id": "62754326-deab-46b6-8a45-f03daf0fa3ff",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/6T.png1752724564474.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/6T.png1752724564474.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/6T.png1752724564474.png"
+    },
+    {
+      "table": "artworks",
+      "id": "4ce4c1c2-9d02-40de-b87b-3705dcfdd8d0",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/H5.png1752724565381.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/H5.png1752724565381.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/H5.png1752724565381.png"
+    },
+    {
+      "table": "artworks",
+      "id": "af335500-1011-43fe-bd39-3015e2ac68d2",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/4G.png1752724566425.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/4G.png1752724566425.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/4G.png1752724566425.png"
+    },
+    {
+      "table": "artworks",
+      "id": "99558f6c-3d1c-417f-abfa-e1c80e0809b6",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/5D.png1752724567029.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/5D.png1752724567029.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/5D.png1752724567029.png"
+    },
+    {
+      "table": "artworks",
+      "id": "6cf28448-99f4-4063-8928-b7cec97c0d98",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/DG.png1752724568524.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/DG.png1752724568524.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/DG.png1752724568524.png"
+    },
+    {
+      "table": "artworks",
+      "id": "3a50f392-0a64-413f-a02a-878b93f0ac06",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/5F.png1752724569461.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/5F.png1752724569461.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/5F.png1752724569461.png"
+    },
+    {
+      "table": "artworks",
+      "id": "a431179f-61f7-46c5-b577-81cebccda9ed",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/36AA6558-36EC-4B4A-AA49-D513F0FD1CBD_L0_001-21_05_2025_16_09_24.jpg1752724708385.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/36AA6558-36EC-4B4A-AA49-D513F0FD1CBD_L0_001-21_05_2025_16_09_24.jpg1752724708385.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/36AA6558-36EC-4B4A-AA49-D513F0FD1CBD_L0_001-21_05_2025_16_09_24.jpg1752724708385.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "9f005da6-abd8-491f-83a3-b0516e91c3aa",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/diamon-1.png1748898604231.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/diamon-1.png1748898604231.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/diamon-1.png1748898604231.png"
+    },
+    {
+      "table": "artworks",
+      "id": "048ba555-4e95-41d7-97d6-3a4d4882e9ae",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-3.png1748898886889.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-3.png1748898886889.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-3.png1748898886889.png"
+    },
+    {
+      "table": "artworks",
+      "id": "fb7024f6-c53e-44a5-b517-d76ed7aed158",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-4.png1748899166190.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-4.png1748899166190.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-4.png1748899166190.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d212dae0-684d-41fb-bed4-a78ea6ae0a8a",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-6.png1748907922170.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-6.png1748907922170.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-6.png1748907922170.png"
+    },
+    {
+      "table": "artworks",
+      "id": "90d97764-471c-47c7-ae97-fd2996d7cb7e",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-9.png1748908308688.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-9.png1748908308688.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-9.png1748908308688.png"
+    },
+    {
+      "table": "artworks",
+      "id": "4849cc72-6191-42f5-bd83-04e70a074a45",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-10.png1748908443108.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-10.png1748908443108.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-10.png1748908443108.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d429c464-4e92-4825-a03e-b04c89bf64a7",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-11.png1748908546269.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-11.png1748908546269.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-11.png1748908546269.png"
+    },
+    {
+      "table": "artworks",
+      "id": "6f1de934-f0e0-47b5-91ab-44bdefaee116",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-12.png1748908624754.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-12.png1748908624754.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-12.png1748908624754.png"
+    },
+    {
+      "table": "artworks",
+      "id": "82106b71-b97c-42c0-ad99-99a6b3c81bd5",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-13.png1748908724413.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-13.png1748908724413.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-13.png1748908724413.png"
+    },
+    {
+      "table": "artworks",
+      "id": "e4d64dd0-4393-406e-a3d2-4bb6cf9b6c1d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-14.png1748908800318.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-14.png1748908800318.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-14.png1748908800318.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d974d43b-db72-450f-9ba1-78b893eb6e43",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-15.png1748908888907.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-15.png1748908888907.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-15.png1748908888907.png"
+    },
+    {
+      "table": "artworks",
+      "id": "f7c357aa-3acc-49fe-9179-dc36946efb2b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-17.png1748909093484.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-17.png1748909093484.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-17.png1748909093484.png"
+    },
+    {
+      "table": "artworks",
+      "id": "89806856-d797-42e5-9e37-e5b5f195e4b3",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-18.png1748909170177.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-18.png1748909170177.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-18.png1748909170177.png"
+    },
+    {
+      "table": "artworks",
+      "id": "7ed46cbf-2771-47e5-921f-b3bdfe9e6f82",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-19.png1748909283508.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-19.png1748909283508.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-19.png1748909283508.png"
+    },
+    {
+      "table": "artworks",
+      "id": "a5379381-34bd-4bc9-a39b-cd4d167a09ee",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-20.png1748909371428.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-20.png1748909371428.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-20.png1748909371428.png"
+    },
+    {
+      "table": "artworks",
+      "id": "55e371d3-0424-47c1-abfb-6b1bb86407d4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-21.png1748909444095.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-21.png1748909444095.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-21.png1748909444095.png"
+    },
+    {
+      "table": "artworks",
+      "id": "61cc121e-66fa-4018-9cba-7624b6098284",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-22.png1748909561427.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-22.png1748909561427.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-22.png1748909561427.png"
+    },
+    {
+      "table": "artworks",
+      "id": "3efce91b-4b93-48b7-9568-d6d5d299f26e",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-23.png1748909642935.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-23.png1748909642935.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-23.png1748909642935.png"
+    },
+    {
+      "table": "artworks",
+      "id": "d17bf443-e93b-472c-a977-71eb4d2815cf",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-27.png1748910081186.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-27.png1748910081186.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-27.png1748910081186.png"
+    },
+    {
+      "table": "artworks",
+      "id": "b541600a-4302-4721-86d0-32e995c18778",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-28.png1748910149493.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-28.png1748910149493.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-28.png1748910149493.png"
+    },
+    {
+      "table": "artworks",
+      "id": "156d9bca-0e04-4dc7-af23-6c7ceab5fc9a",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-29.png1748910593283.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-29.png1748910593283.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-29.png1748910593283.png"
+    },
+    {
+      "table": "artworks",
+      "id": "af95884a-99a6-40ff-89b0-2d8fe148b4cc",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-30.png1748910746344.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-30.png1748910746344.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-30.png1748910746344.png"
+    },
+    {
+      "table": "artworks",
+      "id": "4a1ef74a-c189-4b02-a217-427f06a7314f",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-33.png1748911099069.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-33.png1748911099069.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-33.png1748911099069.png"
+    },
+    {
+      "table": "artworks",
+      "id": "7eb2bd51-28ef-452b-9c11-55a715e29955",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-34.png1748911275492.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-34.png1748911275492.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-34.png1748911275492.png"
+    },
+    {
+      "table": "artworks",
+      "id": "c34e82db-6932-4552-95bf-38ebfdb9dd63",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-35.png1748913574450.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-35.png1748913574450.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-35.png1748913574450.png"
+    },
+    {
+      "table": "artworks",
+      "id": "c21a45ae-d3f6-48c8-96de-499e245deaf8",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-37.png1748913756408.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-37.png1748913756408.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-37.png1748913756408.png"
+    },
+    {
+      "table": "artworks",
+      "id": "435acec1-3487-4353-9acb-a732c3c13279",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/dioman-39.png1748913988407.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/dioman-39.png1748913988407.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/dioman-39.png1748913988407.png"
+    },
+    {
+      "table": "artworks",
+      "id": "c48c4689-8eec-486d-b70a-80ac61f6e3df",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Capture_dâÃ©cran_2025-05-25_182657.png1748968484948.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/6/Capture_dâÃ©cran_2025-05-25_182657.png1748968484948.png"
+    },
+    {
+      "table": "artworks",
+      "id": "56f2cdd4-caa9-4fe9-a3d7-d6b0f1ce1b6c",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Photoroom_20250502_232320.JPEG1751199854129.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/6/Photoroom_20250502_232320.JPEG1751199854129.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/Photoroom_20250502_232320.JPEG1751199854129.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "6ac56227-a456-407d-9d01-4b17c443d334",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Photoroom_20250502_232058.JPEG1751199855241.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/6/Photoroom_20250502_232058.JPEG1751199855241.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/6/Photoroom_20250502_232058.JPEG1751199855241.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "38a9daaf-0208-40fc-9c59-38e327f1d740",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/224330.jpg1756460502268.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/224330.jpg1756460502268.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/224330.jpg1756460502268.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "b7943fa1-d2d3-4dda-a073-f7c4208cf293",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/Capture_dâÃ©cran_2025-05-25_182812.png1748968801123.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/6/Capture_dâÃ©cran_2025-05-25_182812.png1748968801123.png"
+    },
+    {
+      "table": "artworks",
+      "id": "b5a5f245-9ac3-477b-b9e7-0e0b2806c209",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/12/IMG_5945.jpeg1764942220816.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/12/IMG_5945.jpeg1764942220816.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/12/IMG_5945.jpeg1764942220816.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "4049b201-b6cd-4a46-959e-c86b9e38a7f4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/5.png1752048230722.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/5.png1752048230722.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/5.png1752048230722.png"
+    },
+    {
+      "table": "artworks",
+      "id": "da13737e-d54f-4c3a-aa24-8f10b05bc85f",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/02a8c000-2825-11f0-8038-a71ca3a20440.jpeg1752053299838.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/02a8c000-2825-11f0-8038-a71ca3a20440.jpeg1752053299838.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/02a8c000-2825-11f0-8038-a71ca3a20440.jpeg1752053299838.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "5d09b4f7-088a-47ba-bf51-c7d1c6da3736",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/9/IMG_9530.png1756891307330.png",
+      "status": "migrated",
+      "target": "legacy/2025/9/IMG_9530.png1756891307330.png",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/9/IMG_9530.png1756891307330.png"
+    },
+    {
+      "table": "artworks",
+      "id": "dc143f4b-788f-4c79-afc5-f934f2bc14a1",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/WhatsApp_Image_2025-09-02_at_12.27.14_(3).jpeg1761840724094.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/WhatsApp_Image_2025-09-02_at_12.27.14_(3).jpeg1761840724094.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/WhatsApp_Image_2025-09-02_at_12.27.14_(3).jpeg1761840724094.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c5c119a6-e239-4074-9944-85f3dd340879",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/IMG_5146.JPG1761841076771.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/10/IMG_5146.JPG1761841076771.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/10/IMG_5146.JPG1761841076771.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f63dea3f-871b-47a7-a250-1391ddd4744f",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/10/8687C8AE-DF5C-4989-A2A0-FDB308DEB0B9_1_201_a.heic1761841511318.undefined",
+      "status": "error",
+      "reason": "upload: mime type application/octet-stream is not supported"
+    },
+    {
+      "table": "artworks",
+      "id": "e7870e9f-5fe8-4d55-b7c5-78f77dcccc5b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/224353.jpg1756461027705.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/224353.jpg1756461027705.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/224353.jpg1756461027705.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "4072e3f5-e9c2-4aa3-8784-921e78213e34",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/224355.jpg1756461443236.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/224355.jpg1756461443236.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/224355.jpg1756461443236.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "f5c0c1b5-ccab-465e-833b-7f169b6b4e0c",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/IMG-20250527-WA0053.jpg1751845047426.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/IMG-20250527-WA0053.jpg1751845047426.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/7/IMG-20250527-WA0053.jpg1751845047426.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "fab595e6-5718-4539-b0b3-4b65109c9b1d",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/12/IMG_6953.jpeg1764942912483.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/12/IMG_6953.jpeg1764942912483.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/12/IMG_6953.jpeg1764942912483.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "c2053327-911a-48f1-848b-667bb65cc8d4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/12/92f9291e-de2a-476f-8c19-c0f39030ac55.jpeg1764943349287.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/12/92f9291e-de2a-476f-8c19-c0f39030ac55.jpeg1764943349287.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/12/92f9291e-de2a-476f-8c19-c0f39030ac55.jpeg1764943349287.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "6199d8b9-e4db-4b0c-b6c7-2a68389c98d2",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/IMG_6586.jpeg1755880347010.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/8/IMG_6586.jpeg1755880347010.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/8/IMG_6586.jpeg1755880347010.jpeg"
+    },
+    {
+      "table": "artworks",
+      "id": "a7dd2dcf-56da-4e34-8f88-98c5c17ab438",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/11/IMG_9321.jpeg1763827033262.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/11/IMG_9321.jpeg1763827033262.jpeg",
+      "bucket": "artworks",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/artworks/legacy/2025/11/IMG_9321.jpeg1763827033262.jpeg"
+    },
+    {
+      "table": "profiles",
+      "id": "5d5501ab-cb91-4a14-91d3-cc5138b3f3d9",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/BF-big.png1750870909610.png",
+      "status": "migrated",
+      "target": "legacy/2025/6/BF-big.png1750870909610.png",
+      "bucket": "profiles",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/profiles/legacy/2025/6/BF-big.png1750870909610.png"
+    },
+    {
+      "table": "profiles",
+      "id": "673873a4-e867-4582-a155-b6b4de2cb943",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/1000049689.jpg1752510692215.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/1000049689.jpg1752510692215.jpeg",
+      "bucket": "profiles",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/profiles/legacy/2025/7/1000049689.jpg1752510692215.jpeg"
+    },
+    {
+      "table": "profiles",
+      "id": "c9bf3ace-e9e2-46db-949d-32a6a2fb2858",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/BF-big.png1750870909610.png",
+      "status": "updated-existing-storage",
+      "target": "legacy/2025/6/BF-big.png1750870909610.png",
+      "bucket": "profiles",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/profiles/legacy/2025/6/BF-big.png1750870909610.png"
+    },
+    {
+      "table": "profiles",
+      "id": "ead16c04-089b-4f04-988c-aaa1652679d8",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/1000049689.jpg1752510692215.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/1000049689.jpg1752510692215.jpeg",
+      "bucket": "profiles",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/profiles/legacy/2025/7/1000049689.jpg1752510692215.jpeg"
+    },
+    {
+      "table": "profiles",
+      "id": "53ab9e13-49b7-4113-9fbc-cde9405f0587",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/6/BF-big.png1750870909610.png",
+      "status": "updated-existing-storage",
+      "target": "legacy/2025/6/BF-big.png1750870909610.png",
+      "bucket": "profiles",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/profiles/legacy/2025/6/BF-big.png1750870909610.png"
+    },
+    {
+      "table": "profiles",
+      "id": "a8b98492-f105-422a-abc7-73f879fd63ff",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/1000049689.jpg1752510692215.jpeg",
+      "status": "migrated",
+      "target": "legacy/2025/7/1000049689.jpg1752510692215.jpeg",
+      "bucket": "profiles",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/profiles/legacy/2025/7/1000049689.jpg1752510692215.jpeg"
+    },
+    {
+      "table": "blog_posts",
+      "id": "724c8f31-126c-402b-a5df-23315498e9fd",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Capture_dâÃ©cran_2025-07-15_172308.png1752593562086.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Capture_dâÃ©cran_2025-07-15_172308.png1752593562086.png"
+    },
+    {
+      "table": "blog_posts",
+      "id": "7f28defb-c9c2-4a67-b2f9-982249b6e75e",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/554.png1752613383645.png",
+      "status": "migrated",
+      "target": "legacy/2025/7/554.png1752613383645.png",
+      "bucket": "blogs",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/blogs/legacy/2025/7/554.png1752613383645.png"
+    },
+    {
+      "table": "blog_posts",
+      "id": "086af05f-9664-4c2d-bfbe-413366097f68",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/7/Capture_dâÃ©cran_2025-07-15_230801.png1752613835516.png",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/7/Capture_dâÃ©cran_2025-07-15_230801.png1752613835516.png"
+    },
+    {
+      "table": "blog_posts",
+      "id": "67091134-ece9-4690-9e91-46aff302dff4",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/kucibok_tracabilite_valeur_art.png1754313267383.png",
+      "status": "migrated",
+      "target": "legacy/2025/8/kucibok_tracabilite_valeur_art.png1754313267383.png",
+      "bucket": "blogs",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/blogs/legacy/2025/8/kucibok_tracabilite_valeur_art.png1754313267383.png"
+    },
+    {
+      "table": "blog_posts",
+      "id": "d6b0ca56-cee8-435d-bf0b-a6ae4389119b",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/kucibok_tracabilite_valeur_art.png1754313300567.png",
+      "status": "migrated",
+      "target": "legacy/2025/8/kucibok_tracabilite_valeur_art.png1754313300567.png",
+      "bucket": "blogs",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/blogs/legacy/2025/8/kucibok_tracabilite_valeur_art.png1754313300567.png"
+    },
+    {
+      "table": "blog_posts",
+      "id": "41b6a66a-57f3-40df-b4c1-b593a45ed060",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/kucibok_collection_dashboard_banner.png1754313998095.png",
+      "status": "migrated",
+      "target": "legacy/2025/8/kucibok_collection_dashboard_banner.png1754313998095.png",
+      "bucket": "blogs",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/blogs/legacy/2025/8/kucibok_collection_dashboard_banner.png1754313998095.png"
+    },
+    {
+      "table": "blog_posts",
+      "id": "be02ef03-3cf4-42ac-b5f2-a60010d1be99",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/kucibok_collection_dashboard_banner.png1754314035640.png",
+      "status": "migrated",
+      "target": "legacy/2025/8/kucibok_collection_dashboard_banner.png1754314035640.png",
+      "bucket": "blogs",
+      "newUrl": "https://wyrmpddlhldjzoiwbshj.supabase.co/storage/v1/object/public/blogs/legacy/2025/8/kucibok_collection_dashboard_banner.png1754314035640.png"
+    },
+    {
+      "table": "blog_posts",
+      "id": "069a807d-5e6e-44ea-b65c-86fe5eeff549",
+      "oldUrl": "http://backend.kucibok.com/uploads/2025/8/ChatGPT_Image_9_aoÃ»t_2025,_17_09_38.jpg1754784503916.jpeg",
+      "status": "error",
+      "reason": "upload: Invalid key: legacy/2025/8/ChatGPT_Image_9_aoÃ»t_2025,_17_09_38.jpg1754784503916.jpeg"
+    }
+  ]
+}
