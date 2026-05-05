@@ -3,12 +3,14 @@ import { Link, useParams } from 'react-router-dom'
 import RevealOnScroll from '../components/landing/RevealOnScroll'
 import { getArtistById } from '../api/useArtists'
 import { getArtworkById } from '../api/useArtworks'
-import { AlertCircle, ArrowLeft, Lock, ShoppingCart } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Lock, ShoppingCart, User } from 'lucide-react'
 import { useAuth } from '../store/AuthContext'
 import { DataLoader } from '../components/loaders/PageLoader'
 import { usePayment } from '../hooks/usePayment'
 import PaymentMethodSelector from '../components/PaymentMethodSelector'
 import { toast } from 'sonner'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function ArtworkCheckout() {
   const { id } = useParams()
@@ -22,6 +24,11 @@ export default function ArtworkCheckout() {
   })
 
   const [paymentMethod, setPaymentMethod] = useState('paydunya')
+
+  // Champs invité, utilisés uniquement si pas de session.
+  const [guestName, setGuestName] = useState('')
+  const [guestEmail, setGuestEmail] = useState('')
+  const [guestPhone, setGuestPhone] = useState('')
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -56,18 +63,13 @@ export default function ArtworkCheckout() {
   }, [id])
 
   const handlePayment = async () => {
-    if (!user?.id) {
-      toast.error('Vous devez être connecté pour acheter une œuvre')
-      return
-    }
-
     if (!artwork?.id) {
       toast.error('Œuvre introuvable')
       return
     }
 
     if (!artwork?.price || artwork.price <= 0) {
-      toast.error("Prix invalide — impossible de finaliser l'achat")
+      toast.error("Prix invalide, impossible de finaliser l'achat")
       return
     }
 
@@ -76,13 +78,32 @@ export default function ArtworkCheckout() {
       return
     }
 
+    // Construit l'objet guest si pas de session. Le backend exige nom +
+    // email pour pouvoir livrer l'œuvre et envoyer le reçu.
+    let guest = null
+    if (!user?.id) {
+      const name = guestName.trim()
+      const email = guestEmail.trim()
+      if (!name || !email) {
+        toast.error('Renseignez votre nom et votre email pour acheter sans compte')
+        return
+      }
+      if (!EMAIL_RE.test(email)) {
+        toast.error('Email invalide')
+        return
+      }
+      guest = { name, email, phone: guestPhone.trim() || null }
+    }
+
+    const artworkRef = artwork._id ?? artwork.id
+
     try {
       if (paymentMethod === 'paydunya') {
-        await payForArtwork(artwork._id)
+        await payForArtwork(artworkRef, {}, guest)
       } else {
         toast.info('Méthode de paiement non encore disponible')
       }
-    } catch (error) {
+    } catch {
       toast.error('Erreur lors du paiement')
     }
   }
@@ -159,8 +180,48 @@ export default function ArtworkCheckout() {
                     showTitle={false}
                   />
 
+                  {!user?.id && (
+                    <div className="border-t border-white/[0.06] pt-4 space-y-3">
+                      <div className="flex items-center gap-2 text-sm text-white">
+                        <User className="w-4 h-4 text-kcb-or" />
+                        <span className="font-medium">Acheter sans compte</span>
+                      </div>
+                      <p className="text-xs text-kcb-pierre">
+                        Pour la livraison et le reçu. Vous pouvez aussi{' '}
+                        <Link to="/sign-in" className="text-kcb-or hover:underline">
+                          vous connecter
+                        </Link>
+                        .
+                      </p>
+                      <input
+                        type="text"
+                        value={guestName}
+                        onChange={(e) => setGuestName(e.target.value)}
+                        placeholder="Nom complet"
+                        autoComplete="name"
+                        className="w-full bg-kcb-noir border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm text-white placeholder:text-kcb-pierre/70 focus:border-kcb-or focus:outline-none"
+                      />
+                      <input
+                        type="email"
+                        value={guestEmail}
+                        onChange={(e) => setGuestEmail(e.target.value)}
+                        placeholder="Email"
+                        autoComplete="email"
+                        className="w-full bg-kcb-noir border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm text-white placeholder:text-kcb-pierre/70 focus:border-kcb-or focus:outline-none"
+                      />
+                      <input
+                        type="tel"
+                        value={guestPhone}
+                        onChange={(e) => setGuestPhone(e.target.value)}
+                        placeholder="Téléphone (optionnel)"
+                        autoComplete="tel"
+                        className="w-full bg-kcb-noir border border-white/[0.06] rounded-[4px] px-3 py-2 text-sm text-white placeholder:text-kcb-pierre/70 focus:border-kcb-or focus:outline-none"
+                      />
+                    </div>
+                  )}
+
                   <button
-                    disabled={!user?.id || paymentLoading || artwork?.loading}
+                    disabled={paymentLoading || artwork?.loading}
                     onClick={handlePayment}
                     className="rounded-md flex justify-center items-center gap-2 w-full bg-kcb-or hover:bg-kcb-bronze transition shadow py-2 text-kcb-noir font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
                   >
@@ -174,13 +235,6 @@ export default function ArtworkCheckout() {
                       </>
                     )}
                   </button>
-
-                  {!user?.id && (
-                    <p className="flex items-center text-xs text-kcb-pierre mt-2">
-                      <AlertCircle className="w-4 h-4 mr-2" />
-                      Vous devez être connecté pour acheter une œuvre.
-                    </p>
-                  )}
 
                   {/* Informations de sécurité */}
                   <div className="text-xs text-kcb-pierre border-t border-white/[0.06] pt-4">
