@@ -56,7 +56,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { randomBytes }  from 'crypto';
+import { randomBytes, createHash }  from 'crypto';
 import { readFileSync } from 'fs';
 import { join }         from 'path';
 
@@ -2596,28 +2596,51 @@ const PAYDUNYA_VERIFY_ENDPOINTS = {
 async function routePaydunyaInit(req, res) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
 
+  // Auth est OPTIONNEL pour les achats d'œuvre (checkout invité). Pour les
+  // abonnements/plans, on impose toujours l'auth car l'abonnement est lié à
+  // un user_id en base.
+  let user = null;
   const authResult = await requireAuth(req);
-  if (authResult.error) return fail(res, authResult.error, authResult.status);
-  const { user } = authResult;
+  if (!authResult.error) user = authResult.user;
 
-  const { type, artwork_id, plan_id, currency } = req.body ?? {};
+  const { type, artwork_id, plan_id, currency, guest } = req.body ?? {};
 
   if (!['artwork', 'subscription', 'plan'].includes(type)) {
     return fail(res, 'Type de paiement invalide');
+  }
+
+  if ((type === 'subscription' || type === 'plan') && !user) {
+    return fail(res, 'Connexion requise pour souscrire à un abonnement', 401);
+  }
+
+  // Identité de l'acheteur (auth ou invité). Pour un invité on exige email +
+  // nom afin de pouvoir livrer l'œuvre et envoyer le reçu.
+  let buyerName, buyerEmail, buyerPhone;
+  if (user) {
+    buyerEmail = guest?.email ?? user.email ?? null;
+    buyerName  = guest?.name  ?? user.user_metadata?.name ?? null;
+    buyerPhone = guest?.phone ?? user.user_metadata?.telephone ?? null;
+  } else {
+    if (!guest?.email || !guest?.name) {
+      return fail(res, 'Pour acheter sans compte, renseignez nom et email', 400);
+    }
+    buyerEmail = guest.email;
+    buyerName  = guest.name;
+    buyerPhone = guest.phone ?? null;
   }
 
   // Valider le mode PayDunya
   const pdEndpoint = PAYDUNYA_ENDPOINTS[PAYDUNYA_MODE];
   if (!pdEndpoint) return fail(res, `Mode PayDunya invalide : ${PAYDUNYA_MODE}`, 500);
 
-  let amount, description, returnUrl, cancelUrl, ref, artworkCurrency;
+  let amount, description, returnUrl, cancelUrl, ref, artworkCurrency, sellerId = null;
 
   if (type === 'artwork') {
     if (!artwork_id) return fail(res, 'artwork_id requis');
 
     const { data: artwork, error: artworkError } = await supabaseAdmin
       .from('artworks')
-      .select('id, title, price, currency, status, sold')
+      .select('id, title, price, currency, status, sold, user_id')
       .eq('id', artwork_id)
       .single();
 
@@ -2625,9 +2648,10 @@ async function routePaydunyaInit(req, res) {
     if (artwork.sold)             return fail(res, 'Œuvre déjà vendue', 409);
     if (artwork.status !== 'approved') return fail(res, 'Œuvre non disponible à la vente', 409);
 
-    // NUMERIC PostgreSQL → string côté JS ; on force en number pour PayDunya
+    // NUMERIC PostgreSQL renvoie un string côté JS ; on force en number pour PayDunya.
     amount          = Number(artwork.price);
     artworkCurrency = artwork.currency ?? 'XOF';
+    sellerId        = artwork.user_id;
     if (!amount || amount <= 0) return fail(res, 'Prix de l\'œuvre invalide');
 
     description = `Achat : ${artwork.title}`;
@@ -2655,7 +2679,16 @@ async function routePaydunyaInit(req, res) {
   }
 
   const payload = {
-    invoice: { total_amount: amount, description, currency: currency ?? artworkCurrency ?? 'XOF' },
+    invoice: {
+      total_amount: amount,
+      description,
+      currency: currency ?? artworkCurrency ?? 'XOF',
+      customer: {
+        name:  buyerName  ?? '',
+        email: buyerEmail ?? '',
+        phone: buyerPhone ?? '',
+      },
+    },
     store: {
       name:     'Kucibok',
       tagline:  "La marketplace d'art africain",
@@ -2669,11 +2702,14 @@ async function routePaydunyaInit(req, res) {
       callback_url: `${PAYMENT_BASE_URL}/api/payments/paydunya-callback`,
     },
     custom_data: {
-      user_id:    user.id,
+      user_id:     user?.id ?? null,
       type,
       ref,
-      artwork_id: artwork_id ?? null,
-      plan_id:    plan_id ?? null,
+      artwork_id:  artwork_id ?? null,
+      plan_id:     plan_id ?? null,
+      buyer_email: buyerEmail,
+      buyer_name:  buyerName,
+      buyer_phone: buyerPhone,
     },
   };
 
@@ -2695,16 +2731,41 @@ async function routePaydunyaInit(req, res) {
       pdResult = JSON.parse(rawText);
     } catch {
       console.error('[PayDunya] Réponse non-JSON :', rawText.slice(0, 300));
-      return fail(res, 'Réponse inattendue de PayDunya — vérifiez les clés API', 502);
+      return fail(res, 'Réponse inattendue de PayDunya, vérifiez les clés API', 502);
     }
   } catch (fetchErr) {
     console.error('[PayDunya] Erreur réseau :', fetchErr?.message);
-    return fail(res, 'Impossible de joindre PayDunya — réessayez', 502);
+    return fail(res, 'Impossible de joindre PayDunya, réessayez', 502);
   }
 
   if (!pdResult || typeof pdResult !== 'object' || pdResult.response_code !== '00') {
     console.error('[PayDunya] Réponse invalide :', JSON.stringify(pdResult)?.slice(0, 200));
-    return fail(res, pdResult?.response_text ?? 'Erreur PayDunya — paiement non initié');
+    return fail(res, pdResult?.response_text ?? 'Erreur PayDunya, paiement non initié');
+  }
+
+  // Tracer l'intention d'achat avant la redirection PayDunya. Sans cette
+  // ligne, un paiement abandonné ou un webhook qui n'arrive pas ne laisse
+  // aucune trace en base, et l'admin ne voit jamais qui a essayé d'acheter.
+  // Le callback fera UPDATE sur cette ligne au moment de la confirmation.
+  if (type === 'artwork') {
+    const { error: txInsertErr } = await supabaseAdmin.from('transactions').insert({
+      artwork_id,
+      buyer_id:       user?.id ?? null,
+      seller_id:      sellerId,
+      amount,
+      currency:       artworkCurrency,
+      status:         'pending',
+      payment_method: 'paydunya',
+      payment_ref:    ref,
+      buyer_email:    buyerEmail,
+      buyer_phone:    buyerPhone,
+      buyer_name:     buyerName,
+    });
+    if (txInsertErr) {
+      // Non bloquant : le callback fera un INSERT en fallback si l'UPDATE
+      // ne trouve aucune ligne pending pour ce ref.
+      console.error('[PayDunya] Erreur INSERT pending transaction :', txInsertErr.message);
+    }
   }
 
   return ok(res, { payment_url: pdResult.response_text, token: pdResult.token, ref });
@@ -2720,17 +2781,26 @@ async function routePaydunyaCallback(req, res) {
   if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
 
   try {
-    // Vérifier le hash PayDunya pour authentifier le webhook
-    const receivedHash = req.headers['paydunya-hash'];
-    if (!receivedHash || receivedHash !== PAYDUNYA_MASTER_KEY) {
+    // Le webhook PayDunya arrive en application/x-www-form-urlencoded sous
+    // la forme data[token]=..., data[hash]=..., data[status]=..., etc.
+    // Le parseur de Vercel reconstruit l'objet imbriqué -> req.body.data.
+    const paymentData = req.body?.data;
+    if (!paymentData || typeof paymentData !== 'object') {
+      return fail(res, 'Données PayDunya manquantes');
+    }
+
+    // Vérifier le hash PayDunya : SHA-512 de la MasterKey, fourni dans
+    // data.hash (et NON dans un header). C'est ce que la doc API PAR
+    // section IPN spécifie explicitement.
+    const expectedHash = createHash('sha512')
+      .update(PAYDUNYA_MASTER_KEY ?? '')
+      .digest('hex');
+    if (!paymentData.hash || paymentData.hash !== expectedHash) {
       console.error('[PAYDUNYA] Hash de webhook invalide');
       return fail(res, 'Signature webhook invalide', 403);
     }
 
-    const { data: paymentData } = req.body ?? {};
-    if (!paymentData) return fail(res, 'Données PayDunya manquantes');
-
-    const { token } = paymentData;
+    const token = paymentData.token ?? paymentData.invoice?.token;
     if (!token) return fail(res, 'Token manquant');
 
     const verifyRes = await fetch(`${PAYDUNYA_VERIFY_ENDPOINTS[PAYDUNYA_MODE]}/${token}`, {
@@ -2745,18 +2815,26 @@ async function routePaydunyaCallback(req, res) {
     const verified = await verifyRes.json();
     if (verified.status !== 'completed') return fail(res, 'Paiement non complété');
 
-    const { user_id, type, ref: customRef, artwork_id, plan_id } = verified.custom_data ?? {};
+    const {
+      user_id, type, ref: customRef, artwork_id, plan_id,
+      buyer_email, buyer_name, buyer_phone,
+    } = verified.custom_data ?? {};
 
-    // Idempotence — ignorer si le webhook a déjà été traité (double appel PayDunya)
+    // Si custom_data ne contient pas le contact (cas legacy), retomber sur
+    // les infos saisies par le client sur la page PayDunya.
+    const contactEmail = buyer_email ?? verified.customer?.email ?? null;
+    const contactName  = buyer_name  ?? verified.customer?.name  ?? null;
+    const contactPhone = buyer_phone ?? verified.customer?.phone ?? null;
+
     const paymentRef = customRef ?? token;
-    const { data: existingTx } = await supabaseAdmin
-      .from('transactions').select('id').eq('payment_ref', paymentRef).maybeSingle();
-    if (existingTx) return ok(res, { received: true });
 
-    if (!user_id) {
-      console.error('[PAYDUNYA] user_id manquant dans custom_data', { token });
-      return fail(res, 'user_id manquant dans les données de paiement', 400);
-    }
+    // Idempotence : si déjà marqué completed, on ignore les doubles webhooks.
+    const { data: existingTx } = await supabaseAdmin
+      .from('transactions')
+      .select('id, status')
+      .eq('payment_ref', paymentRef)
+      .maybeSingle();
+    if (existingTx?.status === 'completed') return ok(res, { received: true });
 
     if (type === 'artwork' && artwork_id) {
       await supabaseAdmin
@@ -2765,28 +2843,54 @@ async function routePaydunyaCallback(req, res) {
         .eq('id', artwork_id)
         .eq('sold', false);
 
-      const { data: artwork } = await supabaseAdmin
-        .from('artworks').select('price, currency, user_id').eq('id', artwork_id).single();
-
-      if (artwork) {
-        const { error: txError } = await supabaseAdmin.from('transactions').insert({
-          artwork_id,
-          buyer_id:       user_id,
-          seller_id:      artwork.user_id,
-          amount:         artwork.price,
-          currency:       artwork.currency,
-          status:         'completed',
-          payment_method: 'paydunya',
-          payment_ref:    paymentRef,
-        });
-        // Code 23505 = unique_violation — webhook traité deux fois simultanément, ignorer
-        if (txError && txError.code !== '23505') {
-          console.error('[PAYDUNYA] Erreur INSERT transaction', txError.message);
+      // UPDATE de la ligne pending insérée à l'init. Si elle n'existe pas
+      // (cas où l'init n'a pas tracé, paiements legacy), on INSERT.
+      if (existingTx) {
+        const { error: updErr } = await supabaseAdmin
+          .from('transactions')
+          .update({
+            status:         'completed',
+            payment_method: 'paydunya',
+            buyer_email:    contactEmail,
+            buyer_name:     contactName,
+            buyer_phone:    contactPhone,
+          })
+          .eq('id', existingTx.id);
+        if (updErr) console.error('[PAYDUNYA] Erreur UPDATE transaction', updErr.message);
+      } else {
+        const { data: artwork } = await supabaseAdmin
+          .from('artworks').select('price, currency, user_id').eq('id', artwork_id).single();
+        if (artwork) {
+          const { error: txError } = await supabaseAdmin.from('transactions').insert({
+            artwork_id,
+            buyer_id:       user_id ?? null,
+            seller_id:      artwork.user_id,
+            amount:         artwork.price,
+            currency:       artwork.currency,
+            status:         'completed',
+            payment_method: 'paydunya',
+            payment_ref:    paymentRef,
+            buyer_email:    contactEmail,
+            buyer_name:     contactName,
+            buyer_phone:    contactPhone,
+          });
+          // Code 23505 = unique_violation, doublons silencieux acceptés.
+          if (txError && txError.code !== '23505') {
+            console.error('[PAYDUNYA] Erreur INSERT transaction', txError.message);
+          }
         }
       }
     }
 
     if ((type === 'subscription' || type === 'plan') && plan_id) {
+      // Un abonnement est obligatoirement lié à un user_id. Init l'a déjà
+      // imposé, mais on garde ce filet de sécurité au cas où custom_data
+      // serait corrompu côté PayDunya.
+      if (!user_id) {
+        console.error('[PAYDUNYA] subscription callback sans user_id', { token });
+        return fail(res, 'user_id requis pour activer un abonnement', 400);
+      }
+
       const { data: plan } = await supabaseAdmin
         .from('plans').select('duration_days, price, currency').eq('id', plan_id).single();
 
