@@ -15,7 +15,7 @@
     "test:watch": "vitest",
     "test:api": "newman run postman/kucibok.postman_collection.json -e postman/kucibok.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export reports/api-test-report.html",
     "test:api:ci": "newman run postman/kucibok.postman_collection.json -e postman/kucibok.postman_environment.json --reporters cli",
-    "prepare": "husky"
+    "prepare": "node -e \"if(process.env.CI){process.exit(0)}\" || husky"
   },
   "dependencies": {
     "@sentry/react": "^10.7.0",
