@@ -350,6 +350,9 @@ export default async function handler(req, res) {
     if (s0 === 'health' && s1 === 'payment') return await routeHealthPayment(req, res);
     if (s0 === 'health') return await routeHealth(req, res);
 
+    // ── /api/cron/expire-subscriptions — appelé par Vercel Cron uniquement ────
+    if (s0 === 'cron' && s1 === 'expire-subscriptions') return await routeCronExpireSubscriptions(req, res);
+
     // QR code et tracking publics — accessibles sans authentification
     if (s0 === 'artworks' && s1 === 'verify' && s2) return await routeVerifyArtwork(req, res, s2);
     if (s0 === 'delivery' && s1 === 'track'  && s2) return await routeTrackDelivery(req, res, s2);
@@ -4827,4 +4830,24 @@ async function routeCampaignsCrud(req, res, id, action) {
   }
 
   return fail(res, 'Méthode non autorisée', 405);
+}
+
+// ── Cron : expiration automatique des abonnements ────────────────────────────
+async function routeCronExpireSubscriptions(req, res) {
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = req.headers['authorization'] ?? '';
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return fail(res, 'Non autorisé', 401);
+  }
+
+  const now = new Date().toISOString();
+  const { data, error } = await supabaseAdmin
+    .from('subscriptions')
+    .update({ status: 'expired' })
+    .eq('status', 'active')
+    .lt('end_date', now)
+    .select('id, user_id, end_date');
+
+  if (error) return fail(res, error.message);
+  return ok(res, { expired: data.length, ids: data.map(s => s.id) });
 }
