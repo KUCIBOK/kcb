@@ -188,9 +188,7 @@ function CampaignModal({ onClose, emailName, subject, preheader }) {
   const navigate = useNavigate()
 
   const handleCreateCampaign = () => {
-    // Navigate to Campaigns tab with pre-filled data
     onClose()
-    alert("Redirection vers l'onglet Campagnes pour configurer les destinataires et envoyer")
   }
 
   return (

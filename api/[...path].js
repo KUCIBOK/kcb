@@ -788,6 +788,16 @@ async function routeAuth(req, res, action) {
     if (req.method === 'DELETE') return await authDeleteById(req, res, action);
   }
 
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown';
+
+  // Rate limiting par action sensible
+  if (action === 'signup' && !rateLimit(`signup:${ip}`, 3_600_000, 5))
+    return fail(res, 'Trop de tentatives d\'inscription. Réessayez dans une heure.', 429);
+  if (action === 'signin' && !rateLimit(`signin:${ip}`, 60_000, 10))
+    return fail(res, 'Trop de tentatives de connexion. Réessayez dans une minute.', 429);
+  if (action === 'forgot-password' && !rateLimit(`forgot:${ip}`, 900_000, 3))
+    return fail(res, 'Trop de demandes de réinitialisation. Réessayez dans 15 minutes.', 429);
+
   switch (action) {
     case 'signup':          return await authSignup(req, res);
     case 'signin':          return await authSignin(req, res);
@@ -3166,55 +3176,146 @@ async function routeCertificateGenerate(req, res) {
   if (artworkErr || !artwork) return fail(res, 'Œuvre introuvable', 404);
   if (artwork.status !== 'approved') return fail(res, 'Œuvre non approuvée');
 
+  // Fallback artiste via user_id si la jointure ne retourne rien
+  let artistName    = artwork.artists?.name    ?? '';
+  let artistCountry = artwork.artists?.country ?? '';
+  if (!artistName && artwork.user_id) {
+    const { data: artist } = await supabaseAdmin
+      .from('artists').select('name, country').eq('user_id', artwork.user_id).single();
+    artistName    = artist?.name    ?? '';
+    artistCountry = artist?.country ?? '';
+  }
+
+  // Télécharge l'image de l'œuvre pour l'embarquer dans le PDF
+  let imageBuffer = null;
+  if (artwork.image) {
+    try {
+      const imgRes = await fetch(artwork.image);
+      if (imgRes.ok) imageBuffer = Buffer.from(await imgRes.arrayBuffer());
+    } catch (_) {}
+  }
+
   const PDFDocument = (await import('pdfkit')).default;
 
   const chunks = [];
-  const doc    = new PDFDocument({ margin: 50, size: 'A4' });
+  const doc = new PDFDocument({ margin: 0, size: 'A4', layout: 'landscape' });
   doc.on('data', chunk => chunks.push(chunk));
 
   const pdfBuffer = await new Promise((resolve, reject) => {
     doc.on('end',   () => resolve(Buffer.concat(chunks)));
     doc.on('error', reject);
 
-    doc
-      .fontSize(24).font('Helvetica-Bold').text('KUCIBOK', { align: 'center' })
-      .fontSize(12).font('Helvetica').text("Certificat d'Authenticité", { align: 'center' })
-      .moveDown(2);
+    const W = doc.page.width;
+    const H = doc.page.height;
 
-    doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown();
+    const GOLD       = '#C9922A';
+    const GOLD_LIGHT = '#E8C97A';
+    const DARK       = '#2D1A0E';
+    const CREAM      = '#F5F0E8';
+    const GRAY       = '#8A7A6A';
 
-    doc
-      .fontSize(14).font('Helvetica-Bold').text("Informations sur l'œuvre")
-      .moveDown(0.5)
-      .fontSize(11).font('Helvetica')
-      .text(`Titre :        ${artwork.title}`)
-      .text(`ID Kucibok :   ${artwork.kucibok_id ?? 'N/A'}`)
-      .text(`Artiste :      ${artwork.artists?.name ?? artwork.title}`)
-      .text(`Pays :         ${artwork.artists?.country ?? 'N/A'}`)
-      .text(`Catégorie :    ${artwork.category ?? 'N/A'}`)
-      .text(`Medium :       ${artwork.medium ?? 'N/A'}`)
-      .text(`État :         ${artwork.condition ?? 'N/A'}`)
-      .text(`Provenance :   ${artwork.provenance ?? 'N/A'}`)
-      .text(`Dimensions :   ${artwork.height ?? '?'} cm × ${artwork.width ?? '?'} cm`)
-      .text(`Poids :        ${artwork.weight ?? '?'} kg`)
-      .text(`Édition :      ${artwork.edition_number ?? 1} / ${artwork.edition_total ?? 1}`)
-      .text(`Prix :         ${artwork.price?.toLocaleString('fr-FR') ?? 'N/A'} ${artwork.currency ?? 'XOF'}`)
-      .moveDown(1.5);
+    // Fond ivoire
+    doc.rect(0, 0, W, H).fill(CREAM);
 
-    doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown();
+    // Double cadre doré
+    const m = 20;
+    doc.rect(m, m, W - 2*m, H - 2*m).lineWidth(2).stroke(GOLD);
+    doc.rect(m+6, m+6, W - 2*(m+6), H - 2*(m+6)).lineWidth(0.5).stroke(GOLD_LIGHT);
 
-    doc
-      .fontSize(10).font('Helvetica-Oblique')
-      .text(
-        "Ce certificat atteste de l'authenticité de l'œuvre décrite ci-dessus, "
-        + 'enregistrée et certifiée sur la plateforme Kucibok. '
-        + 'Toute reproduction ou falsification est passible de poursuites.',
-        { align: 'justify' },
-      )
-      .moveDown()
-      .fontSize(10).font('Helvetica')
-      .text(`Date de certification : ${new Date(artwork.created_at).toLocaleDateString('fr-FR')}`)
-      .text(`Certifié le : ${new Date().toLocaleDateString('fr-FR')}`);
+    // Séparateur vertical
+    const divX = W * 0.57;
+    doc.moveTo(divX, m+18).lineTo(divX, H-m-18).lineWidth(0.8).stroke(GOLD_LIGHT);
+
+    // ── COLONNE GAUCHE ──────────────────────────────────────────────────
+    const lx = 48;
+    let y = 52;
+
+    // Logo texte
+    doc.fontSize(11).font('Helvetica-Bold').fillColor(GOLD).text('✦', lx, y, { continued: true })
+       .fillColor(DARK).text(' KUCIBOK');
+    y += 28;
+
+    // Titre
+    doc.fontSize(24).font('Helvetica-Bold').fillColor(DARK).text('CERTIFICAT', lx, y);
+    y += 30;
+    doc.fontSize(24).font('Helvetica-Bold').fillColor(DARK).text("D'AUTHENTICITÉ", lx, y);
+    y += 26;
+
+    // Sous-titre
+    doc.fontSize(10).font('Helvetica').fillColor(GRAY).text('Art Africain Authentique', lx, y);
+    y += 24;
+
+    // Badge certifié
+    doc.roundedRect(lx, y, 165, 23, 11).fill(GOLD);
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#FFFFFF')
+       .text('✓  ŒUVRE CERTIFIÉE', lx, y+7, { width: 165, align: 'center' });
+    y += 44;
+
+    // Tableau infos
+    const tableW = divX - lx - 28;
+    doc.rect(lx, y, 3, 155).fill(GOLD_LIGHT);
+
+    const rows = [
+      ["Titre de l'œuvre", artwork.title || 'N/A'],
+      ['Artiste',          artistName    || 'N/A'],
+      ['Catégorie',        artwork.category || 'N/A'],
+      ['Dimensions',       (artwork.height && artwork.width) ? `${artwork.height} × ${artwork.width} cm` : 'N/A'],
+      ["Date d'émission",  new Date(artwork.created_at).toLocaleDateString('fr-FR')],
+    ];
+
+    const rowH = 31;
+    rows.forEach(([label, value], i) => {
+      const ry = y + i * rowH;
+      if (i > 0) doc.moveTo(lx+10, ry).lineTo(lx+tableW, ry).lineWidth(0.3).stroke('#D4B896');
+      doc.fontSize(10).font('Helvetica').fillColor(GOLD).text(label, lx+10, ry+9, { width: 120 });
+      doc.fontSize(10).font('Helvetica-Bold').fillColor(DARK).text(value, lx+140, ry+9, { width: tableW-148, align: 'right' });
+    });
+
+    // ── COLONNE DROITE ───────────────────────────────────────────────────
+    const rx   = divX + 28;
+    const rw   = W - divX - 28 - m - 8;
+    let   ry2  = 48;
+
+    // Image de l'œuvre
+    const imgSz = Math.min(rw, 195);
+    const imgX  = rx + (rw - imgSz) / 2;
+    doc.rect(imgX-2, ry2-2, imgSz+4, imgSz+4).lineWidth(2).stroke(GOLD);
+    if (imageBuffer) {
+      try { doc.image(imageBuffer, imgX, ry2, { width: imgSz, height: imgSz, cover: [imgSz, imgSz] }); }
+      catch (_) { doc.rect(imgX, ry2, imgSz, imgSz).fill('#E8E0D0'); }
+    } else {
+      doc.rect(imgX, ry2, imgSz, imgSz).fill('#E8E0D0');
+    }
+    ry2 += imgSz + 22;
+
+    // Cachet circulaire
+    const cx = rx + rw/2;
+    const cr = 46;
+    doc.circle(cx, ry2+cr, cr).lineWidth(1.5).stroke(GOLD);
+    doc.circle(cx, ry2+cr, cr-5).lineWidth(0.4).stroke(GOLD_LIGHT);
+    doc.fontSize(7).font('Helvetica-Bold').fillColor(DARK)
+       .text('CERTIFICAT',   cx-22, ry2+cr-16)
+       .text('AUTHENTICITÉ', cx-26, ry2+cr-5)
+       .text('KUCIBOK',      cx-15, ry2+cr+6);
+    ry2 += cr*2 + 18;
+
+    // Code KCB
+    doc.fontSize(9).font('Helvetica').fillColor(GRAY)
+       .text('Code de vérification', rx, ry2, { width: rw, align: 'center' });
+    ry2 += 15;
+    const codeW = 165;
+    const codeX = rx + (rw-codeW)/2;
+    doc.rect(codeX, ry2, codeW, 23).lineWidth(1).stroke(GOLD);
+    doc.fontSize(11).font('Helvetica-Bold').fillColor(DARK)
+       .text(artwork.kucibok_id ?? 'KCB-XXXXXXXX', codeX, ry2+6, { width: codeW, align: 'center' });
+    ry2 += 33;
+
+    // Attestation
+    doc.fontSize(8).font('Helvetica').fillColor(GRAY)
+       .text(
+         "Ce certificat atteste de l'authenticité\nde cette œuvre d'art africaine.",
+         rx, ry2, { width: rw, align: 'center' },
+       );
 
     doc.end();
   });
@@ -3745,6 +3846,9 @@ async function routeBlogComment(req, res, postId, commentId) {
   const userId = authResult.user.id;
 
   if (req.method === 'POST') {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown';
+    if (!rateLimit(`comment:${ip}`, 60_000, 5))
+      return fail(res, 'Trop de commentaires. Réessayez dans une minute.', 429);
     const { content } = req.body ?? {};
     if (!content) return fail(res, 'Contenu du commentaire requis');
 

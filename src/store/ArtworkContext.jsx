@@ -166,19 +166,19 @@ export const ArtworksContextProvider = ({ children }) => {
       approveArtwork: async (id, status) => {
         try {
           const artwork = await setArtworkStatus(id, status)
-          if (artwork?._id) {
+          if (artwork?.id) {
             if (artwork?.status == 'approved') {
               setState((prev) => ({
                 ...prev,
-                pending: prev.pending?.filter((d) => d._id !== id),
-                rejected: prev.rejected?.filter((d) => d._id !== id),
+                pending: prev.pending?.filter((d) => d.id !== id),
+                rejected: prev.rejected?.filter((d) => d.id !== id),
                 approved: [artwork, ...prev.approved],
               }))
             } else {
               setState((prev) => ({
                 ...prev,
-                pending: prev.pending?.filter((item) => item._id !== artwork._id),
-                approved: prev.approved?.filter((item) => item._id !== artwork._id),
+                pending: prev.pending?.filter((item) => item.id !== artwork.id),
+                approved: prev.approved?.filter((item) => item.id !== artwork.id),
                 rejected: [artwork, ...prev.rejected],
               }))
             }
@@ -189,8 +189,8 @@ export const ArtworksContextProvider = ({ children }) => {
               `L'oeuvre a été ${status == 'approved' ? 'approuvée' : 'rejetée'} avec succès`
             )
             await createLog({
-              description: `L'oeuvre ${artwork?._id} a été ${status === 'approved' ? 'approuvée' : 'rejetée'}`,
-              userId: user?._id,
+              description: `L'oeuvre ${artwork?.id} a été ${status === 'approved' ? 'approuvée' : 'rejetée'}`,
+              userId: user?.id,
             })
             return artwork
           }

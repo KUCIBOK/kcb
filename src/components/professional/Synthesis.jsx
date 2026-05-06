@@ -56,8 +56,8 @@ export function Synthesis() {
     )
     .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0)
 
-  const deliveredArtworks = myArtworks?.filter((item) => item?.isDelivered == 'delivered')?.length
-  const soldArtworksNumber = myArtworks?.filter((item) => item?.sold == true)?.length
+  const deliveredArtworks = myArtworks?.filter((item) => item?.delivery_status === 'delivered' || item?.isDelivered === true)?.length
+  const soldArtworksNumber = myArtworks?.filter((item) => item?.sold === true)?.length
 
   // ===== REVENUE MENSUEL =====
   const monthlyRevenue = Array.from({ length: 12 }, (_, month) => {
@@ -257,8 +257,8 @@ export function Synthesis() {
   const conversionRate = myArtworks?.length > 0 ? (soldArtworksNumber / myArtworks.length) * 100 : 0
 
   const soldCount = myArtworks?.filter((a) => a.sold)?.length || 0
-  const forSaleCount = myArtworks?.filter((a) => a.status == 'approved' && a.for_sale)?.length || 0
-  const pendingCount = myArtworks?.filter((a) => a.status == 'pending')?.length || 0
+  const forSaleCount = myArtworks?.filter((a) => a.status === 'approved' && a.for_sale)?.length || 0
+  const pendingCount = myArtworks?.filter((a) => a.status === 'pending')?.length || 0
 
   const pieData = {
     labels: ['Vendues', 'En vente', 'En attente'],

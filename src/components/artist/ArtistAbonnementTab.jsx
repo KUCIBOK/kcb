@@ -66,7 +66,7 @@ export function ArtistAbonnementTab() {
 
   /** Détermine si un plan est celui de l'utilisateur. */
   const isCurrentPlan = (planId) => {
-    return subscription?.planId === planId || currentPlan?._id === planId
+    return subscription?.planId === planId || currentPlan?.id === planId || subscription?.plan_id === planId
   }
 
   /** Features à afficher pour l'abonnement actuel. */

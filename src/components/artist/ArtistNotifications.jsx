@@ -1,83 +1,35 @@
 import { useState, useEffect } from 'react'
 import {
   Bell,
-  CheckCircle,
   AlertTriangle,
-  Info,
   X,
   Eye,
-  Trash2,
   Package,
   DollarSign,
   MessageSquare,
   Heart,
   Clock,
 } from 'lucide-react'
+import { utils } from '../../api/useAPI'
 
 export default function ArtistNotifications() {
   const [notifications, setNotifications] = useState([])
   const [filter, setFilter] = useState('all')
-
-  // Données par défaut
-  const defaultNotifications = [
-    {
-      _id: '1',
-      type: 'sale',
-      title: '🎉 Nouvelle vente!',
-      message: 'Collectionneur A a acheté "Tableau Abstrait" pour 1500 XOF',
-      time: 'Il y a 2h',
-      read: false,
-      severity: 'success',
-    },
-    {
-      _id: '2',
-      type: 'bid',
-      title: '💰 Enchère significative',
-      message: 'Nouvelle enchère de 2500 XOF sur "Sculpture Moderne"',
-      time: 'Il y a 4h',
-      read: false,
-      severity: 'info',
-    },
-    {
-      _id: '3',
-      type: 'favorite',
-      title: '❤️ Nouveau favori',
-      message: '3 utilisateurs ont ajouté vos œuvres en favori',
-      time: 'Il y a 6h',
-      read: true,
-      severity: 'info',
-    },
-    {
-      _id: '4',
-      type: 'message',
-      title: '💬 Nouveau message',
-      message: 'Collectionneur B vous a envoyé un message',
-      time: 'Il y a 1j',
-      read: true,
-      severity: 'info',
-    },
-    {
-      _id: '5',
-      type: 'delivery',
-      title: '🚚 Mise à jour livraison',
-      message: 'La commande #1234 a été livrée avec succès',
-      time: 'Il y a 2j',
-      read: true,
-      severity: 'success',
-    },
-    {
-      _id: '6',
-      type: 'warning',
-      title: '⚠️ Œuvre en attente',
-      message: 'Votre œuvre "Portrait" est en attente de validation depuis 5 jours',
-      time: 'Il y a 3j',
-      read: true,
-      severity: 'warning',
-    },
-  ]
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setNotifications(defaultNotifications)
+    const load = async () => {
+      try {
+        const res = await fetch(`${utils.api}/notifications`, { ...utils.options, method: 'GET' })
+        if (res.ok) {
+          const body = await res.json()
+          const list = Array.isArray(body.data) ? body.data : (Array.isArray(body) ? body : [])
+          setNotifications(list)
+        }
+      } catch (_) {}
+      finally { setLoading(false) }
+    }
+    load()
   }, [])
 
   const unreadCount = notifications.filter((n) => !n.read).length
@@ -177,7 +129,9 @@ export default function ArtistNotifications() {
       </div>
 
       {/* Liste des notifications */}
-      {filteredNotifications.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center h-32 text-kcb-pierre">Chargement...</div>
+      ) : filteredNotifications.length === 0 ? (
         <div className="text-center py-12 bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06]">
           <Bell className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
           <p className="text-kcb-pierre">
@@ -192,7 +146,7 @@ export default function ArtistNotifications() {
         <div className="space-y-3">
           {filteredNotifications.map((notification) => (
             <div
-              key={notification._id}
+              key={notification.id ?? notification._id}
               className={`p-4 rounded-[4px] border ${getSeverityStyle(notification.severity)} ${
                 !notification.read ? 'opacity-100' : 'opacity-60'
               }`}
@@ -218,7 +172,7 @@ export default function ArtistNotifications() {
                 <div className="flex gap-2">
                   {!notification.read && (
                     <button
-                      onClick={() => handleMarkRead(notification._id)}
+                      onClick={() => handleMarkRead(notification.id ?? notification._id)}
                       className="p-2 hover:bg-white/10 rounded transition"
                       title="Marquer comme lu"
                     >
@@ -226,7 +180,7 @@ export default function ArtistNotifications() {
                     </button>
                   )}
                   <button
-                    onClick={() => handleDelete(notification._id)}
+                    onClick={() => handleDelete(notification.id ?? notification._id)}
                     className="p-2 hover:bg-white/10 rounded transition"
                     title="Supprimer"
                   >

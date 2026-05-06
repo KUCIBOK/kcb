@@ -83,11 +83,11 @@ function AddPostModal({ closeModal }) {
           formData.append(key, charge[key])
         })
         const added = await addPost(formData)
-        if (added?._id) {
+        if (added?.id || added?._id) {
           toast.success('✓ Article créé avec succès')
           closeModal()
         } else {
-          toast.error('× Erreur lors de la création')
+          toast.error('× ' + (added?.error || 'Erreur lors de la création'))
         }
         setState({ ...state, loading: false })
       } else {

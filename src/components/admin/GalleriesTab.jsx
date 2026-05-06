@@ -124,7 +124,7 @@ export default function GalleriesTab() {
           <span className="text-xs text-kcb-pierre">
             {importResult.error
               ? `Erreur d'import: ${importResult.error}`
-              : `Import ok. Lignes: ${importResult.totalRows} | Avec email: ${importResult.withEmailCount}`}
+              : `Import ok. ${importResult.imported ?? 0} galerie(s) importée(s).`}
           </span>
         )}
         <div className="flex-1" />

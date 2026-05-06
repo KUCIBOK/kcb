@@ -42,6 +42,7 @@ export function DeliveryTab() {
   // Form state
   const [formData, setFormData] = useState({
     artworksIds: [],
+    originCity: 'Dakar',
     deliveryAddress: '',
     deliveryDate: '',
     collectDate: '',
@@ -94,16 +95,16 @@ export function DeliveryTab() {
   }
 
   const calculateRate = async () => {
-    if (!formData.selectedZone || !formData.packageWeight) return
+    if (!formData.selectedZone || !formData.packageWeight || !formData.originCity) return
 
     try {
-      const rateData = await getShippingRates('Dakar', formData.selectedZone, {
+      const rateData = await getShippingRates(formData.originCity, formData.selectedZone, {
         weight: parseFloat(formData.packageWeight),
         size: formData.packageSize,
       })
       setRates(rateData)
-    } catch (error) {
-      // Rate calculation failed silently
+    } catch (_) {
+      setRates(null)
     }
   }
 
@@ -476,7 +477,7 @@ export function DeliveryTab() {
                 <div className="flex justify-between items-center">
                   <span className="text-kcb-pierre text-sm">Tarif estimé:</span>
                   <span className="text-2xl font-bold text-kcb-or">
-                    {rates.price || '1500'} XOF
+                    {rates.price ? `${rates.price} XOF` : '—'}
                   </span>
                 </div>
                 {rates.estimatedDays && (
@@ -534,14 +535,16 @@ export function DeliveryTab() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.06]">
-                {myDeliveries.slice(0, 10).map((delivery, idx) => (
+                {myDeliveries.map((delivery, idx) => (
                   <tr key={idx} className="hover:bg-white/[0.04]">
                     <td className="px-4 py-3 text-kcb-or text-sm font-mono">
                       {delivery.trackingId || 'N/A'}
                     </td>
-                    <td className="px-4 py-3 text-white text-sm">{delivery.recipientName}</td>
+                    <td className="px-4 py-3 text-white text-sm">{delivery.recipientName ?? '—'}</td>
                     <td className="px-4 py-3 text-kcb-pierre text-sm">
-                      {delivery.deliveryAddress?.substring(0, 20)}...
+                      {delivery.deliveryAddress
+                        ? delivery.deliveryAddress.substring(0, 20) + '...'
+                        : '—'}
                     </td>
                     <td className="px-4 py-3">
                       <span

@@ -44,22 +44,21 @@ export function Synthesis({ setTab, setToggle }) {
       }
     }
 
-    const getSusbscriptions = async function () {
+    const getSubscriptions = async function () {
       try {
         const subscriptions = await getAllSubscriptions()
-        if (subscriptions?.length > 0) {
+        if (Array.isArray(subscriptions)) {
           setState((prev) => ({
             ...prev,
-            subscriptions: subscriptions.filter((item) => item?.status == 'active'),
+            subscriptions: subscriptions.filter((item) => item?.status === 'active'),
           }))
         }
-      } catch (error) {
-        setState((prev) => ({ ...prev, subscriptions: { ...prev.subscriptions } }))
+      } catch (_) {
       } finally {
         onSettle()
       }
     }
-    getSusbscriptions()
+    getSubscriptions()
 
     const fetchVisitors = async () => {
       try {

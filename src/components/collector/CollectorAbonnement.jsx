@@ -45,8 +45,8 @@ const PLAN_LIMITS = {
       'Historique complet',
     ],
   },
-  collector: {
-    name: 'Collectionneur',
+  buyer: {
+    name: 'Acheteur',
     price: 9900,
     maxFavorites: 500,
     maxCollectionViews: 5000,

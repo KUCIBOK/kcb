@@ -182,7 +182,7 @@ export function ArtistCertificationTab() {
 
             {filtered.map((artwork) => (
               <div
-                key={artwork._id}
+                key={artwork.id ?? artwork._id}
                 className="grid grid-cols-1 sm:grid-cols-12 px-6 py-4 gap-2 sm:gap-0 items-start sm:items-center hover:bg-white/[0.04] transition-colors"
               >
                 {/* Titre */}

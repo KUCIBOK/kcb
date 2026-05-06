@@ -14,44 +14,22 @@ export function BlogItemActions({ post }) {
   })
   const { publishPost, archivePost } = useBlog()
   const handlePublishing = async () => {
+    setState((prev) => ({ ...prev, loading: true }))
     try {
-      setState((prev) => ({
-        ...prev,
-        loading: true,
-      }))
-      const published = await publishPost(post?.id || post?._id)
-      if (published?._id || published?.id) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-        }))
-      }
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-      }))
+      await publishPost(post?.id || post?._id)
+    } catch (_) {}
+    finally {
+      setState((prev) => ({ ...prev, loading: false }))
     }
   }
 
   const handleArchiving = async () => {
+    setState((prev) => ({ ...prev, loading: true }))
     try {
-      setState((prev) => ({
-        ...prev,
-        loading: true,
-      }))
-      const published = await archivePost(post?.id || post?._id)
-      if (published?._id || published?.id) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-        }))
-      }
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-      }))
+      await archivePost(post?.id || post?._id)
+    } catch (_) {}
+    finally {
+      setState((prev) => ({ ...prev, loading: false }))
     }
   }
 
@@ -128,7 +106,7 @@ function UpdatePostModal({ post, closeModal }) {
         formData.append(key, charge[key])
       })
       const updated = await updatePost(post?.id || post?._id, formData)
-      if (updated?._id) {
+      if (updated?.id || updated?._id) {
         toast.success('✓ Article mis à jour')
         closeModal()
       } else {

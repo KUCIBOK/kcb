@@ -671,19 +671,19 @@ export function Analytics({ currency = 'EUR' }) {
           <ActionButton
             icon=""
             label="Réviser Œuvres"
-            badge={data.pendingArtworks || 18}
+            badge={data.pendingArtworks ?? '—'}
             onClick={() => {}}
           />
           <ActionButton
             icon=""
             label="Gérer Utilisateurs"
-            badge={data.totalUsers || 23}
+            badge={data.totalUsers ?? '—'}
             onClick={() => {}}
           />
           <ActionButton
             icon=""
             label="Tickets Support"
-            badge={data.openTickets || 8}
+            badge={data.openTickets ?? '—'}
             onClick={() => {}}
           />
         </div>

@@ -28,13 +28,10 @@ const ClientsTab = () => {
               const userData = await response.json()
               artistsData[artistId] = userData.user || userData
             } else {
-              artistsData[artistId] = {
-                name: 'Artiste inconnu',
-                _id: artistId,
-              }
+              artistsData[artistId] = { name: 'Artiste inconnu', id: artistId }
             }
-          } catch (error) {
-            artistsData[artistId] = { name: 'Artiste inconnu', _id: artistId }
+          } catch (_) {
+            artistsData[artistId] = { name: 'Artiste inconnu', id: artistId }
           }
         })
       )

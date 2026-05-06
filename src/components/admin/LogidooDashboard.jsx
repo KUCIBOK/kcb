@@ -187,7 +187,7 @@ export default function LogidooDashboard() {
           <StatCard
             label="Taux de succès"
             value={
-              stats.bySeverity?.success
+              stats.bySeverity?.success != null && stats.total > 0
                 ? `${((stats.bySeverity.success / stats.total) * 100).toFixed(0)}%`
                 : 'N/A'
             }

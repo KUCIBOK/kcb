@@ -14,7 +14,7 @@ export function BlogTableItem({ post }) {
         </td>
         <td>{post?.title}</td>
         <td>{post?.excerpt}</td>
-        <td>{new Date(post?.publishDate).toLocaleDateString()}</td>
+        <td>{post?.published_at ? new Date(post.published_at).toLocaleDateString() : (post?.created_at ? new Date(post.created_at).toLocaleDateString() : '—')}</td>
         <td>{post?.visited || 0}</td>
         <td>
           {post?.status === 'published' && (
