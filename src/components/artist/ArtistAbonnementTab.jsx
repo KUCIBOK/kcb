@@ -176,10 +176,10 @@ export function ArtistAbonnementTab() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {plans.map((plan) => {
-              const active = isCurrentPlan(plan._id)
+              const active = isCurrentPlan(plan.id ?? plan._id)
               return (
                 <div
-                  key={plan._id}
+                  key={plan.id ?? plan._id}
                   className={`relative flex flex-col rounded-[4px] border p-5 transition-all duration-200 ${
                     active
                       ? 'border-kcb-or bg-kcb-or/10 ring-1 ring-kcb-or/40'
@@ -222,7 +222,7 @@ export function ArtistAbonnementTab() {
 
                   {!active && (
                     <Link
-                      to={`/subscription-checkout/${plan._id}`}
+                      to={`/subscription-checkout/${plan.id ?? plan._id}`}
                       className="mt-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-xs font-semibold rounded-[4px] transition-colors"
                     >
                       Choisir ce plan

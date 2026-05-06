@@ -5,31 +5,33 @@ import { getAllSubscriptions } from '../../api/useSubscriptions'
 export function SubscriptionTab() {
   const [state, setState] = useState({
     subscriptions: [],
-    set: [],
     loading: true,
+    error: null,
   })
+
   useEffect(() => {
-    const getSusbscriptions = async function () {
+    const fetchSubscriptions = async () => {
       try {
-        const subscriptions = await getAllSubscriptions()
-        if (subscriptions?.length > 0) {
-          setState((prev) => ({
-            subscriptions: subscriptions,
-            set: subscriptions?.slice(0, 5),
-            loading: false,
-          }))
+        const result = await getAllSubscriptions()
+        if (Array.isArray(result)) {
+          setState({ subscriptions: result, loading: false, error: null })
+        } else {
+          setState({ subscriptions: [], loading: false, error: result?.error ?? 'Erreur de chargement' })
         }
-      } catch (error) {
-        setState((prev) => ({ ...prev, loading: false }))
+      } catch {
+        setState({ subscriptions: [], loading: false, error: 'Erreur de chargement' })
       }
     }
-    getSusbscriptions()
+    fetchSubscriptions()
   }, [])
+
   return (
-    <>
-      <div className="my-4">
-        <SubscriptionsList subscriptions={state?.set} />
-      </div>
-    </>
+    <div className="my-4">
+      <SubscriptionsList
+        subscriptions={state.subscriptions}
+        loading={state.loading}
+        error={state.error}
+      />
+    </div>
   )
 }

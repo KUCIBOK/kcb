@@ -1,35 +1,32 @@
 import { utils } from './useAPI'
 const { api } = utils
+
 export async function getAllPlans() {
   try {
     const response = await fetch(`${api}/plan`, { ...utils.options })
-    const plans = await response.json()
-    if (plans?.length > 0) {
+    const body = await response.json()
+    const plans = body?.data ?? body
+    if (Array.isArray(plans) && plans.length > 0) {
       return plans
-    } else {
-      throw new Error(plans?.message || 'No plans found')
     }
+    if (Array.isArray(plans)) return plans // empty array is valid
+    throw new Error(body?.message || body?.error || 'No plans found')
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
 export async function getPlanById(id) {
   try {
     const response = await fetch(`${api}/plan/${id}`, { ...utils.options })
-    const plan = await response.json()
-    if (plan?._id) {
+    const body = await response.json()
+    const plan = body?.data ?? body
+    if (plan?.id || plan?._id) {
       return plan
     }
-    return {
-      error: plan?.error || plan?.message,
-    }
+    return { error: body?.error || body?.message }
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
@@ -40,56 +37,48 @@ export async function createPlan(payload) {
       method: 'POST',
       body: JSON.stringify(payload),
     })
-    const plan = await response.json()
-    if (plan?._id) {
+    const body = await response.json()
+    const plan = body?.data ?? body
+    if (plan?.id) {
       return plan
-    } else {
-      throw new Error(plan?.message || plan?.error || 'Plan creation failed')
     }
+    throw new Error(body?.message || body?.error || 'Plan creation failed')
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
 export async function updatePlan(id, payload) {
   try {
-    const { api } = utils
     const response = await fetch(`${api}/plan/${id}`, {
       ...utils.options,
       method: 'PUT',
       body: JSON.stringify(payload),
     })
-    const plan = await response.json()
-    if (plan?._id) {
+    const body = await response.json()
+    const plan = body?.data ?? body
+    if (plan?.id) {
       return plan
-    } else {
-      throw new Error(plan?.message || plan?.error || 'Plan update failed')
     }
+    throw new Error(body?.message || body?.error || 'Plan update failed')
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }
 
 export async function deletePlan(id) {
   try {
-    const { api } = utils
     const response = await fetch(`${api}/plan/${id}`, {
       ...utils.options,
       method: 'DELETE',
     })
-    const plan = await response.json()
-    if (plan?._id) {
+    const body = await response.json()
+    const plan = body?.data ?? body
+    if (plan?.id) {
       return plan
-    } else {
-      throw new Error(plan?.message || plan?.error || 'Plan deletion failed')
     }
+    throw new Error(body?.message || body?.error || 'Plan deletion failed')
   } catch (error) {
-    return {
-      error: error.message,
-    }
+    return { error: error.message }
   }
 }

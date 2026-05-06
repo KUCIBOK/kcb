@@ -5,7 +5,7 @@ import { PlansList } from './PlansList'
 import { Modal, Input, Select, Button, toast } from '../ui'
 
 export function PlansTab() {
-  const { collectorPlans, professionalPlans } = usePlanStore()
+  const { buyerPlans, curatorPlans } = usePlanStore()
   const [state, setState] = useState({ addPlan: false })
   return (
     <>
@@ -13,7 +13,7 @@ export function PlansTab() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-white">Gestion des plans</h2>
           <button
-            onClick={() => setState({ ...state, addUser: true })}
+            onClick={() => setState({ ...state, addPlan: true })}
             className="rounded bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-3 py-2 text-white text-xs md:text-sm font-medium flex items-center gap-2 transition"
           >
             <Plus className="w-4 h-4" /> Ajouter
@@ -21,20 +21,20 @@ export function PlansTab() {
         </div>
         <div className="my-2">
           <PlansList
-            plans={collectorPlans}
+            plans={buyerPlans}
             title="Plans pour collectionneurs"
             icon={<Users className="w-5 h-5" />}
           />
         </div>
         <div className="my-2">
           <PlansList
-            plans={professionalPlans}
+            plans={curatorPlans}
             title="Plans pour professionnels"
             icon={<Shield className="w-5 h-5" />}
           />
         </div>
       </div>
-      {state?.addUser && <AddPlanModal closeModal={() => setState({ ...state, addUser: false })} />}
+      {state?.addPlan && <AddPlanModal closeModal={() => setState({ ...state, addPlan: false })} />}
     </>
   )
 }
@@ -86,7 +86,7 @@ function AddPlanModal({ closeModal }) {
         role: state.role,
         features: state.features,
       })
-      if (plan?._id) {
+      if (plan?.id) {
         toast.success('✓ Plan ajouté')
         closeModal()
       } else {

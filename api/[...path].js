@@ -2069,7 +2069,7 @@ async function routePlans(req, res) {
     const adminCheck = await requireAdmin(authResult.user);
     if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
 
-    const { name, price, currency, duration_days, features } = req.body ?? {};
+    const { name, price, currency, duration_days, features, role, description } = req.body ?? {};
     if (!name || price == null) return fail(res, 'name et price requis');
 
     const { data, error } = await supabaseAdmin
@@ -2081,6 +2081,8 @@ async function routePlans(req, res) {
         duration_days: duration_days ? Number(duration_days) : 30,
         features:      Array.isArray(features) ? features : [],
         is_active:     true,
+        ...(role        && { role }),
+        ...(description && { description }),
       })
       .select()
       .single();
@@ -2950,6 +2952,20 @@ async function routeSubscription(req, res) {
   const { user } = authResult;
 
   if (req.method === 'GET') {
+    const isAdmin = (await getDbRole(user.id)) === 'admin';
+
+    // Admin : retourne tous les abonnements avec infos utilisateur et plan
+    if (isAdmin) {
+      const { data, error } = await supabaseAdmin
+        .from('subscriptions')
+        .select('*, plans(*), users(id, name, email)')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) return fail(res, error.message);
+      return ok(res, data ?? []);
+    }
+
+    // Utilisateur : retourne son abonnement actif
     const { data, error } = await supabaseAdmin
       .from('subscriptions')
       .select('*, plans(*)')

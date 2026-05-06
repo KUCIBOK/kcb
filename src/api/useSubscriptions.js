@@ -74,10 +74,10 @@ export async function getAllSubscriptions() {
     const response = await fetch(`${api}/subscription`, { ...utils.options })
     const body = await response.json()
     const subscriptions = body?.data ?? body
-    if (Array.isArray(subscriptions) && subscriptions.length > 0) {
+    if (Array.isArray(subscriptions)) {
       return subscriptions
     }
-    return { error: body?.message || body?.error }
+    return { error: body?.message || body?.error || 'Format inattendu' }
   } catch (error) {
     return { error: error.message }
   }

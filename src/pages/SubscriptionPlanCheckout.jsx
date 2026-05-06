@@ -65,8 +65,9 @@ export default function SubscriptionPlanCheckout() {
     const fetchPlan = async () => {
       const plan = await getPlanById(id)
       if (plan?.id) {
-        setState((prev) => ({ ...prev, plan: plan, error: '', loading: false }))
-        return
+        setState((prev) => ({ ...prev, plan, error: '', loading: false }))
+      } else {
+        setState((prev) => ({ ...prev, loading: false, error: plan?.error ?? 'Plan introuvable' }))
       }
     }
     fetchPlan()
