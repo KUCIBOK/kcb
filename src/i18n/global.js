@@ -119,7 +119,7 @@ export const globalT = {
         {
           name: 'Collector',
           desc: 'Full access with priority logistics',
-          price: '49',
+          price: '27',
           priceSuffix: ' EUR',
           period: 'per month',
           features: [
@@ -340,7 +340,7 @@ export const globalT = {
         {
           name: 'Collector',
           desc: 'Accès complet avec logistique prioritaire',
-          price: '49',
+          price: '27',
           priceSuffix: ' EUR',
           period: 'par mois',
           features: [
