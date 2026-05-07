@@ -17,9 +17,19 @@ function validImageUrl(url) {
   return url
 }
 
+function shuffle(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
 const SORT_FNS = {
-  recent: (a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0),
-  price_asc: (a, b) => (Number(a.price) || 0) - (Number(b.price) || 0),
+  random:     () => 0,
+  recent:     (a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0),
+  price_asc:  (a, b) => (Number(a.price) || 0) - (Number(b.price) || 0),
   price_desc: (a, b) => (Number(b.price) || 0) - (Number(a.price) || 0),
 }
 
@@ -106,7 +116,7 @@ function CatalogueContent() {
   const [category, setCategory] = useState('All')
   const [forSaleOnly, setForSaleOnly] = useState(false)
   const [certifiedOnly, setCertified] = useState(false)
-  const [sort, setSort] = useState('recent')
+  const [sort, setSort] = useState('random')
   const [visible, setVisible] = useState(PAGE_SIZE)
   const [activeTab, setActiveTab] = useState('artworks')
 
@@ -126,7 +136,7 @@ function CatalogueContent() {
         : Array.isArray(artisRes)
           ? artisRes
           : []
-      setAllArtworks(artList)
+      setAllArtworks(shuffle(artList))
       setAllArtists(artistList)
       setLoading(false)
     })
@@ -156,12 +166,12 @@ function CatalogueContent() {
     setCategory('All')
     setForSaleOnly(false)
     setCertified(false)
-    setSort('recent')
+    setSort('random')
     setVisible(PAGE_SIZE)
   }, [])
 
   const hasActive =
-    search || category !== 'All' || forSaleOnly || certifiedOnly || sort !== 'recent'
+    search || category !== 'All' || forSaleOnly || certifiedOnly || sort !== 'random'
 
   const isFr = lang === 'fr'
 
@@ -292,6 +302,7 @@ function CatalogueContent() {
               }}
               className="appearance-none bg-kcb-noir border border-white/[0.06] pl-3 pr-8 py-2 text-sm text-white focus:outline-none focus:border-[var(--accent)] cursor-pointer transition"
             >
+              <option value="random">{isFr ? 'Aléatoire' : 'Random'}</option>
               <option value="recent">{isFr ? 'Plus récent' : 'Most recent'}</option>
               <option value="price_asc">{isFr ? 'Prix ↑' : 'Price ↑'}</option>
               <option value="price_desc">{isFr ? 'Prix ↓' : 'Price ↓'}</option>
