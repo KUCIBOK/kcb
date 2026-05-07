@@ -1743,6 +1743,11 @@ async function routeArtworkById(req, res, id) {
     const { data, error } = await supabaseAdmin
       .from('artworks').update({ status }).eq('id', id).select().single();
     if (error) return fail(res, error.message);
+
+    if (status === 'approved') {
+      generateCertificateForArtwork(id).catch(() => {});
+    }
+
     return ok(res, data);
   }
 
@@ -3167,32 +3172,14 @@ async function routeCampaignSend(req, res) {
 // CERTIFICATES (F1)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/**
- * POST /api/certificates/generate — Génère un certificat PDF d'authenticité.
- * Utilise pdfkit (pas de Chrome sur Vercel).
- *
- * @param {import('@vercel/node').VercelRequest}  req
- * @param {import('@vercel/node').VercelResponse} res
- */
-async function routeCertificateGenerate(req, res) {
-  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
-
-  const authResult = await requireAuth(req);
-  if (authResult.error) return fail(res, authResult.error, authResult.status);
-
-  const { artwork_id } = req.body ?? {};
-  if (!artwork_id) return fail(res, 'artwork_id requis');
-
+async function generateCertificateForArtwork(artworkId) {
   const { data: artwork, error: artworkErr } = await supabaseAdmin
     .from('artworks')
     .select('*, artists(name, country)')
-    .eq('id', artwork_id)
+    .eq('id', artworkId)
     .single();
+  if (artworkErr || !artwork) throw new Error('Œuvre introuvable');
 
-  if (artworkErr || !artwork) return fail(res, 'Œuvre introuvable', 404);
-  if (artwork.status !== 'approved') return fail(res, 'Œuvre non approuvée');
-
-  // Fallback artiste via user_id si la jointure ne retourne rien
   let artistName    = artwork.artists?.name    ?? '';
   let artistCountry = artwork.artists?.country ?? '';
   if (!artistName && artwork.user_id) {
@@ -3202,7 +3189,6 @@ async function routeCertificateGenerate(req, res) {
     artistCountry = artist?.country ?? '';
   }
 
-  // Télécharge l'image de l'œuvre pour l'embarquer dans le PDF
   let imageBuffer = null;
   if (artwork.image) {
     try {
@@ -3212,7 +3198,6 @@ async function routeCertificateGenerate(req, res) {
   }
 
   const PDFDocument = (await import('pdfkit')).default;
-
   const chunks = [];
   const doc = new PDFDocument({ margin: 0, size: 'A4', layout: 'landscape' });
   doc.on('data', chunk => chunks.push(chunk));
@@ -3230,44 +3215,35 @@ async function routeCertificateGenerate(req, res) {
     const CREAM      = '#F5F0E8';
     const GRAY       = '#8A7A6A';
 
-    // Fond ivoire
     doc.rect(0, 0, W, H).fill(CREAM);
 
-    // Double cadre doré
     const m = 20;
     doc.rect(m, m, W - 2*m, H - 2*m).lineWidth(2).stroke(GOLD);
     doc.rect(m+6, m+6, W - 2*(m+6), H - 2*(m+6)).lineWidth(0.5).stroke(GOLD_LIGHT);
 
-    // Séparateur vertical
     const divX = W * 0.57;
     doc.moveTo(divX, m+18).lineTo(divX, H-m-18).lineWidth(0.8).stroke(GOLD_LIGHT);
 
-    // ── COLONNE GAUCHE ──────────────────────────────────────────────────
     const lx = 48;
     let y = 52;
 
-    // Logo texte
     doc.fontSize(11).font('Helvetica-Bold').fillColor(GOLD).text('✦', lx, y, { continued: true })
        .fillColor(DARK).text(' KUCIBOK');
     y += 28;
 
-    // Titre
     doc.fontSize(24).font('Helvetica-Bold').fillColor(DARK).text('CERTIFICAT', lx, y);
     y += 30;
     doc.fontSize(24).font('Helvetica-Bold').fillColor(DARK).text("D'AUTHENTICITÉ", lx, y);
     y += 26;
 
-    // Sous-titre
     doc.fontSize(10).font('Helvetica').fillColor(GRAY).text('Art Africain Authentique', lx, y);
     y += 24;
 
-    // Badge certifié
     doc.roundedRect(lx, y, 165, 23, 11).fill(GOLD);
     doc.fontSize(9).font('Helvetica-Bold').fillColor('#FFFFFF')
        .text('✓  ŒUVRE CERTIFIÉE', lx, y+7, { width: 165, align: 'center' });
     y += 44;
 
-    // Tableau infos
     const tableW = divX - lx - 28;
     doc.rect(lx, y, 3, 155).fill(GOLD_LIGHT);
 
@@ -3287,12 +3263,10 @@ async function routeCertificateGenerate(req, res) {
       doc.fontSize(10).font('Helvetica-Bold').fillColor(DARK).text(value, lx+140, ry+9, { width: tableW-148, align: 'right' });
     });
 
-    // ── COLONNE DROITE ───────────────────────────────────────────────────
     const rx   = divX + 28;
     const rw   = W - divX - 28 - m - 8;
     let   ry2  = 48;
 
-    // Image de l'œuvre
     const imgSz = Math.min(rw, 195);
     const imgX  = rx + (rw - imgSz) / 2;
     doc.rect(imgX-2, ry2-2, imgSz+4, imgSz+4).lineWidth(2).stroke(GOLD);
@@ -3304,7 +3278,6 @@ async function routeCertificateGenerate(req, res) {
     }
     ry2 += imgSz + 22;
 
-    // Cachet circulaire
     const cx = rx + rw/2;
     const cr = 46;
     doc.circle(cx, ry2+cr, cr).lineWidth(1.5).stroke(GOLD);
@@ -3315,7 +3288,6 @@ async function routeCertificateGenerate(req, res) {
        .text('KUCIBOK',      cx-15, ry2+cr+6);
     ry2 += cr*2 + 18;
 
-    // Code KCB
     doc.fontSize(9).font('Helvetica').fillColor(GRAY)
        .text('Code de vérification', rx, ry2, { width: rw, align: 'center' });
     ry2 += 15;
@@ -3326,7 +3298,6 @@ async function routeCertificateGenerate(req, res) {
        .text(artwork.kucibok_id ?? 'KCB-XXXXXXXX', codeX, ry2+6, { width: codeW, align: 'center' });
     ry2 += 33;
 
-    // Attestation
     doc.fontSize(8).font('Helvetica').fillColor(GRAY)
        .text(
          "Ce certificat atteste de l'authenticité\nde cette œuvre d'art africaine.",
@@ -3336,21 +3307,20 @@ async function routeCertificateGenerate(req, res) {
     doc.end();
   });
 
-  const filename = `${artwork.kucibok_id ?? artwork_id}.pdf`;
+  const filename = `${artwork.kucibok_id ?? artworkId}.pdf`;
 
   const { error: uploadErr } = await supabaseAdmin.storage
     .from('certificates')
     .upload(`artworks/${filename}`, pdfBuffer, { contentType: 'application/pdf', upsert: true });
-
-  if (uploadErr) return fail(res, uploadErr.message);
+  if (uploadErr) throw new Error(uploadErr.message);
 
   await supabaseAdmin
     .from('artworks')
     .update({ certificate_path: `artworks/${filename}` })
-    .eq('id', artwork_id);
+    .eq('id', artworkId);
 
   await supabaseAdmin.from('documents').upsert({
-    artwork_id,
+    artwork_id: artworkId,
     user_id: artwork.user_id,
     type:    'certificate',
     url:     `artworks/${filename}`,
@@ -3360,11 +3330,36 @@ async function routeCertificateGenerate(req, res) {
     .from('certificates')
     .createSignedUrl(`artworks/${filename}`, 3600);
 
-  return ok(res, {
+  return {
     certificate_url: signedData?.signedUrl,
     filename,
     kucibok_id: artwork.kucibok_id,
-  });
+  };
+}
+
+/**
+ * POST /api/certificates/generate — Génère (ou regénère) un certificat PDF.
+ */
+async function routeCertificateGenerate(req, res) {
+  if (req.method !== 'POST') return fail(res, 'Méthode non autorisée', 405);
+
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+
+  const { artwork_id } = req.body ?? {};
+  if (!artwork_id) return fail(res, 'artwork_id requis');
+
+  const { data: artwork } = await supabaseAdmin
+    .from('artworks').select('status').eq('id', artwork_id).single();
+  if (!artwork) return fail(res, 'Œuvre introuvable', 404);
+  if (artwork.status !== 'approved') return fail(res, 'Œuvre non approuvée');
+
+  try {
+    const result = await generateCertificateForArtwork(artwork_id);
+    return ok(res, result);
+  } catch (err) {
+    return fail(res, err.message);
+  }
 }
 
 /**
