@@ -22,9 +22,18 @@ import {
   Pause,
 } from 'lucide-react'
 
+const PERIODS = [
+  { key: 'q1_2026',       label: 'Q1 2026',      short: 'Jan–Mar 2026' },
+  { key: 'q2_2026',       label: 'Q2 2026',      short: 'Avr–Juin 2026' },
+  { key: 'current_month', label: 'Mois courant', short: 'Ce mois' },
+  { key: 'all_time',      label: 'Tout',         short: 'Tout' },
+]
+
 export function Analytics({ currency = 'EUR' }) {
   const [data, setData] = useState(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
+  const [period, setPeriod] = useState('current_month')
+  const [liveData, setLiveData] = useState(null)
   // Les valeurs de defaultData sont en EUR — fmtMoney attend du XOF, on convertit avant affichage
   const fmt = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
 
@@ -135,30 +144,39 @@ export function Analytics({ currency = 'EUR' }) {
     ],
   }
 
-  const loadData = async () => {
+  const loadLiveData = async (p) => {
     try {
-      const response = await fetch(`${utils.api}/analytics/latest`, {
-        headers: utils.options.headers,
-      })
+      const response = await fetch(`${utils.api}/analytics?period=${p}`, utils.options)
       const result = await response.json()
-      if (result.success && result.data) {
-        setData(result.data)
-      }
+      if (result?.data) setLiveData(result.data)
     } catch (_err) {
-      // Fallback to default data
+      // fallback sur defaultData
     }
   }
 
   useEffect(() => {
     setData(defaultData) // eslint-disable-line react-hooks/set-state-in-effect
-    loadData()
+    setLiveData(null)
+    loadLiveData(period)
     if (autoRefresh) {
-      const interval = setInterval(() => loadData(), 30000)
+      const interval = setInterval(() => loadLiveData(period), 30000)
       return () => clearInterval(interval)
     }
-  }, [autoRefresh]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [autoRefresh, period]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!data)
+  // Fusionne les vraies données sur les valeurs connues
+  const merged = data ? {
+    ...data,
+    ...(liveData ? {
+      totalArtworks:   liveData.artworks?.total    ?? data.totalArtworks,
+      gmv:             liveData.transactions?.gmv_eur ?? data.gmv,
+      aov:             liveData.transactions?.aov_eur  || data.aov,
+      sales:           liveData.transactions?.completed ?? data.sales,
+      pendingArtworks: liveData.pending_artworks   ?? data.pendingArtworks,
+    } : {}),
+  } : null
+
+  if (!merged)
     return (
       <div className="space-y-6 pb-10">
         {/* Header skeleton */}
@@ -194,12 +212,30 @@ export function Analytics({ currency = 'EUR' }) {
   return (
     <div className="space-y-6 pb-10">
       {/* En-tête */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-4xl font-bold text-white">Dashboard Principal</h1>
-          <p className="text-kcb-pierre mt-2">Vue d'ensemble complète de la plateforme</p>
+          <p className="text-kcb-pierre mt-2">
+            {PERIODS.find(p => p.key === period)?.short ?? 'Ce mois'} — données réelles + projections
+          </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
+          {/* Sélecteur de période */}
+          <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-1">
+            {PERIODS.map((p) => (
+              <button
+                key={p.key}
+                onClick={() => setPeriod(p.key)}
+                className={`px-3 py-1 rounded text-xs font-medium transition ${
+                  period === p.key
+                    ? 'bg-kcb-or text-kcb-noir'
+                    : 'text-kcb-pierre hover:text-white'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => setAutoRefresh(!autoRefresh)}
             className={`px-4 py-2 rounded text-sm font-medium transition ${
@@ -219,18 +255,30 @@ export function Analytics({ currency = 'EUR' }) {
             )}
           </button>
           <button
-            onClick={loadData}
+            onClick={() => loadLiveData(period)}
             className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze rounded text-kcb-noir text-sm font-medium transition"
           >
             Refresh
           </button>
         </div>
       </div>
+      {/* Badge données réelles */}
+      {liveData && (
+        <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/10 border border-green-500/20 rounded-[4px] px-3 py-2 w-fit">
+          <CheckCircle className="w-3.5 h-3.5" />
+          Données Supabase chargées — {PERIODS.find(p => p.key === period)?.short}
+          {liveData.transactions && (
+            <span className="text-green-300/70 ml-1">
+              · {liveData.transactions.completed} transactions · {liveData.artworks?.total ?? 0} œuvres · {liveData.users?.new ?? 0} nouveaux users
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Alertes & Actions Rapides */}
-      {data.alerts && data.alerts.length > 0 && (
+      {merged.alerts && merged.alerts.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {data.alerts.map((alert, idx) => (
+          {merged.alerts.map((alert, idx) => (
             <div
               key={idx}
               className={`p-4 rounded-[4px] border ${
@@ -257,29 +305,29 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="MRR"
-            value={fmt(data.mrr)}
-            change={`+${data.mrrGrowth}% MoM`}
+            value={fmt(merged.mrr)}
+            change={`+${merged.mrrGrowth}% MoM`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="ARR"
-            value={fmt(data.arr)}
-            change={`+${data.arr_growth}% YoY`}
+            value={fmt(merged.arr)}
+            change={`+${merged.arr_growth}% YoY`}
             trend="up"
             color="green"
           />
           <MetricCard
             label="CAC"
-            value={fmt(data.cac)}
+            value={fmt(merged.cac)}
             change="Coût d'acquisition"
             trend="down"
             color="blue"
           />
           <MetricCard
             label="LTV"
-            value={fmt(data.ltv)}
-            change={`Ratio LTV:CAC = ${(data.ltv / data.cac).toFixed(1)}x`}
+            value={fmt(merged.ltv)}
+            change={`Ratio LTV:CAC = ${(merged.ltv / merged.cac).toFixed(1)}x`}
             trend="up"
             color="purple"
           />
@@ -287,18 +335,18 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <RevenueBreakdown
             title="Mix de revenu"
-            data={data.revenue_mix}
+            data={merged.revenue_mix}
             colors={['#2D6A4F', '#C9A84C', '#8B6914']}
           />
           <MetricCard
             label="Payback Period"
-            value={`${data.payback_period} mois`}
+            value={`${merged.payback_period} mois`}
             change="Temps de récupération"
             color="indigo"
           />
           <MetricCard
             label="MRR M+1"
-            value={fmt(data.revenue_projection_3m)}
+            value={fmt(merged.revenue_projection_3m)}
             change={`+12% MoM — MRR × 1,12`}
             color="emerald"
           />
@@ -310,13 +358,13 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Abonnés payants"
-            value={data.saas_subscribers}
-            change={`ARPA moyen : ${data.arpa} €/mois`}
+            value={merged.saas_subscribers}
+            change={`ARPA moyen : ${merged.arpa} €/mois`}
             trend="up"
             color="green"
           />
-          {data.saas_segments &&
-            Object.entries(data.saas_segments).map(([seg, info]) => (
+          {merged.saas_segments &&
+            Object.entries(merged.saas_segments).map(([seg, info]) => (
               <div
                 key={seg}
                 className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4"
@@ -339,27 +387,27 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Total Utilisateurs"
-            value={data.totalUsers}
-            change={`+${data.acquisition_growth}% ce mois`}
+            value={merged.totalUsers}
+            change={`+${merged.acquisition_growth}% ce mois`}
             trend="up"
             color="blue"
           />
           <MetricCard
             label="MAU"
-            value={data.mau}
+            value={merged.mau}
             change="Utilisateurs actifs mensuels"
             color="indigo"
           />
           <MetricCard
             label="DAU"
-            value={data.dau}
+            value={merged.dau}
             change="Utilisateurs actifs quotidiens"
             color="violet"
           />
           <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-kcb-pierre text-sm mb-2">Canaux d'acquisition</p>
             <div className="space-y-2">
-              {Object.entries(data.channels).map(([channel, metrics]) => (
+              {Object.entries(merged.channels).map(([channel, metrics]) => (
                 <div key={channel} className="flex justify-between text-sm">
                   <span className="text-kcb-sable capitalize">{channel}</span>
                   <span className="text-white font-semibold">
@@ -377,15 +425,15 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Œuvres Total"
-            value={data.totalArtworks}
-            change={`+${data.artworks_growth}% ce mois`}
+            value={merged.totalArtworks}
+            change={`+${merged.artworks_growth}% ce mois`}
             trend="up"
             color="purple"
           />
           <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-kcb-pierre text-sm mb-2">Par catégorie</p>
             <div className="space-y-1">
-              {Object.entries(data.artworks_by_category).map(([cat, count]) => (
+              {Object.entries(merged.artworks_by_category).map(([cat, count]) => (
                 <div key={cat} className="flex justify-between text-sm">
                   <span className="text-kcb-sable capitalize">{cat}</span>
                   <span className="text-white font-semibold">{count}</span>
@@ -395,15 +443,15 @@ export function Analytics({ currency = 'EUR' }) {
           </div>
           <MetricCard
             label="Score Qualité"
-            value={`${data.quality_score}%`}
-            change={`${data.artworks_with_cert}/${data.totalArtworks} avec cert`}
+            value={`${merged.quality_score}%`}
+            change={`${merged.artworks_with_cert}/${merged.totalArtworks} avec cert`}
             trend="up"
             color="green"
           />
           <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-kcb-pierre text-sm mb-2">Top Artistes</p>
             <div className="space-y-1">
-              {data.top_artists.slice(0, 3).map((artist, idx) => (
+              {merged.top_artists.slice(0, 3).map((artist, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
                   <span className="text-kcb-sable">{artist.name}</span>
                   <span className="text-green-300 font-semibold">
@@ -421,25 +469,25 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="GMV"
-            value={fmt(data.gmv, { compact: true })}
+            value={fmt(merged.gmv, { compact: true })}
             change="Volume marchand brut"
             color="green"
           />
           <MetricCard
             label="AOV"
-            value={fmt(data.aov)}
+            value={fmt(merged.aov)}
             change="Valeur moyenne par commande"
             color="blue"
           />
           <MetricCard
             label="Conversion"
-            value={`${data.conversion_rate}%`}
+            value={`${merged.conversion_rate}%`}
             change="Taux de conversion"
             color="purple"
           />
           <MetricCard
             label="Commission"
-            value={fmt(data.commission_revenue, { compact: true })}
+            value={fmt(merged.commission_revenue, { compact: true })}
             change="Revenu commission"
             color="amber"
           />
@@ -448,16 +496,16 @@ export function Analytics({ currency = 'EUR' }) {
           <FunnelChart
             title="Funnel Marketplace"
             stages={[
-              { label: 'Vues', value: data.views_total, color: 'blue' },
-              { label: 'Favoris', value: data.favorites, color: 'purple' },
-              { label: 'Messages', value: data.messages, color: 'indigo' },
-              { label: 'Ventes', value: data.sales, color: 'green' },
+              { label: 'Vues', value: merged.views_total, color: 'blue' },
+              { label: 'Favoris', value: merged.favorites, color: 'purple' },
+              { label: 'Messages', value: merged.messages, color: 'indigo' },
+              { label: 'Ventes', value: merged.sales, color: 'green' },
             ]}
           />
           <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-white font-semibold mb-3">Meilleures ventes</p>
             <div className="space-y-2">
-              {data.best_sellers.map((item, idx) => (
+              {merged.best_sellers.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-start">
                   <div>
                     <p className="text-white text-sm font-medium">{item.title}</p>
@@ -474,30 +522,30 @@ export function Analytics({ currency = 'EUR' }) {
       </Section>
 
       {/* Section 4b: Logistique */}
-      {data.logistics && (
+      {merged.logistics && (
         <Section title="Logistique">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <MetricCard
               label="Envois 2025 (total)"
-              value={data.logistics.envois_2025}
-              change={`${data.logistics.envois_mensuels} envois/mois en moyenne`}
+              value={merged.logistics.envois_2025}
+              change={`${merged.logistics.envois_mensuels} envois/mois en moyenne`}
               color="blue"
             />
             <MetricCard
               label="Panier moyen logistique"
-              value={fmt(data.logistics.panier_moyen)}
+              value={fmt(merged.logistics.panier_moyen)}
               change="Par envoi"
               color="indigo"
             />
             <MetricCard
               label="Revenu logistique/mois"
-              value={fmt(data.logistics.revenu_mensuel)}
+              value={fmt(merged.logistics.revenu_mensuel)}
               trend="up"
               color="green"
             />
             <MetricCard
               label="Marge logistique"
-              value={`${data.logistics.marge}%`}
+              value={`${merged.logistics.marge}%`}
               change="Marge nette"
               trend="up"
               color="emerald"
@@ -511,26 +559,26 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Stickiness"
-            value={`${data.dau_mau_ratio.toFixed(1)}%`}
+            value={`${merged.dau_mau_ratio.toFixed(1)}%`}
             change="DAU/MAU ratio"
-            trend={data.dau_mau_ratio > 50 ? 'up' : 'down'}
+            trend={merged.dau_mau_ratio > 50 ? 'up' : 'down'}
             color="indigo"
           />
           <MetricCard
             label="Rétention 7J"
-            value={`${data.retention_7d}%`}
+            value={`${merged.retention_7d}%`}
             change="Utilisateurs revenant"
             color="green"
           />
           <MetricCard
             label="Rétention 30J"
-            value={`${data.retention_30d}%`}
+            value={`${merged.retention_30d}%`}
             change="Rétention à 30 jours"
             color="blue"
           />
           <MetricCard
             label="À Risque"
-            value={data.at_risk_users}
+            value={merged.at_risk_users}
             change="Utilisateurs de churn"
             trend="down"
             color="red"
@@ -539,7 +587,7 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
           <p className="text-white font-semibold mb-3">Adoption des features</p>
           <div className="space-y-2">
-            {Object.entries(data.feature_adoption).map(([feature, adoption]) => (
+            {Object.entries(merged.feature_adoption).map(([feature, adoption]) => (
               <ProgressBar
                 key={feature}
                 label={feature.charAt(0).toUpperCase() + feature.slice(1)}
@@ -555,27 +603,27 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Uptime"
-            value={`${data.uptime}%`}
+            value={`${merged.uptime}%`}
             change="Disponibilité du service"
             trend="up"
             color="green"
           />
           <MetricCard
             label="API Response"
-            value={`${data.api_response_time}ms`}
+            value={`${merged.api_response_time}ms`}
             change="Temps de réponse moyen"
             color="blue"
           />
           <MetricCard
             label="Error Rate"
-            value={`${data.error_rate}%`}
+            value={`${merged.error_rate}%`}
             change="Taux d'erreur"
             trend="down"
             color="red"
           />
           <MetricCard
             label="Certificats"
-            value={data.certs_generated}
+            value={merged.certs_generated}
             change="Générés ce mois"
             color="purple"
           />
@@ -583,9 +631,9 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
           <p className="text-white font-semibold mb-3">Web Vitals</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <VitalCard label="LCP" value={`${data.lcp}s`} target="< 2.5s" status="good" />
-            <VitalCard label="FID" value={`${data.fid}ms`} target="< 100ms" status="good" />
-            <VitalCard label="CLS" value={data.cls} target="< 0.1" status="needs-improvement" />
+            <VitalCard label="LCP" value={`${merged.lcp}s`} target="< 2.5s" status="good" />
+            <VitalCard label="FID" value={`${merged.fid}ms`} target="< 100ms" status="good" />
+            <VitalCard label="CLS" value={merged.cls} target="< 0.1" status="needs-improvement" />
           </div>
         </div>
       </Section>
@@ -595,26 +643,26 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="NPS"
-            value={data.nps}
+            value={merged.nps}
             change="Score promoteur net"
             trend="up"
             color="green"
           />
           <MetricCard
             label="CSAT"
-            value={`${data.csat.toFixed(1)}/5`}
+            value={`${merged.csat.toFixed(1)}/5`}
             change="Satisfaction client"
             color="blue"
           />
           <MetricCard
             label="Total Tickets"
-            value={data.total_tickets}
+            value={merged.total_tickets}
             change="Demandes de support"
             color="purple"
           />
           <MetricCard
             label="Temps Résolution"
-            value={`${data.avg_resolution_time}h`}
+            value={`${merged.avg_resolution_time}h`}
             change="Moyenne"
             color="indigo"
           />
@@ -623,7 +671,7 @@ export function Analytics({ currency = 'EUR' }) {
           <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
             <p className="text-white font-semibold mb-3">Catégories de problèmes</p>
             <div className="space-y-2">
-              {Object.entries(data.ticket_categories).map(([category, count]) => (
+              {Object.entries(merged.ticket_categories).map(([category, count]) => (
                 <div key={category} className="flex justify-between text-sm">
                   <span className="text-kcb-sable capitalize">{category}</span>
                   <span className="text-white font-semibold">{count} tickets</span>
@@ -633,7 +681,7 @@ export function Analytics({ currency = 'EUR' }) {
           </div>
           <MetricCard
             label="Temps Réponse"
-            value={`${data.avg_response_time}h`}
+            value={`${merged.avg_response_time}h`}
             change="Moyenne de réponse"
             color="amber"
           />
@@ -645,20 +693,20 @@ export function Analytics({ currency = 'EUR' }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
             label="MRR Projection"
-            value={fmt(data.mrr_projection)}
+            value={fmt(merged.mrr_projection)}
             change="Estimé le mois prochain"
             color="green"
           />
           <MetricCard
             label="Churn Risk"
-            value={data.churn_risk_users}
+            value={merged.churn_risk_users}
             change="Utilisateurs à risque"
             trend="down"
             color="orange"
           />
           <MetricCard
             label="Upsell"
-            value={data.upsell_opportunities}
+            value={merged.upsell_opportunities}
             change="Opportunités identifiées"
             color="purple"
           />
@@ -671,19 +719,19 @@ export function Analytics({ currency = 'EUR' }) {
           <ActionButton
             icon=""
             label="Réviser Œuvres"
-            badge={data.pendingArtworks ?? '—'}
+            badge={merged.pendingArtworks ?? '—'}
             onClick={() => {}}
           />
           <ActionButton
             icon=""
             label="Gérer Utilisateurs"
-            badge={data.totalUsers ?? '—'}
+            badge={merged.totalUsers ?? '—'}
             onClick={() => {}}
           />
           <ActionButton
             icon=""
             label="Tickets Support"
-            badge={data.openTickets ?? '—'}
+            badge={merged.openTickets ?? '—'}
             onClick={() => {}}
           />
         </div>
