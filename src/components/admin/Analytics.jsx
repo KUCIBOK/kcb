@@ -29,6 +29,62 @@ const PERIODS = [
   { key: 'all_time',      label: 'Tout',         short: 'Tout' },
 ]
 
+// Données réelles Q1 2026 — source : DashboardComptable_V5.xlsx Q1 2026.pdf
+const Q1_2026 = {
+  mrr: 6046,           // MRR fin mars 2026
+  arr: 72552,          // 6 046 × 12
+  mrrGrowth: 12,       // +12%/mois (base déc 2025 = 4 303 €)
+  arr_growth: 40.5,    // croissance vs déc 2025
+  revenue_projection_3m: 6772, // 6 046 × 1,12
+  payback_period: 7,
+  cac: 190,
+  ltv: 600,
+  revenue_mix: { saas: 57, logistique: 23, numerisation: 10, marketplace: 9 },
+  saas_subscribers: 232,
+  arpa: 26,
+  saas_segments: {
+    collectionneur: { count: 51,  mrr: 1279, share: 22 },
+    curateur:       { count: 128, mrr: 3197, share: 55 },
+    galerie:        { count: 63,  mrr: 1570, share: 27 },
+  },
+  gmv:               900,    // marketplace avg mensuel (2 700 / 3)
+  aov:               225,    // proxy GMV / ventes
+  commission_revenue: 180,   // avg mensuel
+  logistics: {
+    envois_2025:     31,     // total Q1 (8 + 10 + 13)
+    envois_mensuels: 10.3,
+    panier_moyen:    250,
+    revenu_mensuel:  2233,   // 6 700 / 3
+    marge:           63.0,   // (6 700 - 2 480) / 6 700
+  },
+  // P&L mensuel complet — pour la section dédiée
+  pl_monthly: [
+    {
+      mois: 'Janvier 2026',
+      produits: { saas: 4820, marketplace: 1000, logistique: 2000, numerisation: 900, nouveaux_marches: 0,  total: 8720  },
+      charges:  { salaires: 4500, tech: 750,  marketing: 1500, logistique: 640,  numerisation: 360,  admin: 500, amort: 200, divers: 450, total: 8500 },
+      net: 220, marge: 2.5, mrr: 4820, abonnes: 185,
+    },
+    {
+      mois: 'Février 2026',
+      produits: { saas: 5398, marketplace: 900,  logistique: 2200, numerisation: 1000, nouveaux_marches: 300,  total: 9498  },
+      charges:  { salaires: 4500, tech: 800,  marketing: 2000, logistique: 800,  numerisation: 450,  admin: 550, amort: 200, divers: 500, total: 9000 },
+      net: 498, marge: 5.2, mrr: 5398, abonnes: 207,
+    },
+    {
+      mois: 'Mars 2026',
+      produits: { saas: 6046, marketplace: 800,  logistique: 2500, numerisation: 1100, nouveaux_marches: 800,  total: 10446 },
+      charges:  { salaires: 4800, tech: 900,  marketing: 2500, logistique: 1040, numerisation: 540,  admin: 600, amort: 200, divers: 560, total: 9500 },
+      net: 946, marge: 9.1, mrr: 6046, abonnes: 232,
+    },
+  ],
+  pl_q1_total: {
+    produits: { saas: 16264, marketplace: 2700, logistique: 6700, numerisation: 3000, nouveaux_marches: 1100, total: 28664 },
+    charges:  { salaires: 13800, tech: 2450, marketing: 6000, logistique: 2480, numerisation: 1350, admin: 1650, amort: 600, divers: 1510, total: 27000 },
+    net: 1664, marge: 5.6,
+  },
+}
+
 export function Analytics({ currency = 'EUR' }) {
   const [data, setData] = useState(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
@@ -165,12 +221,32 @@ export function Analytics({ currency = 'EUR' }) {
   }, [autoRefresh, period]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fusionne les vraies données sur les valeurs connues
+  const q1Static = period === 'q1_2026' ? {
+    mrr:                   Q1_2026.mrr,
+    arr:                   Q1_2026.arr,
+    mrrGrowth:             Q1_2026.mrrGrowth,
+    arr_growth:            Q1_2026.arr_growth,
+    revenue_projection_3m: Q1_2026.revenue_projection_3m,
+    payback_period:        Q1_2026.payback_period,
+    cac:                   Q1_2026.cac,
+    ltv:                   Q1_2026.ltv,
+    revenue_mix:           Q1_2026.revenue_mix,
+    saas_subscribers:      Q1_2026.saas_subscribers,
+    arpa:                  Q1_2026.arpa,
+    saas_segments:         Q1_2026.saas_segments,
+    gmv:                   Q1_2026.gmv,
+    aov:                   Q1_2026.aov,
+    commission_revenue:    Q1_2026.commission_revenue,
+    logistics:             Q1_2026.logistics,
+  } : {}
+
   const merged = data ? {
     ...data,
+    ...q1Static,
     ...(liveData ? {
       totalArtworks:   liveData.artworks?.total    ?? data.totalArtworks,
-      gmv:             liveData.transactions?.gmv_eur ?? data.gmv,
-      aov:             liveData.transactions?.aov_eur  || data.aov,
+      gmv:             liveData.transactions?.gmv_eur ?? (q1Static.gmv ?? data.gmv),
+      aov:             liveData.transactions?.aov_eur  || (q1Static.aov ?? data.aov),
       sales:           liveData.transactions?.completed ?? data.sales,
       pendingArtworks: liveData.pending_artworks   ?? data.pendingArtworks,
     } : {}),
@@ -550,6 +626,121 @@ export function Analytics({ currency = 'EUR' }) {
               trend="up"
               color="emerald"
             />
+          </div>
+        </Section>
+      )}
+
+      {/* Section P&L Q1 2026 — visible uniquement en période Q1 2026 */}
+      {period === 'q1_2026' && (
+        <Section title="P&L Q1 2026 — Détail Mensuel">
+          <div className="overflow-x-auto bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/[0.08]">
+                  <th className="text-left text-kcb-pierre py-2 pr-4 font-medium w-40">Ligne</th>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <th key={m.mois} className="text-right text-kcb-pierre py-2 px-3 font-medium">{m.mois}</th>
+                  ))}
+                  <th className="text-right text-kcb-or py-2 pl-3 font-medium">Q1 Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.03]">
+                {/* Produits */}
+                <tr>
+                  <td colSpan={5} className="text-xs font-semibold text-kcb-or pt-3 pb-1 uppercase tracking-wide">Produits</td>
+                </tr>
+                {[
+                  ['SaaS', 'saas'],
+                  ['Marketplace', 'marketplace'],
+                  ['Logistique', 'logistique'],
+                  ['Numérisation', 'numerisation'],
+                  ['Nouveaux marchés', 'nouveaux_marches'],
+                ].map(([label, key]) => (
+                  <tr key={key} className="hover:bg-white/[0.02]">
+                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
+                    {Q1_2026.pl_monthly.map((m) => (
+                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">
+                        {m.produits[key] > 0 ? fmt(m.produits[key]) : <span className="text-kcb-pierre">—</span>}
+                      </td>
+                    ))}
+                    <td className="py-1.5 pl-3 text-right text-kcb-sable">{Q1_2026.pl_q1_total.produits[key] > 0 ? fmt(Q1_2026.pl_q1_total.produits[key]) : <span className="text-kcb-pierre">—</span>}</td>
+                  </tr>
+                ))}
+                <tr className="border-t border-white/[0.12] font-semibold">
+                  <td className="py-2 pr-4 text-white">Total Produits</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td key={m.mois} className="py-2 px-3 text-right text-green-300">{fmt(m.produits.total)}</td>
+                  ))}
+                  <td className="py-2 pl-3 text-right text-green-300 font-bold">{fmt(Q1_2026.pl_q1_total.produits.total)}</td>
+                </tr>
+
+                {/* Charges */}
+                <tr>
+                  <td colSpan={5} className="text-xs font-semibold text-red-400 pt-4 pb-1 uppercase tracking-wide">Charges</td>
+                </tr>
+                {[
+                  ['Salaires', 'salaires'],
+                  ['Tech', 'tech'],
+                  ['Marketing', 'marketing'],
+                  ['Logistique', 'logistique'],
+                  ['Numérisation', 'numerisation'],
+                  ['Admin', 'admin'],
+                  ['Amortissement', 'amort'],
+                  ['Divers', 'divers'],
+                ].map(([label, key]) => (
+                  <tr key={key} className="hover:bg-white/[0.02]">
+                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
+                    {Q1_2026.pl_monthly.map((m) => (
+                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">{fmt(m.charges[key])}</td>
+                    ))}
+                    <td className="py-1.5 pl-3 text-right text-kcb-sable">{fmt(Q1_2026.pl_q1_total.charges[key])}</td>
+                  </tr>
+                ))}
+                <tr className="border-t border-white/[0.12] font-semibold">
+                  <td className="py-2 pr-4 text-white">Total Charges</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td key={m.mois} className="py-2 px-3 text-right text-red-300">{fmt(m.charges.total)}</td>
+                  ))}
+                  <td className="py-2 pl-3 text-right text-red-300 font-bold">{fmt(Q1_2026.pl_q1_total.charges.total)}</td>
+                </tr>
+
+                {/* Résultat */}
+                <tr className="border-t-2 border-kcb-or/40">
+                  <td className="py-3 pr-4 text-kcb-or font-bold">Résultat net</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td
+                      key={m.mois}
+                      className={`py-3 px-3 text-right font-bold ${m.net >= 0 ? 'text-green-300' : 'text-red-300'}`}
+                    >
+                      {fmt(m.net)}
+                    </td>
+                  ))}
+                  <td className="py-3 pl-3 text-right font-bold text-green-300">{fmt(Q1_2026.pl_q1_total.net)}</td>
+                </tr>
+                <tr>
+                  <td className="pb-2 pr-4 text-kcb-pierre text-xs">Marge nette</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td key={m.mois} className="pb-2 px-3 text-right text-xs text-kcb-pierre">{m.marge}%</td>
+                  ))}
+                  <td className="pb-2 pl-3 text-right text-xs text-kcb-pierre">{Q1_2026.pl_q1_total.marge}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Abonnés + MRR par mois */}
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            {Q1_2026.pl_monthly.map((m) => (
+              <div
+                key={m.mois}
+                className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4 text-center"
+              >
+                <p className="text-kcb-pierre text-xs mb-2">{m.mois}</p>
+                <p className="text-3xl font-bold text-white">{m.abonnes}</p>
+                <p className="text-xs text-kcb-pierre mt-1">abonnés</p>
+                <p className="text-green-300 font-semibold mt-2 text-sm">MRR {fmt(m.mrr)}</p>
+              </div>
+            ))}
           </div>
         </Section>
       )}
