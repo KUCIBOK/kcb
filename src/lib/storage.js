@@ -10,6 +10,7 @@
  * @module storage
  */
 
+import imageCompression from 'browser-image-compression'
 import { supabase } from './supabase'
 
 /** Types MIME acceptés pour les images. */
@@ -17,6 +18,23 @@ const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif
 
 /** Taille maximale autorisée par fichier (10 Mo). */
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
+
+/** Options de compression appliquées avant upload. */
+const COMPRESSION_OPTIONS = {
+  maxSizeMB: 1,
+  maxWidthOrHeight: 1920,
+  useWebWorker: true,
+  fileType: 'image/webp',
+}
+
+async function compressImage(file) {
+  if (file.type === 'image/gif') return file
+  try {
+    return await imageCompression(file, COMPRESSION_OPTIONS)
+  } catch {
+    return file
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PRIMITIVES
@@ -49,9 +67,10 @@ export async function uploadFile({ bucket, path, file }) {
   const validation = validateImageFile(file)
   if (!validation.ok) return { error: validation.error }
 
+  const compressed = await compressImage(file)
   const { error } = await supabase.storage
     .from(bucket)
-    .upload(path, file, { upsert: true, contentType: file.type })
+    .upload(path, compressed, { upsert: true, contentType: compressed.type })
 
   if (error) return { error: error.message }
 

@@ -568,6 +568,9 @@ export default async function handler(req, res) {
     // ── /api/integrations ──────────────────────────────────────────────────────
     if (s0 === 'integrations') return await routeIntegrations(req, res);
 
+    // ── /api/analytics ─────────────────────────────────────────────────────────
+    if (s0 === 'analytics') return await routeAdminAnalytics(req, res);
+
     // ── /api/professional-analytics/realtime ───────────────────────────────────
     if (s0 === 'professional-analytics' && s1 === 'realtime') return await routeProAnalyticsRealtime(req, res);
 
@@ -4772,6 +4775,101 @@ async function routeIntegrationStats(req, res) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // PROFESSIONAL ANALYTICS
 // ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * GET /api/analytics?period=q1_2026|q2_2026|q3_2026|q4_2026|current_month|all_time
+ * KPIs admin agrégés par période — requêtes réelles sur Supabase.
+ */
+async function routeAdminAnalytics(req, res) {
+  if (req.method !== 'GET') return fail(res, 'Méthode non autorisée', 405);
+  const authResult = await requireAuth(req);
+  if (authResult.error) return fail(res, authResult.error, authResult.status);
+  const adminCheck = await requireAdmin(authResult.user);
+  if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status);
+
+  const PERIODS = {
+    q1_2026:       { from: '2026-01-01', to: '2026-03-31T23:59:59Z' },
+    q2_2026:       { from: '2026-04-01', to: '2026-06-30T23:59:59Z' },
+    q3_2026:       { from: '2026-07-01', to: '2026-09-30T23:59:59Z' },
+    q4_2026:       { from: '2026-10-01', to: '2026-12-31T23:59:59Z' },
+    current_month: (() => {
+      const now = new Date();
+      const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const to   = now.toISOString();
+      return { from, to };
+    })(),
+    all_time: null,
+  };
+
+  const period = PERIODS[req.query?.period] ?? PERIODS.current_month;
+
+  function applyRange(query) {
+    if (!period) return query;
+    return query.gte('created_at', period.from).lte('created_at', period.to);
+  }
+
+  const [txRes, usersRes, artworksRes, subsRes, deliveryRes, pendingRes] = await Promise.all([
+    applyRange(supabaseAdmin.from('transactions').select('id, amount, status, currency')),
+    applyRange(supabaseAdmin.from('users').select('id, role')),
+    applyRange(supabaseAdmin.from('artworks').select('id, status, price, currency')),
+    supabaseAdmin.from('subscriptions').select('id, status, plan_id').eq('status', 'active'),
+    applyRange(supabaseAdmin.from('delivery_requests').select('id, status')),
+    supabaseAdmin.from('artworks').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+  ]);
+
+  const txs          = txRes.data ?? [];
+  const completedTxs = txs.filter(t => t.status === 'completed');
+  const gmvXof       = completedTxs.reduce((s, t) => {
+    const amt = t.amount ?? 0;
+    if (t.currency === 'EUR') return s + amt * 655.957;
+    if (t.currency === 'USD') return s + amt * 601.65;
+    return s + amt;
+  }, 0);
+  const gmvEur = Math.round(gmvXof / 655.957);
+  const aov    = completedTxs.length > 0 ? Math.round(gmvEur / completedTxs.length) : 0;
+
+  const users       = usersRes.data ?? [];
+  const artworks    = artworksRes.data ?? [];
+  const subs        = subsRes.data ?? [];
+  const deliveries  = deliveryRes.data ?? [];
+
+  const artworksByStatus = {
+    approved: artworks.filter(a => a.status === 'approved').length,
+    pending:  artworks.filter(a => a.status === 'pending').length,
+    rejected: artworks.filter(a => a.status === 'rejected').length,
+  };
+
+  const usersByRole = users.reduce((acc, u) => {
+    acc[u.role] = (acc[u.role] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  return ok(res, {
+    period: req.query?.period ?? 'current_month',
+    transactions: {
+      total:     txs.length,
+      completed: completedTxs.length,
+      gmv_eur:   gmvEur,
+      aov_eur:   aov,
+    },
+    users: {
+      new:       users.length,
+      by_role:   usersByRole,
+    },
+    artworks: {
+      total:     artworks.length,
+      by_status: artworksByStatus,
+    },
+    subscriptions: {
+      active: subs.length,
+    },
+    deliveries: {
+      total:   deliveries.length,
+      pending: deliveries.filter(d => d.status === 'pending').length,
+    },
+    pending_artworks: pendingRes.count ?? 0,
+  });
+}
 
 /**
  * GET /api/professional-analytics — KPIs du dashboard pro.
