@@ -1,6 +1,6 @@
-import { ArrowLeft, Image, Share, ShoppingCart, Volume2, Truck, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, Image, Share, ShoppingCart, Volume2, Truck, ShieldCheck, X, FileText, Clock, Zap, Ship } from 'lucide-react'
 import DOMPurify from 'dompurify'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom'
 import { getArtworkById } from '../api/useArtworks'
 import { useToast } from '../store/ToastContext'
@@ -12,13 +12,34 @@ import { Helmet } from 'react-helmet'
 import { RequestShipmentModal } from '../components/artworks/RequestShipmentModal'
 import { ArtworkCard } from '../components/artworks/ArtworkCard'
 import RevealOnScroll from '../components/landing/RevealOnScroll'
+import { utils } from '../api/useAPI'
 
 /** Maximum number of cards per recommendation section. */
 const RECO_LIMIT = 4
 
+const SHIPMENT_OPTIONS = [
+  { key: 'standard',   icon: Ship,  label: 'Standard',    days: '8–12 jours', factor: 1.0 },
+  { key: 'express',    icon: Truck, label: 'Express',      days: '3–5 jours',  factor: 2.1 },
+  { key: 'priority',   icon: Zap,   label: 'Prioritaire',  days: '1–2 jours',  factor: 3.7 },
+]
+
+function simShipmentPrices(artwork) {
+  const price = artwork?.price || 0
+  const currency = artwork?.currency || 'XOF'
+  const priceEur = currency === 'XOF' ? price / 655.957 : currency === 'USD' ? price / 1.09 : price
+  const size = priceEur < 100 ? 1 : priceEur < 500 ? 1.25 : priceEur < 2000 ? 1.6 : 2.1
+  return SHIPMENT_OPTIONS.map(o => ({
+    ...o,
+    eur: Math.round(180 * o.factor * size),
+  }))
+}
+
 export default function Artwork() {
   const [artwork, setArtwork] = useState({ loading: true, artist: null })
   const [shipmentOpen, setShipmentOpen] = useState(false)
+  const [shipSimOpen, setShipSimOpen] = useState(false)
+  const [certUrl, setCertUrl] = useState(null)
+  const [certLoading, setCertLoading] = useState(false)
   const { id } = useParams()
   const { makeToast } = useToast()
   const { user } = useAuth()
@@ -72,6 +93,17 @@ export default function Artwork() {
       )
       .slice(0, RECO_LIMIT)
   }, [artwork, forSale, id])
+
+  const fetchCertUrl = useCallback(async () => {
+    if (certUrl || certLoading || !artwork?._id) return
+    setCertLoading(true)
+    try {
+      const res = await fetch(`${utils.api}/certificates/url/${artwork._id}`, utils.options)
+      const body = await res.json()
+      if (body?.data?.certificate_url) setCertUrl(body.data.certificate_url)
+    } catch {}
+    setCertLoading(false)
+  }, [artwork?._id, certUrl, certLoading])
 
   const launchDescriptionSpeech = () => {
     try {
@@ -179,12 +211,17 @@ export default function Artwork() {
                   {/* INFOS */}
                   <div className="flex-1 flex flex-col gap-6 justify-between">
                     <div>
+                      {(() => {
+                        const artistName = artwork?.artist?.name || artwork?.artists?.name || (typeof artwork?.artist === 'string' ? artwork.artist : null)
+                        const artistImg  = artwork?.artist?.image || artwork?.artists?.image
+                        const artistId   = artwork?.artist?._id  || artwork?.artists?.id
+                        return (
                       <div className="flex items-start gap-3 mb-4">
-                        {artwork?.artist?.image && (
-                          <Link to={`${portal}/artist/${artwork.artist?._id}`} className="shrink-0">
+                        {artistImg && (
+                          <Link to={`${portal}/artist/${artistId}`} className="shrink-0">
                             <img
-                              src={artwork.artist.image}
-                              alt={artwork.artist.name}
+                              src={artistImg}
+                              alt={artistName}
                               className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-kcb-or/30 shadow"
                             />
                           </Link>
@@ -201,12 +238,10 @@ export default function Artwork() {
                               <Volume2 className="w-4 h-4" />
                             </button>
                           </div>
-                          {artwork?.artist?.name && (
+                          {artistName && (
                             <span className="text-kcb-pierre text-sm flex flex-wrap items-center gap-1">
                               par{' '}
-                              <span className="text-white font-semibold">
-                                {artwork.artist.name}
-                              </span>{' '}
+                              <span className="text-white font-semibold">{artistName}</span>{' '}
                               <span className="inline-block bg-green-600/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full">
                                 Artiste vérifié
                               </span>
@@ -214,6 +249,8 @@ export default function Artwork() {
                           )}
                         </div>
                       </div>
+                        )
+                      })()}
 
                       {/* Purchase box */}
                       <div className="border border-kcb-or/20 rounded-[4px] p-4 md:p-6 bg-kcb-ardoise flex flex-col gap-3 shadow-xl mt-2">
@@ -251,33 +288,49 @@ export default function Artwork() {
                         <ul className="text-sm text-kcb-sable space-y-1">
                           <li className="flex justify-between">
                             <span>Artiste</span>
-                            <span className="text-white">{artwork?.artist?.name}</span>
+                            <span className="text-white">
+                              {artwork?.artist?.name || artwork?.artists?.name || (typeof artwork?.artist === 'string' ? artwork.artist : '—')}
+                            </span>
                           </li>
                           <li className="flex justify-between">
                             <span>Créé le</span>
                             <span className="text-white">
-                              {artwork?.created
-                                ? new Date(artwork.created).toLocaleDateString('fr-FR')
+                              {(artwork?.created_at || artwork?.created)
+                                ? new Date(artwork.created_at || artwork.created).toLocaleDateString('fr-FR')
                                 : '—'}
                             </span>
                           </li>
                           <li className="flex justify-between">
                             <span>Catégorie</span>
-                            <span className="text-white">{artwork?.category}</span>
+                            <span className="text-white">{artwork?.category || '—'}</span>
                           </li>
-                          <li className="flex justify-between">
+                          <li className="flex justify-between items-center">
                             <span>Certificat</span>
-                            <span className="text-white underline">
-                              {artwork?.certificatePath ? (
-                                <a
-                                  href={artwork?.certificatePath}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  Voir le certificat
-                                </a>
+                            <span>
+                              {artwork?.certificate_path ? (
+                                certUrl ? (
+                                  <a
+                                    href={certUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-kcb-or underline"
+                                  >
+                                    <FileText className="w-3.5 h-3.5" /> Voir le certificat
+                                  </a>
+                                ) : (
+                                  <button
+                                    onClick={fetchCertUrl}
+                                    disabled={certLoading}
+                                    className="flex items-center gap-1 text-kcb-or underline disabled:opacity-60"
+                                  >
+                                    <FileText className="w-3.5 h-3.5" />
+                                    {certLoading ? 'Chargement…' : 'Voir le certificat'}
+                                  </button>
+                                )
+                              ) : artwork?.status === 'approved' ? (
+                                <span className="text-kcb-pierre italic text-xs">Génération en cours…</span>
                               ) : (
-                                'À venir'
+                                <span className="text-kcb-pierre italic text-xs">À venir</span>
                               )}
                             </span>
                           </li>
@@ -296,16 +349,59 @@ export default function Artwork() {
                         ></p>
                       </div>
 
-                      {/* Cross-border shipment button */}
+                      {/* Cross-border shipment */}
                       {user && (
                         <div className="mt-4">
                           <button
-                            onClick={() => setShipmentOpen(true)}
+                            onClick={() => setShipSimOpen(v => !v)}
                             className="flex items-center gap-2 text-sm px-4 py-2 rounded-[4px] border border-kcb-or/30 text-kcb-or hover:bg-kcb-or/5 transition w-full justify-center"
                           >
                             <Truck className="w-4 h-4" />
                             Demander l'expédition transfrontalière
                           </button>
+
+                          {shipSimOpen && (() => {
+                            const options = simShipmentPrices(artwork)
+                            return (
+                              <div className="mt-3 border border-kcb-or/20 rounded-[4px] bg-kcb-ardoise overflow-hidden">
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+                                  <span className="text-xs font-semibold text-kcb-or uppercase tracking-wider flex items-center gap-1.5">
+                                    <Truck className="w-3.5 h-3.5" /> Simulation d'expédition
+                                  </span>
+                                  <button onClick={() => setShipSimOpen(false)} className="text-kcb-pierre hover:text-white transition">
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+                                <div className="px-4 py-3 space-y-2">
+                                  {options.map(({ key, icon: Icon, label, days, eur }) => (
+                                    <div key={key} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
+                                      <div className="flex items-center gap-2">
+                                        <Icon className="w-4 h-4 text-kcb-pierre" />
+                                        <div>
+                                          <p className="text-white text-sm font-medium">{label}</p>
+                                          <p className="text-kcb-pierre text-xs flex items-center gap-1">
+                                            <Clock className="w-3 h-3" /> {days}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <span className="font-semibold text-kcb-or text-sm">~{eur} EUR</span>
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="px-4 pb-4 pt-1">
+                                  <p className="text-kcb-pierre text-[11px] mb-3 italic">
+                                    Simulation indicative — devis confirmé sous 48h par l'équipe Kucibok.
+                                  </p>
+                                  <button
+                                    onClick={() => { setShipSimOpen(false); setShipmentOpen(true) }}
+                                    className="w-full flex items-center justify-center gap-2 text-sm px-4 py-2.5 rounded-[4px] bg-kcb-or hover:bg-kcb-bronze text-kcb-noir font-semibold transition"
+                                  >
+                                    <Truck className="w-4 h-4" /> Confirmer la demande
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          })()}
                         </div>
                       )}
                     </div>
@@ -320,11 +416,11 @@ export default function Artwork() {
                 <section className="mt-16">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="font-playfair text-xl md:text-2xl font-bold text-white">
-                      Autres œuvres de {artwork?.artist?.name || 'cet artiste'}
+                      Autres œuvres de {artwork?.artist?.name || artwork?.artists?.name || (typeof artwork?.artist === 'string' ? artwork.artist : 'cet artiste')}
                     </h2>
-                    {artwork?.artist?._id && (
+                    {(artwork?.artist?._id || artwork?.artists?.id) && (
                       <Link
-                        to={`${portal}/artist/${artwork.artist._id}`}
+                        to={`${portal}/artist/${artwork.artist?._id || artwork.artists?.id}`}
                         className="text-xs tracking-[0.06em] uppercase text-kcb-or hover:text-kcb-bronze transition no-underline font-medium"
                       >
                         Voir tout
