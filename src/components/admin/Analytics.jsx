@@ -20,69 +20,110 @@ import {
 
 // ─── Périodes ────────────────────────────────────────────────────────────────
 const PERIODS = [
+  { key: '2025',          label: '2025',         short: 'Exercice 2025' },
   { key: 'q1_2026',       label: 'Q1 2026',      short: 'Jan–Mar 2026' },
   { key: 'q2_2026',       label: 'Q2 2026',      short: 'Avr–Juin 2026' },
   { key: 'current_month', label: 'Mois courant', short: 'Mai 2026' },
   { key: 'all_time',      label: 'Tout',         short: 'Historique complet' },
 ]
 
+// ─── Référence 2025 — SYSCOHADA officiel ────────────────────────────────────
+const YEAR_2025 = {
+  ca_annual:       102430,
+  charges_annual:   86000,
+  rn_annual:        16430,
+  marge:            16.0,
+  croissance:         287,   // % vs 2024
+  ca_fcfa:       67189676,
+  charges_fcfa:  56412302,
+  rn_fcfa:       10777374,
+  nps:               72,
+  uptime:           99.8,
+}
+
 // ─── Données réelles Q1 2026 — source : DashboardComptable_V5.xlsx ───────────
 const Q1_2026 = {
-  mrr: 6046, arr: 72552, mrrGrowth: 12, arr_growth: 40.5,
-  revenue_projection_3m: 6772, payback_period: 7, cac: 190, ltv: 600,
+  mrr:                   6046,
+  arr:                  72552,
+  mrrGrowth:               12,
+  arr_growth:            40.5,
+  revenue_projection_3m:  6770,
+  payback_period:            7,
+  cac:                     190,
+  ltv:                     600,
+  ltv_cac:                 3.2,
+  churn:                   4.0,
   revenue_mix: { saas: 57, logistique: 23, numerisation: 10, marketplace: 9 },
-  saas_subscribers: 232, arpa: 26,
+  saas_subscribers: 232,
+  arpa: 26,
   saas_segments: {
-    collectionneur: { count: 51,  mrr: 1279, share: 22 },
+    collectionneur: { count: 49,  mrr: 1279, share: 21 },
     curateur:       { count: 128, mrr: 3197, share: 55 },
-    galerie:        { count: 63,  mrr: 1570, share: 27 },
+    galerie:        { count: 55,  mrr: 1570, share: 24 },
   },
-  gmv: 900, aov: 225, commission_revenue: 180,
+  gmv:                3000,   // Commission 600 / 0.20
+  aov:                 500,
+  commission_revenue:  600,
   logistics: {
     label: 'Q1 2026', envois: 31, envois_mensuels: 10.3,
-    panier_moyen: 250, revenu_mensuel: 2233, marge: 63.0,
+    panier_moyen: 250, revenu_mensuel: 2167, marge: 63.0,
   },
   pl_monthly: [
     {
       mois: 'Janvier 2026', abonnes: 185, mrr: 4820,
       produits: { saas: 4820, marketplace: 1000, logistique: 2000, numerisation: 900,  nouveaux_marches: 0,   total: 8720  },
-      charges:  { salaires: 4500, tech: 750,  marketing: 1500, logistique: 640,  numerisation: 360, admin: 500, amort: 200, divers: 450, total: 8500 },
-      net: 220, marge: 2.5,
+      charges:  { salaires: 4500, tech: 750,  marketing: 1500, logistique: 640,  numerisation: 360, admin: 500, amort: 200, divers: 450, total: 8900 },
+      net: -180, marge: -2.1,
     },
     {
       mois: 'Février 2026', abonnes: 207, mrr: 5398,
-      produits: { saas: 5398, marketplace: 900,  logistique: 2200, numerisation: 1000, nouveaux_marches: 300, total: 9498  },
-      charges:  { salaires: 4500, tech: 800,  marketing: 2000, logistique: 800,  numerisation: 450, admin: 550, amort: 200, divers: 500, total: 9000 },
-      net: 498, marge: 5.2,
+      produits: { saas: 5398, marketplace: 900,  logistique: 2000, numerisation: 1000, nouveaux_marches: 300, total: 9598  },
+      charges:  { salaires: 4500, tech: 800,  marketing: 1960, logistique: 800,  numerisation: 450, admin: 550, amort: 200, divers: 500, total: 9760 },
+      net: -162, marge: -1.7,
     },
     {
       mois: 'Mars 2026', abonnes: 232, mrr: 6046,
-      produits: { saas: 6046, marketplace: 800,  logistique: 2500, numerisation: 1100, nouveaux_marches: 800, total: 10446 },
-      charges:  { salaires: 4800, tech: 900,  marketing: 2500, logistique: 1040, numerisation: 540, admin: 600, amort: 200, divers: 560, total: 9500 },
-      net: 946, marge: 9.1,
+      produits: { saas: 6046, marketplace: 600,  logistique: 2500, numerisation: 1100, nouveaux_marches: 800, total: 11046 },
+      charges:  { salaires: 4800, tech: 900,  marketing: 2580, logistique: 1040, numerisation: 540, admin: 600, amort: 200, divers: 560, total: 11220 },
+      net: -174, marge: -1.6,
     },
   ],
   pl_q1_total: {
-    produits: { saas: 16264, marketplace: 2700, logistique: 6700, numerisation: 3000, nouveaux_marches: 1100, total: 28664 },
-    charges:  { salaires: 13800, tech: 2450, marketing: 6000, logistique: 2480, numerisation: 1350, admin: 1650, amort: 600, divers: 1510, total: 27000 },
-    net: 1664, marge: 5.6,
+    produits: { saas: 16264, marketplace: 2500, logistique: 6500, numerisation: 3000, nouveaux_marches: 1100, total: 29364 },
+    charges:  { salaires: 13800, tech: 2450, marketing: 6040, logistique: 2480, numerisation: 1350, admin: 1650, amort: 600, divers: 1510, total: 29880 },
+    net: -516, marge: -1.8,
   },
+}
+
+// ─── Projections Q2 2026 ─────────────────────────────────────────────────────
+const Q2_2026 = {
+  mrr_projection:  8192,   // MRR fin juin 2026
+  arr_projection: 98304,   // ARR fin Q2
+  abonnes_fin_q2:   309,
+  ca_q2_total:    33500,
+  mrr_monthly: [
+    { mois: 'Avril 2026',  mrr: 6770, abonnes: 249 },
+    { mois: 'Mai 2026',    mrr: 7447, abonnes: 272 },
+    { mois: 'Juin 2026',   mrr: 8192, abonnes: 309 },
+  ],
 }
 
 export function Analytics({ currency = 'EUR' }) {
   const navigate = useNavigate()
-  const [data, setData]             = useState(null)
-  const [liveData, setLiveData]     = useState(null)
+  const [data, setData]               = useState(null)
+  const [liveData, setLiveData]       = useState(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
-  const [period, setPeriod]         = useState('q1_2026')
+  const [period, setPeriod]           = useState('q1_2026')
   const [lastUpdated, setLastUpdated] = useState(null)
 
-  const fmt = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
+  const fmt   = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
+  const fmtXOF = (xof) => fmtMoney(xof, 'XOF')
 
   const defaultData = {
     mrr: 4303, arr: 51636, mrrGrowth: 12.5, arr_growth: 18.2,
     revenue_mix: { marketplace: 20, saas: 40, numerisation: 10, logistique: 30 },
-    cac: 190, ltv: 600, payback_period: 7, revenue_projection_3m: 4820,
+    cac: 190, ltv: 600, ltv_cac: 3.2, payback_period: 7, revenue_projection_3m: 4820,
+    churn: 4.5,
     saas_subscribers: 159, arpa: 27,
     saas_segments: {
       collectionneur: { count: 34, mrr: 909,  share: 22 },
@@ -146,20 +187,36 @@ export function Analytics({ currency = 'EUR' }) {
     mrr: Q1_2026.mrr, arr: Q1_2026.arr, mrrGrowth: Q1_2026.mrrGrowth,
     arr_growth: Q1_2026.arr_growth, revenue_projection_3m: Q1_2026.revenue_projection_3m,
     payback_period: Q1_2026.payback_period, cac: Q1_2026.cac, ltv: Q1_2026.ltv,
+    ltv_cac: Q1_2026.ltv_cac, churn: Q1_2026.churn,
     revenue_mix: Q1_2026.revenue_mix, saas_subscribers: Q1_2026.saas_subscribers,
     arpa: Q1_2026.arpa, saas_segments: Q1_2026.saas_segments,
     gmv: Q1_2026.gmv, aov: Q1_2026.aov, commission_revenue: Q1_2026.commission_revenue,
     logistics: Q1_2026.logistics,
   } : {}
 
+  const q2Static = period === 'q2_2026' ? {
+    mrr: Q2_2026.mrr_projection, arr: Q2_2026.arr_projection,
+    mrrGrowth: 10, arr_growth: 35,
+    revenue_projection_3m: Q2_2026.mrr_projection,
+  } : {}
+
+  const year2025Static = period === '2025' ? {
+    mrr: Math.round(YEAR_2025.ca_annual / 12),
+    arr: YEAR_2025.ca_annual,
+    mrrGrowth: 0, arr_growth: YEAR_2025.croissance,
+    nps: YEAR_2025.nps, uptime: YEAR_2025.uptime,
+  } : {}
+
   const merged = data ? {
     ...data,
+    ...year2025Static,
+    ...q2Static,
     ...q1Static,
     ...(liveData ? {
       totalArtworks:   liveData.artworks?.total       ?? data.totalArtworks,
       totalUsers:      liveData.users?.total          ?? data.totalUsers,
-      gmv:             liveData.transactions?.gmv_eur ?? (q1Static.gmv    ?? data.gmv),
-      aov:             liveData.transactions?.aov_eur || (q1Static.aov    ?? data.aov),
+      gmv:             liveData.transactions?.gmv_eur ?? (q1Static.gmv ?? data.gmv),
+      aov:             liveData.transactions?.aov_eur || (q1Static.aov ?? data.aov),
       sales:           liveData.transactions?.completed ?? data.sales,
       pendingArtworks: liveData.pending_artworks      ?? data.pendingArtworks,
     } : {}),
@@ -185,7 +242,6 @@ export function Analytics({ currency = 'EUR' }) {
             )}
           </p>
         </div>
-
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-1">
             {PERIODS.map((p) => (
@@ -267,13 +323,48 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       )}
 
+      {/* ── 2025 — Référence SYSCOHADA ────────────────────────────────────── */}
+      {period === '2025' && (
+        <Section title="Exercice 2025 — Référence SYSCOHADA officiel">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard label="CA 2025" value={fmt(YEAR_2025.ca_annual)} change={`${fmtXOF(YEAR_2025.ca_fcfa)}`} trend="up" color="green" />
+            <MetricCard label="Charges 2025" value={fmt(YEAR_2025.charges_annual)} change={`${fmtXOF(YEAR_2025.charges_fcfa)}`} color="red" />
+            <MetricCard label="Résultat net 2025" value={fmt(YEAR_2025.rn_annual)} change={`${fmtXOF(YEAR_2025.rn_fcfa)} · Marge ${YEAR_2025.marge}%`} trend="up" color="green" />
+            <MetricCard label="Croissance" value={`+${YEAR_2025.croissance}%`} change="vs exercice 2024" trend="up" color="purple" />
+          </div>
+          <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+              <p className="text-white font-semibold mb-3">Compte de résultat 2025</p>
+              <div className="space-y-2 text-sm">
+                {[
+                  ['Produits (CA)', fmt(YEAR_2025.ca_annual), 'text-green-300'],
+                  ['Charges totales', fmt(YEAR_2025.charges_annual), 'text-red-300'],
+                  ['Résultat net', fmt(YEAR_2025.rn_annual), 'text-kcb-or font-bold border-t border-white/[0.08] pt-2 mt-2'],
+                ].map(([label, value, cls]) => (
+                  <div key={label} className="flex justify-between">
+                    <span className="text-kcb-sable">{label}</span>
+                    <span className={cls}>{value}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between border-t border-white/[0.08] pt-2 mt-1">
+                  <span className="text-kcb-sable">Marge nette</span>
+                  <span className="text-kcb-or font-semibold">{YEAR_2025.marge}%</span>
+                </div>
+              </div>
+            </div>
+            <MetricCard label="NPS 2025" value={YEAR_2025.nps} change="Score promoteur net" trend="up" color="green" />
+            <MetricCard label="Uptime 2025" value={`${YEAR_2025.uptime}%`} change="Disponibilité du service" trend="up" color="green" />
+          </div>
+        </Section>
+      )}
+
       {/* ── Revenue & Finance ─────────────────────────────────────────────── */}
       <Section title="Revenue & Finance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard label="MRR" value={fmt(merged.mrr)} change={`+${merged.mrrGrowth}% MoM`} trend="up" color="green" />
           <MetricCard label="ARR" value={fmt(merged.arr)} change={`+${merged.arr_growth}% YoY`} trend="up" color="green" />
           <MetricCard label="CAC" value={fmt(merged.cac)} change="Coût d'acquisition client" trend="down" color="blue" />
-          <MetricCard label="LTV" value={fmt(merged.ltv)} change={`LTV:CAC = ${(merged.ltv / merged.cac).toFixed(1)}x`} trend="up" color="purple" />
+          <MetricCard label="LTV" value={fmt(merged.ltv)} change={`LTV:CAC = ${merged.ltv_cac}x`} trend="up" color="purple" />
         </div>
         <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <RevenueBreakdown title="Mix de revenu" data={merged.revenue_mix} colors={['#2D6A4F', '#C9A84C', '#8B6914', '#5a3e2b']} />
@@ -288,7 +379,7 @@ export function Analytics({ currency = 'EUR' }) {
           <MetricCard
             label="Abonnés payants"
             value={merged.saas_subscribers}
-            change={`ARPA : ${merged.arpa} €/mois`}
+            change={`ARPA ${merged.arpa} €/mois · Churn ${merged.churn}%`}
             trend="up"
             color="green"
           />
@@ -382,14 +473,16 @@ export function Analytics({ currency = 'EUR' }) {
                       {fmt(m.net)}
                     </td>
                   ))}
-                  <td className="py-3 pl-3 text-right font-bold text-green-300">{fmt(Q1_2026.pl_q1_total.net)}</td>
+                  <td className={`py-3 pl-3 text-right font-bold ${Q1_2026.pl_q1_total.net >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+                    {fmt(Q1_2026.pl_q1_total.net)}
+                  </td>
                 </tr>
                 <tr>
                   <td className="pb-2 pr-4 text-kcb-pierre text-xs">Marge nette</td>
                   {Q1_2026.pl_monthly.map(m => (
-                    <td key={m.mois} className="pb-2 px-3 text-right text-xs text-kcb-pierre">{m.marge}%</td>
+                    <td key={m.mois} className={`pb-2 px-3 text-right text-xs ${m.marge < 0 ? 'text-red-400' : 'text-kcb-pierre'}`}>{m.marge}%</td>
                   ))}
-                  <td className="pb-2 pl-3 text-right text-xs text-kcb-pierre">{Q1_2026.pl_q1_total.marge}%</td>
+                  <td className={`pb-2 pl-3 text-right text-xs ${Q1_2026.pl_q1_total.marge < 0 ? 'text-red-400' : 'text-kcb-pierre'}`}>{Q1_2026.pl_q1_total.marge}%</td>
                 </tr>
               </tbody>
             </table>
@@ -403,6 +496,27 @@ export function Analytics({ currency = 'EUR' }) {
                 <p className="text-green-300 font-semibold mt-2 text-sm">MRR {fmt(m.mrr)}</p>
               </div>
             ))}
+          </div>
+        </Section>
+      )}
+
+      {/* ── Q2 2026 — Projections ─────────────────────────────────────────── */}
+      {period === 'q2_2026' && (
+        <Section title="Q2 2026 — Projections MRR">
+          <div className="grid grid-cols-3 gap-4">
+            {Q2_2026.mrr_monthly.map(m => (
+              <div key={m.mois} className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4 text-center">
+                <p className="text-kcb-pierre text-xs mb-2">{m.mois}</p>
+                <p className="text-3xl font-bold text-white">{fmt(m.mrr)}</p>
+                <p className="text-xs text-kcb-pierre mt-1">MRR projeté</p>
+                <p className="text-kcb-or font-semibold mt-2 text-sm">{m.abonnes} abonnés</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MetricCard label="ARR fin Q2" value={fmt(Q2_2026.arr_projection)} change="Annualized Revenue Rate" trend="up" color="green" />
+            <MetricCard label="Abonnés fin Q2" value={Q2_2026.abonnes_fin_q2} change={`+${Q2_2026.abonnes_fin_q2 - Q1_2026.saas_subscribers} vs fin Q1`} trend="up" color="blue" />
+            <MetricCard label="CA Q2 total" value={fmt(Q2_2026.ca_q2_total)} change="Chiffre d'affaires Q2" trend="up" color="purple" />
           </div>
         </Section>
       )}
@@ -598,7 +712,7 @@ function DashboardSkeleton() {
           <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-32 h-4" />
         </div>
         <div className="flex gap-2">
-          <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-64 h-9" />
+          <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-72 h-9" />
           <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-20 h-9" />
         </div>
       </div>
