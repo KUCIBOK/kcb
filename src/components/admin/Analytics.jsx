@@ -323,6 +323,9 @@ export function Analytics({ currency = 'EUR' }) {
           aov: Q1_2026.aov,
           commission_revenue: Q1_2026.commission_revenue,
           logistics: Q1_2026.logistics,
+          totalArtworks: 236,
+          artworks_with_cert: 236,
+          certs_generated: 236,
         }
       : {}
 
@@ -346,6 +349,9 @@ export function Analytics({ currency = 'EUR' }) {
           arr_growth: YEAR_2025.croissance,
           nps: YEAR_2025.nps,
           uptime: YEAR_2025.uptime,
+          totalArtworks: 400,
+          artworks_with_cert: 400,
+          certs_generated: 400,
         }
       : {}
 
@@ -354,13 +360,13 @@ export function Analytics({ currency = 'EUR' }) {
         ...data,
         ...(liveData
           ? {
-              totalArtworks: liveData.artworks?.total ?? data.totalArtworks,
               totalUsers: liveData.users?.total ?? data.totalUsers,
               sales: liveData.transactions?.completed ?? data.sales,
               pendingArtworks: liveData.pending_artworks ?? data.pendingArtworks,
-              // gmv/aov depuis le live uniquement pour les périodes sans données statiques
+              // totalArtworks, gmv, aov depuis le live uniquement pour les périodes sans données statiques
               ...(period !== 'q1_2026' && period !== 'q2_2026' && period !== '2025'
                 ? {
+                    totalArtworks: liveData.artworks?.total ?? data.totalArtworks,
                     gmv: liveData.transactions?.gmv_eur || data.gmv,
                     aov: liveData.transactions?.aov_eur || data.aov,
                   }
