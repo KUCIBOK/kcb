@@ -192,7 +192,7 @@ export function AnalytiquePro() {
 
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <Heart className="w-5 h-5 text-pink-400" />
+            <Heart className="w-5 h-5 text-kcb-bronze" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.kpis?.totalFavorites || 0}</p>
           <p className="text-xs text-kcb-pierre mt-1">Favoris</p>
@@ -200,7 +200,7 @@ export function AnalytiquePro() {
 
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <Target className="w-5 h-5 text-orange-400" />
+            <Target className="w-5 h-5 text-kcb-or" />
           </div>
           <p className="text-2xl font-bold text-white">{analytics?.kpis?.viewsToSale || 0}</p>
           <p className="text-xs text-kcb-pierre mt-1">Vues → Vente</p>
@@ -208,7 +208,7 @@ export function AnalytiquePro() {
 
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <DollarSign className="w-5 h-5 text-yellow-400" />
+            <DollarSign className="w-5 h-5 text-kcb-or" />
           </div>
           <p className="text-2xl font-bold text-white">
             {((analytics?.overview?.totalRevenue || 0) / 1000000).toFixed(2)}M
@@ -221,12 +221,12 @@ export function AnalytiquePro() {
       {realtime && (
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-5 h-5 text-green-400" />
+            <Activity className="w-5 h-5 text-kcb-or" />
             <h3 className="text-lg font-semibold text-white">Temps réel</h3>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-kcb-noir/50 rounded-[4px] p-3 text-center">
-              <p className="text-2xl font-bold text-green-400">{realtime.todayViews}</p>
+              <p className="text-2xl font-bold text-kcb-or">{realtime.todayViews}</p>
               <p className="text-xs text-kcb-pierre">Vues aujourd'hui</p>
             </div>
             <div className="bg-kcb-noir/50 rounded-[4px] p-3 text-center">
@@ -238,7 +238,7 @@ export function AnalytiquePro() {
               <p className="text-xs text-kcb-pierre">Annonces actives</p>
             </div>
             <div className="bg-kcb-noir/50 rounded-[4px] p-3 text-center">
-              <p className="text-2xl font-bold text-orange-400">{realtime.inquiriesCount}</p>
+              <p className="text-2xl font-bold text-kcb-bronze">{realtime.inquiriesCount}</p>
               <p className="text-xs text-kcb-pierre">Demandes</p>
             </div>
           </div>
@@ -274,9 +274,9 @@ export function AnalytiquePro() {
         </div>
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <div className="flex justify-between items-center mb-2">
-            <Calendar className="w-5 h-5 text-yellow-400" />
+            <Calendar className="w-5 h-5 text-kcb-or" />
           </div>
-          <p className="text-2xl font-bold text-yellow-400">
+          <p className="text-2xl font-bold text-kcb-or">
             {analytics?.overview?.pendingArtworks || 0}
           </p>
           <p className="text-xs text-kcb-pierre mt-1">En attente</p>
@@ -300,14 +300,14 @@ export function AnalytiquePro() {
                     {
                       data: categoryData,
                       backgroundColor: [
-                        'rgba(59,130,246,0.8)',
-                        'rgba(168,85,247,0.8)',
-                        'rgba(34,197,94,0.8)',
-                        'rgba(251,191,36,0.8)',
-                        'rgba(239,68,68,0.8)',
-                        'rgba(236,72,153,0.8)',
-                        'rgba(20,184,166,0.8)',
-                        'rgba(107,114,128,0.8)',
+                        '#C9A84C',
+                        '#8B6914',
+                        '#4A4E5A',
+                        '#9AA0AC',
+                        'rgba(201,168,76,0.5)',
+                        'rgba(139,105,20,0.5)',
+                        'rgba(74,78,90,0.7)',
+                        '#374151',
                       ],
                     },
                   ],
@@ -335,7 +335,7 @@ export function AnalytiquePro() {
                     {
                       label: 'Nombre de ventes',
                       data: priceRangeData,
-                      backgroundColor: 'rgba(59,130,246,0.7)',
+                      backgroundColor: '#C9A84C',
                       borderRadius: 6,
                     },
                   ],
@@ -364,8 +364,8 @@ export function AnalytiquePro() {
                   {
                     label: 'Ventes',
                     data: periodData,
-                    borderColor: 'rgba(168,85,247,1)',
-                    backgroundColor: 'rgba(168,85,247,0.1)',
+                    borderColor: '#C9A84C',
+                    backgroundColor: 'rgba(201,168,76,0.08)',
                     fill: true,
                     tension: 0.4,
                   },
@@ -383,7 +383,7 @@ export function AnalytiquePro() {
       {analytics?.topArtworks?.length > 0 && (
         <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
           <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-            <Target className="w-5 h-5 text-yellow-400" />
+            <Target className="w-5 h-5 text-kcb-or" />
             Top 10 Oeuvres vendues
           </h3>
           <div className="overflow-x-auto">

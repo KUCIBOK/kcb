@@ -1,25 +1,30 @@
+import { useMemo } from 'react'
+import { motion } from 'framer-motion'
 import {
-  Clock,
   Image,
   Palette,
   TrendingUp,
   Truck,
   BarChart3,
-  TrendingDown,
   Target,
   Award,
   DollarSign,
   ArrowUp,
   ArrowDown,
+  Clock,
+  AlertCircle,
+  CheckCircle,
+  Package,
+  Zap,
 } from 'lucide-react'
 import { fmtMoney } from '../../lib/currency'
+import { useAuth } from '../../store/AuthContext'
 import { useArtist } from '../../store/ArtistContext'
 import { useArtworks } from '../../store/ArtworkContext'
 import { AddArtistAction } from './AddArtistAction'
 import { Link } from 'react-router-dom'
-import { ArtistTable } from '../artists/ArtistTable'
 import { ArtworksList } from '../artworks/ArtworksList'
-import { Bar, Pie, Line } from 'react-chartjs-2'
+import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import {
   ArcElement,
   Chart as ChartJS,
@@ -35,272 +40,232 @@ import {
 } from 'chart.js'
 import { CreateCollection } from '../artworks/CreateCollection'
 import { KPICard, SkeletonKPI, SkeletonChart, EmptyState } from '../ui'
-import { Palette as PaletteIcon } from 'lucide-react'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  Filler
+)
+
+const MONTH_LABELS = [
+  'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
+  'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc',
+]
+
+const stagger = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.07 } },
+}
+const fadeUp = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+}
+
+const CHART_GRID_COLOR = 'rgba(255,255,255,0.04)'
+const CHART_TICK_COLOR = '#9AA0AC'
 
 export function Synthesis() {
+  const { curatorProfile } = useAuth()
   const { myArtists, loading: artistsLoading } = useArtist()
   const { myArtworks, loading: artworksLoading } = useArtworks()
   const isLoading = artistsLoading || artworksLoading || myArtists == null || myArtworks == null
-  const currentMonth = new Date().getMonth()
-  const currentYear = new Date().getFullYear()
 
-  // ===== DONNÉES DE BASE =====
-  const monthlySales = myArtworks
-    ?.filter(
-      (artwork) =>
-        artwork.sold &&
-        artwork.sold_price &&
-        artwork.sold_at &&
-        new Date(artwork.sold_at).getMonth() === currentMonth &&
-        new Date(artwork.sold_at).getFullYear() === currentYear
-    )
-    .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0)
+  const now = new Date()
+  const hour = now.getHours()
+  const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir'
+  const currentMonth = now.getMonth()
+  const currentYear = now.getFullYear()
 
-  const deliveredArtworks = myArtworks?.filter(
-    (item) => item?.delivery_status === 'delivered' || item?.isDelivered === true
-  )?.length
-  const soldArtworksNumber = myArtworks?.filter((item) => item?.sold === true)?.length
+  const artworks = myArtworks ?? []
+  const artists = myArtists ?? []
 
-  // ===== REVENUE MENSUEL =====
-  const monthlyRevenue = Array.from({ length: 12 }, (_, month) => {
-    return (
-      myArtworks
-        ?.filter(
-          (artwork) =>
-            artwork.sold &&
-            artwork.sold_price &&
-            artwork.sold_at &&
-            new Date(artwork.sold_at).getMonth() === month &&
-            new Date(artwork.sold_at).getFullYear() === currentYear
-        )
-        .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0) || 0
-    )
-  })
-
-  const monthLabels = [
-    'Jan',
-    'Fév',
-    'Mar',
-    'Avr',
-    'Mai',
-    'Juin',
-    'Juil',
-    'Aoû',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Déc',
-  ]
-
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-    Filler
+  const soldArtworks = useMemo(() => artworks.filter((a) => a.sold), [artworks])
+  const forSaleArtworks = useMemo(
+    () => artworks.filter((a) => a.status === 'approved' && a.for_sale && !a.sold),
+    [artworks]
+  )
+  const pendingArtworks = useMemo(() => artworks.filter((a) => a.status === 'pending'), [artworks])
+  const inTransitArtworks = useMemo(
+    () => artworks.filter((a) => a.delivery_status === 'in_transit'),
+    [artworks]
   )
 
-  // ===== GRAPHIQUE 1: CHIFFRE D'AFFAIRES MENSUEL =====
+  const totalRevenue = useMemo(
+    () => soldArtworks.reduce((s, a) => s + Number(a.sold_price || 0), 0),
+    [soldArtworks]
+  )
+
+  const monthlySales = useMemo(
+    () =>
+      artworks
+        .filter(
+          (a) =>
+            a.sold &&
+            a.sold_at &&
+            new Date(a.sold_at).getMonth() === currentMonth &&
+            new Date(a.sold_at).getFullYear() === currentYear
+        )
+        .reduce((s, a) => s + Number(a.sold_price || 0), 0),
+    [artworks, currentMonth, currentYear]
+  )
+
+  const avgPrice = soldArtworks.length > 0 ? totalRevenue / soldArtworks.length : 0
+  const conversionRate =
+    artworks.length > 0 ? (soldArtworks.length / artworks.length) * 100 : 0
+  const deliveredCount = artworks.filter(
+    (a) => a.delivery_status === 'delivered' || a.isDelivered
+  ).length
+
+  const artworksWithROI = useMemo(
+    () =>
+      artworks
+        .filter((a) => a.sold && a.estimated_price && a.sold_price)
+        .map((a) => ({
+          title: a.title || 'Sans titre',
+          roi:
+            ((Number(a.sold_price) - Number(a.estimated_price)) /
+              Number(a.estimated_price || 1)) *
+            100,
+        }))
+        .sort((a, b) => b.roi - a.roi),
+    [artworks]
+  )
+  const bestROI = artworksWithROI[0]
+
+  const monthlyRevenue = useMemo(
+    () =>
+      Array.from({ length: 12 }, (_, m) =>
+        artworks
+          .filter(
+            (a) =>
+              a.sold &&
+              a.sold_at &&
+              new Date(a.sold_at).getMonth() === m &&
+              new Date(a.sold_at).getFullYear() === currentYear
+          )
+          .reduce((s, a) => s + Number(a.sold_price || 0), 0)
+      ),
+    [artworks, currentYear]
+  )
+
+  const avgMonthly = monthlyRevenue.reduce((a, b) => a + b, 0) / 12
+  const revenueGrowth = monthlyRevenue[currentMonth] > avgMonthly ? 5 : -3
+
+  const artistsData = useMemo(
+    () =>
+      artists
+        .map((artist) => {
+          const sales = artworks.filter((a) => a.artist_id === artist.id && a.sold)
+          return {
+            name: artist.name,
+            salesCount: sales.length,
+            totalSales: sales.reduce((s, a) => s + Number(a.sold_price || 0), 0),
+          }
+        })
+        .sort((a, b) => b.totalSales - a.totalSales)
+        .slice(0, 8),
+    [artists, artworks]
+  )
+
+  // ── chart configs ──
+
   const barData = {
-    labels: monthLabels,
+    labels: MONTH_LABELS,
     datasets: [
       {
-        label: "Chiffre d'affaires (XOF)",
+        label: 'CA (XOF)',
         data: monthlyRevenue,
-        backgroundColor: 'rgba(45,106,79,0.7)',
-        borderRadius: 6,
-        borderColor: 'rgba(45,106,79,1)',
+        backgroundColor: '#C9A84C',
+        borderRadius: 4,
+        borderColor: '#C9A84C',
       },
     ],
   }
-
   const barOptions = {
     responsive: true,
-    plugins: {
-      legend: { display: false },
-      title: { display: false },
-    },
+    plugins: { legend: { display: false } },
     scales: {
       y: {
         beginAtZero: true,
-        ticks: {
-          callback: (value) => (value / 1000000).toFixed(0) + 'M',
-          color: '#fff',
-        },
-        grid: { color: '#333' },
+        ticks: { color: CHART_TICK_COLOR, callback: (v) => (v / 1000000).toFixed(1) + 'M' },
+        grid: { color: CHART_GRID_COLOR },
       },
-      x: {
-        ticks: { color: '#fff' },
-        grid: { color: '#333' },
-      },
+      x: { ticks: { color: CHART_TICK_COLOR }, grid: { color: CHART_GRID_COLOR } },
     },
   }
 
-  // ===== GRAPHIQUE 2: VENTES PAR ARTISTE =====
-  const artistsData =
-    myArtists
-      ?.map((artist) => {
-        const sales =
-          myArtworks?.filter((artwork) => artwork.artist_id === artist.id && artwork.sold) || []
-        const totalSales = sales.reduce((sum, a) => sum + Number(a.sold_price || 0), 0)
-        return { name: artist.name, salesCount: sales.length, totalSales }
-      })
-      .sort((a, b) => b.totalSales - a.totalSales)
-      .slice(0, 8) || []
-
-  const artistBarData = {
-    labels: artistsData.map((a) => a.name),
+  const donutData = {
+    labels: ['Vendues', 'En vente', 'En attente', 'En transit'],
     datasets: [
       {
-        label: 'Ventes par artiste',
-        data: artistsData.map((a) => a.totalSales),
-        backgroundColor: 'rgba(201,168,76,0.7)',
-        borderColor: 'rgba(201,168,76,1)',
-        borderRadius: 6,
+        data: [
+          soldArtworks.length,
+          forSaleArtworks.length,
+          pendingArtworks.length,
+          inTransitArtworks.length,
+        ],
+        backgroundColor: ['#C9A84C', '#8B6914', '#4A4E5A', '#6B7280'],
+        borderWidth: 0,
       },
     ],
   }
-
-  const artistBarOptions = {
-    indexAxis: 'y',
-    responsive: true,
+  const donutOptions = {
     plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-        ticks: {
-          color: '#fff',
-          callback: (value) => (value / 1000000).toFixed(0) + 'M',
-        },
-        grid: { color: '#333' },
-      },
-      y: {
-        ticks: { color: '#fff' },
-        grid: { color: '#333' },
-      },
-    },
-  }
-
-  // ===== GRAPHIQUE 3: TENDANCE VENTES (LIGNE) =====
-  const lineData = {
-    labels: monthLabels,
-    datasets: [
-      {
-        label: 'Tendance des ventes',
-        data: monthlyRevenue,
-        borderColor: 'rgba(201,168,76,1)',
-        backgroundColor: 'rgba(201,168,76,0.1)',
-        borderWidth: 3,
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: 'rgba(201,168,76,1)',
-        pointRadius: 5,
-      },
-    ],
-  }
-
-  const lineOptions = {
-    responsive: true,
-    plugins: {
-      legend: { labels: { color: '#fff' } },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: '#fff',
-          callback: (value) => (value / 1000000).toFixed(0) + 'M',
-        },
-        grid: { color: '#333' },
-      },
-      x: {
-        ticks: { color: '#fff' },
-        grid: { color: '#333' },
-      },
-    },
-  }
-
-  // ===== ROI PAR ARTWORK =====
-  const artworksWithROI =
-    myArtworks
-      ?.filter((a) => a.sold && a.estimated_price && a.sold_price)
-      .map((a) => ({
-        title: a.title || 'Sans titre',
-        estimatedPrice: Number(a.estimated_price || 0),
-        soldPrice: Number(a.sold_price || 0),
-        roi:
-          ((Number(a.sold_price || 0) - Number(a.estimated_price || 0)) /
-            Number(a.estimated_price || 1)) *
-          100,
-      }))
-      .sort((a, b) => b.roi - a.roi)
-      .slice(0, 10) || []
-
-  // ===== PRÉVISIONS DE VENTE =====
-  const averageMonthlyRevenue = monthlyRevenue.reduce((a, b) => a + b, 0) / monthlyRevenue.length
-  const revenueGrowth = monthlyRevenue[currentMonth] > averageMonthlyRevenue ? 5 : -3
-  const forecastedRevenue = Array.from({ length: 3 }, (_, i) => {
-    return averageMonthlyRevenue * (1 + (revenueGrowth / 100) * (i + 1))
-  })
-
-  // ===== STATISTIQUES =====
-  const totalRevenue =
-    myArtworks?.reduce((sum, a) => sum + (a.sold ? Number(a.sold_price || 0) : 0), 0) || 0
-  const averagePricePerArtwork = soldArtworksNumber > 0 ? totalRevenue / soldArtworksNumber : 0
-  const bestROIArtwork = artworksWithROI[0]
-  const worstROIArtwork = artworksWithROI[artworksWithROI.length - 1]
-  const conversionRate = myArtworks?.length > 0 ? (soldArtworksNumber / myArtworks.length) * 100 : 0
-
-  const soldCount = myArtworks?.filter((a) => a.sold)?.length || 0
-  const forSaleCount = myArtworks?.filter((a) => a.status === 'approved' && a.for_sale)?.length || 0
-  const pendingCount = myArtworks?.filter((a) => a.status === 'pending')?.length || 0
-
-  const pieData = {
-    labels: ['Vendues', 'En vente', 'En attente'],
-    datasets: [
-      {
-        data: [soldCount, forSaleCount, pendingCount],
-        backgroundColor: ['rgba(45,106,79,0.8)', 'rgba(201,168,76,0.8)', 'rgba(212,160,23,0.8)'],
-        borderWidth: 1,
-      },
-    ],
-  }
-
-  const pieOptions = {
-    plugins: {
-      legend: {
-        labels: {
-          color: '#fff',
-          font: { size: 14 },
-        },
-      },
+      legend: { labels: { color: CHART_TICK_COLOR, font: { size: 12 } } },
     },
     maintainAspectRatio: false,
+    cutout: '65%',
+  }
+
+  const lineData = {
+    labels: MONTH_LABELS,
+    datasets: [
+      {
+        label: 'Tendance',
+        data: monthlyRevenue,
+        borderColor: '#C9A84C',
+        backgroundColor: 'rgba(201,168,76,0.06)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#C9A84C',
+        pointRadius: 4,
+      },
+    ],
+  }
+  const lineOptions = {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { color: CHART_TICK_COLOR, callback: (v) => (v / 1000000).toFixed(1) + 'M' },
+        grid: { color: CHART_GRID_COLOR },
+      },
+      x: { ticks: { color: CHART_TICK_COLOR }, grid: { color: CHART_GRID_COLOR } },
+    },
   }
 
   if (isLoading) {
     return (
       <div className="space-y-6 pb-8">
-        {/* KPI skeleton row 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <SkeletonKPI key={i} />
           ))}
         </div>
-        {/* KPI skeleton row 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <SkeletonKPI key={i} />
           ))}
         </div>
-        {/* Chart skeletons */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <SkeletonChart height="h-64" />
           <SkeletonChart height="h-64" />
@@ -311,239 +276,393 @@ export function Synthesis() {
   }
 
   return (
-    <>
-      <div className="space-y-6 pb-8">
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-6 pb-8">
+      {/* Welcome banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] px-5 py-4"
+      >
+        <div>
+          <h1 className="font-playfair text-xl text-white">
+            {greeting}
+            {curatorProfile?.name ? `, ${curatorProfile.name.split(' ')[0]}` : ''}.
+          </h1>
+          <p className="text-kcb-pierre text-sm mt-0.5">
+            {artworks.length} œuvre{artworks.length !== 1 ? 's' : ''} &middot;{' '}
+            {artists.length} artiste{artists.length !== 1 ? 's' : ''} &middot;{' '}
+            {soldArtworks.length} vente{soldArtworks.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          {pendingArtworks.length > 0 && (
+            <div className="flex items-center gap-2 bg-kcb-or/10 border border-kcb-or/20 rounded-[4px] px-3 py-1.5 text-xs text-kcb-or">
+              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+              {pendingArtworks.length} en attente de validation
+            </div>
+          )}
+          <Link
+            to="add-artwork"
+            className="flex items-center gap-2 bg-kcb-or text-kcb-noir px-4 py-2 rounded-[4px] text-xs font-semibold hover:bg-kcb-bronze transition"
+          >
+            <Image className="w-3.5 h-3.5" />
+            Ajouter une œuvre
+          </Link>
+        </div>
+      </motion.div>
+
+      {/* KPI row 1 */}
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <motion.div variants={fadeUp}>
           <KPICard
             icon={Palette}
             label="Mes artistes"
-            value={myArtists?.length || 0}
+            value={artists.length}
             iconColor="text-kcb-bronze"
             iconBgColor="bg-kcb-bronze/10"
           />
-
+        </motion.div>
+        <motion.div variants={fadeUp}>
           <KPICard
             icon={Image}
             label="Oeuvres totales"
-            value={myArtworks?.length || 0}
+            value={artworks.length}
             iconColor="text-kcb-or"
             iconBgColor="bg-kcb-or/10"
           />
-
+        </motion.div>
+        <motion.div variants={fadeUp}>
           <KPICard
             icon={TrendingUp}
-            label="Ventes mensuels"
-            value={fmtMoney(monthlySales || 0, 'XOF', { compact: true })}
+            label="CA ce mois"
+            value={fmtMoney(monthlySales, 'XOF', { compact: true })}
             trend={{
               value: revenueGrowth > 0 ? `+${revenueGrowth}%` : `${revenueGrowth}%`,
               direction: revenueGrowth > 0 ? 'up' : 'down',
             }}
-            iconColor="text-green-400"
-            iconBgColor="bg-green-900/20"
-          />
-
-          <KPICard
-            icon={Truck}
-            label="Livrées / Vendues"
-            value={`${deliveredArtworks}/${soldArtworksNumber}`}
-            subtitle={`${((deliveredArtworks / soldArtworksNumber) * 100 || 0).toFixed(0)}% livrées`}
             iconColor="text-kcb-or"
             iconBgColor="bg-kcb-or/10"
           />
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <KPICard
+            icon={Truck}
+            label="Livrées / Vendues"
+            value={`${deliveredCount}/${soldArtworks.length}`}
+            subtitle={`${soldArtworks.length > 0 ? ((deliveredCount / soldArtworks.length) * 100).toFixed(0) : 0}% livrées`}
+            iconColor="text-kcb-bronze"
+            iconBgColor="bg-kcb-bronze/10"
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* KPI row 2 */}
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        {[
+          {
+            label: 'Revenue total',
+            value: fmtMoney(totalRevenue, 'XOF', { compact: true }),
+            sub: 'Toutes ventes',
+            icon: DollarSign,
+            color: 'text-kcb-or',
+          },
+          {
+            label: 'Prix moyen',
+            value: fmtMoney(avgPrice, 'XOF', { compact: true }),
+            sub: 'Par œuvre vendue',
+            icon: Target,
+            color: 'text-kcb-bronze',
+          },
+          {
+            label: 'Taux conversion',
+            value: `${conversionRate.toFixed(1)}%`,
+            sub: `${soldArtworks.length} / ${artworks.length} œuvres`,
+            icon: ArrowUp,
+            color: 'text-kcb-or',
+          },
+          {
+            label: 'Meilleur ROI',
+            value: bestROI ? `${bestROI.roi.toFixed(1)}%` : '—',
+            sub: bestROI?.title ?? 'Aucune vente',
+            icon: Award,
+            color: bestROI && bestROI.roi >= 0 ? 'text-kcb-or' : 'text-kcb-pierre',
+          },
+        ].map((kpi, i) => (
+          <motion.div
+            key={i}
+            variants={fadeUp}
+            className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-kcb-pierre text-xs">{kpi.label}</p>
+              <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
+            </div>
+            <p className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</p>
+            <p className="text-xs text-kcb-pierre mt-1 truncate">{kpi.sub}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Artwork pipeline */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.28 }}
+        className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4"
+      >
+        <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+          <Package className="w-4 h-4 text-kcb-or" />
+          Pipeline des œuvres
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            {
+              label: 'En attente',
+              count: pendingArtworks.length,
+              border: 'border-kcb-or/30',
+              text: 'text-kcb-or',
+              bg: 'bg-kcb-or/5',
+              icon: Clock,
+            },
+            {
+              label: 'En vente',
+              count: forSaleArtworks.length,
+              border: 'border-kcb-bronze/30',
+              text: 'text-kcb-bronze',
+              bg: 'bg-kcb-bronze/5',
+              icon: Zap,
+            },
+            {
+              label: 'Vendues',
+              count: soldArtworks.length,
+              border: 'border-white/10',
+              text: 'text-white',
+              bg: 'bg-white/5',
+              icon: CheckCircle,
+            },
+            {
+              label: 'En transit',
+              count: inTransitArtworks.length,
+              border: 'border-kcb-pierre/20',
+              text: 'text-kcb-pierre',
+              bg: 'bg-kcb-pierre/5',
+              icon: Truck,
+            },
+          ].map((s) => (
+            <div key={s.label} className={`border rounded-[4px] p-3 ${s.border} ${s.bg}`}>
+              <div className={`flex items-center justify-between mb-1 ${s.text}`}>
+                <span className="text-xs">{s.label}</span>
+                <s.icon className="w-3.5 h-3.5 opacity-60" />
+              </div>
+              <p className={`text-2xl font-bold ${s.text}`}>{s.count}</p>
+            </div>
+          ))}
         </div>
+      </motion.div>
 
-        {/* Advanced Analytics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <div className="flex justify-between items-center mb-2">
-              <h6 className="text-kcb-pierre text-sm">Revenue total</h6>
-              <DollarSign className="w-4 h-4 text-green-400" />
-            </div>
-            <p className="text-xl font-bold text-white">
-              {fmtMoney(totalRevenue, 'XOF', { compact: true })}
-            </p>
-            <p className="text-xs text-kcb-pierre mt-2">Toutes les ventes</p>
-          </div>
-
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <div className="flex justify-between items-center mb-2">
-              <h6 className="text-kcb-pierre text-sm">Prix moyen</h6>
-              <Target className="w-4 h-4 text-kcb-or" />
-            </div>
-            <p className="text-xl font-bold text-white">
-              {fmtMoney(averagePricePerArtwork, 'XOF', { compact: true })}
-            </p>
-            <p className="text-xs text-kcb-pierre mt-2">Par oeuvre vendue</p>
-          </div>
-
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <div className="flex justify-between items-center mb-2">
-              <h6 className="text-kcb-pierre text-sm">Taux de conversion</h6>
-              <ArrowUp className="w-4 h-4 text-kcb-bronze" />
-            </div>
-            <p className="text-xl font-bold text-white">{conversionRate.toFixed(1)}%</p>
-            <p className="text-xs text-kcb-pierre mt-2">
-              {soldArtworksNumber} / {myArtworks?.length}
-            </p>
-          </div>
-
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <div className="flex justify-between items-center mb-2">
-              <h6 className="text-kcb-pierre text-sm">Meilleur ROI</h6>
-              <Award className="w-4 h-4 text-kcb-or" />
-            </div>
-            <p className="text-xl font-bold text-green-400">{bestROIArtwork?.roi?.toFixed(1)}%</p>
-            <p className="text-xs text-kcb-pierre mt-2 truncate">{bestROIArtwork?.title}</p>
-          </div>
+      {/* Quick actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.34 }}
+        className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]"
+      >
+        <h3 className="text-sm font-semibold text-white mb-3">Actions rapides</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <AddArtistAction />
+          <Link
+            to="add-artwork"
+            className="rounded-[4px] border border-white/[0.06] p-3 flex flex-col items-center gap-2 hover:bg-white/[0.04] cursor-pointer transition text-kcb-pierre hover:text-white"
+          >
+            <Image className="w-4 h-4" />
+            <span className="text-xs text-center">Ajouter une œuvre</span>
+          </Link>
+          <CreateCollection />
         </div>
+      </motion.div>
 
-        {/* Quick Actions */}
-        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-          <h3 className="flex gap-2 items-center my-2 text-lg font-semibold text-white">
-            <Clock className="w-5 h-5" /> Actions rapides
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]"
+        >
+          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-kcb-or" />
+            Chiffre d'affaires mensuel
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <AddArtistAction />
-            <Link
-              to={'add-artwork'}
-              className="rounded-[4px] border border-white/[0.06] p-4 grid place-items-center gap-2 hover:bg-white/[0.04] cursor-pointer transition"
-            >
-              <Image className="w-4 h-4" />
-              <span className="text-sm">Ajouter une oeuvre</span>
-            </Link>
-            <CreateCollection />
-          </div>
-        </div>
+          <Bar data={barData} options={barOptions} height={220} />
+        </motion.div>
 
-        {/* Main Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Monthly Revenue */}
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
-              Chiffre d'affaires mensuel
-            </h3>
-            <Bar data={barData} options={barOptions} height={250} />
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.44 }}
+          className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]"
+        >
+          <h3 className="text-sm font-semibold text-white mb-4">Répartition des œuvres</h3>
+          <div className="h-[220px]">
+            <Doughnut data={donutData} options={donutOptions} />
           </div>
+        </motion.div>
+      </div>
 
-          {/* Status Distribution */}
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <h3 className="text-lg font-semibold mb-4 text-white">Répartition des oeuvres</h3>
-            <Pie data={pieData} options={pieOptions} height={250} />
-          </div>
-        </div>
-
-        {/* Trend Line */}
-        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-          <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-kcb-bronze" />
+      {/* Trend + inline forecast */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-kcb-bronze" />
             Tendance des ventes
           </h3>
-          <Line data={lineData} options={lineOptions} height={250} />
-        </div>
-
-        {/* Sales by Artist */}
-        {artistsData.length > 0 && (
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-              <Award className="w-5 h-5 text-kcb-or" />
-              Top artistes par chiffre d'affaires
-            </h3>
-            <Bar data={artistBarData} options={artistBarOptions} height={300} />
+          <div className="flex items-center gap-4">
+            {['Mois +1', 'Mois +2', 'Mois +3'].map((label, i) => {
+              const projected = avgMonthly * (1 + (revenueGrowth / 100) * (i + 1))
+              return (
+                <div key={i} className="text-center">
+                  <p className="text-xs font-semibold text-kcb-or">
+                    {fmtMoney(projected, 'XOF', { compact: true })}
+                  </p>
+                  <p className="text-xs text-kcb-pierre">{label}</p>
+                </div>
+              )
+            })}
           </div>
-        )}
+        </div>
+        <Line data={lineData} options={lineOptions} height={180} />
+        <p className="text-xs text-kcb-pierre mt-3">
+          Prévisions basées sur une croissance de {revenueGrowth > 0 ? '+' : ''}
+          {revenueGrowth}% / mois
+        </p>
+      </motion.div>
 
-        {/* ROI Analysis */}
-        {artworksWithROI.length > 0 && (
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-            <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-              <Target className="w-5 h-5 text-kcb-or" />
-              Analyse ROI par oeuvre (Top 10)
-            </h3>
-            <div className="space-y-2 max-h-96 overflow-y-auto">
-              {artworksWithROI.map((artwork, idx) => (
-                <div
-                  key={idx}
-                  className="bg-kcb-noir/50 rounded-[4px] p-3 flex justify-between items-center"
-                >
-                  <div className="flex-1">
-                    <p className="text-sm text-white font-medium truncate">
-                      {idx + 1}. {artwork.title}
-                    </p>
-                    <p className="text-xs text-kcb-pierre">
-                      Estimé: {fmtMoney(artwork.estimatedPrice, 'XOF', { compact: true })} → Vendu:{' '}
-                      {fmtMoney(artwork.soldPrice, 'XOF', { compact: true })}
-                    </p>
-                  </div>
-                  <div
-                    className={`text-right ${artwork.roi >= 0 ? 'text-green-400' : 'text-red-400'}`}
-                  >
-                    <div className="flex items-center gap-1">
-                      {artwork.roi >= 0 ? (
-                        <ArrowUp className="w-4 h-4" />
-                      ) : (
-                        <ArrowDown className="w-4 h-4" />
-                      )}
-                      <span className="font-bold">{artwork.roi.toFixed(1)}%</span>
+      {/* Top artists + Recent artworks */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.55 }}
+          className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]"
+        >
+          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <Award className="w-4 h-4 text-kcb-or" />
+            Top artistes par CA
+          </h3>
+          {artistsData.length > 0 ? (
+            <div className="space-y-3">
+              {artistsData.slice(0, 6).map((artist, idx) => {
+                const maxSales = artistsData[0].totalSales || 1
+                const pct = (artist.totalSales / maxSales) * 100
+                return (
+                  <div key={idx} className="flex items-center gap-3">
+                    <span className="w-4 text-xs text-kcb-pierre text-right shrink-0">
+                      {idx + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-white truncate">{artist.name}</p>
+                      <div className="h-1 rounded-full bg-white/[0.06] mt-1">
+                        <div
+                          className="h-1 rounded-full bg-kcb-or"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-xs font-semibold text-kcb-or">
+                        {fmtMoney(artist.totalSales, 'XOF', { compact: true })}
+                      </p>
+                      <p className="text-xs text-kcb-pierre">
+                        {artist.salesCount} vente{artist.salesCount !== 1 ? 's' : ''}
+                      </p>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
-          </div>
-        )}
+          ) : (
+            <EmptyState
+              icon={Palette}
+              title="Aucun artiste"
+              description="Ajoutez votre premier artiste pour commencer."
+            />
+          )}
+        </motion.div>
 
-        {/* Forecast */}
-        <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]">
-          <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-kcb-or" />
-            Prévisions de vente (3 mois)
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06] overflow-auto"
+        >
+          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <Image className="w-4 h-4 text-kcb-bronze" />
+            Œuvres récentes
           </h3>
-          <div className="grid grid-cols-3 gap-4">
-            {['Mois 1', 'Mois 2', 'Mois 3'].map((month, idx) => (
-              <div key={idx} className="bg-kcb-noir/50 rounded-[4px] p-4 text-center">
-                <p className="text-kcb-pierre text-sm mb-2">{month}</p>
-                <p className="text-2xl font-bold text-kcb-or">
-                  {fmtMoney(forecastedRevenue[idx], 'XOF', { compact: true })}
+          {artworks.length > 0 ? (
+            <ArtworksList title="" artworks={artworks.slice(0, 5)} />
+          ) : (
+            <EmptyState
+              icon={Image}
+              title="Aucune œuvre"
+              description="Soumettez votre première œuvre pour la voir ici."
+            />
+          )}
+        </motion.div>
+      </div>
+
+      {/* ROI Analysis */}
+      {artworksWithROI.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.65 }}
+          className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06]"
+        >
+          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <Target className="w-4 h-4 text-kcb-or" />
+            Analyse ROI par œuvre (Top 10)
+          </h3>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {artworksWithROI.slice(0, 10).map((artwork, idx) => (
+              <div
+                key={idx}
+                className="bg-kcb-noir/50 rounded-[4px] p-3 flex justify-between items-center"
+              >
+                <p className="text-sm text-white truncate flex-1">
+                  {idx + 1}. {artwork.title}
                 </p>
-                <p className="text-xs text-kcb-pierre mt-2">XOF estimé</p>
+                <div
+                  className={`flex items-center gap-1 ml-3 shrink-0 ${artwork.roi >= 0 ? 'text-kcb-or' : 'text-red-400'}`}
+                >
+                  {artwork.roi >= 0 ? (
+                    <ArrowUp className="w-3.5 h-3.5" />
+                  ) : (
+                    <ArrowDown className="w-3.5 h-3.5" />
+                  )}
+                  <span className="text-sm font-semibold">{artwork.roi.toFixed(1)}%</span>
+                </div>
               </div>
             ))}
           </div>
-          <p className="text-xs text-kcb-pierre mt-4">
-            Basé sur une croissance de {revenueGrowth}% / mois
-          </p>
-        </div>
-
-        {/* Artists and Artworks Tables */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06] overflow-auto">
-            <h3 className="text-lg font-semibold mb-4 text-white">Mes artistes</h3>
-            {myArtists?.length > 0 ? (
-              <ArtistTable artists={myArtists} />
-            ) : (
-              <EmptyState
-                icon={Palette}
-                title="Aucun artiste"
-                description="Ajoutez votre premier artiste pour commencer."
-              />
-            )}
-          </div>
-          <div className="bg-kcb-ardoise rounded-[4px] p-4 border border-white/[0.06] overflow-auto">
-            <h3 className="text-lg font-semibold mb-4 text-white">Mes oeuvres récentes</h3>
-            {myArtworks?.length > 0 ? (
-              <ArtworksList title="" artworks={myArtworks?.slice(0, 5) || []} />
-            ) : (
-              <EmptyState
-                icon={Image}
-                title="Aucune oeuvre"
-                description="Soumettez votre première oeuvre pour la voir apparaître ici."
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </>
+        </motion.div>
+      )}
+    </div>
   )
 }
