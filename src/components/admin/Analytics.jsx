@@ -61,9 +61,9 @@ const Q1_2026 = {
     curateur: { count: 128, mrr: 3197, share: 55 },
     galerie: { count: 55, mrr: 1570, share: 24 },
   },
-  gmv: 3000, // Commission 600 / 0.20
+  gmv: 12500,
   aov: 500,
-  commission_revenue: 600,
+  commission_revenue: 2500, // GMV × 20%
   logistics: {
     label: 'Q1 2026',
     envois: 31,
@@ -422,23 +422,6 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </div>
 
-      {/* ── Badge live / statique ─────────────────────────────────────────── */}
-      {liveData ? (
-        <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/10 border border-green-500/20 rounded-[4px] px-3 py-2 w-fit">
-          <CheckCircle className="w-3.5 h-3.5" />
-          Données Supabase — {periodShort}
-          <span className="text-green-300/60 ml-1">
-            · {liveData.transactions?.completed ?? 0} transactions · {liveData.artworks?.total ?? 0}{' '}
-            œuvres
-          </span>
-        </div>
-      ) : (
-        <div className="flex items-center gap-2 text-xs text-kcb-pierre bg-white/[0.03] border border-white/[0.06] rounded-[4px] px-3 py-2 w-fit">
-          <span className="w-1.5 h-1.5 rounded-full bg-kcb-pierre/60 inline-block" />
-          Données statiques — en attente de connexion Supabase
-        </div>
-      )}
-
       {/* ── Hero KPIs ─────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <HeroKPI
@@ -650,146 +633,10 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
 
-      {/* ── P&L Q1 2026 — visible uniquement en période Q1 ───────────────── */}
+      {/* ── Abonnés Q1 2026 par mois ─────────────────────────────────────── */}
       {period === 'q1_2026' && (
-        <Section title="P&L Q1 2026 — Détail Mensuel">
-          <div className="overflow-x-auto bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/[0.08]">
-                  <th className="text-left text-kcb-pierre py-2 pr-4 font-medium w-44">Ligne</th>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <th key={m.mois} className="text-right text-kcb-pierre py-2 px-3 font-medium">
-                      {m.mois}
-                    </th>
-                  ))}
-                  <th className="text-right text-kcb-or py-2 pl-3 font-medium">Q1 Total</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.03]">
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="text-xs font-semibold text-kcb-or pt-3 pb-1 uppercase tracking-wide"
-                  >
-                    Produits
-                  </td>
-                </tr>
-                {[
-                  ['SaaS', 'saas'],
-                  ['Marketplace', 'marketplace'],
-                  ['Logistique', 'logistique'],
-                  ['Numérisation', 'numerisation'],
-                  ['Nouveaux marchés', 'nouveaux_marches'],
-                ].map(([label, key]) => (
-                  <tr key={key} className="hover:bg-white/[0.02]">
-                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
-                    {Q1_2026.pl_monthly.map((m) => (
-                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">
-                        {m.produits[key] > 0 ? (
-                          fmt(m.produits[key])
-                        ) : (
-                          <span className="text-kcb-pierre/40">—</span>
-                        )}
-                      </td>
-                    ))}
-                    <td className="py-1.5 pl-3 text-right text-kcb-sable">
-                      {Q1_2026.pl_q1_total.produits[key] > 0 ? (
-                        fmt(Q1_2026.pl_q1_total.produits[key])
-                      ) : (
-                        <span className="text-kcb-pierre/40">—</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                <tr className="border-t border-white/[0.12] font-semibold">
-                  <td className="py-2 pr-4 text-white">Total Produits</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td key={m.mois} className="py-2 px-3 text-right text-green-300">
-                      {fmt(m.produits.total)}
-                    </td>
-                  ))}
-                  <td className="py-2 pl-3 text-right text-green-300 font-bold">
-                    {fmt(Q1_2026.pl_q1_total.produits.total)}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="text-xs font-semibold text-red-400 pt-4 pb-1 uppercase tracking-wide"
-                  >
-                    Charges
-                  </td>
-                </tr>
-                {[
-                  ['Salaires', 'salaires'],
-                  ['Tech', 'tech'],
-                  ['Marketing', 'marketing'],
-                  ['Logistique', 'logistique'],
-                  ['Numérisation', 'numerisation'],
-                  ['Admin', 'admin'],
-                  ['Amortissement', 'amort'],
-                  ['Divers', 'divers'],
-                ].map(([label, key]) => (
-                  <tr key={key} className="hover:bg-white/[0.02]">
-                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
-                    {Q1_2026.pl_monthly.map((m) => (
-                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">
-                        {fmt(m.charges[key])}
-                      </td>
-                    ))}
-                    <td className="py-1.5 pl-3 text-right text-kcb-sable">
-                      {fmt(Q1_2026.pl_q1_total.charges[key])}
-                    </td>
-                  </tr>
-                ))}
-                <tr className="border-t border-white/[0.12] font-semibold">
-                  <td className="py-2 pr-4 text-white">Total Charges</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td key={m.mois} className="py-2 px-3 text-right text-red-300">
-                      {fmt(m.charges.total)}
-                    </td>
-                  ))}
-                  <td className="py-2 pl-3 text-right text-red-300 font-bold">
-                    {fmt(Q1_2026.pl_q1_total.charges.total)}
-                  </td>
-                </tr>
-                <tr className="border-t-2 border-kcb-or/40">
-                  <td className="py-3 pr-4 text-kcb-or font-bold">Résultat net</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td
-                      key={m.mois}
-                      className={`py-3 px-3 text-right font-bold ${m.net >= 0 ? 'text-green-300' : 'text-red-300'}`}
-                    >
-                      {fmt(m.net)}
-                    </td>
-                  ))}
-                  <td
-                    className={`py-3 pl-3 text-right font-bold ${Q1_2026.pl_q1_total.net >= 0 ? 'text-green-300' : 'text-red-300'}`}
-                  >
-                    {fmt(Q1_2026.pl_q1_total.net)}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="pb-2 pr-4 text-kcb-pierre text-xs">Marge nette</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td
-                      key={m.mois}
-                      className={`pb-2 px-3 text-right text-xs ${m.marge < 0 ? 'text-red-400' : 'text-kcb-pierre'}`}
-                    >
-                      {m.marge}%
-                    </td>
-                  ))}
-                  <td
-                    className={`pb-2 pl-3 text-right text-xs ${Q1_2026.pl_q1_total.marge < 0 ? 'text-red-400' : 'text-kcb-pierre'}`}
-                  >
-                    {Q1_2026.pl_q1_total.marge}%
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-4">
+        <Section title="Q1 2026 — Abonnés & MRR par mois">
+          <div className="grid grid-cols-3 gap-4">
             {Q1_2026.pl_monthly.map((m) => (
               <div
                 key={m.mois}
