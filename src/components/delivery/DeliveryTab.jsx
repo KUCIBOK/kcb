@@ -540,7 +540,9 @@ export function DeliveryTab() {
                     <td className="px-4 py-3 text-kcb-or text-sm font-mono">
                       {delivery.trackingId || 'N/A'}
                     </td>
-                    <td className="px-4 py-3 text-white text-sm">{delivery.recipientName ?? '—'}</td>
+                    <td className="px-4 py-3 text-white text-sm">
+                      {delivery.recipientName ?? '—'}
+                    </td>
                     <td className="px-4 py-3 text-kcb-pierre text-sm">
                       {delivery.deliveryAddress
                         ? delivery.deliveryAddress.substring(0, 20) + '...'

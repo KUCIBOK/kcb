@@ -22,16 +22,19 @@ export default function SupportTicketTab() {
       const response = await fetch(`${utils.api}/support-tickets/admin/all`, {
         headers: utils.options.headers,
       })
-      if (!response.ok) { setLoading(false); return }
+      if (!response.ok) {
+        setLoading(false)
+        return
+      }
       const data = await response.json()
-      const list = Array.isArray(data.tickets) ? data.tickets : (Array.isArray(data) ? data : [])
+      const list = Array.isArray(data.tickets) ? data.tickets : Array.isArray(data) ? data : []
       setTickets(list)
       setStats({
-        total:    data.count ?? list.length,
-        ouvert:   list.filter((t) => t.status === 'ouvert').length,
+        total: data.count ?? list.length,
+        ouvert: list.filter((t) => t.status === 'ouvert').length,
         en_cours: list.filter((t) => t.status === 'en_cours').length,
-        resolu:   list.filter((t) => t.status === 'resolu').length,
-        ferme:    list.filter((t) => t.status === 'ferme').length,
+        resolu: list.filter((t) => t.status === 'resolu').length,
+        ferme: list.filter((t) => t.status === 'ferme').length,
       })
     } catch (_) {
     } finally {
@@ -40,17 +43,17 @@ export default function SupportTicketTab() {
   }
 
   const statusColors = {
-    ouvert:   'bg-green-500/20 text-green-300',
+    ouvert: 'bg-green-500/20 text-green-300',
     en_cours: 'bg-kcb-or/20 text-kcb-sable',
-    resolu:   'bg-kcb-bronze/20 text-kcb-sable',
-    ferme:    'bg-gray-500/20 text-gray-300',
+    resolu: 'bg-kcb-bronze/20 text-kcb-sable',
+    ferme: 'bg-gray-500/20 text-gray-300',
   }
-  const getStatusColor   = (s) => statusColors[s]   ?? 'bg-white/10 text-kcb-pierre'
+  const getStatusColor = (s) => statusColors[s] ?? 'bg-white/10 text-kcb-pierre'
 
   const priorityColors = {
-    basse:    'bg-kcb-or/20 text-kcb-sable',
-    normale:  'bg-gray-500/20 text-gray-300',
-    haute:    'bg-orange-500/20 text-orange-300',
+    basse: 'bg-kcb-or/20 text-kcb-sable',
+    normale: 'bg-gray-500/20 text-gray-300',
+    haute: 'bg-orange-500/20 text-orange-300',
     critique: 'bg-red-500/20 text-red-300',
   }
   const getPriorityColor = (p) => priorityColors[p] ?? 'bg-white/10 text-kcb-pierre'
@@ -98,7 +101,9 @@ export default function SupportTicketTab() {
                     <div className="text-xs text-kcb-pierre mb-1">{ticket.ticketId}</div>
                     <h4 className="font-semibold text-white">{ticket.subject}</h4>
                   </div>
-                  <span className={`text-xs px-2 py-1 rounded ${getPriorityColor(ticket.priority)}`}>
+                  <span
+                    className={`text-xs px-2 py-1 rounded ${getPriorityColor(ticket.priority)}`}
+                  >
                     {ticket.priority}
                   </span>
                 </div>

@@ -23,11 +23,13 @@ export default function ArtistNotifications() {
         const res = await fetch(`${utils.api}/notifications`, { ...utils.options, method: 'GET' })
         if (res.ok) {
           const body = await res.json()
-          const list = Array.isArray(body.data) ? body.data : (Array.isArray(body) ? body : [])
+          const list = Array.isArray(body.data) ? body.data : Array.isArray(body) ? body : []
           setNotifications(list)
         }
-      } catch (_) {}
-      finally { setLoading(false) }
+      } catch (_) {
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])

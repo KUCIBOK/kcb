@@ -16,7 +16,11 @@ export function SubscriptionTab() {
         if (Array.isArray(result)) {
           setState({ subscriptions: result, loading: false, error: null })
         } else {
-          setState({ subscriptions: [], loading: false, error: result?.error ?? 'Erreur de chargement' })
+          setState({
+            subscriptions: [],
+            loading: false,
+            error: result?.error ?? 'Erreur de chargement',
+          })
         }
       } catch {
         setState({ subscriptions: [], loading: false, error: 'Erreur de chargement' })

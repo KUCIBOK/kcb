@@ -1,4 +1,17 @@
-import { ArrowLeft, Image, Share, ShoppingCart, Volume2, Truck, ShieldCheck, X, FileText, Clock, Zap, Ship } from 'lucide-react'
+import {
+  ArrowLeft,
+  Image,
+  Share,
+  ShoppingCart,
+  Volume2,
+  Truck,
+  ShieldCheck,
+  X,
+  FileText,
+  Clock,
+  Zap,
+  Ship,
+} from 'lucide-react'
 import DOMPurify from 'dompurify'
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom'
@@ -18,9 +31,9 @@ import { utils } from '../api/useAPI'
 const RECO_LIMIT = 4
 
 const SHIPMENT_OPTIONS = [
-  { key: 'standard',   icon: Ship,  label: 'Standard',    days: '8–12 jours', factor: 1.0 },
-  { key: 'express',    icon: Truck, label: 'Express',      days: '3–5 jours',  factor: 2.1 },
-  { key: 'priority',   icon: Zap,   label: 'Prioritaire',  days: '1–2 jours',  factor: 3.7 },
+  { key: 'standard', icon: Ship, label: 'Standard', days: '8–12 jours', factor: 1.0 },
+  { key: 'express', icon: Truck, label: 'Express', days: '3–5 jours', factor: 2.1 },
+  { key: 'priority', icon: Zap, label: 'Prioritaire', days: '1–2 jours', factor: 3.7 },
 ]
 
 function simShipmentPrices(artwork) {
@@ -28,7 +41,7 @@ function simShipmentPrices(artwork) {
   const currency = artwork?.currency || 'XOF'
   const priceEur = currency === 'XOF' ? price / 655.957 : currency === 'USD' ? price / 1.09 : price
   const size = priceEur < 100 ? 1 : priceEur < 500 ? 1.25 : priceEur < 2000 ? 1.6 : 2.1
-  return SHIPMENT_OPTIONS.map(o => ({
+  return SHIPMENT_OPTIONS.map((o) => ({
     ...o,
     eur: Math.round(180 * o.factor * size),
   }))
@@ -212,43 +225,45 @@ export default function Artwork() {
                   <div className="flex-1 flex flex-col gap-6 justify-between">
                     <div>
                       {(() => {
-                        const artistName = artwork?.artist?.name || artwork?.artists?.name || (typeof artwork?.artist === 'string' ? artwork.artist : null)
-                        const artistImg  = artwork?.artist?.image || artwork?.artists?.image
-                        const artistId   = artwork?.artist?._id  || artwork?.artists?.id
+                        const artistName =
+                          artwork?.artist?.name ||
+                          artwork?.artists?.name ||
+                          (typeof artwork?.artist === 'string' ? artwork.artist : null)
+                        const artistImg = artwork?.artist?.image || artwork?.artists?.image
+                        const artistId = artwork?.artist?._id || artwork?.artists?.id
                         return (
-                      <div className="flex items-start gap-3 mb-4">
-                        {artistImg && (
-                          <Link to={`${portal}/artist/${artistId}`} className="shrink-0">
-                            <img
-                              src={artistImg}
-                              alt={artistName}
-                              className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-kcb-or/30 shadow"
-                            />
-                          </Link>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <h1 className="font-playfair text-2xl md:text-4xl font-bold text-white mb-1 leading-tight tracking-tight">
-                              {artwork?.title}
-                            </h1>
-                            <button
-                              onClick={launchDescriptionSpeech}
-                              className="shrink-0 p-2 rounded-[4px] bg-white/10 hover:bg-white/20 text-white transition"
-                            >
-                              <Volume2 className="w-4 h-4" />
-                            </button>
+                          <div className="flex items-start gap-3 mb-4">
+                            {artistImg && (
+                              <Link to={`${portal}/artist/${artistId}`} className="shrink-0">
+                                <img
+                                  src={artistImg}
+                                  alt={artistName}
+                                  className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-kcb-or/30 shadow"
+                                />
+                              </Link>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2">
+                                <h1 className="font-playfair text-2xl md:text-4xl font-bold text-white mb-1 leading-tight tracking-tight">
+                                  {artwork?.title}
+                                </h1>
+                                <button
+                                  onClick={launchDescriptionSpeech}
+                                  className="shrink-0 p-2 rounded-[4px] bg-white/10 hover:bg-white/20 text-white transition"
+                                >
+                                  <Volume2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                              {artistName && (
+                                <span className="text-kcb-pierre text-sm flex flex-wrap items-center gap-1">
+                                  par <span className="text-white font-semibold">{artistName}</span>{' '}
+                                  <span className="inline-block bg-green-600/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full">
+                                    Artiste vérifié
+                                  </span>
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          {artistName && (
-                            <span className="text-kcb-pierre text-sm flex flex-wrap items-center gap-1">
-                              par{' '}
-                              <span className="text-white font-semibold">{artistName}</span>{' '}
-                              <span className="inline-block bg-green-600/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full">
-                                Artiste vérifié
-                              </span>
-                            </span>
-                          )}
-                        </div>
-                      </div>
                         )
                       })()}
 
@@ -289,14 +304,18 @@ export default function Artwork() {
                           <li className="flex justify-between">
                             <span>Artiste</span>
                             <span className="text-white">
-                              {artwork?.artist?.name || artwork?.artists?.name || (typeof artwork?.artist === 'string' ? artwork.artist : '—')}
+                              {artwork?.artist?.name ||
+                                artwork?.artists?.name ||
+                                (typeof artwork?.artist === 'string' ? artwork.artist : '—')}
                             </span>
                           </li>
                           <li className="flex justify-between">
                             <span>Créé le</span>
                             <span className="text-white">
-                              {(artwork?.created_at || artwork?.created)
-                                ? new Date(artwork.created_at || artwork.created).toLocaleDateString('fr-FR')
+                              {artwork?.created_at || artwork?.created
+                                ? new Date(
+                                    artwork.created_at || artwork.created
+                                  ).toLocaleDateString('fr-FR')
                                 : '—'}
                             </span>
                           </li>
@@ -328,7 +347,9 @@ export default function Artwork() {
                                   </button>
                                 )
                               ) : artwork?.status === 'approved' ? (
-                                <span className="text-kcb-pierre italic text-xs">Génération en cours…</span>
+                                <span className="text-kcb-pierre italic text-xs">
+                                  Génération en cours…
+                                </span>
                               ) : (
                                 <span className="text-kcb-pierre italic text-xs">À venir</span>
                               )}
@@ -353,55 +374,70 @@ export default function Artwork() {
                       {user && (
                         <div className="mt-4">
                           <button
-                            onClick={() => setShipSimOpen(v => !v)}
+                            onClick={() => setShipSimOpen((v) => !v)}
                             className="flex items-center gap-2 text-sm px-4 py-2 rounded-[4px] border border-kcb-or/30 text-kcb-or hover:bg-kcb-or/5 transition w-full justify-center"
                           >
                             <Truck className="w-4 h-4" />
                             Demander l'expédition transfrontalière
                           </button>
 
-                          {shipSimOpen && (() => {
-                            const options = simShipmentPrices(artwork)
-                            return (
-                              <div className="mt-3 border border-kcb-or/20 rounded-[4px] bg-kcb-ardoise overflow-hidden">
-                                <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
-                                  <span className="text-xs font-semibold text-kcb-or uppercase tracking-wider flex items-center gap-1.5">
-                                    <Truck className="w-3.5 h-3.5" /> Simulation d'expédition
-                                  </span>
-                                  <button onClick={() => setShipSimOpen(false)} className="text-kcb-pierre hover:text-white transition">
-                                    <X className="w-4 h-4" />
-                                  </button>
-                                </div>
-                                <div className="px-4 py-3 space-y-2">
-                                  {options.map(({ key, icon: Icon, label, days, eur }) => (
-                                    <div key={key} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
-                                      <div className="flex items-center gap-2">
-                                        <Icon className="w-4 h-4 text-kcb-pierre" />
-                                        <div>
-                                          <p className="text-white text-sm font-medium">{label}</p>
-                                          <p className="text-kcb-pierre text-xs flex items-center gap-1">
-                                            <Clock className="w-3 h-3" /> {days}
-                                          </p>
+                          {shipSimOpen &&
+                            (() => {
+                              const options = simShipmentPrices(artwork)
+                              return (
+                                <div className="mt-3 border border-kcb-or/20 rounded-[4px] bg-kcb-ardoise overflow-hidden">
+                                  <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+                                    <span className="text-xs font-semibold text-kcb-or uppercase tracking-wider flex items-center gap-1.5">
+                                      <Truck className="w-3.5 h-3.5" /> Simulation d'expédition
+                                    </span>
+                                    <button
+                                      onClick={() => setShipSimOpen(false)}
+                                      className="text-kcb-pierre hover:text-white transition"
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                  <div className="px-4 py-3 space-y-2">
+                                    {options.map(({ key, icon: Icon, label, days, eur }) => (
+                                      <div
+                                        key={key}
+                                        className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0"
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <Icon className="w-4 h-4 text-kcb-pierre" />
+                                          <div>
+                                            <p className="text-white text-sm font-medium">
+                                              {label}
+                                            </p>
+                                            <p className="text-kcb-pierre text-xs flex items-center gap-1">
+                                              <Clock className="w-3 h-3" /> {days}
+                                            </p>
+                                          </div>
                                         </div>
+                                        <span className="font-semibold text-kcb-or text-sm">
+                                          ~{eur} EUR
+                                        </span>
                                       </div>
-                                      <span className="font-semibold text-kcb-or text-sm">~{eur} EUR</span>
-                                    </div>
-                                  ))}
+                                    ))}
+                                  </div>
+                                  <div className="px-4 pb-4 pt-1">
+                                    <p className="text-kcb-pierre text-[11px] mb-3 italic">
+                                      Simulation indicative — devis confirmé sous 48h par l'équipe
+                                      Kucibok.
+                                    </p>
+                                    <button
+                                      onClick={() => {
+                                        setShipSimOpen(false)
+                                        setShipmentOpen(true)
+                                      }}
+                                      className="w-full flex items-center justify-center gap-2 text-sm px-4 py-2.5 rounded-[4px] bg-kcb-or hover:bg-kcb-bronze text-kcb-noir font-semibold transition"
+                                    >
+                                      <Truck className="w-4 h-4" /> Confirmer la demande
+                                    </button>
+                                  </div>
                                 </div>
-                                <div className="px-4 pb-4 pt-1">
-                                  <p className="text-kcb-pierre text-[11px] mb-3 italic">
-                                    Simulation indicative — devis confirmé sous 48h par l'équipe Kucibok.
-                                  </p>
-                                  <button
-                                    onClick={() => { setShipSimOpen(false); setShipmentOpen(true) }}
-                                    className="w-full flex items-center justify-center gap-2 text-sm px-4 py-2.5 rounded-[4px] bg-kcb-or hover:bg-kcb-bronze text-kcb-noir font-semibold transition"
-                                  >
-                                    <Truck className="w-4 h-4" /> Confirmer la demande
-                                  </button>
-                                </div>
-                              </div>
-                            )
-                          })()}
+                              )
+                            })()}
                         </div>
                       )}
                     </div>
@@ -416,7 +452,10 @@ export default function Artwork() {
                 <section className="mt-16">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="font-playfair text-xl md:text-2xl font-bold text-white">
-                      Autres œuvres de {artwork?.artist?.name || artwork?.artists?.name || (typeof artwork?.artist === 'string' ? artwork.artist : 'cet artiste')}
+                      Autres œuvres de{' '}
+                      {artwork?.artist?.name ||
+                        artwork?.artists?.name ||
+                        (typeof artwork?.artist === 'string' ? artwork.artist : 'cet artiste')}
                     </h2>
                     {(artwork?.artist?._id || artwork?.artists?.id) && (
                       <Link
