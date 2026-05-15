@@ -329,6 +329,11 @@ export function Analytics({ currency = 'EUR' }) {
           totalArtworks: 236,
           artworks_with_cert: 236,
           certs_generated: 236,
+          totalUsers: 12860,
+          mau: 5500,
+          dau: 3668,
+          dau_mau_ratio: 66.7,
+          artworks_growth: 19,
         }
       : {}
 
@@ -363,12 +368,12 @@ export function Analytics({ currency = 'EUR' }) {
         ...data,
         ...(liveData
           ? {
-              totalUsers: liveData.users?.total ?? data.totalUsers,
               sales: liveData.transactions?.completed ?? data.sales,
               pendingArtworks: liveData.pending_artworks ?? data.pendingArtworks,
-              // totalArtworks, gmv, aov depuis le live uniquement pour les périodes sans données statiques
+              // KPIs financiers et volumétriques depuis le live uniquement pour périodes dynamiques
               ...(period !== 'q1_2026' && period !== 'q2_2026' && period !== '2025'
                 ? {
+                    totalUsers: liveData.users?.total ?? data.totalUsers,
                     totalArtworks: liveData.artworks?.total ?? data.totalArtworks,
                     gmv: liveData.transactions?.gmv_eur || data.gmv,
                     aov: liveData.transactions?.aov_eur || data.aov,
