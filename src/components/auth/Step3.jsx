@@ -1,4 +1,4 @@
-import { Brush, Award, Check, Sparkles } from 'lucide-react'
+import { Brush, Award, Check, Sparkles, TrendingUp } from 'lucide-react'
 
 const ROLES = [
   {
@@ -13,14 +13,23 @@ const ROLES = [
     icon: Award,
     label: 'Curateur',
     description:
-      'Galeries, curateurs indépendants, art advisors — accédez aux outils B2B de la plateforme.',
+      'Galeries, curateurs indépendants — accédez aux outils B2B et gérez votre catalogue.',
     badge: 'Pro',
+  },
+  {
+    key: 'advisor',
+    icon: TrendingUp,
+    label: 'Advisor',
+    description:
+      'Wealth managers de l'art — gérez des portefeuilles de collectionneurs et d'institutions.',
+    badge: 'Expert',
   },
 ]
 
 const PORTAL_HINT = {
   artist: { label: 'Portail Africa', desc: 'Rôle Artiste pré-sélectionné' },
   curator: { label: 'Portail Global', desc: 'Rôle Curateur pré-sélectionné' },
+  advisor: { label: 'Portail Global', desc: 'Rôle Advisor pré-sélectionné' },
 }
 
 export function Step3({ formState, setFormState, roleFromUrl }) {

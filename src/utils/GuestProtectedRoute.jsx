@@ -14,6 +14,7 @@ export function GuestProtectedRoute() {
       buyer: '/account',
       artist: '/dashboard/artist',
       curator: '/dashboard/curator',
+      advisor: '/dashboard/advisor',
       admin: '/dashboard/admin',
     }
     const dest = DASHBOARD_ROUTES[user.role] ?? '/account'

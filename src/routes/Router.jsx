@@ -22,6 +22,7 @@ const Error404 = lazy(() => import('../components/fallback/Error404'))
 const Artist = lazy(() => import('../pages/dashboard/Artist'))
 const SubmitArtwork = lazy(() => import('../pages/dashboard/SubmitArtwork'))
 const Professional = lazy(() => import('../pages/dashboard/Professional'))
+const Advisor = lazy(() => import('../pages/dashboard/Advisor'))
 const BuyerAccount = lazy(() => import('../pages/dashboard/BuyerAccount'))
 const Admin = lazy(() => import('../pages/dashboard/Admin'))
 const ArtworkCheckout = lazy(() => import('../pages/ArtworkCheckout'))
@@ -106,6 +107,7 @@ import { GuestProtectedRoute } from '../utils/GuestProtectedRoute'
 import { ArtistProtectedRoute } from '../utils/ArtistProtectedRoute'
 import { BuyerProtectedRoute } from '../utils/BuyerProtectedRoute'
 import { CuratorProtectedRoute } from '../utils/CuratorProtectedRoute'
+import { AdvisorProtectedRoute } from '../utils/AdvisorProtectedRoute'
 import { AdminProtectedRoute } from '../utils/AdminProtectedRoute'
 import { AuthProtectedRoute } from '../utils/AuthProtectedRoute'
 const GoogleRoleSelection = lazy(() => import('../pages/auth/GoogleRoleSelection'))
@@ -737,6 +739,18 @@ export function Router() {
             path="/dashboard/professional"
             element={<Navigate to="/dashboard/curator" replace />}
           />
+
+          {/* Advisor dashboard */}
+          <Route path="/dashboard/advisor" element={<AdvisorProtectedRoute />}>
+            <Route
+              path=""
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <Advisor />
+                </Suspense>
+              }
+            />
+          </Route>
 
           {/* Catalogue certifié (curator + admin) */}
           <Route path="/catalogue" element={<CuratorProtectedRoute />}>

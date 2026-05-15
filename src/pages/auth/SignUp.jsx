@@ -80,7 +80,7 @@ export default function SignUp() {
   // Pré-sélectionner le rôle depuis l'URL (?role=artist|curator)
   useEffect(() => {
     const roleParam = searchParams.get('role')
-    if (['artist', 'curator'].includes(roleParam)) {
+    if (['artist', 'curator', 'advisor'].includes(roleParam)) {
       setFormState((p) => ({ ...p, role: roleParam }))
     }
   }, [])
@@ -216,7 +216,7 @@ export default function SignUp() {
               onSkip={handleSkip}
             />
           )
-        if (formState.role === 'curator')
+        if (formState.role === 'curator' || formState.role === 'advisor')
           return (
             <Step5Curator
               formState={formState}

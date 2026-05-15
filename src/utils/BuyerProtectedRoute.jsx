@@ -6,6 +6,7 @@ const DASHBOARD_ROUTES = {
   buyer: '/account',
   artist: '/dashboard/artist',
   curator: '/dashboard/curator',
+  advisor: '/dashboard/advisor',
   admin: '/dashboard/admin',
 }
 
