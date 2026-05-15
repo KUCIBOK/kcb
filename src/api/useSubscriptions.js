@@ -26,9 +26,8 @@ export async function failSubscription(subId) {
       method: 'POST',
     })
     const body = await response.json()
-    const sub = body?.data ?? body
-    if (sub?.id || sub?._id) {
-      return sub
+    if ((body?.sub?._id || body?.sub?.id) && (body?.plan?._id || body?.plan?.id)) {
+      return { sub: body.sub, plan: body.plan }
     }
     return { error: body?.error || body?.message }
   } catch (error) {
@@ -43,9 +42,8 @@ export async function activateSubscription(subId) {
       method: 'POST',
     })
     const body = await response.json()
-    const sub = body?.data ?? body
-    if (sub?.id || sub?._id) {
-      return sub
+    if ((body?.sub?._id || body?.sub?.id) && (body?.plan?._id || body?.plan?.id)) {
+      return { sub: body.sub, plan: body.plan }
     }
     return { error: body?.error || body?.message }
   } catch (error) {

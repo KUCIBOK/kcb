@@ -93,12 +93,12 @@ describe('createSubscription', () => {
     expect(result).toEqual({ error: 'Plan introuvable' })
   })
 
-  it('retourne {error} depuis le champ messsage (typo) quand error est absent', async () => {
+  it('retourne {error: undefined} quand seul un champ avec typo est present (messsage)', async () => {
     global.fetch.mockResolvedValueOnce(makeFetchResponse({ messsage: 'Paiement refuse' }, 402))
 
     const result = await createSubscription({ plan: 'pro' })
 
-    expect(result).toEqual({ error: 'Paiement refuse' })
+    expect(result).toEqual({ error: undefined })
   })
 
   it('retourne {error: undefined} quand ni _id, ni error, ni messsage ne sont presents', async () => {
@@ -284,12 +284,12 @@ describe('getSubById', () => {
     expect(result).toEqual({ error: 'Introuvable' })
   })
 
-  it('retourne {error} depuis le champ messsage (typo) quand error est absent', async () => {
+  it('retourne {error: undefined} quand seul un champ avec typo est present (messsage)', async () => {
     global.fetch.mockResolvedValueOnce(makeFetchResponse({ messsage: 'Id invalide' }))
 
     const result = await getSubById('bad-id')
 
-    expect(result).toEqual({ error: 'Id invalide' })
+    expect(result).toEqual({ error: undefined })
   })
 
   it('retourne {error} avec le message reseau sur erreur fetch', async () => {
@@ -358,12 +358,12 @@ describe('getAllSubscriptions', () => {
     expect(init.body).toBeUndefined()
   })
 
-  it('retourne {error} quand le tableau retourne est vide', async () => {
+  it('retourne un tableau vide quand la reponse est []', async () => {
     global.fetch.mockResolvedValueOnce(makeFetchResponse([]))
 
     const result = await getAllSubscriptions()
 
-    expect(result).toHaveProperty('error')
+    expect(result).toEqual([])
   })
 
   it('retourne {error} depuis le champ message quand la reponse est un objet', async () => {
@@ -390,12 +390,11 @@ describe('getAllSubscriptions', () => {
     expect(result).toEqual({ error: 'ECONNRESET' })
   })
 
-  it('retourne {error: undefined} quand la reponse est un objet sans message ni error', async () => {
+  it('retourne {error: "Format inattendu"} quand la reponse est un objet sans message ni error', async () => {
     global.fetch.mockResolvedValueOnce(makeFetchResponse({ meta: 'empty' }))
 
     const result = await getAllSubscriptions()
 
-    expect(result).toHaveProperty('error')
-    expect(result.error).toBeUndefined()
+    expect(result).toEqual({ error: 'Format inattendu' })
   })
 })
