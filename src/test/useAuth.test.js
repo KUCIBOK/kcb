@@ -475,52 +475,56 @@ describe('forgotPassword', () => {
 
 describe('resetPassword', () => {
   beforeEach(() => {
-    vi.restoreAllMocks()
+    global.fetch = vi.fn()
   })
 
-  it('succès — retourne { ok: true, user }', async () => {
-    supabase.auth.updateUser.mockResolvedValueOnce({
-      data: { user: SUPABASE_USER },
-      error: null,
+  it('succès — retourne { ok: true }', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ ok: true }),
     })
 
     const result = await resetPassword({ password: 'nouveauMotDePasse123' })
 
     expect(result.ok).toBe(true)
-    expect(result.user).toMatchObject(KCB_USER)
     expect(result.error).toBeUndefined()
   })
 
-  it('erreur Supabase — retourne { error: message }', async () => {
-    supabase.auth.updateUser.mockResolvedValueOnce({
-      data: {},
-      error: { message: 'Session invalide' },
+  it('erreur backend — retourne { error: message }', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: 'Session invalide' }),
     })
 
     const result = await resetPassword({ password: 'motdepasse' })
 
     expect(result.error).toBe('Session invalide')
     expect(result.ok).toBeUndefined()
-    expect(result.user).toBeUndefined()
   })
 
   it('exception réseau — retourne { error }', async () => {
-    supabase.auth.updateUser.mockRejectedValueOnce(new Error('Timeout'))
+    global.fetch.mockRejectedValueOnce(new Error('Timeout'))
 
     const result = await resetPassword({ password: 'motdepasse' })
 
     expect(result.error).toBe('Timeout')
   })
 
-  it('appelle updateUser avec le bon mot de passe', async () => {
-    supabase.auth.updateUser.mockResolvedValueOnce({
-      data: { user: SUPABASE_USER },
-      error: null,
+  it('appelle /api/auth/reset-password avec le bon mot de passe', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ ok: true }),
     })
 
     await resetPassword({ password: 'SuperSecret99!' })
 
-    expect(supabase.auth.updateUser).toHaveBeenCalledWith({ password: 'SuperSecret99!' })
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/auth/reset-password',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ password: 'SuperSecret99!' }),
+      })
+    )
   })
 })
 

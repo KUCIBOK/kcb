@@ -9,6 +9,12 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+// ─── Mock browser-image-compression (bloque en jsdom sans mock) ──────────────
+
+vi.mock('browser-image-compression', () => ({
+  default: vi.fn(async (file) => file),
+}))
+
 // ─── Mock Supabase Storage ────────────────────────────────────────────────────
 
 const mockUpload = vi.fn()
