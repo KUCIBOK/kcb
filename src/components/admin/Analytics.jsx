@@ -4,7 +4,6 @@ import { utils } from '../../api/useAPI'
 import { fmtMoney, XOF_PER_EUR } from '../../lib/currency'
 import { SkeletonKPI, SkeletonChart } from '../ui'
 import {
-  CheckCircle,
   ArrowUpRight,
   ArrowDownRight,
   AlertTriangle,
@@ -53,7 +52,7 @@ const Q1_2026 = {
   ltv: 600,
   ltv_cac: 3.2,
   churn: 4.0,
-  revenue_mix: { saas: 57, logistique: 23, numerisation: 10, marketplace: 9 },
+  revenue_mix: { saas: 57, logistique: 23, numerisation: 10, marketplace: 10 },
   saas_subscribers: 232,
   arpa: 26,
   saas_segments: {
@@ -292,15 +291,19 @@ export function Analytics({ currency = 'EUR' }) {
     }
   }, [])
 
+  const isStaticPeriod = period === 'q1_2026' || period === 'q2_2026' || period === '2025'
+
   useEffect(() => {
     setData(defaultData)
     setLiveData(null)
-    loadLiveData(period)
-    if (autoRefresh) {
-      const t = setInterval(() => loadLiveData(period), 30000)
-      return () => clearInterval(t)
+    if (!isStaticPeriod) {
+      loadLiveData(period)
+      if (autoRefresh) {
+        const t = setInterval(() => loadLiveData(period), 30000)
+        return () => clearInterval(t)
+      }
     }
-  }, [autoRefresh, period]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [autoRefresh, period, isStaticPeriod]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const q1Static =
     period === 'q1_2026'
@@ -401,18 +404,22 @@ export function Analytics({ currency = 'EUR' }) {
           </p>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
-          <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-1">
-            {PERIODS.map((p) => (
-              <button
-                key={p.key}
-                onClick={() => setPeriod(p.key)}
-                className={`px-3 py-1 rounded text-xs font-medium transition ${
-                  period === p.key ? 'bg-kcb-or text-kcb-noir' : 'text-kcb-pierre hover:text-white'
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
+          <div className="overflow-x-auto">
+            <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-1 min-w-max">
+              {PERIODS.map((p) => (
+                <button
+                  key={p.key}
+                  onClick={() => setPeriod(p.key)}
+                  className={`px-3 py-1 rounded text-xs font-medium transition ${
+                    period === p.key
+                      ? 'bg-kcb-or text-kcb-noir'
+                      : 'text-kcb-pierre hover:text-white'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
           </div>
           <button
             onClick={() => setAutoRefresh((v) => !v)}
@@ -461,7 +468,15 @@ export function Analytics({ currency = 'EUR' }) {
           icon={BarChart2}
           label="GMV"
           value={fmt(merged.gmv, { compact: true })}
-          change="Volume mensuel"
+          change={
+            period === 'q1_2026'
+              ? 'Volume Q1 2026'
+              : period === 'q2_2026'
+                ? 'Volume Q2 2026 (proj.)'
+                : period === '2025'
+                  ? 'Volume annuel 2025'
+                  : 'Volume marchand'
+          }
           trend="up"
         />
       </div>
@@ -595,7 +610,7 @@ export function Analytics({ currency = 'EUR' }) {
             color="purple"
           />
         </div>
-        <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
           <RevenueBreakdown
             title="Mix de revenu"
             data={merged.revenue_mix}
@@ -606,12 +621,6 @@ export function Analytics({ currency = 'EUR' }) {
             value={`${merged.payback_period} mois`}
             change="Temps de récupération du CAC"
             color="indigo"
-          />
-          <MetricCard
-            label="MRR M+1"
-            value={fmt(merged.revenue_projection_3m)}
-            change="MRR × 1,12 (+12% MoM)"
-            color="emerald"
           />
         </div>
       </Section>
@@ -648,7 +657,7 @@ export function Analytics({ currency = 'EUR' }) {
       {/* ── Abonnés Q1 2026 par mois ─────────────────────────────────────── */}
       {period === 'q1_2026' && (
         <Section title="Q1 2026 — Abonnés & MRR par mois">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {Q1_2026.pl_monthly.map((m) => (
               <div
                 key={m.mois}
@@ -667,7 +676,7 @@ export function Analytics({ currency = 'EUR' }) {
       {/* ── Q2 2026 — Projections ─────────────────────────────────────────── */}
       {period === 'q2_2026' && (
         <Section title="Q2 2026 — Projections MRR">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {Q2_2026.mrr_monthly.map((m) => (
               <div
                 key={m.mois}
@@ -792,7 +801,15 @@ export function Analytics({ currency = 'EUR' }) {
           <MetricCard
             label="GMV"
             value={fmt(merged.gmv, { compact: true })}
-            change="Volume marchand mensuel"
+            change={
+              period === 'q1_2026'
+                ? 'Volume Q1 2026'
+                : period === 'q2_2026'
+                  ? 'Volume Q2 2026 (proj.)'
+                  : period === '2025'
+                    ? 'Volume annuel 2025'
+                    : 'Volume marchand'
+            }
             color="green"
           />
           <MetricCard
@@ -937,7 +954,7 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
         <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
           <p className="text-white font-semibold mb-3">Core Web Vitals</p>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <VitalCard label="LCP" value={`${merged.lcp}s`} target="< 2.5s" status="good" />
             <VitalCard label="FID" value={`${merged.fid}ms`} target="< 100ms" status="good" />
             <VitalCard label="CLS" value={merged.cls} target="< 0.1" status="needs-improvement" />
@@ -1217,10 +1234,7 @@ function ProgressBar({ label, value }) {
         <span className="text-white font-semibold">{value}%</span>
       </div>
       <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-kcb-or to-kcb-bronze"
-          style={{ width: `${value}%` }}
-        />
+        <div className="h-full bg-kcb-or" style={{ width: `${value}%` }} />
       </div>
     </div>
   )
