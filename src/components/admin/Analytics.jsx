@@ -352,19 +352,25 @@ export function Analytics({ currency = 'EUR' }) {
   const merged = data
     ? {
         ...data,
-        ...year2025Static,
-        ...q2Static,
-        ...q1Static,
         ...(liveData
           ? {
               totalArtworks: liveData.artworks?.total ?? data.totalArtworks,
               totalUsers: liveData.users?.total ?? data.totalUsers,
-              gmv: liveData.transactions?.gmv_eur ?? q1Static.gmv ?? data.gmv,
-              aov: liveData.transactions?.aov_eur || (q1Static.aov ?? data.aov),
               sales: liveData.transactions?.completed ?? data.sales,
               pendingArtworks: liveData.pending_artworks ?? data.pendingArtworks,
+              // gmv/aov depuis le live uniquement pour les périodes sans données statiques
+              ...(period !== 'q1_2026' && period !== 'q2_2026' && period !== '2025'
+                ? {
+                    gmv: liveData.transactions?.gmv_eur || data.gmv,
+                    aov: liveData.transactions?.aov_eur || data.aov,
+                  }
+                : {}),
             }
           : {}),
+        // Les données statiques curées passent EN DERNIER — elles gagnent toujours
+        ...year2025Static,
+        ...q2Static,
+        ...q1Static,
       }
     : null
 
