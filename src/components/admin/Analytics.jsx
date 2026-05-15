@@ -74,7 +74,7 @@ export function Analytics({ currency = 'EUR' }) {
   const [data, setData]             = useState(null)
   const [liveData, setLiveData]     = useState(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
-  const [period, setPeriod]         = useState('current_month')
+  const [period, setPeriod]         = useState('q1_2026')
   const [lastUpdated, setLastUpdated] = useState(null)
 
   const fmt = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
