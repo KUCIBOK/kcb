@@ -15,10 +15,10 @@ export function Analytics({ user, title, artworks, artistProfile }) {
 
   // Statistiques calculées depuis les vraies données
   const list = Array.isArray(artworks) ? artworks : []
-  const soldArtworks  = list.filter((a) => a.sold === true || a.status === 'sold').length
-  const totalRevenue  = list.reduce((sum, a) => sum + Number(a.sold_price || 0), 0)
+  const soldArtworks = list.filter((a) => a.sold === true || a.status === 'sold').length
+  const totalRevenue = list.reduce((sum, a) => sum + Number(a.sold_price || 0), 0)
   const approvedCount = list.filter((a) => a.status === 'approved').length
-  const pendingCount  = list.filter((a) => a.status === 'pending').length
+  const pendingCount = list.filter((a) => a.status === 'pending').length
 
   const stats = {
     soldArtworks,
@@ -30,10 +30,29 @@ export function Analytics({ user, title, artworks, artistProfile }) {
 
   // Revenus par mois sur l'année courante (données réelles)
   const currentYear = new Date().getFullYear()
-  const monthLabels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
+  const monthLabels = [
+    'Jan',
+    'Fév',
+    'Mar',
+    'Avr',
+    'Mai',
+    'Juin',
+    'Juil',
+    'Aoû',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Déc',
+  ]
   const monthlyRevenue = monthLabels.map((_, month) =>
     list
-      .filter((a) => a.sold && a.sold_at && new Date(a.sold_at).getMonth() === month && new Date(a.sold_at).getFullYear() === currentYear)
+      .filter(
+        (a) =>
+          a.sold &&
+          a.sold_at &&
+          new Date(a.sold_at).getMonth() === month &&
+          new Date(a.sold_at).getFullYear() === currentYear
+      )
       .reduce((sum, a) => sum + Number(a.sold_price || 0), 0)
   )
 
@@ -126,8 +145,8 @@ export function Analytics({ user, title, artworks, artistProfile }) {
           <div className="space-y-3">
             {[
               { label: 'Approuvées', count: stats.approvedCount, color: 'bg-green-500' },
-              { label: 'Vendues',    count: stats.soldArtworks,  color: 'bg-kcb-or' },
-              { label: 'En attente', count: stats.pendingCount,  color: 'bg-yellow-500' },
+              { label: 'Vendues', count: stats.soldArtworks, color: 'bg-kcb-or' },
+              { label: 'En attente', count: stats.pendingCount, color: 'bg-yellow-500' },
             ].map(({ label, count, color }) => (
               <div key={label}>
                 <div className="flex justify-between text-sm mb-1">
@@ -137,7 +156,10 @@ export function Analytics({ user, title, artworks, artistProfile }) {
                 <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
                   <div
                     className={`h-full ${color} rounded-full transition-all`}
-                    style={{ width: stats.totalArtworks > 0 ? `${(count / stats.totalArtworks) * 100}%` : '0%' }}
+                    style={{
+                      width:
+                        stats.totalArtworks > 0 ? `${(count / stats.totalArtworks) * 100}%` : '0%',
+                    }}
                   />
                 </div>
               </div>
@@ -158,7 +180,7 @@ export function Analytics({ user, title, artworks, artistProfile }) {
                     className="w-full bg-green-500/80 rounded-t hover:bg-green-500 transition"
                     style={{ height: `${Math.max(h, 2)}%` }}
                   />
-                  <span className="text-kcb-pierre text-xs mt-2">{month.slice(0,3)}</span>
+                  <span className="text-kcb-pierre text-xs mt-2">{month.slice(0, 3)}</span>
                 </div>
               )
             })}
@@ -193,7 +215,8 @@ export function Analytics({ user, title, artworks, artistProfile }) {
                     </div>
                   </div>
                   <span className="text-green-400 font-semibold">
-                    {Number(artwork.sold_price || 0).toLocaleString('fr-FR')} {artwork.currency ?? 'XOF'}
+                    {Number(artwork.sold_price || 0).toLocaleString('fr-FR')}{' '}
+                    {artwork.currency ?? 'XOF'}
                   </span>
                 </div>
               ))}

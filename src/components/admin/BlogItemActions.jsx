@@ -17,8 +17,8 @@ export function BlogItemActions({ post }) {
     setState((prev) => ({ ...prev, loading: true }))
     try {
       await publishPost(post?.id || post?._id)
-    } catch (_) {}
-    finally {
+    } catch (_) {
+    } finally {
       setState((prev) => ({ ...prev, loading: false }))
     }
   }
@@ -27,8 +27,8 @@ export function BlogItemActions({ post }) {
     setState((prev) => ({ ...prev, loading: true }))
     try {
       await archivePost(post?.id || post?._id)
-    } catch (_) {}
-    finally {
+    } catch (_) {
+    } finally {
       setState((prev) => ({ ...prev, loading: false }))
     }
   }

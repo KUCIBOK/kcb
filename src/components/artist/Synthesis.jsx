@@ -34,7 +34,9 @@ export function Synthesis() {
     )
     .reduce((sum, artwork) => sum + Number(artwork.sold_price || 0), 0)
 
-  const deliveredArtworks = myArtworks?.filter((item) => item?.delivery_status === 'delivered' || item?.isDelivered === true)?.length
+  const deliveredArtworks = myArtworks?.filter(
+    (item) => item?.delivery_status === 'delivered' || item?.isDelivered === true
+  )?.length
   const soldArtworksNumber = myArtworks?.filter((item) => item?.sold === true)?.length
 
   // Calcul du chiffre d'affaires pour chaque mois de l'année courante

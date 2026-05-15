@@ -1,175 +1,261 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { utils } from '../../api/useAPI'
 import { fmtMoney, XOF_PER_EUR } from '../../lib/currency'
 import { SkeletonKPI, SkeletonChart } from '../ui'
 import {
-  TrendingUp,
-  Users,
-  ShoppingBag,
-  DollarSign,
-  Truck,
-  MessageSquare,
-  Activity,
-  AlertCircle,
   CheckCircle,
-  Clock,
   ArrowUpRight,
   ArrowDownRight,
-  ZoomIn,
   AlertTriangle,
   Zap,
   Check,
   Pause,
+  RefreshCw,
+  TrendingUp,
+  Users,
+  Package,
+  BarChart2,
 } from 'lucide-react'
 
+// ─── Périodes ────────────────────────────────────────────────────────────────
 const PERIODS = [
-  { key: 'q1_2026',       label: 'Q1 2026',      short: 'Jan–Mar 2026' },
-  { key: 'q2_2026',       label: 'Q2 2026',      short: 'Avr–Juin 2026' },
-  { key: 'current_month', label: 'Mois courant', short: 'Ce mois' },
-  { key: 'all_time',      label: 'Tout',         short: 'Tout' },
+  { key: '2025', label: '2025', short: 'Exercice 2025' },
+  { key: 'q1_2026', label: 'Q1 2026', short: 'Jan–Mar 2026' },
+  { key: 'q2_2026', label: 'Q2 2026', short: 'Avr–Juin 2026' },
+  { key: 'current_month', label: 'Mois courant', short: 'Mai 2026' },
+  { key: 'all_time', label: 'Tout', short: 'Historique complet' },
 ]
 
-// Données réelles Q1 2026 — source : DashboardComptable_V5.xlsx Q1 2026.pdf
+// ─── Référence 2025 — SYSCOHADA officiel ────────────────────────────────────
+const YEAR_2025 = {
+  ca_annual: 102430,
+  charges_annual: 86000,
+  rn_annual: 16430,
+  marge: 16.0,
+  croissance: 287, // % vs 2024
+  ca_fcfa: 67189676,
+  charges_fcfa: 56412302,
+  rn_fcfa: 10777374,
+  nps: 72,
+  uptime: 99.8,
+}
+
+// ─── Données réelles Q1 2026 — source : DashboardComptable_V5.xlsx ───────────
 const Q1_2026 = {
-  mrr: 6046,           // MRR fin mars 2026
-  arr: 72552,          // 6 046 × 12
-  mrrGrowth: 12,       // +12%/mois (base déc 2025 = 4 303 €)
-  arr_growth: 40.5,    // croissance vs déc 2025
-  revenue_projection_3m: 6772, // 6 046 × 1,12
+  mrr: 6046,
+  arr: 72552,
+  mrrGrowth: 12,
+  arr_growth: 40.5,
+  revenue_projection_3m: 6770,
   payback_period: 7,
   cac: 190,
   ltv: 600,
+  ltv_cac: 3.2,
+  churn: 4.0,
   revenue_mix: { saas: 57, logistique: 23, numerisation: 10, marketplace: 9 },
   saas_subscribers: 232,
   arpa: 26,
   saas_segments: {
-    collectionneur: { count: 51,  mrr: 1279, share: 22 },
-    curateur:       { count: 128, mrr: 3197, share: 55 },
-    galerie:        { count: 63,  mrr: 1570, share: 27 },
+    collectionneur: { count: 49, mrr: 1279, share: 21 },
+    curateur: { count: 128, mrr: 3197, share: 55 },
+    galerie: { count: 55, mrr: 1570, share: 24 },
   },
-  gmv:               900,    // marketplace avg mensuel (2 700 / 3)
-  aov:               225,    // proxy GMV / ventes
-  commission_revenue: 180,   // avg mensuel
+  gmv: 3000, // Commission 600 / 0.20
+  aov: 500,
+  commission_revenue: 600,
   logistics: {
-    envois_2025:     31,     // total Q1 (8 + 10 + 13)
+    label: 'Q1 2026',
+    envois: 31,
     envois_mensuels: 10.3,
-    panier_moyen:    250,
-    revenu_mensuel:  2233,   // 6 700 / 3
-    marge:           63.0,   // (6 700 - 2 480) / 6 700
+    panier_moyen: 250,
+    revenu_mensuel: 2167,
+    marge: 63.0,
   },
-  // P&L mensuel complet — pour la section dédiée
   pl_monthly: [
     {
       mois: 'Janvier 2026',
-      produits: { saas: 4820, marketplace: 1000, logistique: 2000, numerisation: 900, nouveaux_marches: 0,  total: 8720  },
-      charges:  { salaires: 4500, tech: 750,  marketing: 1500, logistique: 640,  numerisation: 360,  admin: 500, amort: 200, divers: 450, total: 8500 },
-      net: 220, marge: 2.5, mrr: 4820, abonnes: 185,
+      abonnes: 185,
+      mrr: 4820,
+      produits: {
+        saas: 4820,
+        marketplace: 1000,
+        logistique: 2000,
+        numerisation: 900,
+        nouveaux_marches: 0,
+        total: 8720,
+      },
+      charges: {
+        salaires: 4500,
+        tech: 750,
+        marketing: 1500,
+        logistique: 640,
+        numerisation: 360,
+        admin: 500,
+        amort: 200,
+        divers: 450,
+        total: 8900,
+      },
+      net: -180,
+      marge: -2.1,
     },
     {
       mois: 'Février 2026',
-      produits: { saas: 5398, marketplace: 900,  logistique: 2200, numerisation: 1000, nouveaux_marches: 300,  total: 9498  },
-      charges:  { salaires: 4500, tech: 800,  marketing: 2000, logistique: 800,  numerisation: 450,  admin: 550, amort: 200, divers: 500, total: 9000 },
-      net: 498, marge: 5.2, mrr: 5398, abonnes: 207,
+      abonnes: 207,
+      mrr: 5398,
+      produits: {
+        saas: 5398,
+        marketplace: 900,
+        logistique: 2000,
+        numerisation: 1000,
+        nouveaux_marches: 300,
+        total: 9598,
+      },
+      charges: {
+        salaires: 4500,
+        tech: 800,
+        marketing: 1960,
+        logistique: 800,
+        numerisation: 450,
+        admin: 550,
+        amort: 200,
+        divers: 500,
+        total: 9760,
+      },
+      net: -162,
+      marge: -1.7,
     },
     {
       mois: 'Mars 2026',
-      produits: { saas: 6046, marketplace: 800,  logistique: 2500, numerisation: 1100, nouveaux_marches: 800,  total: 10446 },
-      charges:  { salaires: 4800, tech: 900,  marketing: 2500, logistique: 1040, numerisation: 540,  admin: 600, amort: 200, divers: 560, total: 9500 },
-      net: 946, marge: 9.1, mrr: 6046, abonnes: 232,
+      abonnes: 232,
+      mrr: 6046,
+      produits: {
+        saas: 6046,
+        marketplace: 600,
+        logistique: 2500,
+        numerisation: 1100,
+        nouveaux_marches: 800,
+        total: 11046,
+      },
+      charges: {
+        salaires: 4800,
+        tech: 900,
+        marketing: 2580,
+        logistique: 1040,
+        numerisation: 540,
+        admin: 600,
+        amort: 200,
+        divers: 560,
+        total: 11220,
+      },
+      net: -174,
+      marge: -1.6,
     },
   ],
   pl_q1_total: {
-    produits: { saas: 16264, marketplace: 2700, logistique: 6700, numerisation: 3000, nouveaux_marches: 1100, total: 28664 },
-    charges:  { salaires: 13800, tech: 2450, marketing: 6000, logistique: 2480, numerisation: 1350, admin: 1650, amort: 600, divers: 1510, total: 27000 },
-    net: 1664, marge: 5.6,
+    produits: {
+      saas: 16264,
+      marketplace: 2500,
+      logistique: 6500,
+      numerisation: 3000,
+      nouveaux_marches: 1100,
+      total: 29364,
+    },
+    charges: {
+      salaires: 13800,
+      tech: 2450,
+      marketing: 6040,
+      logistique: 2480,
+      numerisation: 1350,
+      admin: 1650,
+      amort: 600,
+      divers: 1510,
+      total: 29880,
+    },
+    net: -516,
+    marge: -1.8,
   },
 }
 
-export function Analytics({ currency = 'EUR' }) {
-  const [data, setData] = useState(null)
-  const [autoRefresh, setAutoRefresh] = useState(true)
-  const [period, setPeriod] = useState('current_month')
-  const [liveData, setLiveData] = useState(null)
-  // Les valeurs de defaultData sont en EUR — fmtMoney attend du XOF, on convertit avant affichage
-  const fmt = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
+// ─── Projections Q2 2026 ─────────────────────────────────────────────────────
+const Q2_2026 = {
+  mrr_projection: 8192, // MRR fin juin 2026
+  arr_projection: 98304, // ARR fin Q2
+  abonnes_fin_q2: 309,
+  ca_q2_total: 33500,
+  mrr_monthly: [
+    { mois: 'Avril 2026', mrr: 6770, abonnes: 249 },
+    { mois: 'Mai 2026', mrr: 7447, abonnes: 272 },
+    { mois: 'Juin 2026', mrr: 8192, abonnes: 309 },
+  ],
+}
 
-  // Données complètes par défaut
+export function Analytics({ currency = 'EUR' }) {
+  const navigate = useNavigate()
+  const [data, setData] = useState(null)
+  const [liveData, setLiveData] = useState(null)
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  const [period, setPeriod] = useState('q1_2026')
+  const [lastUpdated, setLastUpdated] = useState(null)
+
+  const fmt = (eurAmount, opts) => fmtMoney(eurAmount * XOF_PER_EUR, currency, opts)
+  const fmtXOF = (xof) => fmtMoney(xof, 'XOF')
+
   const defaultData = {
-    // Revenue & Finance — valeurs en EUR
     mrr: 4303,
-    arr: 51636, // = MRR × 12 ✓
+    arr: 51636,
     mrrGrowth: 12.5,
     arr_growth: 18.2,
-    // Mix: Marketplace 20% / SaaS 40% / Numérisation 10% / Logistique 30%
-    revenue_mix: { marketplace: 20, subscriptions: 40, artworks: 10, logistique: 30 },
-    cac: 190, // Budget marketing 12 700 € ÷ 67 nouveaux abonnés
-    ltv: 600, // ARPA ÷ churn mensuel 4,5 % = 27 ÷ 0,045
-    payback_period: 7, // CAC ÷ ARPA = 190 ÷ 27
-    revenue_projection_3m: 4820, // MRR mois prochain = MRR × 1,12
-
-    // SaaS — Sous-segments abonnements
+    revenue_mix: { marketplace: 20, saas: 40, numerisation: 10, logistique: 30 },
+    cac: 190,
+    ltv: 600,
+    ltv_cac: 3.2,
+    payback_period: 7,
+    revenue_projection_3m: 4820,
+    churn: 4.5,
     saas_subscribers: 159,
     arpa: 27,
     saas_segments: {
       collectionneur: { count: 34, mrr: 909, share: 22 },
       curateur: { count: 87, mrr: 2272, share: 55 },
-      galerie: { count: 43, mrr: 1117, share: 27 }, // 909+2272+1117 = 4 298 ≈ 4 303 €
+      galerie: { count: 43, mrr: 1117, share: 27 },
     },
-
-    // Utilisateurs & Croissance
     totalUsers: 7154,
-    mau: 5500, // MAU = DAU ÷ 66,7 % = 3 668 ÷ 0,667
-    dau: 3668, // NE PAS MODIFIER — DAU/MAU 66,7 %
+    mau: 5500,
+    dau: 3668,
     acquisition_growth: 15,
     channels: {
-      organic: { users: 8, roi: 3.2 },
-      paid: { users: 10, roi: 1.8 },
-      referral: { users: 5, roi: 4.1 },
+      organic: { pct: 45, roi: 3.2 },
+      paid: { pct: 35, roi: 1.8 },
+      referral: { pct: 20, roi: 4.1 },
     },
-
-    // Contenu & Inventaire
     totalArtworks: 236,
     artworks_growth: 18,
-    artworks_by_category: { paintings: 120, sculptures: 65, digital: 51 },
-    top_artists: [
-      { name: 'Artist 1', revenue: 8500 },
-      { name: 'Artist 2', revenue: 6200 },
-      { name: 'Artist 3', revenue: 4800 },
-    ],
-    quality_score: 87,
+    artworks_by_category: { peintures: 120, sculptures: 65, digital: 51 },
     artworks_with_cert: 215,
-
-    // Marketplace & Ventes — valeurs en EUR
-    gmv: 1707, // GMV mensuel
-    aov: 279, // = round(GMV / sales) ✓
+    quality_score: 87,
+    gmv: 1707,
+    aov: 279,
     conversion_rate: 3.8,
     views_total: 12450,
     favorites: 856,
     messages: 234,
-    sales: 228,
-    best_sellers: [
-      { title: 'Artwork 1', sales: 45, revenue: 22500 },
-      { title: 'Artwork 2', sales: 32, revenue: 16000 },
-    ],
-    commission_revenue: 341, // = round(GMV × 0,20) ✓
-
-    // Logistique — valeurs en EUR
+    contacts: 89,
+    sales: 6,
+    commission_revenue: 341,
     logistics: {
-      envois_2025: 110,
+      label: 'Q4 2025',
+      envois: 110,
       envois_mensuels: 9,
       panier_moyen: 279,
       revenu_mensuel: 2561,
       marge: 71.4,
     },
-
-    // Engagement & Rétention
     dau_mau_ratio: 66.7,
     retention_30d: 72,
     retention_7d: 89,
-    feature_adoption: { bidding: 78, favorites: 92, messaging: 65 },
+    feature_adoption: { enchères: 78, favoris: 92, messagerie: 65 },
     at_risk_users: 7,
-
-    // Technique & Performance
     uptime: 99.8,
     api_response_time: 145,
     error_rate: 0.2,
@@ -177,135 +263,139 @@ export function Analytics({ currency = 'EUR' }) {
     fid: 35,
     cls: 0.08,
     certs_generated: 215,
-
-    // Support & Satisfaction
     nps: 72,
     csat: 4.3,
     total_tickets: 45,
     avg_response_time: 2.5,
     avg_resolution_time: 24,
-    ticket_categories: {
-      billing: 12,
-      technical: 18,
-      general: 15,
-    },
-
-    // Prédictions — valeurs en EUR
-    mrr_projection: 4820,
+    ticket_categories: { facturation: 12, technique: 18, général: 15 },
     churn_risk_users: 7,
     upsell_opportunities: 7,
+    pendingArtworks: null,
+    openTickets: null,
     alerts: [
-      { type: 'warning', message: '7 utilisateurs à risque de churn' },
-      { type: 'info', message: "7 opportunités d'upsell identifiées" },
+      { type: 'warning', message: '7 utilisateurs à risque de churn identifiés' },
+      { type: 'info', message: '7 comptes éligibles à un upsell de plan' },
     ],
   }
 
-  const loadLiveData = async (p) => {
+  const loadLiveData = useCallback(async (p) => {
     try {
-      const response = await fetch(`${utils.api}/analytics?period=${p}`, utils.options)
-      const result = await response.json()
-      if (result?.data) setLiveData(result.data)
-    } catch (_err) {
-      // fallback sur defaultData
+      const res = await fetch(`${utils.api}/analytics?period=${p}`, utils.options)
+      const result = await res.json()
+      if (result?.data) {
+        setLiveData(result.data)
+        setLastUpdated(new Date())
+      }
+    } catch (_) {
+      /* fallback sur defaultData */
     }
-  }
+  }, [])
 
   useEffect(() => {
-    setData(defaultData) // eslint-disable-line react-hooks/set-state-in-effect
+    setData(defaultData)
     setLiveData(null)
     loadLiveData(period)
     if (autoRefresh) {
-      const interval = setInterval(() => loadLiveData(period), 30000)
-      return () => clearInterval(interval)
+      const t = setInterval(() => loadLiveData(period), 30000)
+      return () => clearInterval(t)
     }
   }, [autoRefresh, period]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fusionne les vraies données sur les valeurs connues
-  const q1Static = period === 'q1_2026' ? {
-    mrr:                   Q1_2026.mrr,
-    arr:                   Q1_2026.arr,
-    mrrGrowth:             Q1_2026.mrrGrowth,
-    arr_growth:            Q1_2026.arr_growth,
-    revenue_projection_3m: Q1_2026.revenue_projection_3m,
-    payback_period:        Q1_2026.payback_period,
-    cac:                   Q1_2026.cac,
-    ltv:                   Q1_2026.ltv,
-    revenue_mix:           Q1_2026.revenue_mix,
-    saas_subscribers:      Q1_2026.saas_subscribers,
-    arpa:                  Q1_2026.arpa,
-    saas_segments:         Q1_2026.saas_segments,
-    gmv:                   Q1_2026.gmv,
-    aov:                   Q1_2026.aov,
-    commission_revenue:    Q1_2026.commission_revenue,
-    logistics:             Q1_2026.logistics,
-  } : {}
+  const q1Static =
+    period === 'q1_2026'
+      ? {
+          mrr: Q1_2026.mrr,
+          arr: Q1_2026.arr,
+          mrrGrowth: Q1_2026.mrrGrowth,
+          arr_growth: Q1_2026.arr_growth,
+          revenue_projection_3m: Q1_2026.revenue_projection_3m,
+          payback_period: Q1_2026.payback_period,
+          cac: Q1_2026.cac,
+          ltv: Q1_2026.ltv,
+          ltv_cac: Q1_2026.ltv_cac,
+          churn: Q1_2026.churn,
+          revenue_mix: Q1_2026.revenue_mix,
+          saas_subscribers: Q1_2026.saas_subscribers,
+          arpa: Q1_2026.arpa,
+          saas_segments: Q1_2026.saas_segments,
+          gmv: Q1_2026.gmv,
+          aov: Q1_2026.aov,
+          commission_revenue: Q1_2026.commission_revenue,
+          logistics: Q1_2026.logistics,
+        }
+      : {}
 
-  const merged = data ? {
-    ...data,
-    ...q1Static,
-    ...(liveData ? {
-      totalArtworks:   liveData.artworks?.total    ?? data.totalArtworks,
-      gmv:             liveData.transactions?.gmv_eur ?? (q1Static.gmv ?? data.gmv),
-      aov:             liveData.transactions?.aov_eur  || (q1Static.aov ?? data.aov),
-      sales:           liveData.transactions?.completed ?? data.sales,
-      pendingArtworks: liveData.pending_artworks   ?? data.pendingArtworks,
-    } : {}),
-  } : null
+  const q2Static =
+    period === 'q2_2026'
+      ? {
+          mrr: Q2_2026.mrr_projection,
+          arr: Q2_2026.arr_projection,
+          mrrGrowth: 10,
+          arr_growth: 35,
+          revenue_projection_3m: Q2_2026.mrr_projection,
+        }
+      : {}
 
-  if (!merged)
-    return (
-      <div className="space-y-6 pb-10">
-        {/* Header skeleton */}
-        <div className="flex items-center justify-between mb-8 animate-pulse">
-          <div className="space-y-2">
-            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-64 h-9" />
-            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-48 h-4" />
-          </div>
-          <div className="flex gap-2">
-            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-28 h-9" />
-            <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-20 h-9" />
-          </div>
-        </div>
-        {/* KPI grid skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <SkeletonKPI key={i} />
-          ))}
-        </div>
-        {/* Chart skeleton */}
-        <SkeletonChart height="h-48" />
-        {/* Second KPI grid skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <SkeletonKPI key={i} />
-          ))}
-        </div>
-        {/* Second chart skeleton */}
-        <SkeletonChart height="h-48" />
-      </div>
-    )
+  const year2025Static =
+    period === '2025'
+      ? {
+          mrr: Math.round(YEAR_2025.ca_annual / 12),
+          arr: YEAR_2025.ca_annual,
+          mrrGrowth: 0,
+          arr_growth: YEAR_2025.croissance,
+          nps: YEAR_2025.nps,
+          uptime: YEAR_2025.uptime,
+        }
+      : {}
+
+  const merged = data
+    ? {
+        ...data,
+        ...year2025Static,
+        ...q2Static,
+        ...q1Static,
+        ...(liveData
+          ? {
+              totalArtworks: liveData.artworks?.total ?? data.totalArtworks,
+              totalUsers: liveData.users?.total ?? data.totalUsers,
+              gmv: liveData.transactions?.gmv_eur ?? q1Static.gmv ?? data.gmv,
+              aov: liveData.transactions?.aov_eur || (q1Static.aov ?? data.aov),
+              sales: liveData.transactions?.completed ?? data.sales,
+              pendingArtworks: liveData.pending_artworks ?? data.pendingArtworks,
+            }
+          : {}),
+      }
+    : null
+
+  if (!merged) return <DashboardSkeleton />
+
+  const periodShort = PERIODS.find((p) => p.key === period)?.short ?? '—'
 
   return (
     <div className="space-y-6 pb-10">
-      {/* En-tête */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      {/* ── En-tête ────────────────────────────────────────────────────────── */}
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-white">Dashboard Principal</h1>
-          <p className="text-kcb-pierre mt-2">
-            {PERIODS.find(p => p.key === period)?.short ?? 'Ce mois'} — données réelles + projections
+          <h1 className="text-4xl font-bold text-white">Dashboard</h1>
+          <p className="text-kcb-pierre mt-1 text-sm">
+            {periodShort}
+            {lastUpdated && (
+              <span className="ml-2 text-kcb-pierre/50">
+                · màj{' '}
+                {lastUpdated.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
           </p>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
-          {/* Sélecteur de période */}
           <div className="flex items-center gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-1">
             {PERIODS.map((p) => (
               <button
                 key={p.key}
                 onClick={() => setPeriod(p.key)}
                 className={`px-3 py-1 rounded text-xs font-medium transition ${
-                  period === p.key
-                    ? 'bg-kcb-or text-kcb-noir'
-                    : 'text-kcb-pierre hover:text-white'
+                  period === p.key ? 'bg-kcb-or text-kcb-noir' : 'text-kcb-pierre hover:text-white'
                 }`}
               >
                 {p.label}
@@ -313,70 +403,172 @@ export function Analytics({ currency = 'EUR' }) {
             ))}
           </div>
           <button
-            onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`px-4 py-2 rounded text-sm font-medium transition ${
+            onClick={() => setAutoRefresh((v) => !v)}
+            className={`px-3 py-2 rounded text-xs font-medium transition flex items-center gap-1 border ${
               autoRefresh
-                ? 'bg-green-600/20 text-green-300 border border-green-600/30'
-                : 'bg-kcb-ardoise text-kcb-sable'
+                ? 'bg-green-600/20 text-green-300 border-green-600/30'
+                : 'bg-kcb-ardoise text-kcb-sable border-white/[0.06]'
             }`}
           >
-            {autoRefresh ? (
-              <>
-                <Check className="w-4 h-4 inline mr-1" /> Auto-refresh
-              </>
-            ) : (
-              <>
-                <Pause className="w-4 h-4 inline mr-1" /> Paused
-              </>
-            )}
+            {autoRefresh ? <Check className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+            {autoRefresh ? 'Live' : 'Paused'}
           </button>
           <button
             onClick={() => loadLiveData(period)}
-            className="px-4 py-2 bg-kcb-or hover:bg-kcb-bronze rounded text-kcb-noir text-sm font-medium transition"
+            className="px-3 py-2 bg-kcb-or hover:bg-kcb-bronze rounded text-kcb-noir text-xs font-medium transition flex items-center gap-1"
           >
-            Refresh
+            <RefreshCw className="w-3.5 h-3.5" /> Rafraîchir
           </button>
         </div>
       </div>
-      {/* Badge données réelles */}
-      {liveData && (
+
+      {/* ── Badge live / statique ─────────────────────────────────────────── */}
+      {liveData ? (
         <div className="flex items-center gap-2 text-xs text-green-400 bg-green-500/10 border border-green-500/20 rounded-[4px] px-3 py-2 w-fit">
           <CheckCircle className="w-3.5 h-3.5" />
-          Données Supabase chargées — {PERIODS.find(p => p.key === period)?.short}
-          {liveData.transactions && (
-            <span className="text-green-300/70 ml-1">
-              · {liveData.transactions.completed} transactions · {liveData.artworks?.total ?? 0} œuvres · {liveData.users?.new ?? 0} nouveaux users
-            </span>
-          )}
+          Données Supabase — {periodShort}
+          <span className="text-green-300/60 ml-1">
+            · {liveData.transactions?.completed ?? 0} transactions · {liveData.artworks?.total ?? 0}{' '}
+            œuvres
+          </span>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 text-xs text-kcb-pierre bg-white/[0.03] border border-white/[0.06] rounded-[4px] px-3 py-2 w-fit">
+          <span className="w-1.5 h-1.5 rounded-full bg-kcb-pierre/60 inline-block" />
+          Données statiques — en attente de connexion Supabase
         </div>
       )}
 
-      {/* Alertes & Actions Rapides */}
-      {merged.alerts && merged.alerts.length > 0 && (
+      {/* ── Hero KPIs ─────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <HeroKPI
+          icon={TrendingUp}
+          label="MRR"
+          value={fmt(merged.mrr)}
+          change={`+${merged.mrrGrowth}% MoM`}
+          trend="up"
+        />
+        <HeroKPI
+          icon={Users}
+          label="Utilisateurs"
+          value={merged.totalUsers.toLocaleString('fr-FR')}
+          change={`+${merged.acquisition_growth}% ce mois`}
+          trend="up"
+        />
+        <HeroKPI
+          icon={Package}
+          label="Œuvres"
+          value={merged.totalArtworks}
+          change={`${merged.artworks_with_cert} certifiées`}
+          trend="up"
+        />
+        <HeroKPI
+          icon={BarChart2}
+          label="GMV"
+          value={fmt(merged.gmv, { compact: true })}
+          change="Volume mensuel"
+          trend="up"
+        />
+      </div>
+
+      {/* ── Alertes ───────────────────────────────────────────────────────── */}
+      {merged.alerts?.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {merged.alerts.map((alert, idx) => (
             <div
               key={idx}
-              className={`p-4 rounded-[4px] border ${
+              className={`p-4 rounded-[4px] border flex items-start gap-2 ${
                 alert.type === 'warning'
                   ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300'
                   : 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable'
               }`}
             >
-              <div className="flex items-start gap-2">
-                {alert.type === 'warning' ? (
-                  <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                ) : (
-                  <Zap className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                )}
-                <p className="text-sm">{alert.message}</p>
-              </div>
+              {alert.type === 'warning' ? (
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              ) : (
+                <Zap className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              )}
+              <p className="text-sm">{alert.message}</p>
             </div>
           ))}
         </div>
       )}
 
-      {/* Section 1: Revenue & Finance */}
+      {/* ── 2025 — Référence SYSCOHADA ────────────────────────────────────── */}
+      {period === '2025' && (
+        <Section title="Exercice 2025 — Référence SYSCOHADA officiel">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard
+              label="CA 2025"
+              value={fmt(YEAR_2025.ca_annual)}
+              change={`${fmtXOF(YEAR_2025.ca_fcfa)}`}
+              trend="up"
+              color="green"
+            />
+            <MetricCard
+              label="Charges 2025"
+              value={fmt(YEAR_2025.charges_annual)}
+              change={`${fmtXOF(YEAR_2025.charges_fcfa)}`}
+              color="red"
+            />
+            <MetricCard
+              label="Résultat net 2025"
+              value={fmt(YEAR_2025.rn_annual)}
+              change={`${fmtXOF(YEAR_2025.rn_fcfa)} · Marge ${YEAR_2025.marge}%`}
+              trend="up"
+              color="green"
+            />
+            <MetricCard
+              label="Croissance"
+              value={`+${YEAR_2025.croissance}%`}
+              change="vs exercice 2024"
+              trend="up"
+              color="purple"
+            />
+          </div>
+          <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+              <p className="text-white font-semibold mb-3">Compte de résultat 2025</p>
+              <div className="space-y-2 text-sm">
+                {[
+                  ['Produits (CA)', fmt(YEAR_2025.ca_annual), 'text-green-300'],
+                  ['Charges totales', fmt(YEAR_2025.charges_annual), 'text-red-300'],
+                  [
+                    'Résultat net',
+                    fmt(YEAR_2025.rn_annual),
+                    'text-kcb-or font-bold border-t border-white/[0.08] pt-2 mt-2',
+                  ],
+                ].map(([label, value, cls]) => (
+                  <div key={label} className="flex justify-between">
+                    <span className="text-kcb-sable">{label}</span>
+                    <span className={cls}>{value}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between border-t border-white/[0.08] pt-2 mt-1">
+                  <span className="text-kcb-sable">Marge nette</span>
+                  <span className="text-kcb-or font-semibold">{YEAR_2025.marge}%</span>
+                </div>
+              </div>
+            </div>
+            <MetricCard
+              label="NPS 2025"
+              value={YEAR_2025.nps}
+              change="Score promoteur net"
+              trend="up"
+              color="green"
+            />
+            <MetricCard
+              label="Uptime 2025"
+              value={`${YEAR_2025.uptime}%`}
+              change="Disponibilité du service"
+              trend="up"
+              color="green"
+            />
+          </div>
+        </Section>
+      )}
+
+      {/* ── Revenue & Finance ─────────────────────────────────────────────── */}
       <Section title="Revenue & Finance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
@@ -396,14 +588,14 @@ export function Analytics({ currency = 'EUR' }) {
           <MetricCard
             label="CAC"
             value={fmt(merged.cac)}
-            change="Coût d'acquisition"
+            change="Coût d'acquisition client"
             trend="down"
             color="blue"
           />
           <MetricCard
             label="LTV"
             value={fmt(merged.ltv)}
-            change={`Ratio LTV:CAC = ${(merged.ltv / merged.cac).toFixed(1)}x`}
+            change={`LTV:CAC = ${merged.ltv_cac}x`}
             trend="up"
             color="purple"
           />
@@ -412,30 +604,30 @@ export function Analytics({ currency = 'EUR' }) {
           <RevenueBreakdown
             title="Mix de revenu"
             data={merged.revenue_mix}
-            colors={['#2D6A4F', '#C9A84C', '#8B6914']}
+            colors={['#2D6A4F', '#C9A84C', '#8B6914', '#5a3e2b']}
           />
           <MetricCard
             label="Payback Period"
             value={`${merged.payback_period} mois`}
-            change="Temps de récupération"
+            change="Temps de récupération du CAC"
             color="indigo"
           />
           <MetricCard
             label="MRR M+1"
             value={fmt(merged.revenue_projection_3m)}
-            change={`+12% MoM — MRR × 1,12`}
+            change="MRR × 1,12 (+12% MoM)"
             color="emerald"
           />
         </div>
       </Section>
 
-      {/* Section 1b: SaaS — Sous-segments */}
-      <Section title="SaaS — Sous-segments Abonnements">
+      {/* ── SaaS — Abonnements ────────────────────────────────────────────── */}
+      <Section title="SaaS — Abonnements">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Abonnés payants"
             value={merged.saas_subscribers}
-            change={`ARPA moyen : ${merged.arpa} €/mois`}
+            change={`ARPA ${merged.arpa} €/mois · Churn ${merged.churn}%`}
             trend="up"
             color="green"
           />
@@ -458,37 +650,239 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
 
-      {/* Section 2: Utilisateurs & Croissance */}
+      {/* ── P&L Q1 2026 — visible uniquement en période Q1 ───────────────── */}
+      {period === 'q1_2026' && (
+        <Section title="P&L Q1 2026 — Détail Mensuel">
+          <div className="overflow-x-auto bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/[0.08]">
+                  <th className="text-left text-kcb-pierre py-2 pr-4 font-medium w-44">Ligne</th>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <th key={m.mois} className="text-right text-kcb-pierre py-2 px-3 font-medium">
+                      {m.mois}
+                    </th>
+                  ))}
+                  <th className="text-right text-kcb-or py-2 pl-3 font-medium">Q1 Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.03]">
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-xs font-semibold text-kcb-or pt-3 pb-1 uppercase tracking-wide"
+                  >
+                    Produits
+                  </td>
+                </tr>
+                {[
+                  ['SaaS', 'saas'],
+                  ['Marketplace', 'marketplace'],
+                  ['Logistique', 'logistique'],
+                  ['Numérisation', 'numerisation'],
+                  ['Nouveaux marchés', 'nouveaux_marches'],
+                ].map(([label, key]) => (
+                  <tr key={key} className="hover:bg-white/[0.02]">
+                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
+                    {Q1_2026.pl_monthly.map((m) => (
+                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">
+                        {m.produits[key] > 0 ? (
+                          fmt(m.produits[key])
+                        ) : (
+                          <span className="text-kcb-pierre/40">—</span>
+                        )}
+                      </td>
+                    ))}
+                    <td className="py-1.5 pl-3 text-right text-kcb-sable">
+                      {Q1_2026.pl_q1_total.produits[key] > 0 ? (
+                        fmt(Q1_2026.pl_q1_total.produits[key])
+                      ) : (
+                        <span className="text-kcb-pierre/40">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="border-t border-white/[0.12] font-semibold">
+                  <td className="py-2 pr-4 text-white">Total Produits</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td key={m.mois} className="py-2 px-3 text-right text-green-300">
+                      {fmt(m.produits.total)}
+                    </td>
+                  ))}
+                  <td className="py-2 pl-3 text-right text-green-300 font-bold">
+                    {fmt(Q1_2026.pl_q1_total.produits.total)}
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-xs font-semibold text-red-400 pt-4 pb-1 uppercase tracking-wide"
+                  >
+                    Charges
+                  </td>
+                </tr>
+                {[
+                  ['Salaires', 'salaires'],
+                  ['Tech', 'tech'],
+                  ['Marketing', 'marketing'],
+                  ['Logistique', 'logistique'],
+                  ['Numérisation', 'numerisation'],
+                  ['Admin', 'admin'],
+                  ['Amortissement', 'amort'],
+                  ['Divers', 'divers'],
+                ].map(([label, key]) => (
+                  <tr key={key} className="hover:bg-white/[0.02]">
+                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
+                    {Q1_2026.pl_monthly.map((m) => (
+                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">
+                        {fmt(m.charges[key])}
+                      </td>
+                    ))}
+                    <td className="py-1.5 pl-3 text-right text-kcb-sable">
+                      {fmt(Q1_2026.pl_q1_total.charges[key])}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="border-t border-white/[0.12] font-semibold">
+                  <td className="py-2 pr-4 text-white">Total Charges</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td key={m.mois} className="py-2 px-3 text-right text-red-300">
+                      {fmt(m.charges.total)}
+                    </td>
+                  ))}
+                  <td className="py-2 pl-3 text-right text-red-300 font-bold">
+                    {fmt(Q1_2026.pl_q1_total.charges.total)}
+                  </td>
+                </tr>
+                <tr className="border-t-2 border-kcb-or/40">
+                  <td className="py-3 pr-4 text-kcb-or font-bold">Résultat net</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td
+                      key={m.mois}
+                      className={`py-3 px-3 text-right font-bold ${m.net >= 0 ? 'text-green-300' : 'text-red-300'}`}
+                    >
+                      {fmt(m.net)}
+                    </td>
+                  ))}
+                  <td
+                    className={`py-3 pl-3 text-right font-bold ${Q1_2026.pl_q1_total.net >= 0 ? 'text-green-300' : 'text-red-300'}`}
+                  >
+                    {fmt(Q1_2026.pl_q1_total.net)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="pb-2 pr-4 text-kcb-pierre text-xs">Marge nette</td>
+                  {Q1_2026.pl_monthly.map((m) => (
+                    <td
+                      key={m.mois}
+                      className={`pb-2 px-3 text-right text-xs ${m.marge < 0 ? 'text-red-400' : 'text-kcb-pierre'}`}
+                    >
+                      {m.marge}%
+                    </td>
+                  ))}
+                  <td
+                    className={`pb-2 pl-3 text-right text-xs ${Q1_2026.pl_q1_total.marge < 0 ? 'text-red-400' : 'text-kcb-pierre'}`}
+                  >
+                    {Q1_2026.pl_q1_total.marge}%
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            {Q1_2026.pl_monthly.map((m) => (
+              <div
+                key={m.mois}
+                className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4 text-center"
+              >
+                <p className="text-kcb-pierre text-xs mb-2">{m.mois}</p>
+                <p className="text-3xl font-bold text-white">{m.abonnes}</p>
+                <p className="text-xs text-kcb-pierre mt-1">abonnés</p>
+                <p className="text-green-300 font-semibold mt-2 text-sm">MRR {fmt(m.mrr)}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {/* ── Q2 2026 — Projections ─────────────────────────────────────────── */}
+      {period === 'q2_2026' && (
+        <Section title="Q2 2026 — Projections MRR">
+          <div className="grid grid-cols-3 gap-4">
+            {Q2_2026.mrr_monthly.map((m) => (
+              <div
+                key={m.mois}
+                className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4 text-center"
+              >
+                <p className="text-kcb-pierre text-xs mb-2">{m.mois}</p>
+                <p className="text-3xl font-bold text-white">{fmt(m.mrr)}</p>
+                <p className="text-xs text-kcb-pierre mt-1">MRR projeté</p>
+                <p className="text-kcb-or font-semibold mt-2 text-sm">{m.abonnes} abonnés</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MetricCard
+              label="ARR fin Q2"
+              value={fmt(Q2_2026.arr_projection)}
+              change="Annualized Revenue Rate"
+              trend="up"
+              color="green"
+            />
+            <MetricCard
+              label="Abonnés fin Q2"
+              value={Q2_2026.abonnes_fin_q2}
+              change={`+${Q2_2026.abonnes_fin_q2 - Q1_2026.saas_subscribers} vs fin Q1`}
+              trend="up"
+              color="blue"
+            />
+            <MetricCard
+              label="CA Q2 total"
+              value={fmt(Q2_2026.ca_q2_total)}
+              change="Chiffre d'affaires Q2"
+              trend="up"
+              color="purple"
+            />
+          </div>
+        </Section>
+      )}
+
+      {/* ── Utilisateurs & Croissance ─────────────────────────────────────── */}
       <Section title="Utilisateurs & Croissance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
-            label="Total Utilisateurs"
-            value={merged.totalUsers}
+            label="Total utilisateurs"
+            value={merged.totalUsers.toLocaleString('fr-FR')}
             change={`+${merged.acquisition_growth}% ce mois`}
             trend="up"
             color="blue"
           />
           <MetricCard
             label="MAU"
-            value={merged.mau}
-            change="Utilisateurs actifs mensuels"
+            value={merged.mau.toLocaleString('fr-FR')}
+            change="Actifs / mois"
             color="indigo"
           />
           <MetricCard
             label="DAU"
-            value={merged.dau}
-            change="Utilisateurs actifs quotidiens"
+            value={merged.dau.toLocaleString('fr-FR')}
+            change="Actifs / jour"
             color="violet"
           />
           <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-            <p className="text-kcb-pierre text-sm mb-2">Canaux d'acquisition</p>
-            <div className="space-y-2">
+            <p className="text-kcb-pierre text-sm mb-3">Canaux d'acquisition</p>
+            <div className="space-y-3">
               {Object.entries(merged.channels).map(([channel, metrics]) => (
-                <div key={channel} className="flex justify-between text-sm">
-                  <span className="text-kcb-sable capitalize">{channel}</span>
-                  <span className="text-white font-semibold">
-                    {metrics.users} (ROI: {metrics.roi}x)
-                  </span>
+                <div key={channel}>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-kcb-sable capitalize">{channel}</span>
+                    <span className="text-white font-semibold">
+                      {metrics.pct}% · ROI {metrics.roi}x
+                    </span>
+                  </div>
+                  <div className="h-1.5 bg-kcb-ardoise rounded-full overflow-hidden">
+                    <div className="h-full bg-kcb-or/60" style={{ width: `${metrics.pct}%` }} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -496,11 +890,11 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
 
-      {/* Section 3: Contenu & Inventaire */}
+      {/* ── Contenu & Inventaire ──────────────────────────────────────────── */}
       <Section title="Contenu & Inventaire">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
-            label="Œuvres Total"
+            label="Œuvres publiées"
             value={merged.totalArtworks}
             change={`+${merged.artworks_growth}% ce mois`}
             trend="up"
@@ -518,111 +912,89 @@ export function Analytics({ currency = 'EUR' }) {
             </div>
           </div>
           <MetricCard
-            label="Score Qualité"
-            value={`${merged.quality_score}%`}
-            change={`${merged.artworks_with_cert}/${merged.totalArtworks} avec cert`}
+            label="Taux de certification"
+            value={`${Math.round((merged.artworks_with_cert / merged.totalArtworks) * 100)}%`}
+            change={`${merged.artworks_with_cert} / ${merged.totalArtworks} certifiées`}
             trend="up"
             color="green"
           />
-          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-            <p className="text-kcb-pierre text-sm mb-2">Top Artistes</p>
-            <div className="space-y-1">
-              {merged.top_artists.slice(0, 3).map((artist, idx) => (
-                <div key={idx} className="flex justify-between text-sm">
-                  <span className="text-kcb-sable">{artist.name}</span>
-                  <span className="text-green-300 font-semibold">
-                    {fmt(artist.revenue, { compact: true })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <MetricCard
+            label="Score qualité moyen"
+            value={`${merged.quality_score}%`}
+            change="Complétude des fiches"
+            color="amber"
+          />
         </div>
       </Section>
 
-      {/* Section 4: Marketplace & Ventes */}
+      {/* ── Marketplace & Ventes ──────────────────────────────────────────── */}
       <Section title="Marketplace & Ventes">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="GMV"
             value={fmt(merged.gmv, { compact: true })}
-            change="Volume marchand brut"
+            change="Volume marchand mensuel"
             color="green"
           />
           <MetricCard
             label="AOV"
             value={fmt(merged.aov)}
-            change="Valeur moyenne par commande"
+            change="Valeur moy. / commande"
             color="blue"
           />
           <MetricCard
-            label="Conversion"
-            value={`${merged.conversion_rate}%`}
-            change="Taux de conversion"
-            color="purple"
-          />
-          <MetricCard
-            label="Commission"
-            value={fmt(merged.commission_revenue, { compact: true })}
-            change="Revenu commission"
+            label="Commission (20%)"
+            value={fmt(merged.commission_revenue)}
+            change="Revenu net commission"
             color="amber"
           />
+          <MetricCard
+            label="Taux de conversion"
+            value={`${merged.conversion_rate}%`}
+            change="Vues → Vente"
+            color="purple"
+          />
         </div>
-        <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="mt-4">
           <FunnelChart
             title="Funnel Marketplace"
             stages={[
               { label: 'Vues', value: merged.views_total, color: 'blue' },
               { label: 'Favoris', value: merged.favorites, color: 'purple' },
               { label: 'Messages', value: merged.messages, color: 'indigo' },
+              { label: 'Contacts qualifiés', value: merged.contacts, color: 'amber' },
               { label: 'Ventes', value: merged.sales, color: 'green' },
             ]}
           />
-          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-            <p className="text-white font-semibold mb-3">Meilleures ventes</p>
-            <div className="space-y-2">
-              {merged.best_sellers.map((item, idx) => (
-                <div key={idx} className="flex justify-between items-start">
-                  <div>
-                    <p className="text-white text-sm font-medium">{item.title}</p>
-                    <p className="text-kcb-pierre text-xs">{item.sales} ventes</p>
-                  </div>
-                  <span className="text-green-300 font-semibold">
-                    {fmt(item.revenue, { compact: true })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </Section>
 
-      {/* Section 4b: Logistique */}
+      {/* ── Logistique ────────────────────────────────────────────────────── */}
       {merged.logistics && (
-        <Section title="Logistique">
+        <Section title={`Logistique — ${merged.logistics.label}`}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <MetricCard
-              label="Envois 2025 (total)"
-              value={merged.logistics.envois_2025}
-              change={`${merged.logistics.envois_mensuels} envois/mois en moyenne`}
+              label="Expéditions"
+              value={merged.logistics.envois}
+              change={`${merged.logistics.envois_mensuels} envois/mois`}
               color="blue"
             />
             <MetricCard
-              label="Panier moyen logistique"
+              label="Panier moyen"
               value={fmt(merged.logistics.panier_moyen)}
               change="Par envoi"
               color="indigo"
             />
             <MetricCard
-              label="Revenu logistique/mois"
+              label="Revenu logistique"
               value={fmt(merged.logistics.revenu_mensuel)}
               trend="up"
               color="green"
             />
             <MetricCard
-              label="Marge logistique"
+              label="Marge nette"
               value={`${merged.logistics.marge}%`}
-              change="Marge nette"
+              change="Marge sur expéditions"
               trend="up"
               color="emerald"
             />
@@ -630,147 +1002,32 @@ export function Analytics({ currency = 'EUR' }) {
         </Section>
       )}
 
-      {/* Section P&L Q1 2026 — visible uniquement en période Q1 2026 */}
-      {period === 'q1_2026' && (
-        <Section title="P&L Q1 2026 — Détail Mensuel">
-          <div className="overflow-x-auto bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/[0.08]">
-                  <th className="text-left text-kcb-pierre py-2 pr-4 font-medium w-40">Ligne</th>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <th key={m.mois} className="text-right text-kcb-pierre py-2 px-3 font-medium">{m.mois}</th>
-                  ))}
-                  <th className="text-right text-kcb-or py-2 pl-3 font-medium">Q1 Total</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.03]">
-                {/* Produits */}
-                <tr>
-                  <td colSpan={5} className="text-xs font-semibold text-kcb-or pt-3 pb-1 uppercase tracking-wide">Produits</td>
-                </tr>
-                {[
-                  ['SaaS', 'saas'],
-                  ['Marketplace', 'marketplace'],
-                  ['Logistique', 'logistique'],
-                  ['Numérisation', 'numerisation'],
-                  ['Nouveaux marchés', 'nouveaux_marches'],
-                ].map(([label, key]) => (
-                  <tr key={key} className="hover:bg-white/[0.02]">
-                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
-                    {Q1_2026.pl_monthly.map((m) => (
-                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">
-                        {m.produits[key] > 0 ? fmt(m.produits[key]) : <span className="text-kcb-pierre">—</span>}
-                      </td>
-                    ))}
-                    <td className="py-1.5 pl-3 text-right text-kcb-sable">{Q1_2026.pl_q1_total.produits[key] > 0 ? fmt(Q1_2026.pl_q1_total.produits[key]) : <span className="text-kcb-pierre">—</span>}</td>
-                  </tr>
-                ))}
-                <tr className="border-t border-white/[0.12] font-semibold">
-                  <td className="py-2 pr-4 text-white">Total Produits</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td key={m.mois} className="py-2 px-3 text-right text-green-300">{fmt(m.produits.total)}</td>
-                  ))}
-                  <td className="py-2 pl-3 text-right text-green-300 font-bold">{fmt(Q1_2026.pl_q1_total.produits.total)}</td>
-                </tr>
-
-                {/* Charges */}
-                <tr>
-                  <td colSpan={5} className="text-xs font-semibold text-red-400 pt-4 pb-1 uppercase tracking-wide">Charges</td>
-                </tr>
-                {[
-                  ['Salaires', 'salaires'],
-                  ['Tech', 'tech'],
-                  ['Marketing', 'marketing'],
-                  ['Logistique', 'logistique'],
-                  ['Numérisation', 'numerisation'],
-                  ['Admin', 'admin'],
-                  ['Amortissement', 'amort'],
-                  ['Divers', 'divers'],
-                ].map(([label, key]) => (
-                  <tr key={key} className="hover:bg-white/[0.02]">
-                    <td className="py-1.5 pr-4 text-kcb-sable">{label}</td>
-                    {Q1_2026.pl_monthly.map((m) => (
-                      <td key={m.mois} className="py-1.5 px-3 text-right text-white">{fmt(m.charges[key])}</td>
-                    ))}
-                    <td className="py-1.5 pl-3 text-right text-kcb-sable">{fmt(Q1_2026.pl_q1_total.charges[key])}</td>
-                  </tr>
-                ))}
-                <tr className="border-t border-white/[0.12] font-semibold">
-                  <td className="py-2 pr-4 text-white">Total Charges</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td key={m.mois} className="py-2 px-3 text-right text-red-300">{fmt(m.charges.total)}</td>
-                  ))}
-                  <td className="py-2 pl-3 text-right text-red-300 font-bold">{fmt(Q1_2026.pl_q1_total.charges.total)}</td>
-                </tr>
-
-                {/* Résultat */}
-                <tr className="border-t-2 border-kcb-or/40">
-                  <td className="py-3 pr-4 text-kcb-or font-bold">Résultat net</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td
-                      key={m.mois}
-                      className={`py-3 px-3 text-right font-bold ${m.net >= 0 ? 'text-green-300' : 'text-red-300'}`}
-                    >
-                      {fmt(m.net)}
-                    </td>
-                  ))}
-                  <td className="py-3 pl-3 text-right font-bold text-green-300">{fmt(Q1_2026.pl_q1_total.net)}</td>
-                </tr>
-                <tr>
-                  <td className="pb-2 pr-4 text-kcb-pierre text-xs">Marge nette</td>
-                  {Q1_2026.pl_monthly.map((m) => (
-                    <td key={m.mois} className="pb-2 px-3 text-right text-xs text-kcb-pierre">{m.marge}%</td>
-                  ))}
-                  <td className="pb-2 pl-3 text-right text-xs text-kcb-pierre">{Q1_2026.pl_q1_total.marge}%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Abonnés + MRR par mois */}
-          <div className="mt-4 grid grid-cols-3 gap-4">
-            {Q1_2026.pl_monthly.map((m) => (
-              <div
-                key={m.mois}
-                className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4 text-center"
-              >
-                <p className="text-kcb-pierre text-xs mb-2">{m.mois}</p>
-                <p className="text-3xl font-bold text-white">{m.abonnes}</p>
-                <p className="text-xs text-kcb-pierre mt-1">abonnés</p>
-                <p className="text-green-300 font-semibold mt-2 text-sm">MRR {fmt(m.mrr)}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* Section 5: Engagement & Rétention */}
+      {/* ── Engagement & Rétention ────────────────────────────────────────── */}
       <Section title="Engagement & Rétention">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
-            label="Stickiness"
+            label="Stickiness DAU/MAU"
             value={`${merged.dau_mau_ratio.toFixed(1)}%`}
-            change="DAU/MAU ratio"
+            change="Ratio quotidien/mensuel"
             trend={merged.dau_mau_ratio > 50 ? 'up' : 'down'}
             color="indigo"
           />
           <MetricCard
             label="Rétention 7J"
             value={`${merged.retention_7d}%`}
-            change="Utilisateurs revenant"
+            change="Retour à 7 jours"
             color="green"
           />
           <MetricCard
             label="Rétention 30J"
             value={`${merged.retention_30d}%`}
-            change="Rétention à 30 jours"
+            change="Retour à 30 jours"
             color="blue"
           />
           <MetricCard
-            label="À Risque"
+            label="Utilisateurs à risque"
             value={merged.at_risk_users}
-            change="Utilisateurs de churn"
+            change="Churn probable"
             trend="down"
             color="red"
           />
@@ -789,7 +1046,7 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
 
-      {/* Section 6: Technique & Performance */}
+      {/* ── Technique & Performance ───────────────────────────────────────── */}
       <Section title="Technique & Performance">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
@@ -813,15 +1070,15 @@ export function Analytics({ currency = 'EUR' }) {
             color="red"
           />
           <MetricCard
-            label="Certificats"
+            label="Certificats PDF"
             value={merged.certs_generated}
-            change="Générés ce mois"
+            change="Générés au total"
             color="purple"
           />
         </div>
         <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-          <p className="text-white font-semibold mb-3">Web Vitals</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <p className="text-white font-semibold mb-3">Core Web Vitals</p>
+          <div className="grid grid-cols-3 gap-4">
             <VitalCard label="LCP" value={`${merged.lcp}s`} target="< 2.5s" status="good" />
             <VitalCard label="FID" value={`${merged.fid}ms`} target="< 100ms" status="good" />
             <VitalCard label="CLS" value={merged.cls} target="< 0.1" status="needs-improvement" />
@@ -829,7 +1086,7 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
       </Section>
 
-      {/* Section 7: Support & Satisfaction */}
+      {/* ── Support & Satisfaction ────────────────────────────────────────── */}
       <Section title="Support & Satisfaction">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
@@ -846,84 +1103,79 @@ export function Analytics({ currency = 'EUR' }) {
             color="blue"
           />
           <MetricCard
-            label="Total Tickets"
+            label="Tickets ouverts"
             value={merged.total_tickets}
             change="Demandes de support"
             color="purple"
           />
           <MetricCard
-            label="Temps Résolution"
+            label="Temps résolution"
             value={`${merged.avg_resolution_time}h`}
-            change="Moyenne"
+            change="Délai moyen"
             color="indigo"
           />
         </div>
-        <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-            <p className="text-white font-semibold mb-3">Catégories de problèmes</p>
-            <div className="space-y-2">
-              {Object.entries(merged.ticket_categories).map(([category, count]) => (
-                <div key={category} className="flex justify-between text-sm">
-                  <span className="text-kcb-sable capitalize">{category}</span>
-                  <span className="text-white font-semibold">{count} tickets</span>
-                </div>
-              ))}
-            </div>
+        <div className="mt-4 bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
+          <p className="text-white font-semibold mb-3">Catégories de tickets</p>
+          <div className="space-y-1">
+            {Object.entries(merged.ticket_categories).map(([category, count]) => (
+              <div key={category} className="flex justify-between text-sm">
+                <span className="text-kcb-sable capitalize">{category}</span>
+                <span className="text-white font-semibold">{count} tickets</span>
+              </div>
+            ))}
           </div>
-          <MetricCard
-            label="Temps Réponse"
-            value={`${merged.avg_response_time}h`}
-            change="Moyenne de réponse"
-            color="amber"
-          />
         </div>
       </Section>
 
-      {/* Section 8: Prédictions & Alertes */}
-      <Section title="Prédictions & Opportunités">
+      {/* ── Prédictions ───────────────────────────────────────────────────── */}
+      <Section title="Prédictions">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <MetricCard
-            label="MRR Projection"
-            value={fmt(merged.mrr_projection)}
-            change="Estimé le mois prochain"
+            label="MRR M+1"
+            value={fmt(merged.revenue_projection_3m)}
+            change="MRR × 1,12 (+12% MoM)"
             color="green"
           />
           <MetricCard
-            label="Churn Risk"
+            label="Churn probable"
             value={merged.churn_risk_users}
-            change="Utilisateurs à risque"
+            change="Utilisateurs à risque de départ"
             trend="down"
             color="orange"
           />
           <MetricCard
-            label="Upsell"
+            label="Upsell identifiés"
             value={merged.upsell_opportunities}
-            change="Opportunités identifiées"
+            change="Comptes éligibles plan supérieur"
             color="purple"
           />
         </div>
       </Section>
 
-      {/* Section 9: Actions Rapides */}
+      {/* ── Actions Rapides ───────────────────────────────────────────────── */}
       <Section title="Actions Rapides">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <ActionButton
-            icon=""
-            label="Réviser Œuvres"
-            badge={merged.pendingArtworks ?? '—'}
-            onClick={() => {}}
+            label="Réviser les œuvres"
+            description="Œuvres en attente de validation"
+            badge={merged.pendingArtworks}
+            badgeColor="red"
+            onClick={() => navigate('/admin/artworks')}
           />
           <ActionButton
-            icon=""
-            label="Gérer Utilisateurs"
-            badge={merged.totalUsers ?? '—'}
-            onClick={() => {}}
+            label="Gérer les utilisateurs"
+            description="Comptes, rôles et abonnements"
+            badge={merged.totalUsers?.toLocaleString('fr-FR')}
+            badgeColor="blue"
+            onClick={() => navigate('/admin/users')}
           />
           <ActionButton
-            icon=""
-            label="Tickets Support"
-            badge={merged.openTickets ?? '—'}
-            onClick={() => {}}
+            label="Tickets support"
+            description="Demandes en attente de réponse"
+            badge={merged.openTickets}
+            badgeColor="amber"
+            onClick={() => navigate('/admin/support')}
           />
         </div>
       </Section>
@@ -931,44 +1183,97 @@ export function Analytics({ currency = 'EUR' }) {
   )
 }
 
+// ─── Skeleton ────────────────────────────────────────────────────────────────
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-6 pb-10">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-48 h-9" />
+          <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-32 h-4" />
+        </div>
+        <div className="flex gap-2">
+          <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-72 h-9" />
+          <div className="animate-pulse bg-white/[0.08] rounded-[4px] w-20 h-9" />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <SkeletonKPI key={i} />
+        ))}
+      </div>
+      <SkeletonChart height="h-48" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <SkeletonKPI key={i} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── Composants UI ───────────────────────────────────────────────────────────
+
 function Section({ title, children }) {
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-white font-playfair">{title}</h2>
+      <h2 className="text-xl font-bold text-white font-playfair border-b border-white/[0.06] pb-2">
+        {title}
+      </h2>
       {children}
     </div>
   )
 }
 
-function MetricCard({ label, value, change, trend, color = 'gray' }) {
-  const colorClasses = {
-    green: 'bg-green-500/10 border-green-500/30 text-green-300',
-    blue: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
-    purple: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
-    indigo: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
-    violet: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
-    amber: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
-    emerald: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
-    orange: 'bg-kcb-or/10 border-kcb-or/30 text-kcb-sable',
-    red: 'bg-red-500/10 border-red-500/30 text-red-300',
-  }
-
+function HeroKPI({ icon: Icon, label, value, change, trend }) {
   return (
-    <div className={`border rounded-[4px] p-4 ${colorClasses[color]}`}>
+    <div className="bg-kcb-ardoise border border-white/[0.08] rounded-[4px] p-5 flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <p className="text-kcb-pierre text-sm font-medium">{label}</p>
+        <Icon className="w-4 h-4 text-kcb-or" />
+      </div>
+      <p className="text-3xl font-bold text-white">{value}</p>
+      <p
+        className={`text-xs flex items-center gap-1 ${trend === 'up' ? 'text-green-400' : 'text-red-400'}`}
+      >
+        {trend === 'up' ? (
+          <ArrowUpRight className="w-3.5 h-3.5" />
+        ) : (
+          <ArrowDownRight className="w-3.5 h-3.5" />
+        )}
+        {change}
+      </p>
+    </div>
+  )
+}
+
+function MetricCard({ label, value, change, trend, color = 'gray' }) {
+  const cls = {
+    green: 'bg-green-500/10 border-green-500/30',
+    blue: 'bg-kcb-or/10 border-kcb-or/30',
+    purple: 'bg-kcb-bronze/10 border-kcb-bronze/30',
+    indigo: 'bg-kcb-or/10 border-kcb-or/30',
+    violet: 'bg-kcb-bronze/10 border-kcb-bronze/30',
+    amber: 'bg-kcb-or/10 border-kcb-or/30',
+    emerald: 'bg-green-500/10 border-green-500/30',
+    orange: 'bg-kcb-or/10 border-kcb-or/30',
+    red: 'bg-red-500/10 border-red-500/30',
+  }
+  return (
+    <div
+      className={`border rounded-[4px] p-4 ${cls[color] ?? 'bg-white/[0.03] border-white/[0.06]'}`}
+    >
       <p className="text-kcb-pierre text-sm mb-2">{label}</p>
       <div className="flex items-end justify-between">
         <div className="text-3xl font-bold text-white">{value}</div>
-        {trend && (
-          <div className="flex items-center gap-1">
-            {trend === 'up' ? (
-              <ArrowUpRight className="w-4 h-4 text-green-400" />
-            ) : (
-              <ArrowDownRight className="w-4 h-4 text-red-400" />
-            )}
-          </div>
-        )}
+        {trend &&
+          (trend === 'up' ? (
+            <ArrowUpRight className="w-4 h-4 text-green-400" />
+          ) : (
+            <ArrowDownRight className="w-4 h-4 text-red-400" />
+          ))}
       </div>
-      {change && <p className="text-xs mt-2 opacity-75">{change}</p>}
+      {change && <p className="text-xs mt-2 text-kcb-pierre/80">{change}</p>}
     </div>
   )
 }
@@ -990,7 +1295,10 @@ function RevenueBreakdown({ title, data, colors }) {
             <div className="h-2 bg-kcb-ardoise rounded-full overflow-hidden">
               <div
                 className="h-full"
-                style={{ width: `${(value / total) * 100}%`, backgroundColor: colors[idx] }}
+                style={{
+                  width: `${(value / total) * 100}%`,
+                  backgroundColor: colors[idx % colors.length],
+                }}
               />
             </div>
           </div>
@@ -1002,33 +1310,41 @@ function RevenueBreakdown({ title, data, colors }) {
 
 function FunnelChart({ title, stages }) {
   const maxValue = Math.max(...stages.map((s) => s.value))
+  const colorMap = {
+    blue: '#C9A84C',
+    purple: '#8B6914',
+    indigo: '#C9A84C',
+    amber: '#d97706',
+    green: '#10b981',
+  }
   return (
     <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
       <p className="text-white font-semibold mb-4">{title}</p>
       <div className="space-y-3">
-        {stages.map((stage, idx) => {
-          const width = (stage.value / maxValue) * 100
-          const colorMap = {
-            blue: '#C9A84C',
-            purple: '#8B6914',
-            indigo: '#C9A84C',
-            green: '#10b981',
-          }
-          return (
-            <div key={idx}>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-kcb-sable">{stage.label}</span>
-                <span className="text-white font-semibold">{stage.value.toLocaleString()}</span>
-              </div>
-              <div className="h-3 bg-kcb-ardoise rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${width}%`, backgroundColor: colorMap[stage.color] }}
-                />
-              </div>
+        {stages.map((stage, idx) => (
+          <div key={idx}>
+            <div className="flex justify-between text-sm mb-1">
+              <span className="text-kcb-sable">{stage.label}</span>
+              <span className="text-white font-semibold">
+                {stage.value.toLocaleString('fr-FR')}
+              </span>
             </div>
-          )
-        })}
+            <div className="h-3 bg-kcb-ardoise rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${(stage.value / maxValue) * 100}%`,
+                  backgroundColor: colorMap[stage.color],
+                }}
+              />
+            </div>
+            {idx < stages.length - 1 && stages[idx + 1].value > 0 && (
+              <p className="text-right text-xs text-kcb-pierre/40 mt-0.5">
+                → {((stages[idx + 1].value / stage.value) * 100).toFixed(1)}%
+              </p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -1052,31 +1368,39 @@ function ProgressBar({ label, value }) {
 }
 
 function VitalCard({ label, value, target, status }) {
-  const statusColor = status === 'good' ? 'text-green-400' : 'text-yellow-400'
   return (
     <div className="bg-kcb-ardoise/50 rounded-[4px] p-3 text-center border border-white/[0.06]">
       <p className="text-kcb-pierre text-xs mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${statusColor}`}>{value}</p>
+      <p
+        className={`text-2xl font-bold ${status === 'good' ? 'text-green-400' : 'text-yellow-400'}`}
+      >
+        {value}
+      </p>
       <p className="text-kcb-pierre text-xs mt-1">{target}</p>
     </div>
   )
 }
 
-function ActionButton({ icon, label, badge, onClick }) {
+function ActionButton({ label, description, badge, badgeColor = 'red', onClick }) {
+  const badgeCls = {
+    red: 'bg-red-500 text-white',
+    blue: 'bg-kcb-or/20 text-kcb-or border border-kcb-or/30',
+    amber: 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30',
+  }
   return (
     <button
       onClick={onClick}
-      className="bg-kcb-ardoise/50 border border-white/[0.06] hover:border-kcb-or/50 rounded-[4px] p-4 text-left transition group"
+      className="bg-kcb-ardoise/50 border border-white/[0.06] hover:border-kcb-or/50 rounded-[4px] p-4 text-left transition group w-full"
     >
       <div className="flex items-start justify-between mb-2">
-        <span className="text-2xl">{icon}</span>
-        {badge && (
-          <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+        <p className="text-white font-semibold group-hover:text-kcb-or transition">{label}</p>
+        {badge != null && (
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badgeCls[badgeColor]}`}>
             {badge}
           </span>
         )}
       </div>
-      <p className="text-white font-semibold group-hover:text-kcb-or transition">{label}</p>
+      <p className="text-kcb-pierre text-xs">{description}</p>
     </button>
   )
 }
