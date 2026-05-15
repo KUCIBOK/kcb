@@ -160,7 +160,7 @@ export default function Professional() {
         return <Abonnement />
       default:
         return (
-          <div className="flex flex-col items-center justify-center h-64 rounded-xl border border-dashed border-white/[0.06] bg-kcb-ardoise/40 p-8 text-center gap-4">
+          <div className="flex flex-col items-center justify-center h-64 rounded-[4px] border border-dashed border-white/[0.06] bg-kcb-ardoise/40 p-8 text-center gap-4">
             <Clock className="w-10 h-10 text-kcb-pierre" />
             <div>
               <p className="text-white font-semibold text-lg mb-1">Fonctionnalité à venir</p>
