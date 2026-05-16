@@ -21,7 +21,7 @@ const ROLES = [
     icon: TrendingUp,
     label: 'Advisor',
     description:
-      'Wealth managers de l'art — gérez des portefeuilles de collectionneurs et d'institutions.',
+      "Wealth managers de l'art — gérez des portefeuilles de collectionneurs et d'institutions.",
     badge: 'Expert',
   },
 ]
