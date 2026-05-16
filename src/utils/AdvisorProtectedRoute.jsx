@@ -10,10 +10,10 @@ const DASHBOARD_ROUTES = {
   admin: '/dashboard/admin',
 }
 
-export function ArtistProtectedRoute() {
+export function AdvisorProtectedRoute() {
   const { user, loading } = useAuth()
   if (loading) return <PageLoader />
   if (!user) return <Navigate to="/sign-in" replace />
-  if (user.role === 'artist' || user.role === 'admin') return <Outlet />
+  if (user.role === 'advisor' || user.role === 'admin') return <Outlet />
   return <Navigate to={DASHBOARD_ROUTES[user.role] ?? '/account'} replace />
 }

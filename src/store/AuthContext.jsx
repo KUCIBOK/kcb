@@ -40,6 +40,7 @@ const profileKeyForRole = (role) => {
     artist: 'artistProfile',
     buyer: 'buyerProfile',
     curator: 'curatorProfile',
+    advisor: 'advisorProfile',
     admin: 'adminProfile',
   }
   return map[role] ?? 'buyerProfile'
@@ -62,6 +63,7 @@ export function AuthContextProvider({ children }) {
   const [artistProfile, setArtistProfile] = useState(null)
   const [buyerProfile, setBuyerProfile] = useState(null)
   const [curatorProfile, setCuratorProfile] = useState(null)
+  const [advisorProfile, setAdvisorProfile] = useState(null)
   const [adminProfile, setAdminProfile] = useState(null)
   const [subscription, setSubscription] = useState(null)
   const [plan, setPlan] = useState(null)
@@ -88,6 +90,7 @@ export function AuthContextProvider({ children }) {
       if (key === 'artistProfile') setArtistProfile(profileData)
       else if (key === 'buyerProfile') setBuyerProfile(profileData)
       else if (key === 'curatorProfile') setCuratorProfile(profileData)
+      else if (key === 'advisorProfile') setAdvisorProfile(profileData)
       else if (key === 'adminProfile') setAdminProfile(profileData)
     } catch {
       // Profil étendu non critique — ne pas bloquer l'authentification
@@ -309,6 +312,7 @@ export function AuthContextProvider({ children }) {
       artistProfile,
       buyerProfile,
       curatorProfile,
+      advisorProfile,
       adminProfile,
       subscription,
       plan,
@@ -326,6 +330,7 @@ export function AuthContextProvider({ children }) {
       artistProfile,
       buyerProfile,
       curatorProfile,
+      advisorProfile,
       adminProfile,
       subscription,
       plan,
