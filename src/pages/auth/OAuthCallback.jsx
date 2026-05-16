@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 const ROLE_DASHBOARDS = {
   artist: '/dashboard/artist',
   curator: '/dashboard/curator',
+  advisor: '/dashboard/advisor',
   buyer: '/account',
   admin: '/dashboard/admin',
 }

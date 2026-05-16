@@ -16,6 +16,7 @@ import { useAuth } from './AuthContext'
 const DASHBOARD_BY_ROLE = {
   artist: '/dashboard/artist',
   curator: '/dashboard/curator',
+  advisor: '/dashboard/advisor',
   buyer: '/account',
   admin: '/dashboard/admin',
 }

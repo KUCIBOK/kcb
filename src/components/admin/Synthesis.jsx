@@ -363,7 +363,7 @@ export function Synthesis({ setTab, setToggle }) {
               </p>
               <p className="flex justify-between items-start text-white">
                 <span className="flex items-center gap-2 text-sm">
-                  <CreditCard className="text-kcb-bronze w-4 h-4" /> Professionnels
+                  <CreditCard className="text-kcb-bronze w-4 h-4" /> Advisors
                 </span>
                 <span className="text-md text-white font-medium">
                   {' '}

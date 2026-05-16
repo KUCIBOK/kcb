@@ -181,16 +181,18 @@ export default function DashboardSidebar({
             ))}
           </nav>
 
-          {/* CTA principal (ex: "Ajouter une œuvre" ou "Marketplace") */}
-          {cta && (
-            <Link
-              to={cta.to}
-              className={`w-full flex items-center gap-2 text-xs font-medium text-white py-2 px-4 rounded-[4px] mb-2 transition ${cta.className}`}
-            >
-              {cta.icon}
-              {cta.label}
-            </Link>
-          )}
+          {/* CTA(s) principal(aux) — accepte un objet ou un tableau d'objets */}
+          {cta &&
+            (Array.isArray(cta) ? cta : [cta]).map((c, i) => (
+              <Link
+                key={i}
+                to={c.to}
+                className={`w-full flex items-center gap-2 text-xs font-medium text-white py-2 px-4 rounded-[4px] mb-2 transition ${c.className}`}
+              >
+                {c.icon}
+                {c.label}
+              </Link>
+            ))}
 
           {/* Lien upgrade abonnement */}
           {!subscription && pricingPath && (
