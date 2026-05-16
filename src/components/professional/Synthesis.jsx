@@ -55,8 +55,18 @@ ChartJS.register(
 )
 
 const MONTH_LABELS = [
-  'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
-  'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc',
+  'Jan',
+  'Fév',
+  'Mar',
+  'Avr',
+  'Mai',
+  'Juin',
+  'Juil',
+  'Aoû',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Déc',
 ]
 
 const stagger = {
@@ -117,8 +127,7 @@ export function Synthesis() {
   )
 
   const avgPrice = soldArtworks.length > 0 ? totalRevenue / soldArtworks.length : 0
-  const conversionRate =
-    artworks.length > 0 ? (soldArtworks.length / artworks.length) * 100 : 0
+  const conversionRate = artworks.length > 0 ? (soldArtworks.length / artworks.length) * 100 : 0
   const deliveredCount = artworks.filter(
     (a) => a.delivery_status === 'delivered' || a.isDelivered
   ).length
@@ -130,8 +139,7 @@ export function Synthesis() {
         .map((a) => ({
           title: a.title || 'Sans titre',
           roi:
-            ((Number(a.sold_price) - Number(a.estimated_price)) /
-              Number(a.estimated_price || 1)) *
+            ((Number(a.sold_price) - Number(a.estimated_price)) / Number(a.estimated_price || 1)) *
             100,
         }))
         .sort((a, b) => b.roi - a.roi),
@@ -290,9 +298,9 @@ export function Synthesis() {
             {curatorProfile?.name ? `, ${curatorProfile.name.split(' ')[0]}` : ''}.
           </h1>
           <p className="text-kcb-pierre text-sm mt-0.5">
-            {artworks.length} œuvre{artworks.length !== 1 ? 's' : ''} &middot;{' '}
-            {artists.length} artiste{artists.length !== 1 ? 's' : ''} &middot;{' '}
-            {soldArtworks.length} vente{soldArtworks.length !== 1 ? 's' : ''}
+            {artworks.length} œuvre{artworks.length !== 1 ? 's' : ''} &middot; {artists.length}{' '}
+            artiste{artists.length !== 1 ? 's' : ''} &middot; {soldArtworks.length} vente
+            {soldArtworks.length !== 1 ? 's' : ''}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -578,10 +586,7 @@ export function Synthesis() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white truncate">{artist.name}</p>
                       <div className="h-1 rounded-full bg-white/[0.06] mt-1">
-                        <div
-                          className="h-1 rounded-full bg-kcb-or"
-                          style={{ width: `${pct}%` }}
-                        />
+                        <div className="h-1 rounded-full bg-kcb-or" style={{ width: `${pct}%` }} />
                       </div>
                     </div>
                     <div className="text-right shrink-0">

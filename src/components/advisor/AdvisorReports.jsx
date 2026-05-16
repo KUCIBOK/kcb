@@ -29,7 +29,13 @@ const SECTIONS = [
 ]
 
 const RECENT_REPORTS = [
-  { id: 1, client: 'Fondation Lumière', type: 'Trimestriel Q1 2026', date: '2026-04-15', size: '2.4 MB' },
+  {
+    id: 1,
+    client: 'Fondation Lumière',
+    type: 'Trimestriel Q1 2026',
+    date: '2026-04-15',
+    size: '2.4 MB',
+  },
   { id: 2, client: 'John Smith', type: 'Trimestriel Q1 2026', date: '2026-04-10', size: '1.8 MB' },
   { id: 3, client: 'Marie Dubois', type: 'Annuel 2025', date: '2026-01-20', size: '3.1 MB' },
   { id: 4, client: 'Marcus Weber', type: 'Personnalisé', date: '2026-03-05', size: '1.2 MB' },
@@ -82,7 +88,9 @@ export function AdvisorReports() {
               >
                 <option value="">— Sélectionner un client —</option>
                 {MOCK_CLIENTS.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
               <ChevronDown className="w-4 h-4 text-kcb-pierre absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -123,7 +131,9 @@ export function AdvisorReports() {
                         : 'border-white/[0.15] group-hover:border-kcb-or/40'
                     }`}
                   >
-                    {sections[s.key] && <Check className="w-2.5 h-2.5 text-kcb-noir" strokeWidth={3} />}
+                    {sections[s.key] && (
+                      <Check className="w-2.5 h-2.5 text-kcb-noir" strokeWidth={3} />
+                    )}
                   </div>
                   <span className="text-sm text-kcb-sable">{s.label}</span>
                 </label>
@@ -191,7 +201,9 @@ export function AdvisorReports() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white font-medium truncate">{r.client}</p>
-                  <p className="text-xs text-kcb-pierre">{r.type} · {r.date}</p>
+                  <p className="text-xs text-kcb-pierre">
+                    {r.type} · {r.date}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-kcb-pierre">{r.size}</span>

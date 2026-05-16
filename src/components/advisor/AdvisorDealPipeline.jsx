@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import {
-  Briefcase,
-  Clock,
-  TrendingUp,
-  Filter,
-  ChevronRight,
-} from 'lucide-react'
+import { Briefcase, Clock, TrendingUp, Filter, ChevronRight } from 'lucide-react'
 
 const STAGES = ['prospect', 'analysis', 'offer', 'closing']
 const STAGE_CONFIG = {
@@ -22,17 +16,127 @@ const PRIORITY_COLORS = {
 }
 
 const ALL_DEALS = [
-  { id: 1, stage: 'prospect', title: 'Sunset in Dakar', artist: 'Aminata Diop', price: 18000, client: 'Marie Dubois', days: 3, priority: 'high', category: 'Peinture' },
-  { id: 2, stage: 'prospect', title: 'Forest Study #7', artist: 'Kofi Mensah', price: 9500, client: 'John Smith', days: 8, priority: 'medium', category: 'Dessin' },
-  { id: 3, stage: 'prospect', title: 'Abstract #3', artist: 'Cheick Mbaye', price: 12000, client: 'Fondation Lumière', days: 1, priority: 'high', category: 'Art contemporain' },
-  { id: 4, stage: 'prospect', title: 'Visage I', artist: 'Fanta Koné', price: 7200, client: 'Elena Petrov', days: 14, priority: 'low', category: 'Sculpture' },
-  { id: 5, stage: 'analysis', title: 'Lagos Dusk', artist: 'Ngozi Adeyemi', price: 24000, client: 'Ahmed Al-Rashid', days: 5, priority: 'high', category: 'Peinture' },
-  { id: 6, stage: 'analysis', title: 'Masque Série IV', artist: 'Oumar Diallo', price: 6800, client: 'Sophie Laurent', days: 12, priority: 'low', category: 'Sculpture' },
-  { id: 7, stage: 'analysis', title: 'Harmattan', artist: 'Ibrahim Traoré', price: 15500, client: 'Chioma Okafor', days: 4, priority: 'medium', category: 'Photographie' },
-  { id: 8, stage: 'offer', title: 'Femme au Marché', artist: 'Bineta Sow', price: 32000, client: 'Marcus Weber', days: 7, priority: 'high', category: 'Peinture' },
-  { id: 9, stage: 'offer', title: 'Sahel #2', artist: 'Moussa Coulibaly', price: 11000, client: 'John Smith', days: 3, priority: 'medium', category: 'Photographie' },
-  { id: 10, stage: 'closing', title: 'Baobab Series I', artist: 'Adama Traoré', price: 15000, client: 'Chioma Okafor', days: 2, priority: 'high', category: 'Peinture' },
-  { id: 11, stage: 'closing', title: 'Okoye Portrait', artist: 'Emeka Okonkwo', price: 8500, client: 'Marie Dubois', days: 1, priority: 'high', category: 'Peinture' },
+  {
+    id: 1,
+    stage: 'prospect',
+    title: 'Sunset in Dakar',
+    artist: 'Aminata Diop',
+    price: 18000,
+    client: 'Marie Dubois',
+    days: 3,
+    priority: 'high',
+    category: 'Peinture',
+  },
+  {
+    id: 2,
+    stage: 'prospect',
+    title: 'Forest Study #7',
+    artist: 'Kofi Mensah',
+    price: 9500,
+    client: 'John Smith',
+    days: 8,
+    priority: 'medium',
+    category: 'Dessin',
+  },
+  {
+    id: 3,
+    stage: 'prospect',
+    title: 'Abstract #3',
+    artist: 'Cheick Mbaye',
+    price: 12000,
+    client: 'Fondation Lumière',
+    days: 1,
+    priority: 'high',
+    category: 'Art contemporain',
+  },
+  {
+    id: 4,
+    stage: 'prospect',
+    title: 'Visage I',
+    artist: 'Fanta Koné',
+    price: 7200,
+    client: 'Elena Petrov',
+    days: 14,
+    priority: 'low',
+    category: 'Sculpture',
+  },
+  {
+    id: 5,
+    stage: 'analysis',
+    title: 'Lagos Dusk',
+    artist: 'Ngozi Adeyemi',
+    price: 24000,
+    client: 'Ahmed Al-Rashid',
+    days: 5,
+    priority: 'high',
+    category: 'Peinture',
+  },
+  {
+    id: 6,
+    stage: 'analysis',
+    title: 'Masque Série IV',
+    artist: 'Oumar Diallo',
+    price: 6800,
+    client: 'Sophie Laurent',
+    days: 12,
+    priority: 'low',
+    category: 'Sculpture',
+  },
+  {
+    id: 7,
+    stage: 'analysis',
+    title: 'Harmattan',
+    artist: 'Ibrahim Traoré',
+    price: 15500,
+    client: 'Chioma Okafor',
+    days: 4,
+    priority: 'medium',
+    category: 'Photographie',
+  },
+  {
+    id: 8,
+    stage: 'offer',
+    title: 'Femme au Marché',
+    artist: 'Bineta Sow',
+    price: 32000,
+    client: 'Marcus Weber',
+    days: 7,
+    priority: 'high',
+    category: 'Peinture',
+  },
+  {
+    id: 9,
+    stage: 'offer',
+    title: 'Sahel #2',
+    artist: 'Moussa Coulibaly',
+    price: 11000,
+    client: 'John Smith',
+    days: 3,
+    priority: 'medium',
+    category: 'Photographie',
+  },
+  {
+    id: 10,
+    stage: 'closing',
+    title: 'Baobab Series I',
+    artist: 'Adama Traoré',
+    price: 15000,
+    client: 'Chioma Okafor',
+    days: 2,
+    priority: 'high',
+    category: 'Peinture',
+  },
+  {
+    id: 11,
+    stage: 'closing',
+    title: 'Okoye Portrait',
+    artist: 'Emeka Okonkwo',
+    price: 8500,
+    client: 'Marie Dubois',
+    days: 1,
+    priority: 'high',
+    category: 'Peinture',
+  },
 ]
 
 function fmt(n) {
@@ -41,7 +145,10 @@ function fmt(n) {
 }
 
 const totalValue = ALL_DEALS.reduce((s, d) => s + d.price, 0)
-const conversionRate = ((ALL_DEALS.filter(d => d.stage === 'closing').length / ALL_DEALS.length) * 100).toFixed(0)
+const conversionRate = (
+  (ALL_DEALS.filter((d) => d.stage === 'closing').length / ALL_DEALS.length) *
+  100
+).toFixed(0)
 const avgDays = Math.round(ALL_DEALS.reduce((s, d) => s + d.days, 0) / ALL_DEALS.length)
 
 function DealCard({ deal }) {
@@ -50,7 +157,9 @@ function DealCard({ deal }) {
     <div className="bg-kcb-noir/50 border border-white/[0.04] rounded-[4px] p-3 hover:border-kcb-or/15 transition group">
       <div className="flex items-start justify-between mb-2">
         <p className="text-sm text-white font-medium leading-snug line-clamp-1">{deal.title}</p>
-        <span className={`ml-2 shrink-0 text-[9px] px-1.5 py-0.5 rounded-[4px] font-semibold ${pc.bg} ${pc.label}`}>
+        <span
+          className={`ml-2 shrink-0 text-[9px] px-1.5 py-0.5 rounded-[4px] font-semibold ${pc.bg} ${pc.label}`}
+        >
           {deal.priority === 'high' ? 'URGENT' : deal.priority === 'medium' ? 'MOY.' : 'LOW'}
         </span>
       </div>
@@ -71,9 +180,8 @@ function DealCard({ deal }) {
 export function AdvisorDealPipeline() {
   const [filterPriority, setFilterPriority] = useState('all')
 
-  const filtered = filterPriority === 'all'
-    ? ALL_DEALS
-    : ALL_DEALS.filter(d => d.priority === filterPriority)
+  const filtered =
+    filterPriority === 'all' ? ALL_DEALS : ALL_DEALS.filter((d) => d.priority === filterPriority)
 
   return (
     <div className="space-y-6 pb-8">
@@ -89,7 +197,10 @@ export function AdvisorDealPipeline() {
           { label: 'Taux conversion', value: `${conversionRate}%` },
           { label: 'Durée moy.', value: `${avgDays}j` },
         ].map((m, i) => (
-          <div key={i} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-3 text-center">
+          <div
+            key={i}
+            className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-3 text-center"
+          >
             <p className="text-xl font-bold text-kcb-or tabular-nums">{m.value}</p>
             <p className="text-xs text-kcb-pierre mt-0.5">{m.label}</p>
           </div>
@@ -127,9 +238,14 @@ export function AdvisorDealPipeline() {
           const cfg = STAGE_CONFIG[stage]
           const stageTotal = deals.reduce((s, d) => s + d.price, 0)
           return (
-            <div key={stage} className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] p-3 flex flex-col gap-2 min-h-[300px]">
+            <div
+              key={stage}
+              className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] p-3 flex flex-col gap-2 min-h-[300px]"
+            >
               {/* Column header */}
-              <div className={`flex items-center justify-between pb-2 border-b ${cfg.color} border-current/20`}>
+              <div
+                className={`flex items-center justify-between pb-2 border-b ${cfg.color} border-current/20`}
+              >
                 <div className="flex items-center gap-2">
                   <span className={`text-xs font-semibold ${cfg.color.split(' ')[1]}`}>
                     {cfg.label}
