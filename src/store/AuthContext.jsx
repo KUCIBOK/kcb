@@ -191,6 +191,7 @@ export function AuthContextProvider({ children }) {
           setArtistProfile(null)
           setBuyerProfile(null)
           setCuratorProfile(null)
+          setAdvisorProfile(null)
           setAdminProfile(null)
           setSubscription(null)
           setPlan(null)

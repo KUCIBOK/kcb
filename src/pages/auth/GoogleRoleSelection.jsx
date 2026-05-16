@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Award, Brush, ShoppingBag } from 'lucide-react'
+import { Award, Brush, ShoppingBag, TrendingUp } from 'lucide-react'
 import { Helmet } from 'react-helmet'
 import { useAuth } from '../../store/AuthContext'
 import { setInitialRole } from '../../api/useAuth'
@@ -10,6 +10,7 @@ import RevealOnScroll from '../../components/landing/RevealOnScroll'
 const ROLE_DASHBOARDS = {
   artist: '/dashboard/artist',
   curator: '/dashboard/curator',
+  advisor: '/dashboard/advisor',
   buyer: '/account',
   admin: '/dashboard/admin',
 }
@@ -101,6 +102,20 @@ export default function GoogleRoleSelection() {
                     <Award className="text-kcb-or/80" />
                   </span>
                   <span className="text-white text-base font-medium">Curateur</span>
+                </div>
+                <div
+                  onClick={() => setRole('advisor')}
+                  className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
+                    role === 'advisor'
+                      ? 'border-kcb-or bg-kcb-or/10'
+                      : 'border-white/[0.06] hover:border-kcb-or/40'
+                  }`}
+                  style={{ userSelect: 'none' }}
+                >
+                  <span className="rounded-full bg-kcb-or/10 p-2">
+                    <TrendingUp className="text-kcb-or/80" />
+                  </span>
+                  <span className="text-white text-base font-medium">Advisor</span>
                 </div>
                 <div
                   onClick={() => setRole('buyer')}

@@ -199,12 +199,20 @@ export default function Admin() {
           setTab={setTab}
           toggle={toggle}
           setToggle={setToggle}
-          cta={{
-            to: '/dashboard/artist',
-            label: 'Artiste',
-            icon: <Palette className="w-4 h-4" />,
-            className: 'bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-pierre',
-          }}
+          cta={[
+            {
+              to: '/dashboard/artist',
+              label: 'Vue Artiste',
+              icon: <Palette className="w-4 h-4" />,
+              className: 'bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-pierre',
+            },
+            {
+              to: '/dashboard/advisor',
+              label: 'Vue Advisor',
+              icon: <TrendingUp className="w-4 h-4" />,
+              className: 'bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-pierre',
+            },
+          ]}
         />
         {/* Main content */}
         <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">

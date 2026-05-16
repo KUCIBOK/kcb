@@ -111,7 +111,7 @@ export function CampainTab() {
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <div className="text-sm font-semibold text-white">Professionnels</div>
+            <div className="text-sm font-semibold text-white">Advisors</div>
             <div className="text-sm font-bold px-2 bg-kcb-ardoise rounded-full">
               {' '}
               {curators?.length}{' '}

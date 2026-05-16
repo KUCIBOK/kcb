@@ -1,24 +1,44 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getApprovedArtworks } from '../../../api/useArtworks'
+
+const ROTATION_INTERVAL = 4000
 
 /**
  * Artwork showcase frame with floating stat cards for Global hero.
- * Loads a random certified artwork from DB on each mount.
+ * Rotates through certified artworks every 4 seconds.
  */
 export default function HeroShowcase() {
-  const [artwork, setArtwork] = useState(null)
+  const [pool, setPool] = useState([])
+  const [index, setIndex] = useState(0)
+  const [visible, setVisible] = useState(true)
+  const timerRef = useRef(null)
 
   useEffect(() => {
     getApprovedArtworks({ limit: 100 }).then((result) => {
       const list = Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : []
-      // Prefer certified (kucibok_id) + has image
       const certified = list.filter((a) => a.kucibok_id && a.image)
-      const pool = certified.length > 0 ? certified : list.filter((a) => a.image)
-      if (pool.length > 0) {
-        setArtwork(pool[Math.floor(Math.random() * pool.length)])
-      }
+      const candidates = certified.length > 0 ? certified : list.filter((a) => a.image)
+      if (candidates.length === 0) return
+      // Shuffle so each session starts at a different artwork
+      const shuffled = [...candidates].sort(() => Math.random() - 0.5)
+      setPool(shuffled)
     })
   }, [])
+
+  useEffect(() => {
+    if (pool.length < 2) return
+    timerRef.current = setInterval(() => {
+      // Fade out
+      setVisible(false)
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % pool.length)
+        setVisible(true)
+      }, 400)
+    }, ROTATION_INTERVAL)
+    return () => clearInterval(timerRef.current)
+  }, [pool])
+
+  const artwork = pool[index] ?? null
 
   return (
     <div className="relative flex flex-col items-center -mb-12 sm:-mb-24 lg:-mb-40 z-10">
@@ -29,7 +49,8 @@ export default function HeroShowcase() {
           <img
             src={artwork.image}
             alt={artwork.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-80"
+            className="absolute inset-0 w-full h-full object-cover opacity-80 transition-opacity duration-400"
+            style={{ opacity: visible ? 0.8 : 0 }}
           />
         ) : (
           <>
@@ -52,8 +73,11 @@ export default function HeroShowcase() {
 
         {/* Info overlay */}
         <div
-          className="absolute bottom-0 left-0 right-0 p-4 lg:p-7"
-          style={{ background: 'linear-gradient(to top, rgba(5,5,5,0.95) 0%, transparent 100%)' }}
+          className="absolute bottom-0 left-0 right-0 p-4 lg:p-7 transition-opacity duration-400"
+          style={{
+            background: 'linear-gradient(to top, rgba(5,5,5,0.95) 0%, transparent 100%)',
+            opacity: visible ? 1 : 0,
+          }}
         >
           <span className="inline-block bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-[9px] tracking-[0.1em] uppercase px-2 py-0.5 mb-2">
             Certified
