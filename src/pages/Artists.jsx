@@ -52,7 +52,9 @@ export default function Artists() {
     if (debouncedSearch.trim() !== '') {
       const s = debouncedSearch.toLowerCase()
       result = sortedArtists.filter(
-        (item) => item.name.toLowerCase().includes(s) || item.country?.toLowerCase().includes(s)
+        (item) =>
+          (item.name ?? '').toLowerCase().includes(s) ||
+          item.country?.toLowerCase().includes(s)
       )
     }
     setFiltered(result)

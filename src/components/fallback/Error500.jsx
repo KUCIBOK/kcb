@@ -18,8 +18,10 @@ export default function Error500({ error, resetErrorBoundary }) {
     const sendReport = async () => {
       try {
         await sendErrorReport({
-          error: 'Erreur 500',
-          errorInfo: error?.toString() || 'Aucune information disponible',
+          message: error?.message || 'Erreur 500',
+          stack: error?.stack,
+          url: window.location.href,
+          userAgent: navigator.userAgent,
         })
       } catch (err) {
         // Silently fail — Sentry will catch this if configured

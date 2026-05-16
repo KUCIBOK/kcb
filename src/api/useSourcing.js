@@ -51,15 +51,30 @@ export async function getMyInquiries() {
  */
 export async function getCataloguePro(params = {}) {
   try {
-    const qs = new URLSearchParams(
-      Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
-    ).toString()
-    const response = await fetch(`${api}/artworks/catalogue${qs ? `?${qs}` : ''}`, {
-      ...utils.options,
-    })
-    const data = await response.json()
-    if (!response.ok) return { error: data?.message || data?.error || 'Erreur serveur' }
-    return data
+    const { page = 1, limit = 12, category, search, availabilityStatus, priceMin, priceMax } =
+      params
+    const apiParams = { status: 'approved', page: String(page), limit: String(limit) }
+    if (category) apiParams.category = category
+    const qs = new URLSearchParams(apiParams).toString()
+    const response = await fetch(`${api}/artworks?${qs}`, { ...utils.options })
+    const body = await response.json()
+    if (!response.ok) return { error: body?.error || 'Erreur serveur' }
+    let data = Array.isArray(body.data) ? body.data : Array.isArray(body) ? body : []
+    const total = body.pagination?.total ?? data.length
+    // Client-side filters not supported server-side
+    if (search) {
+      const q = search.toLowerCase()
+      data = data.filter(
+        (a) => a.title?.toLowerCase().includes(q) || a.artist?.toLowerCase().includes(q)
+      )
+    }
+    if (availabilityStatus) {
+      data = data.filter((a) => a.availability_status === availabilityStatus)
+    }
+    if (priceMin) data = data.filter((a) => Number(a.price) >= Number(priceMin))
+    if (priceMax) data = data.filter((a) => Number(a.price) <= Number(priceMax))
+    const pages = Math.max(1, Math.ceil(total / limit))
+    return { data, total, pages }
   } catch (error) {
     return { error: error.message }
   }
