@@ -17,44 +17,189 @@ import {
 // ── Mock data ──────────────────────────────────────────────────────────────────
 
 const MOCK_CLIENTS = [
-  { id: 1, name: 'Marie Dubois', aum: 450000, ytd: 15.2, status: 'active', nextReview: '2026-06-15' },
+  {
+    id: 1,
+    name: 'Marie Dubois',
+    aum: 450000,
+    ytd: 15.2,
+    status: 'active',
+    nextReview: '2026-06-15',
+  },
   { id: 2, name: 'John Smith', aum: 680000, ytd: 8.4, status: 'active', nextReview: '2026-06-20' },
-  { id: 3, name: 'Fondation Lumière', aum: 1200000, ytd: 18.1, status: 'active', nextReview: '2026-07-01' },
-  { id: 4, name: 'Ahmed Al-Rashid', aum: 320000, ytd: 5.7, status: 'active', nextReview: '2026-06-10' },
-  { id: 5, name: 'Sophie Laurent', aum: 195000, ytd: 22.3, status: 'active', nextReview: '2026-06-05' },
-  { id: 6, name: 'Marcus Weber', aum: 540000, ytd: -2.1, status: 'review', nextReview: '2026-05-30' },
-  { id: 7, name: 'Chioma Okafor', aum: 280000, ytd: 11.8, status: 'active', nextReview: '2026-06-25' },
-  { id: 8, name: 'Elena Petrov', aum: 165000, ytd: 6.2, status: 'inactive', nextReview: '2026-06-12' },
+  {
+    id: 3,
+    name: 'Fondation Lumière',
+    aum: 1200000,
+    ytd: 18.1,
+    status: 'active',
+    nextReview: '2026-07-01',
+  },
+  {
+    id: 4,
+    name: 'Ahmed Al-Rashid',
+    aum: 320000,
+    ytd: 5.7,
+    status: 'active',
+    nextReview: '2026-06-10',
+  },
+  {
+    id: 5,
+    name: 'Sophie Laurent',
+    aum: 195000,
+    ytd: 22.3,
+    status: 'active',
+    nextReview: '2026-06-05',
+  },
+  {
+    id: 6,
+    name: 'Marcus Weber',
+    aum: 540000,
+    ytd: -2.1,
+    status: 'review',
+    nextReview: '2026-05-30',
+  },
+  {
+    id: 7,
+    name: 'Chioma Okafor',
+    aum: 280000,
+    ytd: 11.8,
+    status: 'active',
+    nextReview: '2026-06-25',
+  },
+  {
+    id: 8,
+    name: 'Elena Petrov',
+    aum: 165000,
+    ytd: 6.2,
+    status: 'inactive',
+    nextReview: '2026-06-12',
+  },
 ]
 
 const MOCK_PIPELINE = {
   prospect: [
-    { id: 1, title: 'Sunset in Dakar', artist: 'Aminata Diop', price: 18000, client: 'Marie Dubois', days: 3, priority: 'high' },
-    { id: 2, title: 'Forest Study #7', artist: 'Kofi Mensah', price: 9500, client: 'John Smith', days: 8, priority: 'medium' },
-    { id: 3, title: 'Abstract #3', artist: 'Cheick Mbaye', price: 12000, client: 'Fondation Lumière', days: 1, priority: 'high' },
+    {
+      id: 1,
+      title: 'Sunset in Dakar',
+      artist: 'Aminata Diop',
+      price: 18000,
+      client: 'Marie Dubois',
+      days: 3,
+      priority: 'high',
+    },
+    {
+      id: 2,
+      title: 'Forest Study #7',
+      artist: 'Kofi Mensah',
+      price: 9500,
+      client: 'John Smith',
+      days: 8,
+      priority: 'medium',
+    },
+    {
+      id: 3,
+      title: 'Abstract #3',
+      artist: 'Cheick Mbaye',
+      price: 12000,
+      client: 'Fondation Lumière',
+      days: 1,
+      priority: 'high',
+    },
   ],
   analysis: [
-    { id: 4, title: 'Lagos Dusk', artist: 'Ngozi Adeyemi', price: 24000, client: 'Ahmed Al-Rashid', days: 5, priority: 'high' },
-    { id: 5, title: 'Masque Série IV', artist: 'Oumar Diallo', price: 6800, client: 'Sophie Laurent', days: 12, priority: 'low' },
+    {
+      id: 4,
+      title: 'Lagos Dusk',
+      artist: 'Ngozi Adeyemi',
+      price: 24000,
+      client: 'Ahmed Al-Rashid',
+      days: 5,
+      priority: 'high',
+    },
+    {
+      id: 5,
+      title: 'Masque Série IV',
+      artist: 'Oumar Diallo',
+      price: 6800,
+      client: 'Sophie Laurent',
+      days: 12,
+      priority: 'low',
+    },
   ],
   offer: [
-    { id: 6, title: 'Femme au Marché', artist: 'Bineta Sow', price: 32000, client: 'Marcus Weber', days: 7, priority: 'high' },
+    {
+      id: 6,
+      title: 'Femme au Marché',
+      artist: 'Bineta Sow',
+      price: 32000,
+      client: 'Marcus Weber',
+      days: 7,
+      priority: 'high',
+    },
   ],
   closing: [
-    { id: 7, title: 'Baobab Series I', artist: 'Adama Traoré', price: 15000, client: 'Chioma Okafor', days: 2, priority: 'high' },
+    {
+      id: 7,
+      title: 'Baobab Series I',
+      artist: 'Adama Traoré',
+      price: 15000,
+      client: 'Chioma Okafor',
+      days: 2,
+      priority: 'high',
+    },
   ],
 }
 
 const MOCK_ACTIVITY = [
-  { id: 1, type: 'sale', text: 'Vente conclue — "Baobab Series I" pour Chioma Okafor', time: 'Il y a 2h', icon: CheckCircle, color: 'text-kcb-or' },
-  { id: 2, type: 'review', text: 'Revue portefeuille due — Marcus Weber', time: 'Il y a 4h', icon: AlertCircle, color: 'text-kcb-bronze' },
-  { id: 3, type: 'deal', text: 'Nouvelle opportunité — "Femme au Marché" en offre', time: 'Hier', icon: Briefcase, color: 'text-kcb-or' },
-  { id: 4, type: 'client', text: 'Sophie Laurent — Review trimestrielle programmée', time: 'Hier', icon: Users, color: 'text-kcb-pierre' },
-  { id: 5, type: 'market', text: 'Art sénégalais +18% YTD — opportunité portefeuille', time: '2j', icon: TrendingUp, color: 'text-kcb-or' },
+  {
+    id: 1,
+    type: 'sale',
+    text: 'Vente conclue — "Baobab Series I" pour Chioma Okafor',
+    time: 'Il y a 2h',
+    icon: CheckCircle,
+    color: 'text-kcb-or',
+  },
+  {
+    id: 2,
+    type: 'review',
+    text: 'Revue portefeuille due — Marcus Weber',
+    time: 'Il y a 4h',
+    icon: AlertCircle,
+    color: 'text-kcb-bronze',
+  },
+  {
+    id: 3,
+    type: 'deal',
+    text: 'Nouvelle opportunité — "Femme au Marché" en offre',
+    time: 'Hier',
+    icon: Briefcase,
+    color: 'text-kcb-or',
+  },
+  {
+    id: 4,
+    type: 'client',
+    text: 'Sophie Laurent — Review trimestrielle programmée',
+    time: 'Hier',
+    icon: Users,
+    color: 'text-kcb-pierre',
+  },
+  {
+    id: 5,
+    type: 'market',
+    text: 'Art sénégalais +18% YTD — opportunité portefeuille',
+    time: '2j',
+    icon: TrendingUp,
+    color: 'text-kcb-or',
+  },
 ]
 
 const PIPELINE_STAGES = ['prospect', 'analysis', 'offer', 'closing']
-const STAGE_LABELS = { prospect: 'Prospect', analysis: 'Analyse', offer: 'Offre', closing: 'Closing' }
+const STAGE_LABELS = {
+  prospect: 'Prospect',
+  analysis: 'Analyse',
+  offer: 'Offre',
+  closing: 'Closing',
+}
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -92,10 +237,34 @@ export function AdvisorOverview({ setTab }) {
         className="grid grid-cols-2 lg:grid-cols-4 gap-4"
       >
         {[
-          { label: 'Total AUM', value: fmt(totalAUM), sub: `${MOCK_CLIENTS.length} clients`, icon: TrendingUp, color: 'text-kcb-or' },
-          { label: 'Perf. YTD moy.', value: `+${avgYTD}%`, sub: 'Tous portefeuilles', icon: Activity, color: 'text-kcb-or' },
-          { label: 'Clients actifs', value: MOCK_CLIENTS.filter(c => c.status === 'active').length, sub: `${MOCK_CLIENTS.length} total`, icon: Users, color: 'text-kcb-bronze' },
-          { label: 'Deals pipeline', value: totalDeals, sub: `${pendingReviews} revue(s) due(s)`, icon: Briefcase, color: 'text-kcb-bronze' },
+          {
+            label: 'Total AUM',
+            value: fmt(totalAUM),
+            sub: `${MOCK_CLIENTS.length} clients`,
+            icon: TrendingUp,
+            color: 'text-kcb-or',
+          },
+          {
+            label: 'Perf. YTD moy.',
+            value: `+${avgYTD}%`,
+            sub: 'Tous portefeuilles',
+            icon: Activity,
+            color: 'text-kcb-or',
+          },
+          {
+            label: 'Clients actifs',
+            value: MOCK_CLIENTS.filter((c) => c.status === 'active').length,
+            sub: `${MOCK_CLIENTS.length} total`,
+            icon: Users,
+            color: 'text-kcb-bronze',
+          },
+          {
+            label: 'Deals pipeline',
+            value: totalDeals,
+            sub: `${pendingReviews} revue(s) due(s)`,
+            icon: Briefcase,
+            color: 'text-kcb-bronze',
+          },
         ].map((kpi, i) => (
           <motion.div
             key={i}
@@ -113,7 +282,7 @@ export function AdvisorOverview({ setTab }) {
       </motion.div>
 
       {/* Alerts */}
-      {(pendingReviews > 0 || MOCK_CLIENTS.some(c => c.status === 'review')) && (
+      {(pendingReviews > 0 || MOCK_CLIENTS.some((c) => c.status === 'review')) && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -122,8 +291,12 @@ export function AdvisorOverview({ setTab }) {
         >
           <AlertCircle className="w-4 h-4 text-kcb-bronze shrink-0" />
           <p className="text-kcb-sable">
-            {pendingReviews} portefeuille{pendingReviews > 1 ? 's' : ''} nécessite{pendingReviews > 1 ? 'nt' : ''} une revue.{' '}
-            <button onClick={() => setTab(1)} className="text-kcb-or underline hover:text-kcb-bronze">
+            {pendingReviews} portefeuille{pendingReviews > 1 ? 's' : ''} nécessite
+            {pendingReviews > 1 ? 'nt' : ''} une revue.{' '}
+            <button
+              onClick={() => setTab(1)}
+              className="text-kcb-or underline hover:text-kcb-bronze"
+            >
               Voir les clients
             </button>
           </p>
@@ -155,7 +328,10 @@ export function AdvisorOverview({ setTab }) {
             const deals = MOCK_PIPELINE[stage]
             const total = deals.reduce((s, d) => s + d.price, 0)
             return (
-              <div key={stage} className="bg-kcb-noir/40 rounded-[4px] p-3 border border-white/[0.04]">
+              <div
+                key={stage}
+                className="bg-kcb-noir/40 rounded-[4px] p-3 border border-white/[0.04]"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-kcb-pierre">{STAGE_LABELS[stage]}</span>
                   <span className="text-xs font-bold text-kcb-or tabular-nums">{deals.length}</span>
@@ -163,7 +339,10 @@ export function AdvisorOverview({ setTab }) {
                 <p className="text-sm font-bold text-white tabular-nums">{fmt(total)}</p>
                 <div className="mt-2 space-y-1">
                   {deals.slice(0, 2).map((d) => (
-                    <div key={d.id} className="flex items-center gap-1.5 text-[11px] text-kcb-pierre truncate">
+                    <div
+                      key={d.id}
+                      className="flex items-center gap-1.5 text-[11px] text-kcb-pierre truncate"
+                    >
                       <PriorityDot p={d.priority} />
                       <span className="truncate">{d.artist}</span>
                     </div>
@@ -193,7 +372,10 @@ export function AdvisorOverview({ setTab }) {
           </h3>
           <div className="space-y-3">
             {MOCK_ACTIVITY.map((event) => (
-              <div key={event.id} className="flex items-start gap-3 py-2 border-b border-white/[0.04] last:border-0">
+              <div
+                key={event.id}
+                className="flex items-start gap-3 py-2 border-b border-white/[0.04] last:border-0"
+              >
                 <event.icon className={`w-4 h-4 mt-0.5 shrink-0 ${event.color}`} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-kcb-sable leading-snug">{event.text}</p>
@@ -259,8 +441,12 @@ export function AdvisorOverview({ setTab }) {
                 <th className="text-left py-2 px-2 text-xs text-kcb-pierre font-medium">Client</th>
                 <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium">AUM</th>
                 <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium">YTD</th>
-                <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium hidden sm:table-cell">Prochaine revue</th>
-                <th className="text-center py-2 px-2 text-xs text-kcb-pierre font-medium">Statut</th>
+                <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium hidden sm:table-cell">
+                  Prochaine revue
+                </th>
+                <th className="text-center py-2 px-2 text-xs text-kcb-pierre font-medium">
+                  Statut
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -271,8 +457,14 @@ export function AdvisorOverview({ setTab }) {
                     {fmt(client.aum)}
                   </td>
                   <td className="py-2.5 px-2 text-right tabular-nums">
-                    <span className={`flex items-center justify-end gap-0.5 ${client.ytd >= 0 ? 'text-kcb-or' : 'text-red-400'}`}>
-                      {client.ytd >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                    <span
+                      className={`flex items-center justify-end gap-0.5 ${client.ytd >= 0 ? 'text-kcb-or' : 'text-red-400'}`}
+                    >
+                      {client.ytd >= 0 ? (
+                        <ArrowUp className="w-3 h-3" />
+                      ) : (
+                        <ArrowDown className="w-3 h-3" />
+                      )}
                       {Math.abs(client.ytd)}%
                     </span>
                   </td>
@@ -280,12 +472,20 @@ export function AdvisorOverview({ setTab }) {
                     {client.nextReview}
                   </td>
                   <td className="py-2.5 px-2 text-center">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-[4px] font-medium ${
-                      client.status === 'active' ? 'bg-kcb-or/10 text-kcb-or' :
-                      client.status === 'review' ? 'bg-kcb-bronze/20 text-kcb-bronze' :
-                      'bg-white/[0.05] text-kcb-pierre'
-                    }`}>
-                      {client.status === 'active' ? 'Actif' : client.status === 'review' ? 'Revue' : 'Inactif'}
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded-[4px] font-medium ${
+                        client.status === 'active'
+                          ? 'bg-kcb-or/10 text-kcb-or'
+                          : client.status === 'review'
+                            ? 'bg-kcb-bronze/20 text-kcb-bronze'
+                            : 'bg-white/[0.05] text-kcb-pierre'
+                      }`}
+                    >
+                      {client.status === 'active'
+                        ? 'Actif'
+                        : client.status === 'review'
+                          ? 'Revue'
+                          : 'Inactif'}
                     </span>
                   </td>
                 </tr>

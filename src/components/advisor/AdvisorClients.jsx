@@ -1,24 +1,104 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import {
-  Users,
-  Search,
-  ArrowUp,
-  ArrowDown,
-  Filter,
-  TrendingUp,
-  ChevronRight,
-} from 'lucide-react'
+import { Users, Search, ArrowUp, ArrowDown, Filter, TrendingUp, ChevronRight } from 'lucide-react'
 
 const MOCK_CLIENTS = [
-  { id: 1, name: 'Marie Dubois', initials: 'MD', aum: 450000, ytd: 15.2, artworks: 12, lastContact: '2026-05-10', nextReview: '2026-06-15', status: 'active', country: 'France' },
-  { id: 2, name: 'John Smith', initials: 'JS', aum: 680000, ytd: 8.4, artworks: 18, lastContact: '2026-05-08', nextReview: '2026-06-20', status: 'active', country: 'USA' },
-  { id: 3, name: 'Fondation Lumière', initials: 'FL', aum: 1200000, ytd: 18.1, artworks: 35, lastContact: '2026-05-12', nextReview: '2026-07-01', status: 'active', country: 'Suisse' },
-  { id: 4, name: 'Ahmed Al-Rashid', initials: 'AA', aum: 320000, ytd: 5.7, artworks: 8, lastContact: '2026-04-28', nextReview: '2026-06-10', status: 'active', country: 'UAE' },
-  { id: 5, name: 'Sophie Laurent', initials: 'SL', aum: 195000, ytd: 22.3, artworks: 6, lastContact: '2026-05-14', nextReview: '2026-06-05', status: 'active', country: 'Belgique' },
-  { id: 6, name: 'Marcus Weber', initials: 'MW', aum: 540000, ytd: -2.1, artworks: 14, lastContact: '2026-04-15', nextReview: '2026-05-30', status: 'review', country: 'Allemagne' },
-  { id: 7, name: 'Chioma Okafor', initials: 'CO', aum: 280000, ytd: 11.8, artworks: 9, lastContact: '2026-05-01', nextReview: '2026-06-25', status: 'active', country: 'Nigeria' },
-  { id: 8, name: 'Elena Petrov', initials: 'EP', aum: 165000, ytd: 6.2, artworks: 5, lastContact: '2026-04-22', nextReview: '2026-06-12', status: 'inactive', country: 'France' },
+  {
+    id: 1,
+    name: 'Marie Dubois',
+    initials: 'MD',
+    aum: 450000,
+    ytd: 15.2,
+    artworks: 12,
+    lastContact: '2026-05-10',
+    nextReview: '2026-06-15',
+    status: 'active',
+    country: 'France',
+  },
+  {
+    id: 2,
+    name: 'John Smith',
+    initials: 'JS',
+    aum: 680000,
+    ytd: 8.4,
+    artworks: 18,
+    lastContact: '2026-05-08',
+    nextReview: '2026-06-20',
+    status: 'active',
+    country: 'USA',
+  },
+  {
+    id: 3,
+    name: 'Fondation Lumière',
+    initials: 'FL',
+    aum: 1200000,
+    ytd: 18.1,
+    artworks: 35,
+    lastContact: '2026-05-12',
+    nextReview: '2026-07-01',
+    status: 'active',
+    country: 'Suisse',
+  },
+  {
+    id: 4,
+    name: 'Ahmed Al-Rashid',
+    initials: 'AA',
+    aum: 320000,
+    ytd: 5.7,
+    artworks: 8,
+    lastContact: '2026-04-28',
+    nextReview: '2026-06-10',
+    status: 'active',
+    country: 'UAE',
+  },
+  {
+    id: 5,
+    name: 'Sophie Laurent',
+    initials: 'SL',
+    aum: 195000,
+    ytd: 22.3,
+    artworks: 6,
+    lastContact: '2026-05-14',
+    nextReview: '2026-06-05',
+    status: 'active',
+    country: 'Belgique',
+  },
+  {
+    id: 6,
+    name: 'Marcus Weber',
+    initials: 'MW',
+    aum: 540000,
+    ytd: -2.1,
+    artworks: 14,
+    lastContact: '2026-04-15',
+    nextReview: '2026-05-30',
+    status: 'review',
+    country: 'Allemagne',
+  },
+  {
+    id: 7,
+    name: 'Chioma Okafor',
+    initials: 'CO',
+    aum: 280000,
+    ytd: 11.8,
+    artworks: 9,
+    lastContact: '2026-05-01',
+    nextReview: '2026-06-25',
+    status: 'active',
+    country: 'Nigeria',
+  },
+  {
+    id: 8,
+    name: 'Elena Petrov',
+    initials: 'EP',
+    aum: 165000,
+    ytd: 6.2,
+    artworks: 5,
+    lastContact: '2026-04-22',
+    nextReview: '2026-06-12',
+    status: 'inactive',
+    country: 'France',
+  },
 ]
 
 function fmt(n) {
@@ -36,7 +116,8 @@ export function AdvisorClients() {
   const [filterStatus, setFilterStatus] = useState('all')
 
   const filtered = MOCK_CLIENTS.filter((c) => {
-    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) ||
+    const matchesSearch =
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.country.toLowerCase().includes(search.toLowerCase())
     const matchesStatus = filterStatus === 'all' || c.status === filterStatus
     return matchesSearch && matchesStatus
@@ -56,7 +137,10 @@ export function AdvisorClients() {
           { label: 'Portefeuille moyen', value: fmt(avgPortfolio) },
           { label: 'Perf. YTD moyenne', value: `+${avgYTD}%` },
         ].map((s, i) => (
-          <div key={i} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-3 text-center">
+          <div
+            key={i}
+            className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-3 text-center"
+          >
             <p className="text-xl font-bold text-kcb-or tabular-nums">{s.value}</p>
             <p className="text-xs text-kcb-pierre mt-0.5">{s.label}</p>
           </div>
@@ -87,7 +171,13 @@ export function AdvisorClients() {
                   : 'border-white/[0.08] text-kcb-pierre hover:border-kcb-or/30'
               }`}
             >
-              {s === 'all' ? 'Tous' : s === 'active' ? 'Actifs' : s === 'review' ? 'Revue' : 'Inactifs'}
+              {s === 'all'
+                ? 'Tous'
+                : s === 'active'
+                  ? 'Actifs'
+                  : s === 'review'
+                    ? 'Revue'
+                    : 'Inactifs'}
             </button>
           ))}
         </div>
@@ -112,12 +202,20 @@ export function AdvisorClients() {
                 <p className="text-sm font-semibold text-white truncate">{client.name}</p>
                 <p className="text-xs text-kcb-pierre">{client.country}</p>
               </div>
-              <span className={`text-[10px] px-2 py-0.5 rounded-[4px] font-medium shrink-0 ${
-                client.status === 'active' ? 'bg-kcb-or/10 text-kcb-or' :
-                client.status === 'review' ? 'bg-kcb-bronze/20 text-kcb-bronze' :
-                'bg-white/[0.05] text-kcb-pierre'
-              }`}>
-                {client.status === 'active' ? 'Actif' : client.status === 'review' ? 'Revue' : 'Inactif'}
+              <span
+                className={`text-[10px] px-2 py-0.5 rounded-[4px] font-medium shrink-0 ${
+                  client.status === 'active'
+                    ? 'bg-kcb-or/10 text-kcb-or'
+                    : client.status === 'review'
+                      ? 'bg-kcb-bronze/20 text-kcb-bronze'
+                      : 'bg-white/[0.05] text-kcb-pierre'
+                }`}
+              >
+                {client.status === 'active'
+                  ? 'Actif'
+                  : client.status === 'review'
+                    ? 'Revue'
+                    : 'Inactif'}
               </span>
             </div>
 
@@ -128,8 +226,14 @@ export function AdvisorClients() {
                 <p className="text-[10px] text-kcb-pierre">AUM</p>
               </div>
               <div className="text-center">
-                <p className={`text-sm font-bold tabular-nums flex items-center justify-center gap-0.5 ${client.ytd >= 0 ? 'text-kcb-or' : 'text-red-400'}`}>
-                  {client.ytd >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                <p
+                  className={`text-sm font-bold tabular-nums flex items-center justify-center gap-0.5 ${client.ytd >= 0 ? 'text-kcb-or' : 'text-red-400'}`}
+                >
+                  {client.ytd >= 0 ? (
+                    <ArrowUp className="w-3 h-3" />
+                  ) : (
+                    <ArrowDown className="w-3 h-3" />
+                  )}
                   {Math.abs(client.ytd)}%
                 </p>
                 <p className="text-[10px] text-kcb-pierre">YTD</p>

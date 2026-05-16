@@ -43,9 +43,7 @@ const menuStructure = [
   {
     category: 'Outils',
     icon: <FileText className="w-4 h-4" />,
-    items: [
-      { name: 'Rapports', icon: <FileText className="w-4 h-4" />, index: 4 },
-    ],
+    items: [{ name: 'Rapports', icon: <FileText className="w-4 h-4" />, index: 4 }],
   },
   {
     category: 'Compte',
@@ -72,14 +70,22 @@ export default function Advisor() {
 
   const renderTab = () => {
     switch (tab) {
-      case 0: return <AdvisorOverview setTab={setTab} />
-      case 1: return <AdvisorClients />
-      case 2: return <AdvisorDealPipeline />
-      case 3: return <AdvisorMarket />
-      case 4: return <AdvisorReports />
-      case 5: return <Profile />
-      case 6: return <Abonnement />
-      default: return <AdvisorOverview setTab={setTab} />
+      case 0:
+        return <AdvisorOverview setTab={setTab} />
+      case 1:
+        return <AdvisorClients />
+      case 2:
+        return <AdvisorDealPipeline />
+      case 3:
+        return <AdvisorMarket />
+      case 4:
+        return <AdvisorReports />
+      case 5:
+        return <Profile />
+      case 6:
+        return <Abonnement />
+      default:
+        return <AdvisorOverview setTab={setTab} />
     }
   }
 
