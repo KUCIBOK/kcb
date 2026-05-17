@@ -212,6 +212,12 @@ export default function Admin() {
               icon: <TrendingUp className="w-4 h-4" />,
               className: 'bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-pierre',
             },
+            {
+              to: '/dashboard/curator',
+              label: 'Vue Curateur',
+              icon: <ShoppingBag className="w-4 h-4" />,
+              className: 'bg-kcb-ardoise border border-white/[0.06] hover:bg-kcb-pierre',
+            },
           ]}
         />
         {/* Main content */}
