@@ -88,7 +88,7 @@ export default function Professional() {
 
   const renderTab = () => {
     switch (tab) {
-      case 0: return <CuratorOverview setTab={setTab} />
+      case 0: return <CuratorOverview setTab={setTab} demoMode={user?.role === 'admin'} />
       case 1: return <ArtistDiscovery />
       case 2: return <LogisticsHub />
       case 3: return <ConciergeService />

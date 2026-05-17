@@ -11,10 +11,9 @@ import {
   Truck,
   ChevronRight,
   X,
-  User,
   Globe,
-  Phone,
   FileText,
+  AlertCircle,
 } from 'lucide-react'
 
 const SERVICES = [
@@ -22,16 +21,16 @@ const SERVICES = [
     id: 'virtual-visit',
     icon: Video,
     title: 'Visite studio virtuelle',
-    subtitle: 'Rencontrez l\'artiste en vidéo, visitez son atelier',
+    subtitle: "Rencontrez l'artiste en vidéo, visitez son atelier",
     duration: '60 min',
     priceFrom: 200,
     priceTo: 500,
     currency: '€',
     deliverables: [
       'Appel vidéo HD (Zoom/Meet)',
-      'Visite guidée de l\'atelier',
-      'Présentation de 5-10 œuvres',
-      'Questions/réponses avec l\'artiste',
+      "Visite guidée de l'atelier",
+      'Présentation de 5–10 œuvres',
+      "Questions/réponses avec l'artiste",
       'Rapport de visite Kucibok',
     ],
     turnaround: '5–7 jours',
@@ -63,7 +62,7 @@ const SERVICES = [
     id: 'due-diligence',
     icon: Shield,
     title: 'Due diligence artiste',
-    subtitle: 'Vérification complète d\'identité et d\'authenticité',
+    subtitle: "Vérification complète d'identité et d'authenticité",
     duration: '3–5 jours',
     priceFrom: 300,
     priceTo: 800,
@@ -91,8 +90,8 @@ const SERVICES = [
     currency: '€',
     percent: '5–10% de la valeur',
     deliverables: [
-      'Sélection et coordination transporteurs',
-      'Obtention permis d\'export',
+      "Sélection et coordination transporteurs",
+      "Obtention permis d'export",
       'Gestion formalités douanières',
       'Coordination assurance',
       'Suivi livraison end-to-end',
@@ -103,48 +102,6 @@ const SERVICES = [
     color: '#9B4D96',
   },
 ]
-
-const ACTIVE_BOOKINGS = [
-  {
-    id: 'KCB-CONC-001',
-    service: 'Visite studio virtuelle',
-    artist: 'Aïcha Diallo',
-    country: 'Dakar, Sénégal 🇸🇳',
-    date: '20 mai 2025 — 14h00 CET',
-    status: 'confirmed',
-    price: '€350',
-    agent: 'Moussa Diop (Agent Kucibok)',
-    link: 'https://meet.google.com/...',
-  },
-  {
-    id: 'KCB-CONC-002',
-    service: 'Due diligence',
-    artist: 'Kofi Mensah',
-    country: 'Accra, Ghana 🇬🇭',
-    date: '2 jours restants',
-    status: 'in_progress',
-    price: '€500',
-    agent: 'Kwame Asante (Agent Kucibok)',
-    progress: 65,
-  },
-  {
-    id: 'KCB-CONC-003',
-    service: 'Coordination logistique',
-    artist: '12 œuvres — Dakar → London',
-    country: 'Multi-pays',
-    date: 'Planifié — juin 2025',
-    status: 'pending',
-    price: '€6 800',
-    agent: 'En affectation',
-  },
-]
-
-const statusConfig = {
-  confirmed: { label: 'Confirmé', color: 'text-emerald-400', bg: 'bg-emerald-400/10', dot: 'bg-emerald-400' },
-  in_progress: { label: 'En cours', color: 'text-kcb-or', bg: 'bg-kcb-or/10', dot: 'bg-kcb-or' },
-  pending: { label: 'En attente', color: 'text-kcb-pierre', bg: 'bg-white/[0.06]', dot: 'bg-kcb-pierre' },
-  completed: { label: 'Terminé', color: 'text-[#9B4D96]', bg: 'bg-[#9B4D96]/10', dot: 'bg-[#9B4D96]' },
-}
 
 function BookingModal({ service, onClose }) {
   const [step, setStep] = useState(1)
@@ -170,49 +127,38 @@ function BookingModal({ service, onClose }) {
               <p className="text-xs text-[#9B4D96] uppercase tracking-wider mb-1">Réservation Concierge</p>
               <h3 className="font-playfair text-lg text-white">{service.title}</h3>
             </div>
-            <button onClick={onClose} className="text-kcb-pierre hover:text-white p-1">
-              <X className="w-5 h-5" />
-            </button>
+            <button onClick={onClose} className="text-kcb-pierre hover:text-white p-1"><X className="w-5 h-5" /></button>
           </div>
 
-          {/* Step indicator */}
           <div className="flex items-center gap-2 mb-6">
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center gap-2">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step >= s ? 'bg-[#9B4D96] text-white' : 'bg-white/[0.06] text-kcb-pierre'}`}>
-                  {s}
-                </div>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step >= s ? 'bg-[#9B4D96] text-white' : 'bg-white/[0.06] text-kcb-pierre'}`}>{s}</div>
                 {s < 3 && <div className={`flex-1 h-px w-8 ${step > s ? 'bg-[#9B4D96]' : 'bg-white/[0.06]'}`} />}
               </div>
             ))}
-            <span className="ml-2 text-xs text-kcb-pierre">
-              {step === 1 ? 'Artiste' : step === 2 ? 'Date' : 'Confirmation'}
-            </span>
+            <span className="ml-2 text-xs text-kcb-pierre">{step === 1 ? 'Artiste' : step === 2 ? 'Date' : 'Confirmation'}</span>
           </div>
 
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-kcb-pierre block mb-1.5">Artiste concerné</label>
-                <select
+                <label className="text-xs text-kcb-pierre block mb-1.5">Nom de l'artiste concerné</label>
+                <input
+                  type="text"
                   value={artist}
                   onChange={(e) => setArtist(e.target.value)}
-                  className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 appearance-none"
-                >
-                  <option value="">Sélectionner un artiste...</option>
-                  <option>Aïcha Diallo — Dakar, Sénégal</option>
-                  <option>Kofi Mensah — Accra, Ghana</option>
-                  <option>Amara Touré — Bamako, Mali</option>
-                  <option>Mariama Balde — Abidjan, CI</option>
-                </select>
+                  placeholder="Ex : Aïcha Diallo — Dakar, Sénégal"
+                  className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre"
+                />
               </div>
               <div>
-                <label className="text-xs text-kcb-pierre block mb-1.5">Message (objectifs de la visite)</label>
+                <label className="text-xs text-kcb-pierre block mb-1.5">Objectifs de la mission</label>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
-                  placeholder="Décrivez vos objectifs pour cette visite..."
+                  placeholder="Décrivez vos objectifs..."
                   className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre resize-none"
                 />
               </div>
@@ -261,21 +207,19 @@ function BookingModal({ service, onClose }) {
               </div>
               <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-[4px] flex items-start gap-2 text-xs text-emerald-300">
                 <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                <span>Un agent Kucibok vous contactera dans les 24h pour confirmer et coordonner la prestation.</span>
+                Un agent Kucibok vous contactera dans les 24h pour confirmer et coordonner la prestation.
               </div>
             </div>
           )}
 
           <div className="flex gap-3 mt-6">
             {step > 1 && (
-              <button onClick={() => setStep(step - 1)} className="flex-1 py-2.5 text-sm text-kcb-pierre bg-white/[0.04] border border-white/[0.06] rounded-[4px] hover:bg-white/[0.08] transition">
-                Retour
-              </button>
+              <button onClick={() => setStep(step - 1)} className="flex-1 py-2.5 text-sm text-kcb-pierre bg-white/[0.04] border border-white/[0.06] rounded-[4px] hover:bg-white/[0.08] transition">Retour</button>
             )}
             <button
               onClick={() => step < 3 ? setStep(step + 1) : onClose()}
-              className="flex-1 py-2.5 text-sm font-semibold rounded-[4px] transition"
-              style={{ background: '#9B4D96', color: 'white' }}
+              className="flex-1 py-2.5 text-sm font-semibold rounded-[4px] transition text-white"
+              style={{ background: '#9B4D96' }}
             >
               {step < 3 ? 'Continuer' : 'Envoyer la demande'}
             </button>
@@ -298,57 +242,11 @@ export function ConciergeService() {
         </p>
       </div>
 
-      {/* Active bookings */}
-      {ACTIVE_BOOKINGS.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-            <Clock className="w-4 h-4 text-kcb-or" />
-            Missions en cours
-          </h3>
-          {ACTIVE_BOOKINGS.map((b, i) => {
-            const sc = statusConfig[b.status]
-            return (
-              <div key={i} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-jetbrains text-xs text-kcb-or">{b.id}</span>
-                      <span className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${sc.bg} ${sc.color}`}>
-                        <div className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
-                        {sc.label}
-                      </span>
-                    </div>
-                    <p className="text-sm font-medium text-white">{b.service}</p>
-                    <p className="text-xs text-kcb-pierre">{b.artist} · {b.country}</p>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-bold text-kcb-or">{b.price}</p>
-                    <p className="text-xs text-kcb-pierre">{b.date}</p>
-                  </div>
-                </div>
-                {b.progress !== undefined && (
-                  <div className="mt-2">
-                    <div className="h-1.5 bg-white/[0.06] rounded-full">
-                      <div className="h-1.5 rounded-full bg-kcb-or" style={{ width: `${b.progress}%` }} />
-                    </div>
-                    <p className="text-xs text-kcb-pierre mt-1">{b.progress}% complété</p>
-                  </div>
-                )}
-                {b.agent && (
-                  <p className="text-xs text-kcb-pierre mt-2 flex items-center gap-1">
-                    <User className="w-3 h-3" /> {b.agent}
-                  </p>
-                )}
-                {b.link && (
-                  <a href={b.link} className="mt-2 inline-flex items-center gap-1 text-xs text-[#9B4D96] hover:text-[#c084d8] transition">
-                    <Video className="w-3 h-3" /> Rejoindre la réunion
-                  </a>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      )}
+      {/* No active missions */}
+      <div className="flex items-center gap-3 px-4 py-3 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] text-sm text-kcb-pierre">
+        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+        Aucune mission en cours. Réservez un service ci-dessous pour démarrer.
+      </div>
 
       {/* Service catalog */}
       <div>
@@ -363,22 +261,20 @@ export function ConciergeService() {
               whileHover={{ scale: 1.01 }}
               className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5 hover:border-white/10 transition-all"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${service.color}20` }}>
-                    <service.icon className="w-5 h-5" style={{ color: service.color }} />
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${service.color}20` }}>
+                  <service.icon className="w-5 h-5" style={{ color: service.color }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-sm font-semibold text-white">{service.title}</h3>
+                    {service.badge && (
+                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${service.color}20`, color: service.color }}>
+                        {service.badge}
+                      </span>
+                    )}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-white">{service.title}</h3>
-                      {service.badge && (
-                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${service.color}20`, color: service.color }}>
-                          {service.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-kcb-pierre">{service.subtitle}</p>
-                  </div>
+                  <p className="text-xs text-kcb-pierre">{service.subtitle}</p>
                 </div>
               </div>
 
@@ -387,11 +283,9 @@ export function ConciergeService() {
                   <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {service.duration}</span>
                   <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {service.turnaround}</span>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold" style={{ color: service.color }}>
-                    {service.percent ?? `${service.currency}${service.priceFrom} – ${service.currency}${service.priceTo}`}
-                  </p>
-                </div>
+                <p className="text-sm font-bold" style={{ color: service.color }}>
+                  {service.percent ?? `${service.currency}${service.priceFrom} – ${service.currency}${service.priceTo}`}
+                </p>
               </div>
 
               <ul className="space-y-1 mb-4">
@@ -402,16 +296,14 @@ export function ConciergeService() {
                   </li>
                 ))}
                 {service.deliverables.length > 3 && (
-                  <li className="text-xs text-kcb-pierre pl-4.5">+ {service.deliverables.length - 3} autres livrables</li>
+                  <li className="text-xs text-kcb-pierre pl-4">+ {service.deliverables.length - 3} autres livrables</li>
                 )}
               </ul>
 
               <button
                 onClick={() => setBooking(service)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-[4px] transition"
-                style={{ background: `${service.color}20`, color: service.color, border: `1px solid ${service.color}30` }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = `${service.color}35` }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = `${service.color}20` }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-[4px] transition border"
+                style={{ background: `${service.color}20`, color: service.color, borderColor: `${service.color}30` }}
               >
                 Réserver ce service <ChevronRight className="w-4 h-4" />
               </button>
@@ -426,17 +318,15 @@ export function ConciergeService() {
           <FileText className="w-4 h-4 text-kcb-or" />
           Comment ça fonctionne
         </h4>
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { step: '01', label: 'Sélectionnez', desc: 'Choisissez votre service et l\'artiste concerné' },
+            { step: '01', label: 'Sélectionnez', desc: "Choisissez votre service et l'artiste concerné" },
             { step: '02', label: 'Confirmation', desc: 'Un agent Kucibok vous contacte sous 24h' },
-            { step: '03', label: 'Exécution', desc: 'L\'agent réalise la prestation sur le terrain' },
+            { step: '03', label: 'Exécution', desc: "L'agent réalise la prestation sur le terrain" },
             { step: '04', label: 'Rapport', desc: 'Vous recevez un rapport complet avec livrables' },
           ].map((s, i) => (
             <div key={i} className="text-center">
-              <div className="w-8 h-8 rounded-full bg-[#9B4D96]/15 text-[#9B4D96] font-bold text-xs flex items-center justify-center mx-auto mb-2">
-                {s.step}
-              </div>
+              <div className="w-8 h-8 rounded-full bg-[#9B4D96]/15 text-[#9B4D96] font-bold text-xs flex items-center justify-center mx-auto mb-2">{s.step}</div>
               <p className="text-xs font-semibold text-white mb-1">{s.label}</p>
               <p className="text-xs text-kcb-pierre leading-relaxed">{s.desc}</p>
             </div>
@@ -444,7 +334,6 @@ export function ConciergeService() {
         </div>
       </div>
 
-      {/* Booking modal */}
       <AnimatePresence>
         {booking && <BookingModal service={booking} onClose={() => setBooking(null)} />}
       </AnimatePresence>
