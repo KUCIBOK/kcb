@@ -10,12 +10,12 @@ import {
   ChevronDown,
   ChevronRight,
   Download,
-  ExternalLink,
   Calculator,
   MapPin,
   Plus,
-  Globe,
+  Loader2,
 } from 'lucide-react'
+import { useLogistics } from '../../hooks/useLogistics'
 
 const TABS = [
   { id: 'shipping', label: 'Devis transport', icon: Truck },
@@ -68,79 +68,139 @@ const PERMITS = [
 ]
 
 function ShippingTab() {
+  const { getShippingRates, createExpedition, loading } = useLogistics()
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
   const [pieces, setPieces] = useState('')
   const [value, setValue] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [rates, setRates] = useState(null)
+  const [rateError, setRateError] = useState('')
+  const [booked, setBooked] = useState(false)
+  const [bookLoading, setBookLoading] = useState(false)
 
-  if (submitted) {
+  const handleGetRates = async () => {
+    if (!from || !to) return
+    setRateError('')
+    setRates(null)
+    try {
+      const data = await getShippingRates(from, to, { pieces: Number(pieces) || 1, declaredValue: Number(value) || 0 })
+      setRates(data)
+    } catch {
+      setRateError("Impossible d'obtenir les tarifs Logidoo. Vérifiez vos informations et réessayez.")
+    }
+  }
+
+  const handleBook = async () => {
+    setBookLoading(true)
+    try {
+      await createExpedition({ origin: from, destination: to, pieces: Number(pieces) || 1, declaredValue: Number(value) || 0 })
+      setBooked(true)
+    } catch {
+      setRateError("Impossible de créer l'expédition. Contactez votre coordinateur Kucibok.")
+    } finally {
+      setBookLoading(false)
+    }
+  }
+
+  const reset = () => { setFrom(''); setTo(''); setPieces(''); setValue(''); setRates(null); setRateError(''); setBooked(false) }
+
+  if (booked) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-4 border border-dashed border-emerald-500/30 rounded-[4px] bg-emerald-500/5">
         <CheckCircle className="w-10 h-10 text-emerald-400" />
         <div className="text-center">
-          <p className="text-sm font-semibold text-white mb-1">Demande de devis envoyée</p>
-          <p className="text-xs text-kcb-pierre max-w-xs">Un coordinateur Kucibok vous contactera sous 24–48h avec des propositions de transporteurs spécialisés.</p>
+          <p className="text-sm font-semibold text-white mb-1">Expédition Logidoo créée</p>
+          <p className="text-xs text-kcb-pierre max-w-xs">Vous recevrez un numéro de suivi par email. Votre coordinateur Kucibok vous contactera sous 24h.</p>
         </div>
-        <button onClick={() => { setSubmitted(false); setFrom(''); setTo(''); setPieces(''); setValue('') }} className="text-xs text-kcb-or underline hover:text-kcb-bronze">
-          Nouvelle demande
-        </button>
+        <button onClick={reset} className="text-xs text-kcb-or underline hover:text-kcb-bronze">Nouvelle demande</button>
       </div>
     )
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 p-3 bg-blue-500/5 border border-blue-500/20 rounded-[4px] text-xs text-blue-300">
-        <Globe className="w-4 h-4 flex-shrink-0" />
-        Kucibok coordonne des transporteurs spécialisés art (DHL, Hasenkamp, Unipack Africa). Renseignez votre besoin pour recevoir des devis.
+      <div className="flex items-center gap-2 p-3 bg-[#9B4D96]/10 border border-[#9B4D96]/25 rounded-[4px] text-xs text-[#c084d8]">
+        <Truck className="w-4 h-4 flex-shrink-0" />
+        Logidoo est le prestataire logistique exclusif Kucibok — spécialiste du transport d'art Afrique Ouest ↔ Europe.
       </div>
+
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5 space-y-4">
-        <h4 className="text-sm font-semibold text-white">Demander un devis transport</h4>
+        <h4 className="text-sm font-semibold text-white">Obtenir un devis Logidoo</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-xs text-kcb-pierre block mb-1.5">Ville de départ</label>
-            <input type="text" value={from} onChange={(e) => setFrom(e.target.value)} placeholder="Ex : Dakar, Sénégal" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-kcb-or placeholder-kcb-pierre" />
+            <input type="text" value={from} onChange={(e) => setFrom(e.target.value)} placeholder="Ex : Dakar, Sénégal" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
           </div>
           <div>
             <label className="text-xs text-kcb-pierre block mb-1.5">Ville d'arrivée</label>
-            <input type="text" value={to} onChange={(e) => setTo(e.target.value)} placeholder="Ex : London, UK" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-kcb-or placeholder-kcb-pierre" />
+            <input type="text" value={to} onChange={(e) => setTo(e.target.value)} placeholder="Ex : London, UK" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
           </div>
           <div>
             <label className="text-xs text-kcb-pierre block mb-1.5">Nombre de caisses / œuvres</label>
-            <input type="number" value={pieces} onChange={(e) => setPieces(e.target.value)} placeholder="Ex : 12" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-kcb-or placeholder-kcb-pierre" />
+            <input type="number" value={pieces} onChange={(e) => setPieces(e.target.value)} placeholder="Ex : 12" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
           </div>
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1.5">Valeur totale estimée (€)</label>
-            <input type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Ex : 85000" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-kcb-or placeholder-kcb-pierre" />
+            <label className="text-xs text-kcb-pierre block mb-1.5">Valeur totale déclarée (€)</label>
+            <input type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Ex : 85000" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
           </div>
         </div>
+        {rateError && <p className="text-xs text-red-400">{rateError}</p>}
         <button
-          onClick={() => { if (from && to) setSubmitted(true) }}
-          disabled={!from || !to}
-          className="w-full py-2.5 text-sm font-semibold rounded-[4px] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          style={{ background: '#9B4D96', color: 'white' }}
+          onClick={handleGetRates}
+          disabled={!from || !to || loading}
+          className="w-full py-2.5 text-sm font-semibold rounded-[4px] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-white"
+          style={{ background: '#9B4D96' }}
         >
-          <Plus className="w-4 h-4" /> Demander un devis
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+          {loading ? 'Interrogation Logidoo…' : 'Obtenir les tarifs'}
         </button>
       </div>
 
-      <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4">
-        <h4 className="text-sm font-semibold text-white mb-3">Transporteurs partenaires Kucibok</h4>
-        <div className="space-y-2">
-          {[
-            { name: 'DHL Express Art', spec: 'Standard · Délai 5–7 jours', note: 'GPS temps réel, assurance en option' },
-            { name: 'Hasenkamp Fine Art', spec: 'Spécialisé art · Délai 10 jours', note: 'Climatisé, assurance incluse, rapport quotidien' },
-            { name: 'Unipack Africa', spec: 'Fret aérien · Délai 7 jours', note: 'Spécialiste Afrique Ouest → Europe' },
-          ].map((t, i) => (
-            <div key={i} className="flex items-start justify-between bg-kcb-noir/30 rounded-[4px] px-3 py-2.5">
-              <div>
-                <p className="text-sm font-medium text-white">{t.name}</p>
-                <p className="text-xs text-kcb-pierre">{t.spec}</p>
-                <p className="text-xs text-kcb-pierre/70">{t.note}</p>
+      {rates && (
+        <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5 space-y-3">
+          <h4 className="text-sm font-semibold text-white mb-1">Tarifs Logidoo — {from} → {to}</h4>
+          {Array.isArray(rates.rates) && rates.rates.length > 0 ? (
+            rates.rates.map((r, i) => (
+              <div key={i} className="flex items-center justify-between bg-kcb-noir/40 rounded-[4px] px-3 py-2.5">
+                <div>
+                  <p className="text-sm font-medium text-white">{r.service ?? r.name ?? `Option ${i + 1}`}</p>
+                  <p className="text-xs text-kcb-pierre">{r.transit_days ? `Délai estimé : ${r.transit_days} jours` : ''}</p>
+                </div>
+                <span className="text-sm font-bold text-kcb-or">{r.currency ?? '€'}{r.price ?? r.amount ?? '—'}</span>
               </div>
-              <ExternalLink className="w-3.5 h-3.5 text-kcb-pierre mt-1 flex-shrink-0" />
-            </div>
+            ))
+          ) : (
+            <p className="text-xs text-kcb-pierre">Aucun tarif disponible pour cette route. Contactez votre coordinateur Kucibok.</p>
+          )}
+          {Array.isArray(rates.rates) && rates.rates.length > 0 && (
+            <button
+              onClick={handleBook}
+              disabled={bookLoading}
+              className="w-full py-2.5 text-sm font-semibold rounded-[4px] transition disabled:opacity-40 flex items-center justify-center gap-2 bg-emerald-600 text-white hover:bg-emerald-500"
+            >
+              {bookLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+              {bookLoading ? 'Création en cours…' : 'Confirmer l\'expédition Logidoo'}
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="bg-kcb-ardoise border border-[#9B4D96]/20 rounded-[4px] p-4">
+        <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+          <Truck className="w-4 h-4 text-[#9B4D96]" />
+          Logidoo — Partenaire logistique exclusif Kucibok
+        </h4>
+        <div className="space-y-1.5">
+          {[
+            'Spécialiste transport d\'art Afrique Ouest ↔ Europe',
+            'Suivi GPS en temps réel, notifications proactives',
+            'Emballage aux normes conservation muséale',
+            'Gestion douane & formalités d\'export intégrée',
+            'Couverture assurance art sur demande',
+          ].map((f, i) => (
+            <p key={i} className="flex items-center gap-2 text-xs text-kcb-pierre">
+              <CheckCircle className="w-3 h-3 text-emerald-400 flex-shrink-0" />{f}
+            </p>
           ))}
         </div>
       </div>
@@ -361,7 +421,7 @@ export function LogisticsHub() {
         {[
           { label: 'Pays couverts', value: '12', icon: MapPin, color: 'text-[#9B4D96]', bg: 'bg-[#9B4D96]/10' },
           { label: 'Pays avec permis requis', value: '5', icon: FileText, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-          { label: 'Transporteurs partenaires', value: '3', icon: Package, color: 'text-kcb-or', bg: 'bg-kcb-or/10' },
+          { label: 'Prestataire logistique', value: 'Logidoo', icon: Package, color: 'text-kcb-or', bg: 'bg-kcb-or/10' },
           { label: 'Assureur partenaire', value: 'AXA Art', icon: Shield, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
         ].map((s, i) => (
           <div key={i} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4 flex items-center gap-3">

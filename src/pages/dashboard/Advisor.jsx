@@ -20,7 +20,7 @@ import { AdvisorClients } from '../../components/advisor/AdvisorClients'
 import { AdvisorDealPipeline } from '../../components/advisor/AdvisorDealPipeline'
 import { AdvisorMarket } from '../../components/advisor/AdvisorMarket'
 import { AdvisorReports } from '../../components/advisor/AdvisorReports'
-import Abonnement from '../../components/professional/Abonnement'
+import { AdvisorAbonnement } from '../../components/advisor/AdvisorAbonnement'
 import { Profile } from '../../components/professional/Profile'
 
 const menuStructure = [
@@ -83,7 +83,7 @@ export default function Advisor() {
       case 5:
         return <Profile />
       case 6:
-        return <Abonnement />
+        return <AdvisorAbonnement />
       default:
         return <AdvisorOverview setTab={setTab} />
     }
