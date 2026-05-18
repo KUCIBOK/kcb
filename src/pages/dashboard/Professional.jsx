@@ -16,7 +16,7 @@ import DashboardSidebar from '../../components/shared/DashboardSidebar'
 import { EmailVerificationBanner } from '../../components/shared/EmailVerificationBanner'
 import { ProfileCompletionBanner } from '../../components/shared/ProfileCompletionBanner'
 import { Profile } from '../../components/professional/Profile'
-import Abonnement from '../../components/professional/Abonnement'
+import { CuratorAbonnement } from '../../components/curator/CuratorAbonnement'
 import { useAuth } from '../../store/AuthContext'
 
 import { CuratorOverview } from '../../components/curator/CuratorOverview'
@@ -95,7 +95,7 @@ export default function Professional() {
       case 4: return <BudgetTracker />
       case 5: return <LearningHub />
       case 6: return <Profile />
-      case 7: return <Abonnement />
+      case 7: return <CuratorAbonnement />
       default: return <CuratorOverview setTab={setTab} />
     }
   }
