@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   CreditCard,
   Check,
@@ -20,6 +20,7 @@ import {
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../store/AuthContext'
 import { cancelMySubscription } from '../../api/useSubscriptions'
+import { getAllPlans } from '../../api/usePlans'
 
 const PLANS = [
   {
@@ -137,6 +138,24 @@ export function CuratorAbonnement() {
 
   const planKey = getPlanKey(subscription?.plan?.name ?? subscription?.plans?.name)
   const currentPlan = PLANS.find((p) => p.key === planKey) ?? PLANS[0]
+
+  // Map plan price → DB plan ID for checkout links
+  const [planIds, setPlanIds] = useState({})
+  useEffect(() => {
+    getAllPlans().then((plans) => {
+      if (!Array.isArray(plans)) return
+      const map = {}
+      plans.forEach((p) => {
+        if (p.price === 27) map.explorer = p.id
+        else if (p.price === 67) map.premium = p.id
+        else if (p.price === 147) map.institutional = p.id
+      })
+      setPlanIds(map)
+    })
+  }, [])
+
+  const checkoutUrl = (key) =>
+    planIds[key] ? `/subscription-checkout/${planIds[key]}` : '/global#pricing'
 
   return (
     <div className="space-y-6 pb-8">
@@ -264,7 +283,7 @@ export function CuratorAbonnement() {
                 </ul>
                 {!isCurrent && plan.price > 0 && (
                   <Link
-                    to="/global#pricing"
+                    to={checkoutUrl(plan.key)}
                     className="flex items-center justify-center gap-1 w-full py-2 text-xs font-semibold rounded-[4px] border transition text-[#9B4D96] border-[#9B4D96]/30 hover:bg-[#9B4D96]/10"
                   >
                     <ArrowUp className="w-3 h-3" /> Passer à {plan.name}
@@ -371,10 +390,10 @@ export function CuratorAbonnement() {
             Market Research Tools, logistique Logidoo, services Concierge et suivi budget — à partir de €27/mois.
           </p>
           <Link
-            to="/global#pricing"
+            to={checkoutUrl('explorer')}
             className="inline-flex items-center gap-2 bg-[#9B4D96] hover:bg-[#8B3D86] text-white px-6 py-2.5 rounded-[4px] transition font-medium text-sm"
           >
-            Voir les plans <ArrowUp className="w-4 h-4" />
+            Souscrire — Explorer €27/mois <ArrowUp className="w-4 h-4" />
           </Link>
         </div>
       )}
