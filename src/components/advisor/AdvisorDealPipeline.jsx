@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Briefcase, Clock, TrendingUp, Filter, ChevronRight } from 'lucide-react'
+import { PlanGate } from '../shared/PlanGate'
+import { PLAN_STARTER } from '../../utils/planUtils'
 
 const STAGES = ['prospect', 'analysis', 'offer', 'closing']
 const STAGE_CONFIG = {
@@ -177,7 +179,7 @@ function DealCard({ deal }) {
   )
 }
 
-export function AdvisorDealPipeline() {
+function AdvisorDealPipelineContent() {
   const [filterPriority, setFilterPriority] = useState('all')
 
   const filtered =
@@ -282,5 +284,17 @@ export function AdvisorDealPipeline() {
         })}
       </motion.div>
     </div>
+  )
+}
+
+export function AdvisorDealPipeline() {
+  return (
+    <PlanGate
+      minLevel={PLAN_STARTER}
+      feature="Deal Pipeline"
+      description="Gérez vos deals en cours, suivez les étapes de vente et pilotez vos conversions — inclus dans le plan Pro (€27/mois)."
+    >
+      <AdvisorDealPipelineContent />
+    </PlanGate>
   )
 }

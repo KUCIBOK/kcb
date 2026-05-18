@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Download, Mail, Check, ChevronDown } from 'lucide-react'
+import { PlanGate } from '../shared/PlanGate'
+import { PLAN_PREMIUM } from '../../utils/planUtils'
 
 const MOCK_CLIENTS = [
   { id: 1, name: 'Marie Dubois' },
@@ -41,7 +43,7 @@ const RECENT_REPORTS = [
   { id: 4, client: 'Marcus Weber', type: 'Personnalisé', date: '2026-03-05', size: '1.2 MB' },
 ]
 
-export function AdvisorReports() {
+function AdvisorReportsContent() {
   const [client, setClient] = useState('')
   const [reportType, setReportType] = useState('quarterly')
   const [sections, setSections] = useState(
@@ -217,5 +219,17 @@ export function AdvisorReports() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+export function AdvisorReports() {
+  return (
+    <PlanGate
+      minLevel={PLAN_PREMIUM}
+      feature="Rapports clients"
+      description="Générez des rapports trimestriels, annuels ou personnalisés pour vos clients avec synthèse portefeuille, ROI et recommandations — inclus dans le plan Élite (€67/mois)."
+    >
+      <AdvisorReportsContent />
+    </PlanGate>
   )
 }
