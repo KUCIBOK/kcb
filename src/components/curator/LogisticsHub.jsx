@@ -19,6 +19,8 @@ import {
   RefreshCw,
 } from 'lucide-react'
 import { useLogistics } from '../../hooks/useLogistics'
+import { PlanGate } from '../shared/PlanGate'
+import { PLAN_STARTER } from '../../utils/planUtils'
 
 const TABS = [
   { id: 'shipping', label: 'Devis transport', icon: Truck },
@@ -553,7 +555,15 @@ export function LogisticsHub() {
 
       <AnimatePresence mode="wait">
         <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.15 }}>
-          {activeTab === 'shipping' && <ShippingTab />}
+          {activeTab === 'shipping' && (
+            <PlanGate
+              minLevel={PLAN_STARTER}
+              feature="Logistique Logidoo"
+              description="Obtenez des devis et créez des expéditions art Afrique ↔ Europe via Logidoo — disponible à partir du plan Starter."
+            >
+              <ShippingTab />
+            </PlanGate>
+          )}
           {activeTab === 'permits' && <PermitsTab />}
           {activeTab === 'insurance' && <InsuranceTab />}
           {activeTab === 'customs' && <CustomsTab />}
