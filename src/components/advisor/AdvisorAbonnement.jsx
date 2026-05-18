@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   CreditCard,
   Check,
@@ -18,6 +18,7 @@ import {
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../store/AuthContext'
 import { cancelMySubscription } from '../../api/useSubscriptions'
+import { getAllPlans } from '../../api/usePlans'
 
 const PLANS = [
   {
@@ -135,6 +136,23 @@ export function AdvisorAbonnement() {
 
   const planKey = getPlanKey(subscription?.plan?.name ?? subscription?.plans?.name)
   const currentPlan = PLANS.find((p) => p.key === planKey) ?? PLANS[0]
+
+  const [planIds, setPlanIds] = useState({})
+  useEffect(() => {
+    getAllPlans().then((plans) => {
+      if (!Array.isArray(plans)) return
+      const map = {}
+      plans.forEach((p) => {
+        if (p.price === 27) map.pro = p.id
+        else if (p.price === 67) map.elite = p.id
+        else if (p.price === 147) map.institutional = p.id
+      })
+      setPlanIds(map)
+    })
+  }, [])
+
+  const checkoutUrl = (key) =>
+    planIds[key] ? `/subscription-checkout/${planIds[key]}` : '/global#pricing'
 
   return (
     <div className="space-y-6 pb-8">
@@ -255,7 +273,7 @@ export function AdvisorAbonnement() {
                 </ul>
                 {!isCurrent && plan.price > 0 && (
                   <Link
-                    to="/global#pricing"
+                    to={checkoutUrl(plan.key)}
                     className="flex items-center justify-center gap-1 w-full py-2 text-xs font-semibold rounded-[4px] border transition text-kcb-or border-kcb-or/30 hover:bg-kcb-or/10"
                   >
                     <ArrowUp className="w-3 h-3" /> Passer à {plan.name}
@@ -344,10 +362,10 @@ export function AdvisorAbonnement() {
             Deal pipeline, intelligence marché, rapports clients — à partir de €27/mois.
           </p>
           <Link
-            to="/global#pricing"
+            to={checkoutUrl('pro')}
             className="inline-flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-6 py-2.5 rounded-[4px] transition font-medium text-sm"
           >
-            Voir les plans <ArrowUp className="w-4 h-4" />
+            Souscrire — Pro €27/mois <ArrowUp className="w-4 h-4" />
           </Link>
         </div>
       )}
