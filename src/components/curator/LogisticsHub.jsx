@@ -17,16 +17,17 @@ import {
   User,
   Calendar,
   RefreshCw,
+  Lock,
 } from 'lucide-react'
 import { useLogistics } from '../../hooks/useLogistics'
 import { PlanGate } from '../shared/PlanGate'
 import { PLAN_STARTER } from '../../utils/planUtils'
 
 const TABS = [
-  { id: 'shipping', label: 'Devis transport', icon: Truck },
-  { id: 'permits', label: "Permis d'export", icon: FileText },
-  { id: 'insurance', label: 'Assurance', icon: Shield },
-  { id: 'customs', label: 'Droits de douane', icon: Calculator },
+  { id: 'shipping', label: 'Devis transport', icon: Truck, locked: false },
+  { id: 'permits', label: "Permis d'export", icon: FileText, locked: true },
+  { id: 'insurance', label: 'Assurance', icon: Shield, locked: true },
+  { id: 'customs', label: 'Droits de douane', icon: Calculator, locked: false },
 ]
 
 const PERMITS = [
@@ -548,24 +549,34 @@ export function LogisticsHub() {
             onClick={() => setActiveTab(t.id)}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] text-xs font-medium whitespace-nowrap transition flex-shrink-0 ${activeTab === t.id ? 'bg-[#9B4D96]/20 text-[#c084d8] border border-[#9B4D96]/30' : 'text-kcb-pierre hover:text-white hover:bg-white/[0.04]'}`}
           >
-            <t.icon className="w-3.5 h-3.5" />{t.label}
+            <t.icon className="w-3.5 h-3.5" />
+            {t.label}
+            {t.locked && <Lock className="w-3 h-3 ml-0.5 opacity-60" />}
           </button>
         ))}
       </div>
 
       <AnimatePresence mode="wait">
         <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.15 }}>
-          {activeTab === 'shipping' && (
+          {activeTab === 'shipping' && <ShippingTab />}
+          {activeTab === 'permits' && (
             <PlanGate
               minLevel={PLAN_STARTER}
-              feature="Logistique Logidoo"
-              description="Obtenez des devis et créez des expéditions art Afrique ↔ Europe via Logidoo — disponible à partir du plan Starter."
+              feature="Permis d'export"
+              description="Accédez aux procédures détaillées de permis d'export par pays, délais, documents requis et guides téléchargeables — disponible à partir du plan Starter."
             >
-              <ShippingTab />
+              <PermitsTab />
             </PlanGate>
           )}
-          {activeTab === 'permits' && <PermitsTab />}
-          {activeTab === 'insurance' && <InsuranceTab />}
+          {activeTab === 'insurance' && (
+            <PlanGate
+              minLevel={PLAN_STARTER}
+              feature="Assurance œuvres"
+              description="Simulateur de prime AXA Art, couverture All Risk clou-à-clou et demande de devis d'assurance — disponible à partir du plan Starter."
+            >
+              <InsuranceTab />
+            </PlanGate>
+          )}
           {activeTab === 'customs' && <CustomsTab />}
         </motion.div>
       </AnimatePresence>
