@@ -12,7 +12,6 @@ import {
   ChevronRight,
   X,
   Globe,
-  FileText,
   AlertCircle,
 } from 'lucide-react'
 
@@ -23,9 +22,6 @@ const SERVICES = [
     title: 'Visite studio virtuelle',
     subtitle: "Rencontrez l'artiste en vidéo, visitez son atelier",
     duration: '60 min',
-    priceFrom: 200,
-    priceTo: 500,
-    currency: '€',
     deliverables: [
       'Appel vidéo HD (Zoom/Meet)',
       "Visite guidée de l'atelier",
@@ -36,6 +32,7 @@ const SERVICES = [
     turnaround: '5–7 jours',
     badge: 'Populaire',
     color: '#9B4D96',
+    quota: '1/mois',
   },
   {
     id: 'physical-visit',
@@ -43,9 +40,6 @@ const SERVICES = [
     title: 'Visite studio physique',
     subtitle: 'Un agent Kucibok vous représente sur place',
     duration: '½ journée',
-    priceFrom: 500,
-    priceTo: 1500,
-    currency: '€',
     deliverables: [
       'Agent Kucibok certifié sur place',
       'Visite complète atelier/studio',
@@ -57,6 +51,7 @@ const SERVICES = [
     turnaround: '10–15 jours',
     badge: 'Premium',
     color: '#C9A84C',
+    quota: '1/mois',
   },
   {
     id: 'due-diligence',
@@ -64,9 +59,6 @@ const SERVICES = [
     title: 'Due diligence artiste',
     subtitle: "Vérification complète d'identité et d'authenticité",
     duration: '3–5 jours',
-    priceFrom: 300,
-    priceTo: 800,
-    currency: '€',
     deliverables: [
       'Vérification identité (ID gouvernemental)',
       'Validation portfolio (100% œuvres)',
@@ -78,6 +70,7 @@ const SERVICES = [
     turnaround: '3–5 jours ouvrés',
     badge: null,
     color: '#10B981',
+    quota: 'Illimité',
   },
   {
     id: 'logistics',
@@ -85,12 +78,8 @@ const SERVICES = [
     title: 'Coordination logistique',
     subtitle: 'Gestion complète du transport et des formalités',
     duration: 'Variable',
-    priceFrom: null,
-    priceTo: null,
-    currency: '€',
-    percent: '5–10% de la valeur',
     deliverables: [
-      "Sélection et coordination transporteurs",
+      "Coordination Logidoo (prestataire exclusif)",
       "Obtention permis d'export",
       'Gestion formalités douanières',
       'Coordination assurance',
@@ -100,6 +89,7 @@ const SERVICES = [
     turnaround: 'Selon planning',
     badge: 'Tout inclus',
     color: '#9B4D96',
+    quota: 'Illimité',
   },
 ]
 
@@ -126,6 +116,7 @@ function BookingModal({ service, onClose }) {
             <div>
               <p className="text-xs text-[#9B4D96] uppercase tracking-wider mb-1">Réservation Concierge</p>
               <h3 className="font-playfair text-lg text-white">{service.title}</h3>
+              <p className="text-xs text-emerald-400 mt-0.5">Inclus dans votre plan Premium</p>
             </div>
             <button onClick={onClose} className="text-kcb-pierre hover:text-white p-1"><X className="w-5 h-5" /></button>
           </div>
@@ -177,15 +168,16 @@ function BookingModal({ service, onClose }) {
                   className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50"
                 />
               </div>
-              <div className="p-3 bg-kcb-noir/40 rounded-[4px] text-xs text-kcb-pierre">
-                <p className="flex items-center gap-1.5 mb-1"><Clock className="w-3.5 h-3.5" /> Délai de confirmation : 24–48h</p>
+              <div className="p-3 bg-kcb-noir/40 rounded-[4px] text-xs text-kcb-pierre space-y-1">
+                <p className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Délai de confirmation : 24–48h</p>
                 <p className="flex items-center gap-1.5"><Globe className="w-3.5 h-3.5" /> Fuseau horaire de l'artiste : WAT (UTC+1)</p>
               </div>
-              <div className="flex items-center justify-between p-3 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px]">
-                <span className="text-sm text-kcb-sable">Prix estimé</span>
-                <span className="text-lg font-bold text-kcb-or">
-                  {service.percent ?? `${service.currency}${service.priceFrom} – ${service.currency}${service.priceTo}`}
-                </span>
+              <div className="flex items-center gap-2 p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-[4px]">
+                <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <div>
+                  <p className="text-xs font-semibold text-emerald-300">Service inclus — Plan Premium</p>
+                  <p className="text-xs text-kcb-pierre">Quota : {service.quota} · Aucun frais supplémentaire</p>
+                </div>
               </div>
             </div>
           )}
@@ -196,12 +188,12 @@ function BookingModal({ service, onClose }) {
                 {[
                   { label: 'Service', value: service.title },
                   { label: 'Artiste', value: artist || '—' },
-                  { label: 'Date', value: date || '—' },
-                  { label: 'Prix', value: service.percent ?? `${service.currency}${service.priceFrom} – ${service.currency}${service.priceTo}` },
+                  { label: 'Date souhaitée', value: date || '—' },
+                  { label: 'Inclus dans', value: 'Plan Premium' },
                 ].map((row, i) => (
                   <div key={i} className="flex justify-between">
                     <span className="text-kcb-pierre">{row.label}</span>
-                    <span className="text-white font-medium">{row.value}</span>
+                    <span className={`font-medium ${row.label === 'Inclus dans' ? 'text-emerald-400' : 'text-white'}`}>{row.value}</span>
                   </div>
                 ))}
               </div>
@@ -240,6 +232,15 @@ export function ConciergeService() {
         <p className="text-sm text-kcb-pierre mt-0.5">
           Des agents Kucibok certifiés vous représentent sur le terrain en Afrique
         </p>
+      </div>
+
+      {/* Plan inclusion banner */}
+      <div className="flex items-start gap-3 px-4 py-3 bg-emerald-500/5 border border-emerald-500/20 rounded-[4px] text-sm">
+        <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+        <div>
+          <p className="text-emerald-300 font-medium">Services inclus dans le plan Premium (€67/mois)</p>
+          <p className="text-xs text-kcb-pierre mt-0.5">Aucun frais supplémentaire — réservez directement ci-dessous.</p>
+        </div>
       </div>
 
       {/* No active missions */}
@@ -283,9 +284,9 @@ export function ConciergeService() {
                   <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {service.duration}</span>
                   <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {service.turnaround}</span>
                 </div>
-                <p className="text-sm font-bold" style={{ color: service.color }}>
-                  {service.percent ?? `${service.currency}${service.priceFrom} – ${service.currency}${service.priceTo}`}
-                </p>
+                <span className="text-xs font-semibold text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2 py-0.5 rounded-full">
+                  {service.quota}
+                </span>
               </div>
 
               <ul className="space-y-1 mb-4">

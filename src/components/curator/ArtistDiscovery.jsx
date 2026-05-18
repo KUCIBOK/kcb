@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -14,6 +15,7 @@ import {
   ChevronDown,
   Loader,
   AlertCircle,
+  Mail,
 } from 'lucide-react'
 import { useArtist } from '../../store/ArtistContext'
 
@@ -88,15 +90,18 @@ function ArtistCard({ artist, onSelect, shortlistedIds, onShortlist }) {
         </div>
 
         <div className="flex gap-2 mt-4">
-          <button
-            onClick={() => onSelect(artist)}
+          <Link
+            to={`/artists/${artistId}`}
             className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium bg-[#9B4D96]/15 text-[#c084d8] hover:bg-[#9B4D96]/25 rounded-[4px] border border-[#9B4D96]/20 transition"
           >
             <ExternalLink className="w-3 h-3" /> Voir profil
-          </button>
-          <button className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium bg-kcb-or/10 text-kcb-or hover:bg-kcb-or/20 rounded-[4px] border border-kcb-or/20 transition">
-            Contacter
-          </button>
+          </Link>
+          <Link
+            to="/contact"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium bg-kcb-or/10 text-kcb-or hover:bg-kcb-or/20 rounded-[4px] border border-kcb-or/20 transition"
+          >
+            <Mail className="w-3 h-3" /> Contacter
+          </Link>
         </div>
       </div>
     </motion.div>
@@ -175,9 +180,13 @@ function ArtistModal({ artist, onClose }) {
           )}
 
           <div className="flex flex-col sm:flex-row gap-3 mt-4">
-            <button className="flex-1 flex items-center justify-center gap-2 py-2.5 font-medium text-sm rounded-[4px] transition text-white" style={{ background: '#9B4D96' }}>
-              Réserver visite studio
-            </button>
+            <Link
+              to="/contact"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 font-medium text-sm rounded-[4px] transition text-white"
+              style={{ background: '#9B4D96' }}
+            >
+              <Mail className="w-4 h-4" /> Contacter Kucibok
+            </Link>
             {artist.portfolio_url && (
               <a href={artist.portfolio_url} target="_blank" rel="noreferrer" className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-kcb-or/10 text-kcb-or font-medium text-sm rounded-[4px] border border-kcb-or/20 hover:bg-kcb-or/20 transition">
                 <Download className="w-4 h-4" /> Portfolio
