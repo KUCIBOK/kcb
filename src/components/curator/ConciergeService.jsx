@@ -14,6 +14,8 @@ import {
   Globe,
   AlertCircle,
 } from 'lucide-react'
+import { PlanGate } from '../shared/PlanGate'
+import { PLAN_PREMIUM } from '../../utils/planUtils'
 
 const SERVICES = [
   {
@@ -226,6 +228,11 @@ export function ConciergeService() {
   const [booking, setBooking] = useState(null)
 
   return (
+    <PlanGate
+      minLevel={PLAN_PREMIUM}
+      feature="Services Concierge"
+      description="Agents Kucibok certifiés sur le terrain, visites studio, due diligence artiste — inclus dans le plan Premium."
+    >
     <div className="space-y-6 pb-8">
       <div>
         <h2 className="font-playfair text-xl text-white">Services Concierge</h2>
@@ -339,5 +346,6 @@ export function ConciergeService() {
         {booking && <BookingModal service={booking} onClose={() => setBooking(null)} />}
       </AnimatePresence>
     </div>
+    </PlanGate>
   )
 }

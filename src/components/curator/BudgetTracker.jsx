@@ -11,6 +11,8 @@ import {
   Trash2,
   ChevronDown,
 } from 'lucide-react'
+import { PlanGate } from '../shared/PlanGate'
+import { PLAN_PREMIUM } from '../../utils/planUtils'
 
 const CURRENCIES = [
   { code: 'EUR', symbol: '€', label: 'EUR €', rate: 1 },
@@ -30,7 +32,7 @@ const DEFAULT_CATEGORIES = [
   'Contingences',
 ]
 
-export function BudgetTracker() {
+export function BudgetTrackerContent() {
   const [currency, setCurrency] = useState('EUR')
   const [totalBudget, setTotalBudget] = useState('')
   const [budgetSet, setBudgetSet] = useState(false)
@@ -286,5 +288,18 @@ export function BudgetTracker() {
         )}
       </div>
     </div>
+  )
+}
+
+
+export function BudgetTracker() {
+  return (
+    <PlanGate
+      minLevel={PLAN_PREMIUM}
+      feature="Suivi Budget"
+      description="Gérez vos budgets d'acquisition projet par projet, ajoutez des lignes de dépenses et suivez vos transactions — inclus dans le plan Premium."
+    >
+      <BudgetTrackerContent />
+    </PlanGate>
   )
 }

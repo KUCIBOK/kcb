@@ -28,7 +28,7 @@ export default function GlobalPricingSection() {
           </div>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px max-w-[920px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px max-w-[1100px] mx-auto">
           {t.plans.map((plan, i) => (
             <RevealOnScroll key={i} delay={i * 0.1}>
               <div
