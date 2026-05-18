@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { TrendingUp, Globe, Award, Zap, ArrowUp, ArrowDown, BarChart3 } from 'lucide-react'
+import { PlanGate } from '../shared/PlanGate'
+import { PLAN_STARTER } from '../../utils/planUtils'
 import { Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -114,7 +116,7 @@ const OPPORTUNITIES = [
   },
 ]
 
-export function AdvisorMarket() {
+function AdvisorMarketContent() {
   return (
     <div className="space-y-6 pb-8">
       {/* Market overview header */}
@@ -297,5 +299,17 @@ export function AdvisorMarket() {
         </div>
       </motion.div>
     </div>
+  )
+}
+
+export function AdvisorMarket() {
+  return (
+    <PlanGate
+      minLevel={PLAN_STARTER}
+      feature="Intelligence Marché"
+      description="Tendances par pays, top artistes en appréciation, croissance par médium et signaux d'opportunité — inclus dans le plan Pro (€27/mois)."
+    >
+      <AdvisorMarketContent />
+    </PlanGate>
   )
 }
