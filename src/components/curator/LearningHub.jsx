@@ -129,7 +129,7 @@ const WEBINARS = [
     title: 'Logistique art Africa → Europe : éviter les pièges',
     date: '11 juin 2025 — 14h00 CET',
     duration: '90 min',
-    speakers: ['Équipe Kucibok', 'Expert douanier', 'Hasenkamp Art'],
+    speakers: ['Équipe Kucibok', 'Expert douanier', 'Logidoo Logistics'],
     topics: ['Transport', 'Permis export', 'Douanes UK/EU', 'Assurance'],
     status: 'upcoming',
     registrations: 31,
