@@ -15,7 +15,7 @@ import { canAccess, getPlanLabel, getPlanPrice, getUpgradeTarget, getPlanLevel }
 export function PlanGate({ minLevel, feature, description, children }) {
   const { subscription } = useAuth()
 
-  if (canAccess(subscription, minLevel)) return children
+  if (canAccess(subscription, minLevel)) return <>{children}</>
 
   const currentLevel = getPlanLevel(subscription)
   const targetLevel = getUpgradeTarget(currentLevel)
