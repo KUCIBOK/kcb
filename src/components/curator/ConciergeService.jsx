@@ -13,6 +13,7 @@ import {
   X,
   Globe,
   AlertCircle,
+  FileText,
 } from 'lucide-react'
 import { PlanGate } from '../shared/PlanGate'
 import { PLAN_PREMIUM } from '../../utils/planUtils'
