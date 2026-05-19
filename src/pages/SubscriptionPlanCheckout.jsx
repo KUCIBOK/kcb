@@ -88,7 +88,7 @@ export default function SubscriptionPlanCheckout() {
               <AlertCircle className="w-4 h-4 mr-2" /> {state?.error}
             </div>
           )}
-          {!state?.loading ? (
+          {!state?.loading && state?.plan?.id ? (
             <RevealOnScroll>
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="flex-1 border border-white/[0.06] rounded-[4px] p-6 flex flex-col shadow-md">
@@ -102,7 +102,7 @@ export default function SubscriptionPlanCheckout() {
                   <p className="text-center">
                     <span className="text-xl text-white font-black mb-2">
                       {' '}
-                      {state?.plan?.price.toLocaleString('fr-FR').replace(/\s/g, ' ')}{' '}
+                      {(state?.plan?.price ?? 0).toLocaleString('fr-FR').replace(/\s/g, ' ')}{' '}
                       {state?.plan?.currency}
                     </span>
                     <span className="text-sm font-normal">/mois</span>
@@ -117,9 +117,10 @@ export default function SubscriptionPlanCheckout() {
                     ))}
                   </ul>
                   {(() => {
+                    const price = state?.plan?.price ?? 0
                     const tvaRate = getTvaRate(state?.plan?.currency)
-                    const ht = tvaRate > 0 ? state?.plan?.price / (1 + tvaRate) : state?.plan?.price
-                    const tvaAmount = state?.plan?.price - ht
+                    const ht = tvaRate > 0 ? price / (1 + tvaRate) : price
+                    const tvaAmount = price - ht
                     const fmt = (n) => n.toLocaleString('fr-FR').replace(/\s/g, ' ')
                     const cur = (
                       <span className="text-xs font-normal text-kcb-pierre">
@@ -147,7 +148,7 @@ export default function SubscriptionPlanCheckout() {
                         <tr>
                           <td>Total mensuel</td>
                           <td className="text-end">
-                            {fmt(state?.plan?.price)} {cur}
+                            {fmt(price)} {cur}
                           </td>
                         </tr>
                       </table>
@@ -186,7 +187,7 @@ export default function SubscriptionPlanCheckout() {
                     ) : (
                       <>
                         <ShoppingCart className="w-4 h-4" />
-                        Payer {state?.plan?.price?.toLocaleString('fr-FR').replace(/\s/g, ' ')}{' '}
+                        Payer {(state?.plan?.price ?? 0).toLocaleString('fr-FR').replace(/\s/g, ' ')}{' '}
                         {state?.plan?.currency}
                       </>
                     )}
