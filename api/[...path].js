@@ -931,15 +931,35 @@ async function authSetRole(req, res) {
     return fail(res, `Rôle invalide. Valeurs acceptées : ${ALLOWED_ROLES.join(', ')}`, 400)
   }
 
-  // Vérifier que le rôle actuel est 'buyer' (empêche l'escalade de privilèges)
-  const { data: dbUser, error: dbErr } = await supabaseAdmin
+  // Vérifier si la ligne users existe (trigger on_auth_user_created parfois en retard)
+  const { data: dbUser } = await supabaseAdmin
     .from('users')
     .select('role')
     .eq('id', userId)
     .single()
 
-  if (dbErr || !dbUser) return fail(res, 'Utilisateur introuvable', 404)
-  if (dbUser.role !== 'buyer') {
+  if (!dbUser) {
+    // Trigger pas encore exécuté ou échoué — créer la ligne manuellement
+    const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId)
+    const meta = authUser?.user?.user_metadata ?? {}
+    const { error: insertErr } = await supabaseAdmin
+      .from('users')
+      .insert({
+        id: userId,
+        name: meta.name ?? null,
+        role: 'buyer',
+        auth_provider: 'google',
+        is_active: true,
+      })
+    // 23505 = duplicate key — le trigger a finalement créé la ligne entre temps, on continue
+    if (insertErr && insertErr.code !== '23505') {
+      return fail(res, 'Impossible de créer le profil utilisateur', 500)
+    }
+  }
+
+  // Vérifier que le rôle actuel est 'buyer' (empêche l'escalade de privilèges)
+  const currentRole = dbUser?.role ?? 'buyer'
+  if (currentRole !== 'buyer') {
     return fail(res, "Le rôle ne peut être modifié qu'à l'inscription initiale", 403)
   }
 
@@ -972,7 +992,7 @@ async function authSetRole(req, res) {
         .insert({ user_id: userId, name: profileName })
         .then(null, () => {})
     }
-  } else if (role === 'curator') {
+  } else if (role === 'curator' || role === 'advisor') {
     const { data: existing } = await supabaseAdmin
       .from('profiles')
       .select('id')
