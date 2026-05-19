@@ -17,10 +17,11 @@ import {
   Star,
   Zap,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../store/AuthContext'
 import { cancelMySubscription } from '../../api/useSubscriptions'
 import { getAllPlans } from '../../api/usePlans'
+import { toast } from 'sonner'
 
 const PLANS = [
   {
@@ -117,6 +118,7 @@ function getPlanKey(planName) {
 
 export function CuratorAbonnement() {
   const { subscription, loadSubscription } = useAuth()
+  const navigate = useNavigate()
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const [cancelLoading, setCancelLoading] = useState(false)
   const [cancelError, setCancelError] = useState('')
@@ -153,8 +155,13 @@ export function CuratorAbonnement() {
     })
   }, [])
 
-  const checkoutUrl = (key) =>
-    planIds[key] ? `/subscription-checkout/${planIds[key]}` : '/global#pricing'
+  const goToCheckout = (key) => {
+    if (planIds[key]) {
+      navigate(`/subscription-checkout/${planIds[key]}`)
+    } else {
+      toast.error('Plan introuvable. Contactez l\'administrateur.')
+    }
+  }
 
   return (
     <div className="space-y-6 pb-8">
@@ -281,12 +288,12 @@ export function CuratorAbonnement() {
                   ))}
                 </ul>
                 {!isCurrent && plan.price > 0 && (
-                  <Link
-                    to={checkoutUrl(plan.key)}
+                  <button
+                    onClick={() => goToCheckout(plan.key)}
                     className="flex items-center justify-center gap-1 w-full py-2 text-xs font-semibold rounded-[4px] border transition text-[#9B4D96] border-[#9B4D96]/30 hover:bg-[#9B4D96]/10"
                   >
                     <ArrowUp className="w-3 h-3" /> Passer à {plan.name}
-                  </Link>
+                  </button>
                 )}
                 {!isCurrent && plan.price === 0 && (
                   <p className="text-center text-xs text-kcb-pierre py-2">Plan de base</p>
@@ -388,12 +395,12 @@ export function CuratorAbonnement() {
           <p className="text-sm text-kcb-pierre mb-5 max-w-md mx-auto">
             Market Research Tools, logistique Logidoo, services Concierge et suivi budget — à partir de €27/mois.
           </p>
-          <Link
-            to={checkoutUrl('explorer')}
+          <button
+            onClick={() => goToCheckout('explorer')}
             className="inline-flex items-center gap-2 bg-[#9B4D96] hover:bg-[#8B3D86] text-white px-6 py-2.5 rounded-[4px] transition font-medium text-sm"
           >
             Souscrire — Explorer €27/mois <ArrowUp className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
       )}
     </div>

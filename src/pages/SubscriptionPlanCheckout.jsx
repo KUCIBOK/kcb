@@ -65,6 +65,9 @@ export default function SubscriptionPlanCheckout() {
     const fetchPlan = async () => {
       const plan = await getPlanById(id)
       if (plan?.id) {
+        // Supabase NUMERIC retourne un string — normaliser en number
+        plan.price = Number(plan.price ?? 0)
+        plan.features = Array.isArray(plan.features) ? plan.features : []
         setState((prev) => ({ ...prev, plan, error: '', loading: false }))
       } else {
         setState((prev) => ({ ...prev, loading: false, error: plan?.error ?? 'Plan introuvable' }))
