@@ -1,41 +1,12 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import RevealOnScroll from '../RevealOnScroll'
-import SectionLabel from '../SectionLabel'
 import { useLang } from '../../../store/LangContext'
 import { globalT } from '../../../i18n/global'
-import { getAllPlans } from '../../../api/usePlans'
 
 export default function GlobalPricingSection() {
   const { lang } = useLang()
   const t = globalT[lang].pricing
-
-  const [planIds, setPlanIds] = useState({})
-  useEffect(() => {
-    getAllPlans().then((plans) => {
-      if (!Array.isArray(plans)) return
-      const map = {}
-      const buyerPlans = plans.filter((p) => p.role === 'buyer' || !p.role)
-      buyerPlans.forEach((p) => {
-        const n = (p.name ?? '').toLowerCase()
-        if (n.includes('starter') || n.includes('explorer') || p.price === 27) {
-          if (!map[27] || p.currency === 'EUR') map[27] = p.id
-        } else if (n.includes('premium') || p.price === 67) {
-          if (!map[67] || p.currency === 'EUR') map[67] = p.id
-        } else if (n.includes('institutional') || n.includes('enterprise') || p.price === 147) {
-          if (!map[147] || p.currency === 'EUR') map[147] = p.id
-        }
-      })
-      setPlanIds(map)
-    })
-  }, [])
-
-  const ctaTo = (plan) => {
-    const price = parseInt(plan.price, 10)
-    if (!isNaN(price) && planIds[price]) return `/subscription-checkout/${planIds[price]}`
-    return plan.cta.to
-  }
 
   return (
     <section id="pricing" className="py-16 md:py-36 bg-kcb-ivoire text-kcb-noir">
@@ -91,7 +62,7 @@ export default function GlobalPricingSection() {
                   ))}
                 </ul>
                 <Link
-                  to={ctaTo(plan)}
+                  to={plan.cta.to}
                   className={`w-full text-center inline-flex items-center justify-center gap-2 font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all no-underline ${
                     plan.featured
                       ? 'bg-kcb-silver text-kcb-noir-deep hover:bg-kcb-silver-light'
