@@ -147,7 +147,7 @@ export function CuratorAbonnement() {
     getAllPlans().then((plans) => {
       if (!Array.isArray(plans)) return
       const map = {}
-      plans.forEach((p) => {
+      plans.filter((p) => p.role === 'curator').forEach((p) => {
         const key = getPlanKey(p.name)
         if (key !== 'free' && p.id) map[key] = p.id
       })
