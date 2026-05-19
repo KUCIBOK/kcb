@@ -13,8 +13,9 @@ import { canAccess, getPlanLabel, getPlanPrice, getUpgradeTarget, getPlanLevel }
  *  description — courte description de ce qui est disponible avec le plan supérieur
  */
 export function PlanGate({ minLevel, feature, description, children }) {
-  const { subscription } = useAuth()
+  const { subscription, user } = useAuth()
 
+  if (user?.role === 'admin') return <>{children}</>
   if (canAccess(subscription, minLevel)) return <>{children}</>
 
   const currentLevel = getPlanLevel(subscription)
