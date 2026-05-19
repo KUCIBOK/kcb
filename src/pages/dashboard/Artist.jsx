@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Package,
   Settings,
+  Gift,
 } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -34,6 +35,7 @@ import SupportTicketUser from '../../components/support/SupportTicketUser'
 import ArtistSales from '../../components/artist/ArtistSales'
 import ArtistNotifications from '../../components/artist/ArtistNotifications'
 import { ArtistCertificationTab } from '../../components/artist/ArtistCertificationTab'
+import { RewardsHub } from '../../components/artist/RewardsHub'
 
 export default function Artist() {
   const { user, artistProfile, loading } = useAuth()
@@ -79,6 +81,11 @@ export default function Artist() {
       icon: <User className="w-4 h-4" />,
       items: [{ name: 'Profil', icon: <User className="w-4 h-4" />, index: 8 }],
     },
+    {
+      category: 'Rewards & Supplies',
+      icon: <Gift className="w-4 h-4" />,
+      items: [{ name: 'Rewards & Supplies', icon: <Gift className="w-4 h-4" />, index: 10 }],
+    },
   ]
 
   // Get current page info for breadcrumb
@@ -95,7 +102,7 @@ export default function Artist() {
   const renderTab = () => {
     switch (tab) {
       case 0:
-        return <Synthesis />
+        return <Synthesis setTab={setTab} />
       case 1:
         return (
           <ArtworksList
@@ -127,6 +134,8 @@ export default function Artist() {
         return <Profile />
       case 9:
         return <ArtistCertificationTab />
+      case 10:
+        return <RewardsHub />
       default:
         return null
     }

@@ -1,4 +1,5 @@
 import { Clock, Image, TrendingUp, Truck, Users } from 'lucide-react'
+import { RewardsWidget } from './RewardsWidget'
 import { useArtist } from '../../store/ArtistContext'
 import { useArtworks } from '../../store/ArtworkContext'
 import { Link } from 'react-router-dom'
@@ -18,7 +19,7 @@ import {
 import { CreateCollection } from '../artworks/CreateCollection'
 import { KPICard, SkeletonKPI, SkeletonChart, EmptyState } from '../ui'
 
-export function Synthesis() {
+export function Synthesis({ setTab }) {
   const { myArtworks, loading } = useArtworks()
   const currentMonth = new Date().getMonth()
   const currentYear = new Date().getFullYear()
@@ -205,6 +206,9 @@ export function Synthesis() {
           <CreateCollection />
         </div>
       </div>
+
+      {/* Rewards widget */}
+      <RewardsWidget onNavigate={() => setTab?.(10)} />
 
       {/* Graphiques et liste */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
