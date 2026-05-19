@@ -15,10 +15,11 @@ import {
   Zap,
   Shield,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../store/AuthContext'
 import { cancelMySubscription } from '../../api/useSubscriptions'
 import { getAllPlans } from '../../api/usePlans'
+import { toast } from 'sonner'
 
 const PLANS = [
   {
@@ -115,6 +116,7 @@ function getPlanKey(planName) {
 
 export function AdvisorAbonnement() {
   const { subscription, loadSubscription } = useAuth()
+  const navigate = useNavigate()
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const [cancelLoading, setCancelLoading] = useState(false)
   const [cancelError, setCancelError] = useState('')
@@ -150,8 +152,13 @@ export function AdvisorAbonnement() {
     })
   }, [])
 
-  const checkoutUrl = (key) =>
-    planIds[key] ? `/subscription-checkout/${planIds[key]}` : '/global#pricing'
+  const goToCheckout = (key) => {
+    if (planIds[key]) {
+      navigate(`/subscription-checkout/${planIds[key]}`)
+    } else {
+      toast.error('Plan introuvable. Contactez l\'administrateur.')
+    }
+  }
 
   return (
     <div className="space-y-6 pb-8">
@@ -271,12 +278,12 @@ export function AdvisorAbonnement() {
                   ))}
                 </ul>
                 {!isCurrent && plan.price > 0 && (
-                  <Link
-                    to={checkoutUrl(plan.key)}
+                  <button
+                    onClick={() => goToCheckout(plan.key)}
                     className="flex items-center justify-center gap-1 w-full py-2 text-xs font-semibold rounded-[4px] border transition text-kcb-or border-kcb-or/30 hover:bg-kcb-or/10"
                   >
                     <ArrowUp className="w-3 h-3" /> Passer à {plan.name}
-                  </Link>
+                  </button>
                 )}
                 {!isCurrent && plan.price === 0 && (
                   <p className="text-center text-xs text-kcb-pierre py-2">Plan de base</p>
@@ -360,12 +367,12 @@ export function AdvisorAbonnement() {
           <p className="text-sm text-kcb-pierre mb-5 max-w-md mx-auto">
             Deal pipeline, intelligence marché, rapports clients — à partir de €27/mois.
           </p>
-          <Link
-            to={checkoutUrl('pro')}
+          <button
+            onClick={() => goToCheckout('pro')}
             className="inline-flex items-center gap-2 bg-kcb-or hover:bg-kcb-bronze text-kcb-noir px-6 py-2.5 rounded-[4px] transition font-medium text-sm"
           >
             Souscrire — Pro €27/mois <ArrowUp className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
       )}
     </div>

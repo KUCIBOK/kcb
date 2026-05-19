@@ -439,6 +439,9 @@ export default async function handler(req, res) {
     // ── /api/categories (+ alias /api/category) ──────────────────────────────
     if (s0 === 'categories' || s0 === 'category') return await routeCategories(req, res)
 
+    // ── /api/plans/:id (+ alias /api/plan/:id) ──────────────────────────────
+    if ((s0 === 'plans' || s0 === 'plan') && s1) return await routePlanById(req, res, s1)
+
     // ── /api/plans (+ alias /api/plan) ───────────────────────────────────────
     if (s0 === 'plans' || s0 === 'plan') return await routePlans(req, res)
 
@@ -2333,6 +2336,63 @@ async function routeCategoryById(req, res, id) {
  * @param {import('@vercel/node').VercelRequest}  req
  * @param {import('@vercel/node').VercelResponse} res
  */
+async function routePlanById(req, res, planId) {
+  if (req.method === 'GET') {
+    const { data, error } = await supabaseAdmin
+      .from('plans')
+      .select('*')
+      .eq('id', planId)
+      .single()
+    if (error) return fail(res, 'Plan introuvable', 404)
+    return ok(res, data)
+  }
+
+  if (req.method === 'PUT') {
+    const authResult = await requireAuth(req)
+    if (authResult.error) return fail(res, authResult.error, authResult.status)
+    const adminCheck = await requireAdmin(authResult.user)
+    if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status)
+
+    const { name, price, currency, duration_days, features, role, description, is_active } = req.body ?? {}
+    const updates = {}
+    if (name != null) updates.name = name
+    if (price != null) updates.price = Number(price)
+    if (currency != null) updates.currency = currency
+    if (duration_days != null) updates.duration_days = Number(duration_days)
+    if (features != null) updates.features = Array.isArray(features) ? features : []
+    if (role != null) updates.role = role
+    if (description != null) updates.description = description
+    if (is_active != null) updates.is_active = is_active
+
+    const { data, error } = await supabaseAdmin
+      .from('plans')
+      .update(updates)
+      .eq('id', planId)
+      .select()
+      .single()
+    if (error) return fail(res, error.message)
+    return ok(res, data)
+  }
+
+  if (req.method === 'DELETE') {
+    const authResult = await requireAuth(req)
+    if (authResult.error) return fail(res, authResult.error, authResult.status)
+    const adminCheck = await requireAdmin(authResult.user)
+    if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status)
+
+    const { data, error } = await supabaseAdmin
+      .from('plans')
+      .update({ is_active: false })
+      .eq('id', planId)
+      .select()
+      .single()
+    if (error) return fail(res, error.message)
+    return ok(res, data)
+  }
+
+  return fail(res, 'Méthode non autorisée', 405)
+}
+
 async function routePlans(req, res) {
   if (req.method === 'GET') {
     const { data, error } = await supabaseAdmin
