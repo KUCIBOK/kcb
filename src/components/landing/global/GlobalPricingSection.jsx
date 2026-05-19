@@ -16,10 +16,16 @@ export default function GlobalPricingSection() {
     getAllPlans().then((plans) => {
       if (!Array.isArray(plans)) return
       const map = {}
-      plans.forEach((p) => {
-        if (p.price === 27) map[27] = p.id
-        else if (p.price === 67) map[67] = p.id
-        else if (p.price === 147) map[147] = p.id
+      const buyerPlans = plans.filter((p) => p.role === 'buyer' || !p.role)
+      buyerPlans.forEach((p) => {
+        const n = (p.name ?? '').toLowerCase()
+        if (n.includes('starter') || n.includes('explorer') || p.price === 27) {
+          if (!map[27] || p.currency === 'EUR') map[27] = p.id
+        } else if (n.includes('premium') || p.price === 67) {
+          if (!map[67] || p.currency === 'EUR') map[67] = p.id
+        } else if (n.includes('institutional') || n.includes('enterprise') || p.price === 147) {
+          if (!map[147] || p.currency === 'EUR') map[147] = p.id
+        }
       })
       setPlanIds(map)
     })

@@ -254,6 +254,12 @@ export function Router() {
           }
         />
         <Route
+          path="/artists/:id"
+          element={
+            <PortalNavigateWithParams africaTo="/africa/artist/:id" globalTo="/global/artist/:id" />
+          }
+        />
+        <Route
           path="/artwork/:id"
           element={
             <PortalNavigateWithParams
