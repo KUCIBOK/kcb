@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { setSupabaseToken } from '../api/useAPI'
+import { setSupabaseToken, utils } from '../api/useAPI'
 import { changePassword, getUserProfile, updateProfile, updateUser } from '../api/useAuth'
 import { updateArtist } from '../api/useArtists'
 import { createLog } from '../api/useLog'
@@ -98,9 +98,8 @@ export function AuthContextProvider({ children }) {
   }, [])
 
   /**
-   * Récupère le rôle autoritatif depuis public.users (source de vérité DB).
-   * Timeout 4s : si Supabase ne répond pas, on applique le principe du moindre
-   * privilège — le rôle retombe à 'buyer' au lieu de faire confiance à user_metadata.
+   * Récupère le rôle autoritatif depuis /api/auth/me (service_role, bypass RLS).
+   * Évite les problèmes de politique RLS du client anon sur public.users.
    */
   const loadDbRole = useCallback(async (userId, fallbackRole) => {
     if (!userId) return fallbackRole ?? null
@@ -108,11 +107,12 @@ export function AuthContextProvider({ children }) {
       const timeout = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('loadDbRole timeout')), 6000)
       )
-      const query = supabase.from('users').select('role').eq('id', userId).single()
-      const { data } = await Promise.race([query, timeout])
-      return data?.role ?? fallbackRole ?? null
+      const query = fetch(`${utils.api}/auth/me`, { ...utils.options })
+        .then((r) => r.json())
+        .then((body) => body?.data?.role ?? null)
+      const role = await Promise.race([query, timeout])
+      return role ?? fallbackRole ?? null
     } catch {
-      // Timeout ou erreur réseau — on conserve le rôle user_metadata (posé par le serveur)
       return fallbackRole ?? null
     }
   }, [])

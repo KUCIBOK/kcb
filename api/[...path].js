@@ -1350,7 +1350,14 @@ async function authMe(req, res) {
   const authResult = await requireAuth(req)
   if (authResult.error) return fail(res, authResult.error, authResult.status)
   const { user } = authResult
-  const role = user.user_metadata?.role
+
+  // Lire le rôle depuis public.users (service_role — bypass RLS, source de vérité)
+  const { data: dbUser } = await supabaseAdmin
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+  const role = dbUser?.role ?? user.user_metadata?.role ?? 'buyer'
 
   // Récupérer le profil étendu selon le rôle (artiste → artists, autres → profiles)
   let profile = null
