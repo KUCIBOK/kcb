@@ -99,22 +99,30 @@ export function AuthContextProvider({ children }) {
 
   /**
    * Récupère le rôle autoritatif depuis /api/auth/me (service_role, bypass RLS).
-   * Évite les problèmes de politique RLS du client anon sur public.users.
+   * Fallback : query directe supabase si l'API échoue (token pas encore prêt, réseau, etc.)
    */
   const loadDbRole = useCallback(async (userId, fallbackRole) => {
     if (!userId) return fallbackRole ?? null
     try {
       const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('loadDbRole timeout')), 6000)
+        setTimeout(() => reject(new Error('loadDbRole timeout')), 5000)
       )
       const query = fetch(`${utils.api}/auth/me`, { ...utils.options })
-        .then((r) => r.json())
+        .then((r) => (r.ok ? r.json() : null))
         .then((body) => body?.data?.role ?? null)
       const role = await Promise.race([query, timeout])
-      return role ?? fallbackRole ?? null
+      if (role) return role
     } catch {
-      return fallbackRole ?? null
+      // fallback ci-dessous
     }
+    // Fallback : query directe (peut échouer si RLS non configurée, mais tente quand même)
+    try {
+      const { data } = await supabase.from('users').select('role').eq('id', userId).single()
+      if (data?.role) return data.role
+    } catch {
+      // ignore
+    }
+    return fallbackRole ?? null
   }, [])
 
   // ── Failsafe : si loading est encore true après 5s, forcer false ──────────

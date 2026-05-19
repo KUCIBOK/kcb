@@ -1359,6 +1359,13 @@ async function authMe(req, res) {
     .single()
   const role = dbUser?.role ?? user.user_metadata?.role ?? 'buyer'
 
+  // Synchroniser user_metadata.role si stale ou absent — évite le fallback 'buyer' au prochain login
+  if (role && user.user_metadata?.role !== role) {
+    supabaseAdmin.auth.admin
+      .updateUserById(user.id, { user_metadata: { ...user.user_metadata, role } })
+      .catch(() => {})
+  }
+
   // Récupérer le profil étendu selon le rôle (artiste → artists, autres → profiles)
   let profile = null
   if (role === 'artist') {
