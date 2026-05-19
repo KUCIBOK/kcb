@@ -146,9 +146,8 @@ export function CuratorAbonnement() {
       if (!Array.isArray(plans)) return
       const map = {}
       plans.forEach((p) => {
-        if (p.price === 27) map.explorer = p.id
-        else if (p.price === 67) map.premium = p.id
-        else if (p.price === 147) map.institutional = p.id
+        const key = getPlanKey(p.name)
+        if (key !== 'free' && p.id) map[key] = p.id
       })
       setPlanIds(map)
     })
