@@ -1,16 +1,12 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Briefcase, Clock, TrendingUp, Filter, ChevronRight } from 'lucide-react'
+import { Briefcase, Clock, Filter } from 'lucide-react'
 import { PlanGate } from '../shared/PlanGate'
 import { PLAN_STARTER } from '../../utils/planUtils'
+import { useT } from '../../i18n'
+import { advisorT } from '../../i18n/advisor'
 
 const STAGES = ['prospect', 'analysis', 'offer', 'closing']
-const STAGE_CONFIG = {
-  prospect: { label: 'Prospect', color: 'border-kcb-pierre/30 text-kcb-pierre' },
-  analysis: { label: 'Analyse', color: 'border-kcb-bronze/40 text-kcb-bronze' },
-  offer: { label: 'Offre', color: 'border-kcb-or/40 text-kcb-or' },
-  closing: { label: 'Closing', color: 'border-kcb-or text-kcb-or' },
-}
 const PRIORITY_COLORS = {
   high: { dot: 'bg-kcb-or', label: 'text-kcb-or', bg: 'bg-kcb-or/10' },
   medium: { dot: 'bg-kcb-bronze', label: 'text-kcb-bronze', bg: 'bg-kcb-bronze/10' },
@@ -153,8 +149,10 @@ const conversionRate = (
 ).toFixed(0)
 const avgDays = Math.round(ALL_DEALS.reduce((s, d) => s + d.days, 0) / ALL_DEALS.length)
 
-function DealCard({ deal }) {
+function DealCard({ deal, t }) {
   const pc = PRIORITY_COLORS[deal.priority]
+  const priorityLabel =
+    deal.priority === 'high' ? t.priorityHigh : deal.priority === 'medium' ? t.priorityMedium : t.priorityLow
   return (
     <div className="bg-kcb-noir/50 border border-white/[0.04] rounded-[4px] p-3 hover:border-kcb-or/15 transition group">
       <div className="flex items-start justify-between mb-2">
@@ -162,7 +160,7 @@ function DealCard({ deal }) {
         <span
           className={`ml-2 shrink-0 text-[9px] px-1.5 py-0.5 rounded-[4px] font-semibold ${pc.bg} ${pc.label}`}
         >
-          {deal.priority === 'high' ? 'URGENT' : deal.priority === 'medium' ? 'MOY.' : 'LOW'}
+          {priorityLabel}
         </span>
       </div>
       <p className="text-xs text-kcb-bronze mb-1">{deal.artist}</p>
@@ -180,7 +178,15 @@ function DealCard({ deal }) {
 }
 
 function AdvisorDealPipelineContent() {
+  const t = useT(advisorT).dealPipeline
   const [filterPriority, setFilterPriority] = useState('all')
+
+  const STAGE_CONFIG = {
+    prospect: { label: t.stageProspect, color: 'border-kcb-pierre/30 text-kcb-pierre' },
+    analysis: { label: t.stageAnalysis, color: 'border-kcb-bronze/40 text-kcb-bronze' },
+    offer: { label: t.stageOffer, color: 'border-kcb-or/40 text-kcb-or' },
+    closing: { label: t.stageClosing, color: 'border-kcb-or text-kcb-or' },
+  }
 
   const filtered =
     filterPriority === 'all' ? ALL_DEALS : ALL_DEALS.filter((d) => d.priority === filterPriority)
@@ -194,10 +200,10 @@ function AdvisorDealPipelineContent() {
         className="grid grid-cols-2 sm:grid-cols-4 gap-4"
       >
         {[
-          { label: 'Valeur totale', value: `€${(totalValue / 1000).toFixed(0)}K` },
-          { label: 'Deals actifs', value: ALL_DEALS.length },
-          { label: 'Taux conversion', value: `${conversionRate}%` },
-          { label: 'Durée moy.', value: `${avgDays}j` },
+          { label: t.metricTotalValue, value: `€${(totalValue / 1000).toFixed(0)}K` },
+          { label: t.metricActiveDeals, value: ALL_DEALS.length },
+          { label: t.metricConversion, value: `${conversionRate}%` },
+          { label: t.metricAvgDays, value: `${avgDays}j` },
         ].map((m, i) => (
           <div
             key={i}
@@ -212,7 +218,7 @@ function AdvisorDealPipelineContent() {
       {/* Filter */}
       <div className="flex items-center gap-2">
         <Filter className="w-4 h-4 text-kcb-pierre shrink-0" />
-        <span className="text-xs text-kcb-pierre">Priorité :</span>
+        <span className="text-xs text-kcb-pierre">{t.filterLabel}</span>
         {['all', 'high', 'medium', 'low'].map((p) => (
           <button
             key={p}
@@ -223,7 +229,13 @@ function AdvisorDealPipelineContent() {
                 : 'border-white/[0.08] text-kcb-pierre hover:border-kcb-or/30'
             }`}
           >
-            {p === 'all' ? 'Tous' : p === 'high' ? 'Urgent' : p === 'medium' ? 'Moyen' : 'Faible'}
+            {p === 'all'
+              ? t.filterAll
+              : p === 'high'
+                ? t.filterHigh
+                : p === 'medium'
+                  ? t.filterMedium
+                  : t.filterLow}
           </button>
         ))}
       </div>
@@ -270,12 +282,12 @@ function AdvisorDealPipelineContent() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04 }}
                   >
-                    <DealCard deal={deal} />
+                    <DealCard deal={deal} t={t} />
                   </motion.div>
                 ))}
                 {deals.length === 0 && (
                   <div className="flex-1 flex items-center justify-center text-xs text-kcb-pierre/40 border border-dashed border-white/[0.04] rounded-[4px] py-6">
-                    Aucun deal
+                    {t.emptyStage}
                   </div>
                 )}
               </div>
@@ -288,11 +300,12 @@ function AdvisorDealPipelineContent() {
 }
 
 export function AdvisorDealPipeline() {
+  const t = useT(advisorT).dealPipeline
   return (
     <PlanGate
       minLevel={PLAN_STARTER}
-      feature="Deal Pipeline"
-      description="Gérez vos deals en cours, suivez les étapes de vente et pilotez vos conversions — inclus dans le plan Pro (€27/mois)."
+      feature={t.planGateFeature}
+      description={t.planGateDesc}
     >
       <AdvisorDealPipelineContent />
     </PlanGate>

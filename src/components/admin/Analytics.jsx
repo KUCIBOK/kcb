@@ -16,6 +16,8 @@ import {
   Package,
   BarChart2,
 } from 'lucide-react'
+import { useT } from '../../i18n'
+import { adminT } from '../../i18n/admin'
 
 // ─── Périodes ────────────────────────────────────────────────────────────────
 const PERIODS = [
@@ -191,6 +193,7 @@ const Q2_2026 = {
 
 export function Analytics({ currency = 'EUR' }) {
   const navigate = useNavigate()
+  const t = useT(adminT).analytics
   const [data, setData] = useState(null)
   const [liveData, setLiveData] = useState(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
@@ -397,7 +400,7 @@ export function Analytics({ currency = 'EUR' }) {
       {/* ── En-tête ────────────────────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-white">Dashboard</h1>
+          <h1 className="text-4xl font-bold text-white">{t.title}</h1>
           <p className="text-kcb-pierre mt-1 text-sm">
             {periodShort}
             {lastUpdated && (
@@ -435,13 +438,13 @@ export function Analytics({ currency = 'EUR' }) {
             }`}
           >
             {autoRefresh ? <Check className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
-            {autoRefresh ? 'Live' : 'Paused'}
+            {autoRefresh ? t.live : t.paused}
           </button>
           <button
             onClick={() => loadLiveData(period)}
             className="px-3 py-2 bg-kcb-or hover:bg-kcb-bronze rounded text-kcb-noir text-xs font-medium transition flex items-center gap-1"
           >
-            <RefreshCw className="w-3.5 h-3.5" /> Rafraîchir
+            <RefreshCw className="w-3.5 h-3.5" /> {t.refresh}
           </button>
         </div>
       </div>
@@ -457,16 +460,16 @@ export function Analytics({ currency = 'EUR' }) {
         />
         <HeroKPI
           icon={Users}
-          label="Utilisateurs"
+          label={t.users}
           value={merged.totalUsers.toLocaleString('fr-FR')}
-          change={`+${merged.acquisition_growth}% ce mois`}
+          change={`+${merged.acquisition_growth}% ${t.thisMonth}`}
           trend="up"
         />
         <HeroKPI
           icon={Package}
-          label="Œuvres"
+          label={t.artworks}
           value={merged.totalArtworks}
-          change={`${merged.artworks_with_cert} certifiées`}
+          change={`${merged.artworks_with_cert} ${t.certified}`}
           trend="up"
         />
         <HeroKPI
@@ -475,12 +478,12 @@ export function Analytics({ currency = 'EUR' }) {
           value={fmt(merged.gmv, { compact: true })}
           change={
             period === 'q1_2026'
-              ? 'Volume Q1 2026'
+              ? t.gmvQ1
               : period === 'q2_2026'
-                ? 'Volume Q2 2026 (proj.)'
+                ? t.gmvQ2
                 : period === '2025'
-                  ? 'Volume annuel 2025'
-                  : 'Volume marchand'
+                  ? t.gmv2025
+                  : t.gmvDefault
           }
           trend="up"
         />
@@ -511,45 +514,45 @@ export function Analytics({ currency = 'EUR' }) {
 
       {/* ── 2025 — Référence SYSCOHADA ────────────────────────────────────── */}
       {period === '2025' && (
-        <Section title="Exercice 2025 — Référence SYSCOHADA officiel">
+        <Section title={t.section2025}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <MetricCard
-              label="CA 2025"
+              label={t.ca2025}
               value={fmt(YEAR_2025.ca_annual)}
               change={`${fmtXOF(YEAR_2025.ca_fcfa)}`}
               trend="up"
               color="green"
             />
             <MetricCard
-              label="Charges 2025"
+              label={t.charges2025}
               value={fmt(YEAR_2025.charges_annual)}
               change={`${fmtXOF(YEAR_2025.charges_fcfa)}`}
               color="red"
             />
             <MetricCard
-              label="Résultat net 2025"
+              label={t.rn2025}
               value={fmt(YEAR_2025.rn_annual)}
               change={`${fmtXOF(YEAR_2025.rn_fcfa)} · Marge ${YEAR_2025.marge}%`}
               trend="up"
               color="green"
             />
             <MetricCard
-              label="Croissance"
+              label={t.growth}
               value={`+${YEAR_2025.croissance}%`}
-              change="vs exercice 2024"
+              change={t.growthVs2024}
               trend="up"
               color="purple"
             />
           </div>
           <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="bg-kcb-ardoise/50 border border-white/[0.06] rounded-[4px] p-4">
-              <p className="text-white font-semibold mb-3">Compte de résultat 2025</p>
+              <p className="text-white font-semibold mb-3">{t.incomeStatement}</p>
               <div className="space-y-2 text-sm">
                 {[
-                  ['Produits (CA)', fmt(YEAR_2025.ca_annual), 'text-green-300'],
-                  ['Charges totales', fmt(YEAR_2025.charges_annual), 'text-red-300'],
+                  [t.revenue, fmt(YEAR_2025.ca_annual), 'text-green-300'],
+                  [t.totalCharges, fmt(YEAR_2025.charges_annual), 'text-red-300'],
                   [
-                    'Résultat net',
+                    t.netResult,
                     fmt(YEAR_2025.rn_annual),
                     'text-kcb-or font-bold border-t border-white/[0.08] pt-2 mt-2',
                   ],
@@ -560,22 +563,22 @@ export function Analytics({ currency = 'EUR' }) {
                   </div>
                 ))}
                 <div className="flex justify-between border-t border-white/[0.08] pt-2 mt-1">
-                  <span className="text-kcb-sable">Marge nette</span>
+                  <span className="text-kcb-sable">{t.netMargin}</span>
                   <span className="text-kcb-or font-semibold">{YEAR_2025.marge}%</span>
                 </div>
               </div>
             </div>
             <MetricCard
-              label="NPS 2025"
+              label={t.nps2025}
               value={YEAR_2025.nps}
-              change="Score promoteur net"
+              change={t.npsScore}
               trend="up"
               color="green"
             />
             <MetricCard
-              label="Uptime 2025"
+              label={t.uptime2025}
               value={`${YEAR_2025.uptime}%`}
-              change="Disponibilité du service"
+              change={t.serviceAvailability}
               trend="up"
               color="green"
             />
@@ -584,7 +587,7 @@ export function Analytics({ currency = 'EUR' }) {
       )}
 
       {/* ── Revenue & Finance ─────────────────────────────────────────────── */}
-      <Section title="Revenue & Finance">
+      <Section title={t.sectionRevenue}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="MRR"
@@ -601,14 +604,14 @@ export function Analytics({ currency = 'EUR' }) {
             color="green"
           />
           <MetricCard
-            label="CAC"
+            label={t.cac}
             value={fmt(merged.cac)}
-            change="Coût d'acquisition client"
+            change={t.cacLabel}
             trend="down"
             color="blue"
           />
           <MetricCard
-            label="LTV"
+            label={t.ltv}
             value={fmt(merged.ltv)}
             change={`LTV:CAC = ${merged.ltv_cac}x`}
             trend="up"
@@ -617,14 +620,14 @@ export function Analytics({ currency = 'EUR' }) {
         </div>
         <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
           <RevenueBreakdown
-            title="Mix de revenu"
+            title={t.revenueMix}
             data={merged.revenue_mix}
             colors={['#2D6A4F', '#C9A84C', '#8B6914', '#5a3e2b']}
           />
           <MetricCard
-            label="Payback Period"
+            label={t.paybackPeriod}
             value={`${merged.payback_period} mois`}
-            change="Temps de récupération du CAC"
+            change={t.paybackLabel}
             color="indigo"
           />
         </div>

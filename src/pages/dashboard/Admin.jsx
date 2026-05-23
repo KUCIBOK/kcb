@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../../store/AuthContext'
+import { useLang } from '../../store/LangContext'
+import { uiT } from '../../i18n/ui'
 import { CURRENCIES } from '../../lib/currency'
 import { ArtworksList } from '../../components/artworks/ArtworksList'
 import { useArtworks } from '../../store/ArtworkContext'
@@ -52,68 +54,64 @@ export default function Admin() {
   const { user, loading } = useAuth()
   const [tab, setTab] = useState(0)
   const [currency, setCurrency] = useState('EUR')
+  const { lang } = useLang()
+  const td = uiT[lang].dashboards.admin
 
-  // Menu structure with categories
   const menuStructure = [
     {
-      category: 'Tableau de Bord',
+      category: td.categories.dashboard,
       icon: <LayoutDashboard className="w-4 h-4" />,
-      items: [{ name: 'Dashboard', icon: <TrendingUp className="w-4 h-4" />, index: 0 }],
+      items: [{ name: td.items.dashboard, icon: <TrendingUp className="w-4 h-4" />, index: 0 }],
     },
     {
-      category: 'Gestion Œuvres',
+      category: td.categories.artworkManagement,
       icon: <Palette className="w-4 h-4" />,
       items: [
-        { name: 'En attente', icon: <Clock className="w-4 h-4" />, index: 1 },
-        { name: 'Approuvées', icon: <CheckCheck className="w-4 h-4" />, index: 2 },
-        { name: 'Rejetées', icon: <X className="w-4 h-4" />, index: 3 },
-        { name: 'Numérisations', icon: <Scan className="w-4 h-4" />, index: 5 },
-        { name: 'Enchères', icon: <Gavel className="w-4 h-4" />, index: 6 },
+        { name: td.items.pending, icon: <Clock className="w-4 h-4" />, index: 1 },
+        { name: td.items.approved, icon: <CheckCheck className="w-4 h-4" />, index: 2 },
+        { name: td.items.rejected, icon: <X className="w-4 h-4" />, index: 3 },
+        { name: td.items.digitizations, icon: <Scan className="w-4 h-4" />, index: 5 },
+        { name: td.items.auctions, icon: <Gavel className="w-4 h-4" />, index: 6 },
       ],
     },
     {
-      category: 'Utilisateurs & Clients',
+      category: td.categories.usersAndClients,
       icon: <Users className="w-4 h-4" />,
       items: [
-        { name: 'Utilisateurs', icon: <Users className="w-4 h-4" />, index: 4 },
-        { name: 'Artistes', icon: <Palette className="w-4 h-4" />, index: 17 },
-        { name: 'Portefeuille clients', icon: <ContactRound className="w-4 h-4" />, index: 7 },
-        {
-          name: 'Galeries scrapées',
-          icon: <GalleryHorizontalEnd className="w-4 h-4" />,
-          index: 16,
-        },
+        { name: td.items.users, icon: <Users className="w-4 h-4" />, index: 4 },
+        { name: td.items.artists, icon: <Palette className="w-4 h-4" />, index: 17 },
+        { name: td.items.clientPortfolio, icon: <ContactRound className="w-4 h-4" />, index: 7 },
+        { name: td.items.scrapedGalleries, icon: <GalleryHorizontalEnd className="w-4 h-4" />, index: 16 },
       ],
     },
     {
-      category: 'Marketing & Communication',
+      category: td.categories.marketingAndComms,
       icon: <Mail className="w-4 h-4" />,
       items: [
-        { name: 'Articles de blog', icon: <FileText className="w-4 h-4" />, index: 8 },
-        { name: 'Campagnes Email', icon: <Mail className="w-4 h-4" />, index: 15 },
-        { name: 'Support & Tickets', icon: <MessageSquare className="w-4 h-4" />, index: 10 },
+        { name: td.items.blogPosts, icon: <FileText className="w-4 h-4" />, index: 8 },
+        { name: td.items.emailCampaigns, icon: <Mail className="w-4 h-4" />, index: 15 },
+        { name: td.items.supportTickets, icon: <MessageSquare className="w-4 h-4" />, index: 10 },
       ],
     },
     {
-      category: 'Opérations',
+      category: td.categories.operations,
       icon: <Settings className="w-4 h-4" />,
       items: [
-        { name: 'Logistiques', icon: <Truck className="w-4 h-4" />, index: 9 },
-        { name: 'Catégories', icon: <FileText className="w-4 h-4" />, index: 12 },
-        { name: 'Logs', icon: <ChartColumn className="w-4 h-4" />, index: 14 },
+        { name: td.items.logistics, icon: <Truck className="w-4 h-4" />, index: 9 },
+        { name: td.items.categories, icon: <FileText className="w-4 h-4" />, index: 12 },
+        { name: td.items.logs, icon: <ChartColumn className="w-4 h-4" />, index: 14 },
       ],
     },
     {
-      category: 'Abonnements & Plans',
+      category: td.categories.subscriptionsAndPlans,
       icon: <CreditCard className="w-4 h-4" />,
       items: [
-        { name: 'Plans', icon: <CreditCard className="w-4 h-4" />, index: 11 },
-        { name: 'Abonnements', icon: <Users className="w-4 h-4" />, index: 13 },
+        { name: td.items.plans, icon: <CreditCard className="w-4 h-4" />, index: 11 },
+        { name: td.items.subscriptions, icon: <Users className="w-4 h-4" />, index: 13 },
       ],
     },
   ]
 
-  // Get current page info for breadcrumb
   const getCurrentPageInfo = () => {
     for (const menu of menuStructure) {
       const item = menu.items.find((i) => i.index === tab)
@@ -121,7 +119,7 @@ export default function Admin() {
         return { category: menu.category, page: item.name }
       }
     }
-    return { category: 'Dashboard', page: 'Dashboard' }
+    return { category: td.breadcrumb.defaultCategory, page: td.breadcrumb.defaultPage }
   }
 
   const renderTab = () => {
@@ -129,17 +127,17 @@ export default function Admin() {
       case 0:
         return <Analytics currency={currency} />
       case 1:
-        return <ArtworksList user={user} title="En attente d'examen" artworks={pending} />
+        return <ArtworksList user={user} title={td.titles.pendingArtworks} artworks={pending} />
       case 2:
-        return <ArtworksList user={user} title="Oeuvres approuvées" artworks={approved} />
+        return <ArtworksList user={user} title={td.titles.approvedArtworks} artworks={approved} />
       case 3:
-        return <ArtworksList user={user} title="Oeuvres rejetées" artworks={rejected} />
+        return <ArtworksList user={user} title={td.titles.rejectedArtworks} artworks={rejected} />
       case 4:
         return <UsersTab />
       case 5:
         return (
           <div>
-            <h3 className="text-2xl text-white mb-4">Demandes de livraison</h3>
+            <h3 className="text-2xl text-white mb-4">{td.titles.deliveryRequests}</h3>
             <NumerisationList numerisations={numerisations} />
           </div>
         )
@@ -154,7 +152,7 @@ export default function Admin() {
       case 10:
         return (
           <div>
-            <h3 className="text-2xl text-white mb-4">Support Client & Tickets</h3>
+            <h3 className="text-2xl text-white mb-4">{td.titles.supportTickets}</h3>
             <SupportTicketTab />
           </div>
         )
@@ -175,7 +173,7 @@ export default function Admin() {
       default:
         return (
           <div className="text-center text-kcb-pierre">
-            Cette fonctionnalité n'est pas encore disponible.
+            {td.titles.featureUnavailable}
           </div>
         )
     }

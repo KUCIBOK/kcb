@@ -12,6 +12,8 @@ import {
   Menu,
   ChevronRight,
 } from 'lucide-react'
+import { useLang } from '../../store/LangContext'
+import { uiT } from '../../i18n/ui'
 import DashboardSidebar from '../../components/shared/DashboardSidebar'
 import { EmailVerificationBanner } from '../../components/shared/EmailVerificationBanner'
 import { ProfileCompletionBanner } from '../../components/shared/ProfileCompletionBanner'
@@ -30,50 +32,44 @@ export default function Professional() {
   const [toggle, setToggle] = useState(false)
   const { user, curatorProfile, subscription, loading } = useAuth()
   const [tab, setTab] = useState(0)
+  const { lang } = useLang()
+  const td = uiT[lang].dashboards.professional
 
   const menuStructure = [
     {
-      category: 'Tableau de Bord',
+      category: td.categories.dashboard,
       icon: <LayoutDashboard className="w-4 h-4" />,
-      items: [
-        { name: 'Vue générale', icon: <LayoutDashboard className="w-4 h-4" />, index: 0 },
-      ],
+      items: [{ name: td.items.overview, icon: <LayoutDashboard className="w-4 h-4" />, index: 0 }],
     },
     {
-      category: 'Découverte',
+      category: td.categories.discovery,
       icon: <Users className="w-4 h-4" />,
-      items: [
-        { name: 'Artistes vérifiés', icon: <Users className="w-4 h-4" />, index: 1 },
-      ],
+      items: [{ name: td.items.verifiedArtists, icon: <Users className="w-4 h-4" />, index: 1 }],
     },
     {
-      category: 'Opérations',
+      category: td.categories.operations,
       icon: <Truck className="w-4 h-4" />,
       items: [
-        { name: 'Centre logistique', icon: <Truck className="w-4 h-4" />, index: 2 },
-        { name: 'Services Concierge', icon: <Star className="w-4 h-4" />, index: 3 },
+        { name: td.items.logisticsHub, icon: <Truck className="w-4 h-4" />, index: 2 },
+        { name: td.items.conciergeServices, icon: <Star className="w-4 h-4" />, index: 3 },
       ],
     },
     {
-      category: 'Finance',
+      category: td.categories.finance,
       icon: <DollarSign className="w-4 h-4" />,
-      items: [
-        { name: 'Suivi budget', icon: <DollarSign className="w-4 h-4" />, index: 4 },
-      ],
+      items: [{ name: td.items.budgetTracking, icon: <DollarSign className="w-4 h-4" />, index: 4 }],
     },
     {
-      category: 'Formation',
+      category: td.categories.training,
       icon: <BookOpen className="w-4 h-4" />,
-      items: [
-        { name: 'Hub éducatif', icon: <BookOpen className="w-4 h-4" />, index: 5 },
-      ],
+      items: [{ name: td.items.learningHub, icon: <BookOpen className="w-4 h-4" />, index: 5 }],
     },
     {
-      category: 'Compte',
+      category: td.categories.account,
       icon: <Briefcase className="w-4 h-4" />,
       items: [
-        { name: 'Profil', icon: <Briefcase className="w-4 h-4" />, index: 6 },
-        { name: 'Abonnement', icon: <CreditCard className="w-4 h-4" />, index: 7 },
+        { name: td.items.profile, icon: <Briefcase className="w-4 h-4" />, index: 6 },
+        { name: td.items.subscription, icon: <CreditCard className="w-4 h-4" />, index: 7 },
       ],
     },
   ]
@@ -83,7 +79,7 @@ export default function Professional() {
       const item = menu.items.find((i) => i.index === tab)
       if (item) return { category: menu.category, page: item.name }
     }
-    return { category: 'Dashboard', page: 'Vue générale' }
+    return { category: td.breadcrumb.defaultCategory, page: td.breadcrumb.defaultPage }
   }
 
   const renderTab = () => {

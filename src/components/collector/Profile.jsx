@@ -5,9 +5,12 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { ChangePassword } from '../auth/ChangePassword'
 import { Tabs, Input, Select, Button, toast } from '../ui'
+import { useT } from '../../i18n'
+import { buyerT } from '../../i18n/buyer'
 
 export const Profile = () => {
   const { user, buyerProfile, updateUser, updateProfile } = useAuth()
+  const t = useT(buyerT).profile
   const [state, setState] = useState({
     name: user?.name,
     email: user?.email,
@@ -36,7 +39,7 @@ export const Profile = () => {
     const file = e.target.files[0]
     if (!file) return
     if (file.size > 5 * 1024 * 1024) {
-      setState((prev) => ({ ...prev, error: "L'image ne doit pas dépasser 5 Mo." }))
+      setState((prev) => ({ ...prev, error: t.errorImageSize }))
       return
     }
     const reader = new FileReader()
@@ -66,14 +69,14 @@ export const Profile = () => {
       })
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (state.email && !emailRegex.test(state.email)) {
-        setState((prev) => ({ ...prev, loading: false, error: 'Adresse email invalide.' }))
+        setState((prev) => ({ ...prev, loading: false, error: t.errorInvalidEmail }))
         return
       }
       if (!state.interests || state.interests.length <= 20) {
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: 'Les intérêts doivent contenir au moins 20 caractères.',
+          error: t.errorInterestsTooShort,
         }))
         return
       }
@@ -81,13 +84,13 @@ export const Profile = () => {
       const updatedProfile = await updateProfile(formData)
       if (updatedUser?._id && updatedProfile?._id) {
         setState((prev) => ({ ...prev, loading: false, error: '' }))
-        toast.success('Profil mis à jour !')
+        toast.success(t.successUpdate)
       }
     } catch (error) {
       setState({
         ...state,
         loading: false,
-        error: error?.message || 'Erreur lors de la sauvegarde.',
+        error: error?.message || t.errorSave,
       })
     }
   }
@@ -97,11 +100,11 @@ export const Profile = () => {
   const tabsData = [
     {
       value: 'personal',
-      label: 'Informations personnelles',
+      label: t.tabPersonal,
       content: (
         <div className="space-y-4">
           <Input
-            label="Nom complet"
+            label={t.labelName}
             name="name"
             value={state?.name || ''}
             onChange={(e) => setState({ ...state, name: e.target.value })}
@@ -109,7 +112,7 @@ export const Profile = () => {
             placeholder={user?.name}
           />
           <Input
-            label="Pseudo"
+            label={t.labelUsername}
             name="username"
             value={state?.username || ''}
             onChange={(e) => setState({ ...state, username: e.target.value })}
@@ -117,7 +120,7 @@ export const Profile = () => {
             placeholder={buyerProfile?.username}
           />
           <Input
-            label="Téléphone"
+            label={t.labelPhone}
             type="tel"
             name="telephone"
             value={state?.telephone || ''}
@@ -125,10 +128,10 @@ export const Profile = () => {
             required
             minLength={13}
             maxLength={18}
-            placeholder="Votre numéro de téléphone"
+            placeholder={t.placeholderPhone}
           />
           <Input
-            label="Email"
+            label={t.labelEmail}
             type="email"
             name="email"
             value={state?.email || ''}
@@ -137,7 +140,7 @@ export const Profile = () => {
             placeholder={user?.email}
           />
           <Select
-            label="Pays"
+            label={t.labelCountry}
             options={countryOptions}
             value={state.country}
             onChange={(value) => setState({ ...state, country: value })}
@@ -148,19 +151,19 @@ export const Profile = () => {
     },
     {
       value: 'interests',
-      label: 'Préférences',
+      label: t.tabInterests,
       content: (
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-kcb-sable mb-2">
-              Intérêts artistiques
+              {t.labelArtisticInterests}
             </label>
             <ReactQuill
               theme="snow"
               value={state.interests || ''}
               onChange={(value) => setState({ ...state, interests: value })}
               className="border border-white/[0.08] rounded-[4px] bg-kcb-noir text-white"
-              placeholder="Parlez-nous de vos préférences"
+              placeholder={t.placeholderInterests}
             />
           </div>
         </div>
@@ -168,24 +171,26 @@ export const Profile = () => {
     },
     {
       value: 'security',
-      label: 'Sécurité',
+      label: t.tabSecurity,
       content: (
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Changer le mot de passe</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t.headingPassword}</h3>
             <ChangePassword />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Portefeuille</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t.headingWallet}</h3>
             <div className="space-y-4">
               <Input
-                label="Adresse wallet"
+                label={t.labelWalletAddress}
                 name="wallet_address"
                 value={user?.wallet?.address || ''}
                 readOnly
               />
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">Clé privée</label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">
+                  {t.labelPrivateKey}
+                </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -203,12 +208,12 @@ export const Profile = () => {
                     type="button"
                     onClick={() => navigator.clipboard.writeText(user?.wallet?.privateKey || '')}
                     className="px-4 py-2 border border-white/[0.06] bg-kcb-noir rounded-[4px] hover:bg-kcb-ardoise transition"
-                    title="Copier la clé privée"
+                    title={t.titleCopyKey}
                   >
                     <Copy className="w-4 h-4 text-kcb-pierre" />
                   </button>
                 </div>
-                <p className="text-xs text-yellow-600 mt-1">Ne partagez jamais votre clé privée.</p>
+                <p className="text-xs text-yellow-600 mt-1">{t.warningPrivateKey}</p>
               </div>
             </div>
           </div>
@@ -246,7 +251,7 @@ export const Profile = () => {
                 onClick={() => document.getElementById('profile-image').click()}
                 className="border border-white/[0.06] bg-kcb-ardoise w-full rounded-[4px] text-xs text-kcb-sable font-medium px-3 py-2 hover:bg-kcb-ardoise transition"
               >
-                Modifier la photo
+                {t.btnChangePhoto}
               </button>
               <input
                 id="profile-image"
@@ -258,7 +263,7 @@ export const Profile = () => {
             </div>
             <div className="w-full pt-4 border-t border-white/[0.06]">
               <div className="flex justify-between text-xs text-kcb-pierre">
-                <span>Compte créé</span>
+                <span>{t.labelAccountCreated}</span>
                 <span>{new Date(user?.created_at)?.toLocaleDateString()}</span>
               </div>
             </div>
@@ -273,7 +278,7 @@ export const Profile = () => {
         {/* Submit Button */}
         <div className="flex justify-end pt-4 border-t border-white/[0.06]">
           <Button type="submit" disabled={state?.loading} loading={state?.loading} size="lg">
-            Enregistrer les modifications
+            {t.btnSave}
           </Button>
         </div>
       </form>

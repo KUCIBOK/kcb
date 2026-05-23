@@ -18,6 +18,8 @@ import {
 import { useAuth } from '../../store/AuthContext'
 import { useArtist } from '../../store/ArtistContext'
 import { KPICard, SkeletonKPI } from '../ui'
+import { useT } from '../../i18n'
+import { curatorT } from '../../i18n/curator'
 
 const stagger = {
   hidden: { opacity: 0 },

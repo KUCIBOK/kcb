@@ -13,6 +13,8 @@ import {
   Settings,
 } from 'lucide-react'
 import { useAuth } from '../../store/AuthContext'
+import { useLang } from '../../store/LangContext'
+import { uiT } from '../../i18n/ui'
 import DashboardSidebar from '../../components/shared/DashboardSidebar'
 import { EmailVerificationBanner } from '../../components/shared/EmailVerificationBanner'
 import { AdvisorOverview } from '../../components/advisor/AdvisorOverview'
@@ -23,50 +25,52 @@ import { AdvisorReports } from '../../components/advisor/AdvisorReports'
 import { AdvisorAbonnement } from '../../components/advisor/AdvisorAbonnement'
 import { Profile } from '../../components/professional/Profile'
 
-const menuStructure = [
-  {
-    category: 'Tableau de Bord',
-    icon: <LayoutDashboard className="w-4 h-4" />,
-    items: [
-      { name: 'Vue 360°', icon: <Activity className="w-4 h-4" />, index: 0 },
-      { name: 'Intelligence marché', icon: <TrendingUp className="w-4 h-4" />, index: 3 },
-    ],
-  },
-  {
-    category: 'Portefeuilles',
-    icon: <Briefcase className="w-4 h-4" />,
-    items: [
-      { name: 'Mes clients', icon: <Users className="w-4 h-4" />, index: 1 },
-      { name: 'Deal pipeline', icon: <Briefcase className="w-4 h-4" />, index: 2 },
-    ],
-  },
-  {
-    category: 'Outils',
-    icon: <FileText className="w-4 h-4" />,
-    items: [{ name: 'Rapports', icon: <FileText className="w-4 h-4" />, index: 4 }],
-  },
-  {
-    category: 'Compte',
-    icon: <Settings className="w-4 h-4" />,
-    items: [
-      { name: 'Profil', icon: <Briefcase className="w-4 h-4" />, index: 5 },
-      { name: 'Abonnement', icon: <CreditCard className="w-4 h-4" />, index: 6 },
-    ],
-  },
-]
-
-const getCurrentPageInfo = (tab) => {
-  for (const menu of menuStructure) {
-    const item = menu.items.find((i) => i.index === tab)
-    if (item) return { category: menu.category, page: item.name }
-  }
-  return { category: 'Dashboard', page: 'Vue 360°' }
-}
-
 export default function Advisor() {
   const { user, advisorProfile, subscription, loading } = useAuth()
   const [tab, setTab] = useState(0)
   const [toggle, setToggle] = useState(false)
+  const { lang } = useLang()
+  const td = uiT[lang].dashboards.advisor
+
+  const menuStructure = [
+    {
+      category: td.categories.dashboard,
+      icon: <LayoutDashboard className="w-4 h-4" />,
+      items: [
+        { name: td.items.view360, icon: <Activity className="w-4 h-4" />, index: 0 },
+        { name: td.items.marketIntelligence, icon: <TrendingUp className="w-4 h-4" />, index: 3 },
+      ],
+    },
+    {
+      category: td.categories.portfolios,
+      icon: <Briefcase className="w-4 h-4" />,
+      items: [
+        { name: td.items.clients, icon: <Users className="w-4 h-4" />, index: 1 },
+        { name: td.items.dealPipeline, icon: <Briefcase className="w-4 h-4" />, index: 2 },
+      ],
+    },
+    {
+      category: td.categories.tools,
+      icon: <FileText className="w-4 h-4" />,
+      items: [{ name: td.items.reports, icon: <FileText className="w-4 h-4" />, index: 4 }],
+    },
+    {
+      category: td.categories.account,
+      icon: <Settings className="w-4 h-4" />,
+      items: [
+        { name: td.items.profile, icon: <Briefcase className="w-4 h-4" />, index: 5 },
+        { name: td.items.subscription, icon: <CreditCard className="w-4 h-4" />, index: 6 },
+      ],
+    },
+  ]
+
+  const getCurrentPageInfo = () => {
+    for (const menu of menuStructure) {
+      const item = menu.items.find((i) => i.index === tab)
+      if (item) return { category: menu.category, page: item.name }
+    }
+    return { category: td.breadcrumb.defaultCategory, page: td.breadcrumb.defaultPage }
+  }
 
   const renderTab = () => {
     switch (tab) {
@@ -97,7 +101,7 @@ export default function Advisor() {
     )
   }
 
-  const pageInfo = getCurrentPageInfo(tab)
+  const pageInfo = getCurrentPageInfo()
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-kcb-noir">

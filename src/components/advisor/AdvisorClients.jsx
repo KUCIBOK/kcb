@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Users, Search, ArrowUp, ArrowDown, Filter, TrendingUp, ChevronRight } from 'lucide-react'
+import { Users, Search, ArrowUp, ArrowDown, Filter, ChevronRight } from 'lucide-react'
+import { useT } from '../../i18n'
+import { advisorT } from '../../i18n/advisor'
 
 const MOCK_CLIENTS = [
   {
@@ -112,6 +114,7 @@ const avgPortfolio = totalAUM / MOCK_CLIENTS.length
 const avgYTD = (MOCK_CLIENTS.reduce((s, c) => s + c.ytd, 0) / MOCK_CLIENTS.length).toFixed(1)
 
 export function AdvisorClients() {
+  const t = useT(advisorT).clients
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
 
@@ -132,10 +135,10 @@ export function AdvisorClients() {
         className="grid grid-cols-2 sm:grid-cols-4 gap-4"
       >
         {[
-          { label: 'Total clients', value: MOCK_CLIENTS.length },
-          { label: 'AUM total', value: fmt(totalAUM) },
-          { label: 'Portefeuille moyen', value: fmt(avgPortfolio) },
-          { label: 'Perf. YTD moyenne', value: `+${avgYTD}%` },
+          { label: t.statTotalClients, value: MOCK_CLIENTS.length },
+          { label: t.statAumTotal, value: fmt(totalAUM) },
+          { label: t.statAvgPortfolio, value: fmt(avgPortfolio) },
+          { label: t.statAvgYtd, value: `+${avgYTD}%` },
         ].map((s, i) => (
           <div
             key={i}
@@ -153,7 +156,7 @@ export function AdvisorClients() {
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-kcb-pierre" />
           <input
             type="text"
-            placeholder="Rechercher un client…"
+            placeholder={t.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-kcb-ardoise border border-white/[0.08] rounded-[4px] text-white text-sm placeholder-kcb-pierre focus:outline-none focus:border-kcb-or transition"
@@ -172,12 +175,12 @@ export function AdvisorClients() {
               }`}
             >
               {s === 'all'
-                ? 'Tous'
+                ? t.filterAll
                 : s === 'active'
-                  ? 'Actifs'
+                  ? t.filterActive
                   : s === 'review'
-                    ? 'Revue'
-                    : 'Inactifs'}
+                    ? t.filterReview
+                    : t.filterInactive}
             </button>
           ))}
         </div>
@@ -212,10 +215,10 @@ export function AdvisorClients() {
                 }`}
               >
                 {client.status === 'active'
-                  ? 'Actif'
+                  ? t.statusActive
                   : client.status === 'review'
-                    ? 'Revue'
-                    : 'Inactif'}
+                    ? t.statusReview
+                    : t.statusInactive}
               </span>
             </div>
 
@@ -240,15 +243,15 @@ export function AdvisorClients() {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold text-white">{client.artworks}</p>
-                <p className="text-[10px] text-kcb-pierre">Œuvres</p>
+                <p className="text-[10px] text-kcb-pierre">{t.labelArtworks}</p>
               </div>
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-between pt-3 border-t border-white/[0.04] text-xs text-kcb-pierre">
-              <span>Revue : {client.nextReview}</span>
+              <span>{t.labelNextReview} {client.nextReview}</span>
               <button className="flex items-center gap-1 text-kcb-or opacity-0 group-hover:opacity-100 transition hover:text-kcb-bronze">
-                Voir <ChevronRight className="w-3.5 h-3.5" />
+                {t.see} <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </motion.div>
@@ -258,7 +261,7 @@ export function AdvisorClients() {
       {filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center h-40 text-kcb-pierre text-sm gap-2">
           <Users className="w-8 h-8 opacity-40" />
-          Aucun client ne correspond à votre recherche.
+          {t.emptyState}
         </div>
       )}
     </div>

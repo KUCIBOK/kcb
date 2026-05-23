@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import PortalNav from './PortalNav'
 import PortalFooter from './PortalFooter'
-import { LangProvider } from '../../store/LangContext'
+import { useLang } from '../../store/LangContext'
 
 /** CSS variable maps per portal. */
 const PORTAL_VARS = {
@@ -21,16 +21,19 @@ const PORTAL_VARS = {
  */
 export default function PortalLayout({ portal, children }) {
   const { hash } = useLocation()
+  const { lang, setLang } = useLang()
 
   useEffect(() => {
-    // Mémorise le portail courant pour les redirections intelligentes (UX-006)
     sessionStorage.setItem('kcb_portal', portal)
-  }, [portal])
+    // Set lang default per portal only if user has no stored preference
+    if (!localStorage.getItem('kcb_lang')) {
+      setLang(portal === 'africa' ? 'fr' : 'en')
+    }
+  }, [portal, setLang])
 
   useEffect(() => {
     if (hash) {
       const id = hash.replace('#', '')
-      // Small delay to let sections mount before scrolling
       setTimeout(() => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
       }, 300)
@@ -40,15 +43,13 @@ export default function PortalLayout({ portal, children }) {
   }, [hash])
 
   return (
-    <LangProvider defaultLang={portal === 'africa' ? 'fr' : 'en'}>
-      <div
-        className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans grain-overlay"
-        style={PORTAL_VARS[portal]}
-      >
-        <PortalNav portal={portal} />
-        <main>{children}</main>
-        <PortalFooter portal={portal} />
-      </div>
-    </LangProvider>
+    <div
+      className="min-h-screen bg-kcb-noir-deep text-white font-dm-sans grain-overlay"
+      style={PORTAL_VARS[portal]}
+    >
+      <PortalNav portal={portal} />
+      <main>{children}</main>
+      <PortalFooter portal={portal} />
+    </div>
   )
 }

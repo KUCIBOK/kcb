@@ -19,30 +19,24 @@ import {
   getMyOrders,
   placeOrder,
 } from '../../api/useRewards'
+import { useT } from '../../i18n'
+import { artistT } from '../../i18n/artist'
 
-const TABS = [
-  { label: 'Aperçu', icon: Star },
-  { label: 'Parrainages', icon: Users },
-  { label: 'Boutique', icon: ShoppingBag },
-]
-
-const TX_LABELS = {
-  referral: 'Parrainage',
-  artwork_sale: 'Vente œuvre',
-  bonus: 'Bonus',
-  purchase: 'Achat boutique',
-  admin: 'Ajustement admin',
-}
-
-const ORDER_STATUS = {
-  pending: { label: 'En attente', color: 'text-yellow-400' },
-  confirmed: { label: 'Confirmée', color: 'text-blue-400' },
-  shipped: { label: 'Expédiée', color: 'text-kcb-or' },
-  delivered: { label: 'Livrée', color: 'text-green-400' },
-  cancelled: { label: 'Annulée', color: 'text-red-400' },
+const ORDER_STATUS_COLORS = {
+  pending: 'text-yellow-400',
+  confirmed: 'text-blue-400',
+  shipped: 'text-kcb-or',
+  delivered: 'text-green-400',
+  cancelled: 'text-red-400',
 }
 
 export function RewardsHub() {
+  const t = useT(artistT).rewards
+  const TABS = [
+    { label: t.tabs.overview, icon: Star },
+    { label: t.tabs.referrals, icon: Users },
+    { label: t.tabs.shop, icon: ShoppingBag },
+  ]
   const [tab, setTab] = useState(0)
   const [credits, setCredits] = useState({ balance: 0, total_earned: 0, total_spent: 0 })
   const [transactions, setTransactions] = useState([])
@@ -83,7 +77,7 @@ export function RewardsHub() {
 
   const handleOrder = async (product) => {
     if (credits.balance < product.credits_cost) {
-      toast.error('Crédits insuffisants')
+      toast.error(t.shop.insufficientCreditsError)
       return
     }
     setOrdering(product.id)
@@ -92,7 +86,7 @@ export function RewardsHub() {
     if (result.error) {
       toast.error(result.error)
     } else {
-      toast.success(`Commande passée : ${product.name}`)
+      toast.success(t.shop.orderSuccess(product.name))
       load()
     }
   }
@@ -105,17 +99,17 @@ export function RewardsHub() {
           <Gift className="w-5 h-5 text-[#9B4D96]" />
         </div>
         <div>
-          <h2 className="text-white font-semibold text-lg">Rewards & Supplies</h2>
-          <p className="text-xs text-kcb-pierre">Gagnez des crédits et accédez à la boutique artiste</p>
+          <h2 className="text-white font-semibold text-lg">{t.title}</h2>
+          <p className="text-xs text-kcb-pierre">{t.subtitle}</p>
         </div>
       </div>
 
       {/* Credit balance card */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
-          { label: 'Solde', value: credits.balance, color: 'text-[#9B4D96]' },
-          { label: 'Total gagné', value: credits.total_earned, color: 'text-green-400' },
-          { label: 'Total dépensé', value: credits.total_spent, color: 'text-kcb-or' },
+          { label: t.credits.balance, value: credits.balance, color: 'text-[#9B4D96]' },
+          { label: t.credits.totalEarned, value: credits.total_earned, color: 'text-green-400' },
+          { label: t.credits.totalSpent, value: credits.total_spent, color: 'text-kcb-or' },
         ].map(({ label, value, color }) => (
           <div
             key={label}
@@ -124,7 +118,7 @@ export function RewardsHub() {
             <div className={`font-playfair font-bold text-3xl ${color}`}>
               {loading ? '—' : value}
             </div>
-            <div className="text-xs text-kcb-pierre mt-1">{label} crédits KCB</div>
+            <div className="text-xs text-kcb-pierre mt-1">{label} {t.credits.suffix}</div>
           </div>
         ))}
       </div>
@@ -150,13 +144,9 @@ export function RewardsHub() {
       {/* Tab: Aperçu */}
       {tab === 0 && (
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-white">Comment gagner des crédits</h3>
+          <h3 className="text-sm font-semibold text-white">{t.overview.howToEarn}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { label: 'Parrainer un artiste', value: '+50 crédits', desc: 'Partagez votre code de parrainage' },
-              { label: 'Vendre une œuvre', value: '+20 crédits', desc: 'Par vente certifiée sur Kucibok' },
-              { label: 'Bonus fidélité', value: 'Variable', desc: 'Attribués par l\'équipe Kucibok' },
-            ].map(({ label, value, desc }) => (
+            {t.overview.earnItems.map(({ label, value, desc }) => (
               <div
                 key={label}
                 className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise p-4"
@@ -168,12 +158,12 @@ export function RewardsHub() {
             ))}
           </div>
 
-          <h3 className="text-sm font-semibold text-white mt-4">Historique récent</h3>
+          <h3 className="text-sm font-semibold text-white mt-4">{t.overview.recentHistory}</h3>
           {loading ? (
-            <div className="text-kcb-pierre text-xs">Chargement…</div>
+            <div className="text-kcb-pierre text-xs">{t.overview.loading}</div>
           ) : transactions.length === 0 ? (
             <div className="rounded-[4px] border border-white/[0.06] p-6 text-center text-kcb-pierre text-xs">
-              Aucune transaction pour l'instant
+              {t.overview.noTransactions}
             </div>
           ) : (
             <div className="rounded-[4px] border border-white/[0.06] divide-y divide-white/[0.04]">
@@ -187,7 +177,7 @@ export function RewardsHub() {
                     )}
                     <div>
                       <div className="text-xs text-white font-medium">
-                        {tx.description || TX_LABELS[tx.type] || tx.type}
+                        {tx.description || t.txLabels[tx.type] || tx.type}
                       </div>
                       <div className="text-[10px] text-kcb-pierre">
                         {new Date(tx.created_at).toLocaleDateString('fr-FR')}
@@ -210,7 +200,7 @@ export function RewardsHub() {
       {tab === 1 && (
         <div className="space-y-4">
           <div className="rounded-[4px] border border-[#9B4D96]/30 bg-[#9B4D96]/10 p-4">
-            <div className="text-xs text-kcb-pierre mb-2">Votre code de parrainage</div>
+            <div className="text-xs text-kcb-pierre mb-2">{t.referrals.yourCode}</div>
             <div className="flex items-center gap-3">
               <code className="flex-1 text-[#9B4D96] font-mono font-bold text-lg tracking-widest">
                 {loading ? '…' : referralCode ?? '—'}
@@ -220,20 +210,20 @@ export function RewardsHub() {
                 className="flex items-center gap-1.5 text-xs text-kcb-pierre hover:text-white transition px-3 py-1.5 border border-white/[0.06] rounded-[4px]"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? 'Copié !' : 'Copier'}
+                {copied ? t.referrals.copied : t.referrals.copy}
               </button>
             </div>
             <div className="text-xs text-kcb-pierre mt-2">
-              Partagez ce code à un artiste lors de son inscription → vous gagnez <strong className="text-[#9B4D96]">+50 crédits</strong> dès sa première vente.
+              {t.referrals.shareInfo(50)}
             </div>
           </div>
 
-          <h3 className="text-sm font-semibold text-white">Mes parrainages</h3>
+          <h3 className="text-sm font-semibold text-white">{t.referrals.myReferrals}</h3>
           {loading ? (
-            <div className="text-kcb-pierre text-xs">Chargement…</div>
+            <div className="text-kcb-pierre text-xs">{t.referrals.loading}</div>
           ) : referrals.filter((r) => r.referred_id).length === 0 ? (
             <div className="rounded-[4px] border border-white/[0.06] p-6 text-center text-kcb-pierre text-xs">
-              Aucun filleul pour l'instant — partagez votre code !
+              {t.referrals.noReferrals}
             </div>
           ) : (
             <div className="rounded-[4px] border border-white/[0.06] divide-y divide-white/[0.04]">
@@ -244,7 +234,7 @@ export function RewardsHub() {
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4 text-kcb-pierre shrink-0" />
                       <div>
-                        <div className="text-xs text-white">Filleul inscrit</div>
+                        <div className="text-xs text-white">{t.referrals.referralRegistered}</div>
                         <div className="text-[10px] text-kcb-pierre">
                           {new Date(r.created_at).toLocaleDateString('fr-FR')}
                         </div>
@@ -260,7 +250,7 @@ export function RewardsHub() {
                             : 'bg-kcb-ardoise text-kcb-pierre'
                         }`}
                       >
-                        {r.status === 'rewarded' ? 'Récompensé' : r.status === 'completed' ? 'Complété' : 'En attente'}
+                        {r.status === 'rewarded' ? t.referrals.statusRewarded : r.status === 'completed' ? t.referrals.statusCompleted : t.referrals.statusPending}
                       </span>
                       {r.credits_awarded > 0 && (
                         <span className="text-xs text-green-400 font-semibold">+{r.credits_awarded}</span>
@@ -277,17 +267,15 @@ export function RewardsHub() {
       {tab === 2 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Catalogue</h3>
-            <span className="text-xs text-kcb-pierre">
-              Solde : <strong className="text-[#9B4D96]">{credits.balance}</strong> crédits
-            </span>
+            <h3 className="text-sm font-semibold text-white">{t.shop.catalogue}</h3>
+            <span className="text-xs text-kcb-pierre">{t.shop.balance(credits.balance)}</span>
           </div>
 
           {loading ? (
-            <div className="text-kcb-pierre text-xs">Chargement…</div>
+            <div className="text-kcb-pierre text-xs">{t.shop.loading}</div>
           ) : products.length === 0 ? (
             <div className="rounded-[4px] border border-white/[0.06] p-6 text-center text-kcb-pierre text-xs">
-              Aucun produit disponible pour l'instant
+              {t.shop.noProducts}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -323,7 +311,7 @@ export function RewardsHub() {
                       onClick={() => handleOrder(p)}
                       className="mt-auto w-full py-2 text-xs font-semibold rounded-[4px] transition disabled:opacity-40 disabled:cursor-not-allowed bg-[#9B4D96] text-white hover:bg-[#7d3d7b]"
                     >
-                      {ordering === p.id ? 'Commande…' : canAfford ? 'Commander' : 'Crédits insuffisants'}
+                      {ordering === p.id ? t.shop.ordering : canAfford ? t.shop.order : t.shop.insufficientCredits}
                     </button>
                   </div>
                 )
@@ -331,12 +319,12 @@ export function RewardsHub() {
             </div>
           )}
 
-          <h3 className="text-sm font-semibold text-white mt-4">Mes commandes</h3>
+          <h3 className="text-sm font-semibold text-white mt-4">{t.shop.myOrders}</h3>
           {loading ? (
-            <div className="text-kcb-pierre text-xs">Chargement…</div>
+            <div className="text-kcb-pierre text-xs">{t.shop.loading}</div>
           ) : orders.length === 0 ? (
             <div className="rounded-[4px] border border-white/[0.06] p-6 text-center text-kcb-pierre text-xs">
-              Aucune commande pour l'instant
+              {t.shop.noOrders}
             </div>
           ) : (
             <div className="rounded-[4px] border border-white/[0.06] divide-y divide-white/[0.04]">
@@ -346,7 +334,7 @@ export function RewardsHub() {
                     <Clock className="w-4 h-4 text-kcb-pierre shrink-0" />
                     <div>
                       <div className="text-xs text-white font-medium">
-                        {o.artist_products?.name ?? 'Produit'}
+                        {o.artist_products?.name ?? t.shop.defaultProduct}
                       </div>
                       <div className="text-[10px] text-kcb-pierre">
                         {new Date(o.created_at).toLocaleDateString('fr-FR')}
@@ -356,9 +344,9 @@ export function RewardsHub() {
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-kcb-or font-semibold">-{o.credits_spent}</span>
                     <span
-                      className={`text-[10px] font-medium ${ORDER_STATUS[o.status]?.color ?? 'text-kcb-pierre'}`}
+                      className={`text-[10px] font-medium ${ORDER_STATUS_COLORS[o.status] ?? 'text-kcb-pierre'}`}
                     >
-                      {ORDER_STATUS[o.status]?.label ?? o.status}
+                      {t.orderStatus[o.status] ?? o.status}
                     </span>
                   </div>
                 </div>

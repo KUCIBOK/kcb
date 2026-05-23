@@ -3,18 +3,20 @@ import { ShieldCheck, Shield, ExternalLink, FileQuestion, Download } from 'lucid
 import { Link } from 'react-router-dom'
 import { useArtworks } from '../../store/ArtworkContext'
 import { KPICard, SkeletonTable, EmptyState } from '../ui'
+import { useT } from '../../i18n'
+import { buyerT } from '../../i18n/buyer'
 
-function CertBadge({ kucibok_id }) {
+function CertBadge({ kucibok_id, t }) {
   if (kucibok_id) {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border bg-green-500/20 text-green-400 border-green-500/30">
-        <ShieldCheck className="w-3 h-3" /> Certifiée
+        <ShieldCheck className="w-3 h-3" /> {t.badgeCertified}
       </span>
     )
   }
   return (
     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-      <Shield className="w-3 h-3" /> Non certifiée
+      <Shield className="w-3 h-3" /> {t.badgeNotCertified}
     </span>
   )
 }
@@ -25,6 +27,7 @@ function CertBadge({ kucibok_id }) {
  */
 export function CollectorCertificatesTab() {
   const { buyed, myArtworks, loading } = useArtworks()
+  const t = useT(buyerT).certificates
 
   // Fusion achats + collection, déduplication par id
   const allArtworks = useMemo(() => {
@@ -44,10 +47,8 @@ export function CollectorCertificatesTab() {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-white">Mes Certificats KCB</h2>
-            <p className="text-sm text-kcb-pierre">
-              Certificats d'authenticité des œuvres de votre collection
-            </p>
+            <h2 className="text-xl font-semibold text-white">{t.heading}</h2>
+            <p className="text-sm text-kcb-pierre">{t.subheading}</p>
           </div>
         </div>
         <SkeletonTable rows={5} cols={4} />
@@ -63,28 +64,26 @@ export function CollectorCertificatesTab() {
           <ShieldCheck className="w-5 h-5" />
         </div>
         <div>
-          <h2 className="text-xl font-semibold text-white">Mes Certificats KCB</h2>
-          <p className="text-sm text-kcb-pierre">
-            Certificats d'authenticité des œuvres de votre collection
-          </p>
+          <h2 className="text-xl font-semibold text-white">{t.heading}</h2>
+          <p className="text-sm text-kcb-pierre">{t.subheading}</p>
         </div>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <KPICard
-          label="Œuvres totales"
+          label={t.kpiTotal}
           value={allArtworks.length}
           icon={<Shield className="w-4 h-4" />}
         />
         <KPICard
-          label="Certifiées KCB"
+          label={t.kpiCertified}
           value={certified.length}
           icon={<ShieldCheck className="w-4 h-4" />}
           accent="green"
         />
         <KPICard
-          label="En attente"
+          label={t.kpiPending}
           value={pending.length}
           icon={<Shield className="w-4 h-4" />}
           accent="yellow"
@@ -95,9 +94,9 @@ export function CollectorCertificatesTab() {
       {allArtworks.length === 0 ? (
         <EmptyState
           icon={ShieldCheck}
-          title="Aucun certificat"
-          description="Vous n'avez pas encore d'œuvres certifiées dans votre collection. Achetez une œuvre certifiée KCB pour voir vos certificats ici."
-          actionLabel="Explorer le marketplace"
+          title={t.emptyTitle}
+          description={t.emptyDescription}
+          actionLabel={t.emptyAction}
           onAction={() => window.location.assign('/africa/catalogue')}
         />
       ) : (

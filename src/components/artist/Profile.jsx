@@ -5,9 +5,12 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { ChangePassword } from '../auth/ChangePassword'
 import { Tabs, Input, Select, Button, toast } from '../ui'
+import { useT } from '../../i18n'
+import { artistT } from '../../i18n/artist'
 
 export const Profile = () => {
   const { user, artistProfile, updateUser, updateArtist } = useAuth()
+  const t = useT(artistT).profile
   const [state, setState] = useState({
     name: user?.name,
     email: user?.email,
@@ -40,7 +43,7 @@ export const Profile = () => {
     const file = e.target.files[0]
     if (!file) return
     if (file.size > 5 * 1024 * 1024) {
-      setState((prev) => ({ ...prev, error: "L'image ne doit pas dépasser 5 Mo." }))
+      setState((prev) => ({ ...prev, error: t.errors.imageSize }))
       return
     }
     const reader = new FileReader()
@@ -73,14 +76,14 @@ export const Profile = () => {
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (state.email && !emailRegex.test(state.email)) {
-        setState((prev) => ({ ...prev, loading: false, error: 'Adresse email invalide.' }))
+        setState((prev) => ({ ...prev, loading: false, error: t.errors.invalidEmail }))
         return
       }
       if (!state.biography || state.biography.length <= 20) {
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: 'La biographie doit contenir au moins 20 caractères.',
+          error: t.errors.biographyMin,
         }))
         return
       }
@@ -94,16 +97,16 @@ export const Profile = () => {
         updatedArtist?.userId
       ) {
         setState((prev) => ({ ...prev, loading: false, error: '' }))
-        toast.success('Profil mis à jour !')
+        toast.success(t.successSaved)
       } else {
-        const msg = updatedArtist?.error || updatedUser?.error || 'Erreur lors de la sauvegarde.'
+        const msg = updatedArtist?.error || updatedUser?.error || t.errors.saveError
         setState((prev) => ({ ...prev, loading: false, error: msg }))
       }
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error: error?.message || 'Erreur lors de la sauvegarde.',
+        error: error?.message || t.errors.saveError,
       }))
     }
   }
@@ -113,11 +116,11 @@ export const Profile = () => {
   const tabsData = [
     {
       value: 'personal',
-      label: 'Informations personnelles',
+      label: t.tabs.personal,
       content: (
         <div className="space-y-4">
           <Input
-            label="Nom complet"
+            label={t.fields.fullName}
             name="name"
             value={state?.name || ''}
             onChange={(e) => setState({ ...state, name: e.target.value })}
@@ -125,7 +128,7 @@ export const Profile = () => {
             placeholder={user?.name}
           />
           <Input
-            label="Pseudo"
+            label={t.fields.username}
             name="username"
             value={state?.username || ''}
             onChange={(e) => setState({ ...state, username: e.target.value })}
@@ -133,7 +136,7 @@ export const Profile = () => {
             placeholder={artistProfile?.username}
           />
           <Input
-            label="Téléphone"
+            label={t.fields.phone}
             type="tel"
             name="telephone"
             value={state?.telephone || ''}
@@ -141,10 +144,10 @@ export const Profile = () => {
             required
             minLength={13}
             maxLength={18}
-            placeholder="Votre numéro de téléphone"
+            placeholder={t.fields.phonePlaceholder}
           />
           <Input
-            label="Email"
+            label={t.fields.email}
             type="email"
             name="email"
             value={state?.email || ''}
@@ -153,7 +156,7 @@ export const Profile = () => {
             placeholder={user?.email}
           />
           <Select
-            label="Pays"
+            label={t.fields.country}
             options={countryOptions}
             value={state.country}
             onChange={(value) => setState({ ...state, country: value })}
@@ -164,50 +167,50 @@ export const Profile = () => {
     },
     {
       value: 'biography',
-      label: 'Biographie & Portfolio',
+      label: t.tabs.biography,
       content: (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-kcb-sable mb-2">Biographie</label>
+            <label className="block text-sm font-medium text-kcb-sable mb-2">{t.fields.biography}</label>
             <ReactQuill
               theme="snow"
               value={state.biography || ''}
               onChange={(value) => setState({ ...state, biography: value })}
               className="border border-white/[0.06] rounded-[4px] bg-white text-black"
-              placeholder="Parlez-nous de vous"
+              placeholder={t.fields.biographyPlaceholder}
             />
           </div>
           <Input
-            label="Portfolio (URL)"
+            label={t.fields.portfolio}
             type="url"
             name="portfolio"
             value={state?.portfolio || ''}
             onChange={(e) => setState({ ...state, portfolio: e.target.value })}
-            placeholder="Lien de votre portfolio"
+            placeholder={t.fields.portfolioPlaceholder}
           />
           <div>
-            <label className="block text-sm font-medium text-kcb-sable mb-2">Réseaux sociaux</label>
+            <label className="block text-sm font-medium text-kcb-sable mb-2">{t.fields.socialNetworks}</label>
             <div className="space-y-3 mt-3">
               <Input
                 label="Facebook"
                 type="url"
                 value={state?.facebook || ''}
                 onChange={(e) => setState({ ...state, facebook: e.target.value })}
-                placeholder="Lien de votre profil Facebook"
+                placeholder={t.fields.facebookPlaceholder}
               />
               <Input
                 label="Twitter"
                 type="url"
                 value={state?.twitter || ''}
                 onChange={(e) => setState({ ...state, twitter: e.target.value })}
-                placeholder="Lien de votre profil Twitter"
+                placeholder={t.fields.twitterPlaceholder}
               />
               <Input
                 label="Instagram"
                 type="url"
                 value={state?.instagram || ''}
                 onChange={(e) => setState({ ...state, instagram: e.target.value })}
-                placeholder="Lien de votre profil Instagram"
+                placeholder={t.fields.instagramPlaceholder}
               />
             </div>
           </div>
@@ -216,24 +219,24 @@ export const Profile = () => {
     },
     {
       value: 'security',
-      label: 'Sécurité',
+      label: t.tabs.security,
       content: (
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Changer le mot de passe</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t.fields.changePassword}</h3>
             <ChangePassword />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Portefeuille</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">{t.fields.wallet}</h3>
             <div className="space-y-4">
               <Input
-                label="Adresse wallet"
+                label={t.fields.walletAddress}
                 name="wallet_address"
                 value={user?.wallet?.address || ''}
                 readOnly
               />
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">Clé privée</label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">{t.fields.privateKey}</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -251,12 +254,12 @@ export const Profile = () => {
                     type="button"
                     onClick={() => navigator.clipboard.writeText(user?.wallet?.privateKey || '')}
                     className="px-4 py-2 border border-white/[0.06] bg-kcb-noir rounded-[4px] hover:bg-kcb-ardoise transition"
-                    title="Copier la clé privée"
+                    title={t.fields.copyPrivateKey}
                   >
                     <Copy className="w-4 h-4 text-kcb-pierre" />
                   </button>
                 </div>
-                <p className="text-xs text-yellow-600 mt-1">Ne partagez jamais votre clé privée.</p>
+                <p className="text-xs text-yellow-600 mt-1">{t.fields.privateKeyWarning}</p>
               </div>
             </div>
           </div>
@@ -294,7 +297,7 @@ export const Profile = () => {
                 onClick={() => document.getElementById('profile-image').click()}
                 className="border border-white/[0.06] bg-kcb-ardoise w-full rounded-md text-xs text-kcb-sable font-medium px-3 py-2 hover:bg-kcb-ardoise transition"
               >
-                Modifier la photo
+                {t.avatar.editPhoto}
               </button>
               <input
                 id="profile-image"
@@ -306,11 +309,11 @@ export const Profile = () => {
             </div>
             <div className="w-full pt-4 border-t border-white/[0.06] space-y-2">
               <div className="flex justify-between text-xs text-kcb-pierre">
-                <span>Compte créé</span>
+                <span>{t.avatar.accountCreated}</span>
                 <span>{new Date(user?.created_at)?.toLocaleDateString()}</span>
               </div>
               <div className="flex justify-between text-xs text-kcb-pierre">
-                <span>Oeuvres publiées</span>
+                <span>{t.avatar.publishedArtworks}</span>
                 <span>{artistProfile?.artworkCount || 0}</span>
               </div>
             </div>
@@ -325,7 +328,7 @@ export const Profile = () => {
         {/* Submit Button */}
         <div className="flex justify-end pt-4 border-t border-white/[0.06]">
           <Button type="submit" disabled={state?.loading} loading={state?.loading} size="lg">
-            Enregistrer les modifications
+            {t.save}
           </Button>
         </div>
       </form>
