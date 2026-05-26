@@ -65,7 +65,7 @@ export const artistT = {
     },
     numerisation: {
       title: 'Numérisation',
-      subtitle: 'Gérez vos demandes de numérisation d'œuvres',
+      subtitle: "Gérez vos demandes de numérisation d'œuvres",
       newRequest: 'Nouvelle demande',
       refreshTitle: 'Rafraîchir',
       kpi: {
