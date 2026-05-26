@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../../store/AuthContext'
 import { useArtworks } from '../../store/ArtworkContext'
 import { Menu, ShoppingBag, ChevronRight, Package, ShieldCheck, Truck, User } from 'lucide-react'
+import { useLang } from '../../store/LangContext'
+import { uiT } from '../../i18n/ui'
 import DashboardSidebar from '../../components/shared/DashboardSidebar'
 import { EmailVerificationBanner } from '../../components/shared/EmailVerificationBanner'
 import { ProfileCompletionBanner } from '../../components/shared/ProfileCompletionBanner'
@@ -21,6 +23,8 @@ export default function BuyerAccount() {
   const { user, buyerProfile, loading } = useAuth()
   const [tab, setTab] = useState(0)
   const [cataloguePath, setCataloguePath] = useState('/africa/catalogue')
+  const { lang } = useLang()
+  const td = uiT[lang].dashboards.buyer
 
   useEffect(() => {
     const lastPortal = sessionStorage.getItem('kcb_portal')
@@ -30,13 +34,13 @@ export default function BuyerAccount() {
 
   const menuStructure = [
     {
-      category: 'Mon Compte',
+      category: td.categories.myAccount,
       icon: <Package className="w-4 h-4" />,
       items: [
-        { name: 'Mes achats', icon: <ShoppingBag className="w-4 h-4" />, index: 0 },
-        { name: 'Mes certificats KCB', icon: <ShieldCheck className="w-4 h-4" />, index: 1 },
-        { name: 'Logistique', icon: <Truck className="w-4 h-4" />, index: 2 },
-        { name: 'Profil', icon: <User className="w-4 h-4" />, index: 3 },
+        { name: td.items.purchases, icon: <ShoppingBag className="w-4 h-4" />, index: 0 },
+        { name: td.items.certificates, icon: <ShieldCheck className="w-4 h-4" />, index: 1 },
+        { name: td.items.logistics, icon: <Truck className="w-4 h-4" />, index: 2 },
+        { name: td.items.profile, icon: <User className="w-4 h-4" />, index: 3 },
       ],
     },
   ]
@@ -46,13 +50,13 @@ export default function BuyerAccount() {
       const item = menu.items.find((i) => i.index === tab)
       if (item) return { category: menu.category, page: item.name }
     }
-    return { category: 'Mon Compte', page: 'Mes achats' }
+    return { category: td.breadcrumb.defaultCategory, page: td.breadcrumb.defaultPage }
   }
 
   const renderTab = () => {
     switch (tab) {
       case 0:
-        return <ArtworksList user={user} title="Mes achats" artworks={buyed} />
+        return <ArtworksList user={user} title={td.titles.purchases} artworks={buyed} />
       case 1:
         return <CollectorCertificatesTab />
       case 2:

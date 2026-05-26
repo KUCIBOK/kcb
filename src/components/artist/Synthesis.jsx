@@ -1,4 +1,5 @@
 import { Clock, Image, TrendingUp, Truck, Users } from 'lucide-react'
+import { RewardsWidget } from './RewardsWidget'
 import { useArtist } from '../../store/ArtistContext'
 import { useArtworks } from '../../store/ArtworkContext'
 import { Link } from 'react-router-dom'
@@ -17,9 +18,14 @@ import {
 } from 'chart.js'
 import { CreateCollection } from '../artworks/CreateCollection'
 import { KPICard, SkeletonKPI, SkeletonChart, EmptyState } from '../ui'
+import { useT } from '../../i18n'
+import { artistT } from '../../i18n/artist'
+import { useLang } from '../../store/LangContext'
 
-export function Synthesis() {
+export function Synthesis({ setTab }) {
   const { myArtworks, loading } = useArtworks()
+  const t = useT(artistT).synthesis
+  const { lang } = useLang()
   const currentMonth = new Date().getMonth()
   const currentYear = new Date().getFullYear()
 
@@ -55,21 +61,10 @@ export function Synthesis() {
     )
   })
 
-  // Préparation des labels pour les mois
-  const monthLabels = [
-    'Jan',
-    'Fév',
-    'Mar',
-    'Avr',
-    'Mai',
-    'Juin',
-    'Juil',
-    'Aoû',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Déc',
-  ]
+  const locale = lang === 'fr' ? 'fr-FR' : 'en-US'
+  const monthLabels = Array.from({ length: 12 }, (_, i) =>
+    new Intl.DateTimeFormat(locale, { month: 'short' }).format(new Date(2024, i, 1))
+  )
 
   ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -77,7 +72,7 @@ export function Synthesis() {
     labels: monthLabels,
     datasets: [
       {
-        label: "Chiffre d'affaires (CFA)",
+        label: t.revenueDatasetLabel,
         data: monthlyRevenue,
         backgroundColor: 'rgba(45,106,79,0.7)',
         borderRadius: 6,
@@ -113,7 +108,7 @@ export function Synthesis() {
   const pendingCount = myArtworks?.filter((a) => a.status === 'pending')?.length || 0
 
   const pieData = {
-    labels: ['Vendues', 'En vente', 'En attente'],
+    labels: t.pieLabels,
     datasets: [
       {
         data: [soldCount, forSaleCount, pendingCount],
@@ -165,7 +160,7 @@ export function Synthesis() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full lg:px-2">
         <KPICard
           icon={Image}
-          label="Total œuvres"
+          label={t.kpi.totalArtworks}
           value={myArtworks?.length}
           iconColor="text-kcb-or"
           iconBgColor="bg-kcb-or/10"
@@ -173,17 +168,19 @@ export function Synthesis() {
 
         <KPICard
           icon={TrendingUp}
-          label="Ventes du mois"
-          value={`${monthlySales?.toLocaleString('fr-FR')} CFA`}
+          label={t.kpi.monthlySales}
+          value={`${monthlySales?.toLocaleString(locale)} CFA`}
           iconColor="text-green-400"
           iconBgColor="bg-green-900/20"
         />
 
         <KPICard
           icon={Truck}
-          label="Oeuvres livrées"
+          label={t.kpi.delivered}
           value={`${deliveredArtworks}/${soldArtworksNumber}`}
-          subtitle={`${(soldArtworksNumber > 0 ? (deliveredArtworks / soldArtworksNumber) * 100 : 0).toFixed(0)}% livrées`}
+          subtitle={t.kpi.deliveredSubtitle(
+            (soldArtworksNumber > 0 ? (deliveredArtworks / soldArtworksNumber) * 100 : 0).toFixed(0)
+          )}
           iconColor="text-kcb-or"
           iconBgColor="bg-kcb-or/10"
         />
@@ -192,7 +189,7 @@ export function Synthesis() {
       {/* Actions rapides */}
       <div className="rounded-[4px] border border-white/[0.06] p-4 my-4">
         <h3 className="flex gap-2 items-center mb-3 text-sm font-semibold text-white">
-          <Clock className="w-4 h-4 text-kcb-or" /> Actions rapides
+          <Clock className="w-4 h-4 text-kcb-or" /> {t.quickActions}
         </h3>
         <div className="grid grid-cols-2 gap-3">
           <Link
@@ -200,16 +197,19 @@ export function Synthesis() {
             className="rounded-[4px] border border-white/[0.06] p-3 flex flex-col items-center gap-2 hover:bg-white/[0.04] text-xs text-kcb-sable text-center transition"
           >
             <Image className="w-4 h-4" />
-            Ajouter une œuvre
+            {t.addArtwork}
           </Link>
           <CreateCollection />
         </div>
       </div>
 
+      {/* Rewards widget */}
+      <RewardsWidget onNavigate={() => setTab?.(10)} />
+
       {/* Graphiques et liste */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm overflow-hidden">
-          <h3 className="text-sm font-semibold text-white mb-3">Chiffre d'affaires mensuel</h3>
+          <h3 className="text-sm font-semibold text-white mb-3">{t.monthlyRevenue}</h3>
           <div className="w-full overflow-x-auto">
             <Bar data={barData} options={barOptions} height={200} />
           </div>
@@ -218,20 +218,20 @@ export function Synthesis() {
           {myArtworks?.length === 0 ? (
             <EmptyState
               icon={Image}
-              title="Aucune œuvre"
-              description="Vous n'avez pas encore soumis d'œuvre. Commencez par en ajouter une."
-              actionLabel="Ajouter une œuvre"
+              title={t.noArtwork}
+              description={t.noArtworkDesc}
+              actionLabel={t.noArtworkAction}
               onAction={() => {}}
             />
           ) : (
-            <ArtworksList title="Mes œuvres" artworks={myArtworks?.slice(0, 5) || []} />
+            <ArtworksList title={t.myArtworks} artworks={myArtworks?.slice(0, 5) || []} />
           )}
         </div>
       </div>
 
       {/* Pie chart */}
       <div className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-4 shadow-sm">
-        <h3 className="text-sm font-semibold text-white mb-3">Répartition des œuvres</h3>
+        <h3 className="text-sm font-semibold text-white mb-3">{t.catalogDistrib}</h3>
         <div className="h-48 md:h-56 flex items-center justify-center">
           <Pie data={pieData} options={pieOptions} />
         </div>

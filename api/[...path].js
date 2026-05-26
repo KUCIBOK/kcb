@@ -638,6 +638,9 @@ export default async function handler(req, res) {
     // ── /api/collection ──────────────────────────────────────────────────────
     if (s0 === 'collection') return await routeCollection(req, res)
 
+    // ── /api/rewards/* ────────────────────────────────────────────────────────
+    if (s0 === 'rewards') return await routeRewards(req, res, s1, s2)
+
     return fail(res, 'Route introuvable', 404)
   } catch (err) {
     return serverError(res, err)
@@ -1347,7 +1350,21 @@ async function authMe(req, res) {
   const authResult = await requireAuth(req)
   if (authResult.error) return fail(res, authResult.error, authResult.status)
   const { user } = authResult
-  const role = user.user_metadata?.role
+
+  // Lire le rôle depuis public.users (service_role — bypass RLS, source de vérité)
+  const { data: dbUser } = await supabaseAdmin
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+  const role = dbUser?.role ?? user.user_metadata?.role ?? 'buyer'
+
+  // Synchroniser user_metadata.role si stale ou absent — évite le fallback 'buyer' au prochain login
+  if (role && user.user_metadata?.role !== role) {
+    supabaseAdmin.auth.admin
+      .updateUserById(user.id, { user_metadata: { ...user.user_metadata, role } })
+      .catch(() => {})
+  }
 
   // Récupérer le profil étendu selon le rôle (artiste → artists, autres → profiles)
   let profile = null
@@ -5963,4 +5980,127 @@ async function routeCronExpireSubscriptions(req, res) {
 
   if (error) return fail(res, error.message)
   return ok(res, { expired: data.length, ids: data.map((s) => s.id) })
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REWARDS & SUPPLIES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+async function routeRewards(req, res, s1, s2) {
+  const auth = await requireAuth(req)
+  if (auth.error) return fail(res, auth.error, auth.status)
+  const roleCheck = await requireRole(auth.user, ['artist', 'admin'])
+  if (roleCheck.error) return fail(res, roleCheck.error, roleCheck.status)
+  const userId = auth.user.id
+
+  // GET /api/rewards/credits — solde + historique transactions
+  if (req.method === 'GET' && s1 === 'credits') {
+    const [{ data: credits }, { data: transactions }] = await Promise.all([
+      supabaseAdmin.from('artist_credits').select('*').eq('artist_id', userId).single(),
+      supabaseAdmin
+        .from('artist_credit_transactions')
+        .select('*')
+        .eq('artist_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(20),
+    ])
+    return ok(res, {
+      credits: credits ?? { balance: 0, total_earned: 0, total_spent: 0 },
+      transactions: transactions ?? [],
+    })
+  }
+
+  // GET /api/rewards/referrals — code parrainage + liste des filleuls
+  if (req.method === 'GET' && s1 === 'referrals') {
+    let { data: referrals } = await supabaseAdmin
+      .from('artist_referrals')
+      .select('*')
+      .eq('referrer_id', userId)
+      .order('created_at', { ascending: false })
+
+    // Auto-générer un code si aucun n'existe
+    if (!referrals || referrals.length === 0) {
+      const code = `KCB-${userId.slice(0, 8).toUpperCase()}`
+      const { data: newRef } = await supabaseAdmin
+        .from('artist_referrals')
+        .insert({ referrer_id: userId, referral_code: code })
+        .select()
+        .single()
+      referrals = newRef ? [newRef] : []
+    }
+
+    return ok(res, { referrals: referrals ?? [], code: referrals?.[0]?.referral_code ?? null })
+  }
+
+  // GET /api/rewards/products — catalogue boutique
+  if (req.method === 'GET' && s1 === 'products') {
+    const { data: products } = await supabaseAdmin
+      .from('artist_products')
+      .select('*')
+      .eq('is_active', true)
+      .order('credits_cost', { ascending: true })
+    return ok(res, products ?? [])
+  }
+
+  // GET /api/rewards/orders — mes commandes
+  if (req.method === 'GET' && s1 === 'orders') {
+    const { data: orders } = await supabaseAdmin
+      .from('artist_orders')
+      .select('*, artist_products(*)')
+      .eq('artist_id', userId)
+      .order('created_at', { ascending: false })
+    return ok(res, orders ?? [])
+  }
+
+  // POST /api/rewards/orders — passer une commande
+  if (req.method === 'POST' && s1 === 'orders') {
+    const { product_id } = req.body ?? {}
+    if (!product_id) return fail(res, 'product_id requis', 400)
+
+    const [{ data: product }, { data: credits }] = await Promise.all([
+      supabaseAdmin
+        .from('artist_products')
+        .select('*')
+        .eq('id', product_id)
+        .eq('is_active', true)
+        .single(),
+      supabaseAdmin.from('artist_credits').select('*').eq('artist_id', userId).single(),
+    ])
+
+    if (!product) return fail(res, 'Produit introuvable', 404)
+    const balance = credits?.balance ?? 0
+    if (balance < product.credits_cost) return fail(res, 'Crédits insuffisants', 400)
+
+    const { data: order, error: orderErr } = await supabaseAdmin
+      .from('artist_orders')
+      .insert({ artist_id: userId, product_id, credits_spent: product.credits_cost })
+      .select()
+      .single()
+    if (orderErr) return fail(res, 'Erreur création commande', 500)
+
+    // Mettre à jour le solde
+    await supabaseAdmin.from('artist_credits').upsert(
+      {
+        artist_id: userId,
+        balance: balance - product.credits_cost,
+        total_spent: (credits?.total_spent ?? 0) + product.credits_cost,
+        total_earned: credits?.total_earned ?? 0,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'artist_id' }
+    )
+
+    // Journaliser la transaction
+    await supabaseAdmin.from('artist_credit_transactions').insert({
+      artist_id: userId,
+      amount: -product.credits_cost,
+      type: 'purchase',
+      description: `Achat : ${product.name}`,
+      reference_id: order.id,
+    })
+
+    return ok(res, order, 201)
+  }
+
+  return fail(res, 'Route rewards introuvable', 404)
 }

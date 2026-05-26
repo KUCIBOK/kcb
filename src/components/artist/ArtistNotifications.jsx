@@ -11,8 +11,11 @@ import {
   Clock,
 } from 'lucide-react'
 import { utils } from '../../api/useAPI'
+import { useT } from '../../i18n'
+import { artistT } from '../../i18n/artist'
 
 export default function ArtistNotifications() {
+  const t = useT(artistT).notifications
   const [notifications, setNotifications] = useState([])
   const [filter, setFilter] = useState('all')
   const [loading, setLoading] = useState(true)
@@ -88,9 +91,7 @@ export default function ArtistNotifications() {
         <div>
           <h1 className="text-3xl font-bold text-white">🔔 Notifications</h1>
           <p className="text-kcb-pierre mt-1">
-            {unreadCount > 0
-              ? `${unreadCount} notification${unreadCount > 1 ? 's' : ''} non lue${unreadCount > 1 ? 's' : ''}`
-              : 'Toutes les notifications ont été lues'}
+            {unreadCount > 0 ? t.unread(unreadCount) : t.allRead}
           </p>
         </div>
         <div className="flex gap-2">
@@ -99,7 +100,7 @@ export default function ArtistNotifications() {
               onClick={handleMarkAllRead}
               className="px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 rounded-[4px] text-kcb-noir text-sm font-medium transition"
             >
-              Tout marquer comme lu
+              {t.markAllRead}
             </button>
           )}
           {notifications.length > 0 && (
@@ -107,7 +108,7 @@ export default function ArtistNotifications() {
               onClick={handleClearAll}
               className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-[4px] text-sm font-medium transition"
             >
-              Tout supprimer
+              {t.clearAll}
             </button>
           )}
         </div>
@@ -125,23 +126,19 @@ export default function ArtistNotifications() {
                 : 'bg-kcb-ardoise text-kcb-sable hover:bg-white/[0.08]'
             }`}
           >
-            {f === 'all' ? 'Toutes' : f === 'unread' ? 'Non lues' : 'Lues'}
+            {t.filters[f]}
           </button>
         ))}
       </div>
 
       {/* Liste des notifications */}
       {loading ? (
-        <div className="flex items-center justify-center h-32 text-kcb-pierre">Chargement...</div>
+        <div className="flex items-center justify-center h-32 text-kcb-pierre">{t.loading}</div>
       ) : filteredNotifications.length === 0 ? (
         <div className="text-center py-12 bg-kcb-ardoise/50 rounded-[4px] border border-white/[0.06]">
           <Bell className="w-12 h-12 text-kcb-pierre mx-auto mb-4" />
           <p className="text-kcb-pierre">
-            {filter === 'all'
-              ? 'Aucune notification'
-              : filter === 'unread'
-                ? 'Aucune notification non lue'
-                : 'Aucune notification lue'}
+            {t.empty[filter]}
           </p>
         </div>
       ) : (
@@ -176,7 +173,7 @@ export default function ArtistNotifications() {
                     <button
                       onClick={() => handleMarkRead(notification.id ?? notification._id)}
                       className="p-2 hover:bg-white/10 rounded transition"
-                      title="Marquer comme lu"
+                      title={t.markRead}
                     >
                       <Eye className="w-4 h-4 text-kcb-pierre" />
                     </button>
@@ -184,7 +181,7 @@ export default function ArtistNotifications() {
                   <button
                     onClick={() => handleDelete(notification.id ?? notification._id)}
                     className="p-2 hover:bg-white/10 rounded transition"
-                    title="Supprimer"
+                    title={t.delete}
                   >
                     <X className="w-4 h-4 text-kcb-pierre" />
                   </button>
@@ -198,25 +195,25 @@ export default function ArtistNotifications() {
       {/* Statistiques rapides */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard
-          label="Ventes"
+          label={t.stats.sales}
           value={notifications.filter((n) => n.type === 'sale').length}
           icon={<DollarSign className="w-4 h-4" />}
           color="green"
         />
         <StatCard
-          label="Enchères"
+          label={t.stats.bids}
           value={notifications.filter((n) => n.type === 'bid').length}
           icon={<DollarSign className="w-4 h-4" />}
           color="blue"
         />
         <StatCard
-          label="Messages"
+          label={t.stats.messages}
           value={notifications.filter((n) => n.type === 'message').length}
           icon={<MessageSquare className="w-4 h-4" />}
           color="kcb"
         />
         <StatCard
-          label="Favoris"
+          label={t.stats.favorites}
           value={notifications.filter((n) => n.type === 'favorite').length}
           icon={<Heart className="w-4 h-4" />}
           color="red"

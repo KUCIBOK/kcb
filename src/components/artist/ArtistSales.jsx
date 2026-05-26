@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { DollarSign, TrendingUp, ShoppingBag, CreditCard, Clock, AlertTriangle } from 'lucide-react'
 import { SkeletonKPI, SkeletonTable } from '../ui'
 import { utils } from '../../api/useAPI'
+import { useT } from '../../i18n'
+import { artistT } from '../../i18n/artist'
 
 const fmt = (amount, currency = 'XOF') =>
   new Intl.NumberFormat('fr-FR', {
@@ -10,16 +12,17 @@ const fmt = (amount, currency = 'XOF') =>
     minimumFractionDigits: 0,
   }).format(amount ?? 0)
 
-const relativeDate = (iso) => {
+const relativeDate = (iso, t) => {
   if (!iso) return ''
   const diff = Date.now() - new Date(iso).getTime()
   const d = Math.floor(diff / 86400000)
-  if (d === 0) return "Aujourd'hui"
-  if (d === 1) return 'Il y a 1 jour'
-  return `Il y a ${d} jours`
+  if (d === 0) return t.today
+  if (d === 1) return t.yesterday
+  return t.daysAgo(d)
 }
 
 export default function ArtistSales() {
+  const t = useT(artistT).sales
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -30,7 +33,7 @@ export default function ArtistSales() {
         const res = await fetch(`${utils.api}/transactions/artist`, utils.options)
         const body = await res.json()
         if (!res.ok) {
-          setError(body?.error ?? 'Erreur')
+          setError(body?.error ?? t.error)
           return
         }
         setData(body?.data ?? body)
@@ -40,7 +43,7 @@ export default function ArtistSales() {
         setLoading(false)
       }
     })()
-  }, [])
+  }, [t.error])
 
   if (loading) {
     return (
@@ -78,34 +81,34 @@ export default function ArtistSales() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Mes Ventes & Revenus</h1>
-        <p className="text-kcb-pierre text-sm mt-1">Revenus nets après commission Kucibok (10%)</p>
+        <h1 className="text-2xl font-bold text-white">{t.title}</h1>
+        <p className="text-kcb-pierre text-sm mt-1">{t.subtitle}</p>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
-          label="Revenu net total"
+          label={t.kpi.netRevenue}
           value={fmt(stats.totalRevenue, currency)}
           icon={<DollarSign className="w-5 h-5" />}
           color="green"
         />
         <KPICard
-          label="En attente de paiement"
+          label={t.kpi.pending}
           value={fmt(stats.pendingRevenue, currency)}
           icon={<Clock className="w-5 h-5" />}
           color="yellow"
         />
         <KPICard
-          label="Commission Kucibok"
+          label={t.kpi.commission}
           value={fmt(stats.totalCommission, currency)}
           icon={<CreditCard className="w-5 h-5" />}
           color="blue"
         />
         <KPICard
-          label="Ventes complétées"
+          label={t.kpi.completed}
           value={stats.completedSales ?? 0}
-          change={stats.pendingSales ? `${stats.pendingSales} en cours` : null}
+          change={stats.pendingSales ? t.kpi.inProgress(stats.pendingSales) : null}
           icon={<ShoppingBag className="w-5 h-5" />}
           color="kcb"
         />
@@ -113,9 +116,9 @@ export default function ArtistSales() {
 
       {/* Transactions récentes */}
       <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-6">
-        <h3 className="text-base font-semibold text-white mb-4">Transactions récentes</h3>
+        <h3 className="text-base font-semibold text-white mb-4">{t.recentTransactions}</h3>
         {recent.length === 0 ? (
-          <p className="text-kcb-pierre text-sm text-center py-8">Aucune vente pour l'instant.</p>
+          <p className="text-kcb-pierre text-sm text-center py-8">{t.noSales}</p>
         ) : (
           <div className="space-y-3">
             {recent.map((tx) => (
@@ -135,10 +138,10 @@ export default function ArtistSales() {
                   )}
                   <div className="min-w-0">
                     <p className="text-white text-sm font-medium truncate">
-                      {tx.artworks?.title ?? 'Œuvre'}
+                      {tx.artworks?.title ?? t.defaultArtwork}
                     </p>
                     <p className="text-kcb-pierre text-xs">
-                      {tx.buyer?.name ?? 'Acheteur'} · {relativeDate(tx.created_at)}
+                      {tx.buyer?.name ?? t.defaultBuyer} · {relativeDate(tx.created_at, t)}
                     </p>
                   </div>
                 </div>
@@ -149,7 +152,7 @@ export default function ArtistSales() {
                   <span
                     className={`text-xs ${tx.status === 'completed' ? 'text-green-400' : 'text-yellow-400'}`}
                   >
-                    {tx.status === 'completed' ? 'Reçu' : 'En attente'}
+                    {tx.status === 'completed' ? t.statusCompleted : t.statusPending}
                   </span>
                 </div>
               </div>
@@ -162,7 +165,7 @@ export default function ArtistSales() {
       {stats.totalRevenue > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-4">
-            <p className="text-kcb-pierre text-xs mb-1">Valeur moyenne / vente</p>
+            <p className="text-kcb-pierre text-xs mb-1">{t.avgPerSale}</p>
             <p className="text-2xl font-bold text-white">
               {fmt(
                 stats.completedSales > 0
@@ -173,12 +176,12 @@ export default function ArtistSales() {
             </p>
           </div>
           <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-4">
-            <p className="text-kcb-pierre text-xs mb-1">Taux de commission</p>
+            <p className="text-kcb-pierre text-xs mb-1">{t.commissionRate}</p>
             <p className="text-2xl font-bold text-white">10 %</p>
-            <p className="text-kcb-pierre text-xs mt-1">Prélevé par Kucibok</p>
+            <p className="text-kcb-pierre text-xs mt-1">{t.commissionBy}</p>
           </div>
           <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-4">
-            <p className="text-kcb-pierre text-xs mb-1">Total brut généré</p>
+            <p className="text-kcb-pierre text-xs mb-1">{t.grossTotal}</p>
             <p className="text-2xl font-bold text-white">
               {fmt((stats.totalRevenue ?? 0) + (stats.totalCommission ?? 0), currency)}
             </p>

@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, ChevronDown, ChevronRight, Crown, LogOut, Search, X } from 'lucide-react'
 import { useAuth } from '../../store/AuthContext'
+import { useLang } from '../../store/LangContext'
+import { uiT } from '../../i18n/ui'
+import LangToggle from '../ui/LangToggle'
 
 /**
  * DashboardSidebar — composant partagé entre Artist, Collector et Professional.
@@ -29,11 +32,13 @@ export default function DashboardSidebar({
   pricingPath,
 }) {
   const { user, logout } = useAuth()
-  const [expandedMenu, setExpandedMenu] = useState('Tableau de Bord')
+  const { lang } = useLang()
+  const t = uiT[lang].sidebar
+  const [expandedMenu, setExpandedMenu] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const toggleMenu = (category) => {
-    setExpandedMenu(expandedMenu === category ? null : category)
+  const toggleMenu = (index) => {
+    setExpandedMenu(expandedMenu === index ? null : index)
   }
 
   const filteredMenuStructure = searchQuery
@@ -87,7 +92,7 @@ export default function DashboardSidebar({
                 to={-1}
                 className="text-kcb-pierre hover:text-white flex items-center gap-2 border border-white/[0.06] hover:bg-white/[0.06] px-2 py-1 rounded-[4px]"
               >
-                <ArrowLeft className="w-4 h-4" /> Retour
+                <ArrowLeft className="w-4 h-4" /> {t.back}
               </Link>
             </div>
           )}
@@ -114,7 +119,7 @@ export default function DashboardSidebar({
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-kcb-pierre" />
             <input
               type="text"
-              placeholder="Rechercher..."
+              placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-kcb-noir border border-white/[0.08] rounded-[4px] text-white text-sm placeholder-kcb-pierre focus:outline-none focus:border-kcb-or transition"
@@ -126,7 +131,7 @@ export default function DashboardSidebar({
             {filteredMenuStructure.map((menu, menuIndex) => (
               <div key={menuIndex} className="mb-2">
                 <button
-                  onClick={() => toggleMenu(menu.category)}
+                  onClick={() => toggleMenu(menuIndex)}
                   className="w-full flex items-center justify-between px-3 py-2 rounded-[4px] hover:bg-white/[0.06] transition text-kcb-sable hover:text-white group"
                 >
                   <div className="flex items-center gap-3">
@@ -135,14 +140,14 @@ export default function DashboardSidebar({
                     </span>
                     <span className="text-sm font-medium">{menu.category}</span>
                   </div>
-                  {searchQuery || expandedMenu === menu.category ? (
+                  {searchQuery || expandedMenu === menuIndex ? (
                     <ChevronDown className="w-4 h-4 text-kcb-pierre" />
                   ) : (
                     <ChevronRight className="w-4 h-4 text-kcb-pierre" />
                   )}
                 </button>
 
-                {(searchQuery || expandedMenu === menu.category) && (
+                {(searchQuery || expandedMenu === menuIndex) && (
                   <div className="mt-1 ml-4 space-y-1">
                     {menu.items.map((item, itemIndex) =>
                       item.to ? (
@@ -200,18 +205,23 @@ export default function DashboardSidebar({
               to={pricingPath}
               className="w-full text-kcb-or text-xs font-medium bg-kcb-or/10 border border-kcb-or/30 hover:bg-kcb-or/20 transition py-2 px-4 flex gap-2 items-center rounded-[4px] mb-2"
             >
-              <Crown className="w-4 h-4" /> Mettre à jour l'abonnement
+              <Crown className="w-4 h-4" /> {t.upgrade}
             </Link>
           )}
 
-          {/* Déconnexion */}
-          <button
-            onClick={logout}
-            className="w-full mt-auto px-3 py-2 flex gap-2 items-center text-white text-xs bg-[#8B1A1A]/80 hover:bg-[#8B1A1A] rounded-md transition justify-center"
-          >
-            <LogOut className="w-4 h-4 text-white" />
-            <span>Déconnexion</span>
-          </button>
+          {/* Déconnexion + sélecteur de langue */}
+          <div className="mt-auto flex flex-col gap-2">
+            <button
+              onClick={logout}
+              className="w-full px-3 py-2 flex gap-2 items-center text-white text-xs bg-[#8B1A1A]/80 hover:bg-[#8B1A1A] rounded-md transition justify-center"
+            >
+              <LogOut className="w-4 h-4 text-white" />
+              <span>{t.logout}</span>
+            </button>
+            <div className="flex justify-center pt-1 pb-1">
+              <LangToggle />
+            </div>
+          </div>
         </div>
       </aside>
     </>

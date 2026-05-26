@@ -16,20 +16,15 @@ import {
   Phone,
   User,
   Calendar,
-  RefreshCw,
   Lock,
 } from 'lucide-react'
 import { useLogistics } from '../../hooks/useLogistics'
 import { PlanGate } from '../shared/PlanGate'
 import { PLAN_STARTER } from '../../utils/planUtils'
+import { useT } from '../../i18n'
+import { curatorT } from '../../i18n/curator'
 
-const TABS = [
-  { id: 'shipping', label: 'Devis transport', icon: Truck, locked: false },
-  { id: 'permits', label: "Permis d'export", icon: FileText, locked: true },
-  { id: 'insurance', label: 'Assurance', icon: Shield, locked: true },
-  { id: 'customs', label: 'Droits de douane', icon: Calculator, locked: false },
-]
-
+// Factual permit data — country-specific legal content, not translated
 const PERMITS = [
   {
     country: 'Sénégal 🇸🇳',
@@ -73,7 +68,21 @@ const PERMITS = [
   },
 ]
 
+// Factual customs data — rates and VAT descriptions per destination country
+const DESTINATIONS = {
+  'France / UE': { duty: 0, vat: 'TVA 5,5% (taux réduit art)', handling: 250 },
+  'Royaume-Uni': { duty: 5, vat: 'Exonéré (œuvre originale)', handling: 320 },
+  'Suisse': { duty: 0, vat: 'TVA 2,6% (taux spécial art)', handling: 280 },
+  'USA': { duty: 0, vat: 'Exempt (Section 9801)', handling: 350 },
+  'Canada': { duty: 0, vat: 'GST 5% (remboursable)', handling: 300 },
+  'Japon': { duty: 0, vat: 'TVA 10%', handling: 400 },
+  'Émirats arabes unis': { duty: 0, vat: 'Exonéré (zone franche)', handling: 380 },
+}
+
+const ORIGINS = ['Sénégal', 'Ghana', "Côte d'Ivoire", 'Nigeria', 'Mali', 'Cameroun', 'Kenya', 'Afrique du Sud']
+
 function ShippingTab() {
+  const t = useT(curatorT).logisticsHub
   const { getDeliveryZones, getPickupPoints, getShippingRates, createExpedition, loading } = useLogistics()
   const [zones, setZones] = useState([])
   const [pickupPoints, setPickupPoints] = useState([])
@@ -120,8 +129,8 @@ function ShippingTab() {
     e.preventDefault()
     setFormError('')
     setFormSuccess('')
-    if (!form.recipientName || !form.recipientPhone) { setFormError('Nom et téléphone du destinataire requis'); return }
-    if (!form.collectDate || !form.deliveryDate) { setFormError('Les dates de collecte et livraison sont obligatoires'); return }
+    if (!form.recipientName || !form.recipientPhone) { setFormError(t.errorRecipient); return }
+    if (!form.collectDate || !form.deliveryDate) { setFormError(t.errorDates); return }
     setFormLoading(true)
     try {
       const result = await createExpedition({
@@ -132,11 +141,11 @@ function ShippingTab() {
         deliveryDate: form.deliveryDate,
         zone: form.selectedZone,
       })
-      setFormSuccess(`Expédition créée ! ${result?.expedition?.trackingNumber ? 'Tracking : ' + result.expedition.trackingNumber : ''}`)
+      setFormSuccess(t.successShipment(result?.expedition?.trackingNumber))
       setForm({ selectedZone: '', selectedPickupPoint: '', deliveryAddress: '', recipientName: '', recipientPhone: '', collectDate: '', deliveryDate: '', packageSize: 'medium', packageWeight: '5', deliveryPriority: 'standard' })
       setRates(null)
     } catch (err) {
-      setFormError(err.message || "Erreur lors de la création de l'expédition")
+      setFormError(err.message || t.errorRecipient)
     }
     setFormLoading(false)
   }
@@ -145,12 +154,12 @@ function ShippingTab() {
     <div className="space-y-4">
       <div className="flex items-center gap-2 p-3 bg-[#9B4D96]/10 border border-[#9B4D96]/25 rounded-[4px] text-xs text-[#c084d8]">
         <Truck className="w-4 h-4 flex-shrink-0" />
-        Logidoo est le prestataire logistique exclusif Kucibok — spécialiste du transport d'art Afrique Ouest ↔ Europe.
+        {t.logidooNotice}
       </div>
 
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
         <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-          <Package className="w-4 h-4 text-[#9B4D96]" /> Demande d'expédition Logidoo
+          <Package className="w-4 h-4 text-[#9B4D96]" /> {t.shippingFormTitle}
         </h4>
 
         {formError && (
@@ -167,9 +176,9 @@ function ShippingTab() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Zone */}
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1.5">Zone / Pays de livraison</label>
+            <label className="text-xs text-kcb-pierre block mb-1.5">{t.zoneLabel}</label>
             <select value={form.selectedZone} onChange={(e) => set('selectedZone', e.target.value)} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 appearance-none">
-              <option value="">Sélectionnez une destination</option>
+              <option value="">{t.zoneDefault}</option>
               {zones.length > 0
                 ? zones.map((z) => <option key={z.id} value={z.name}>{z.region ? `[${z.region}] ` : ''}{z.name}{z.price ? ` — ${z.price} XOF` : ''}</option>)
                 : ['France', 'Royaume-Uni', 'Belgique', 'Suisse', 'Allemagne', 'Italie', 'Espagne', 'USA', 'Canada'].map((c) => <option key={c} value={c}>{c}</option>)
@@ -180,9 +189,9 @@ function ShippingTab() {
           {/* Point de retrait */}
           {pickupPoints.length > 0 && (
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Point de retrait (optionnel)</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.pickupLabel}</label>
               <select value={form.selectedPickupPoint} onChange={(e) => set('selectedPickupPoint', e.target.value)} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 appearance-none">
-                <option value="">Livraison à l'adresse</option>
+                <option value="">{t.pickupDefault}</option>
                 {pickupPoints.map((p) => <option key={p.id} value={p.address}>{p.name}</option>)}
               </select>
             </div>
@@ -190,27 +199,27 @@ function ShippingTab() {
 
           {/* Adresse */}
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1.5">Adresse de livraison</label>
+            <label className="text-xs text-kcb-pierre block mb-1.5">{t.addressLabel}</label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-kcb-pierre" />
-              <input type="text" value={form.deliveryAddress} onChange={(e) => set('deliveryAddress', e.target.value)} placeholder="Adresse complète, ville, code postal" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
+              <input type="text" value={form.deliveryAddress} onChange={(e) => set('deliveryAddress', e.target.value)} placeholder={t.addressPlaceholder} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
             </div>
           </div>
 
           {/* Destinataire */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Nom du destinataire</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.recipientNameLabel}</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-kcb-pierre" />
-                <input type="text" value={form.recipientName} onChange={(e) => set('recipientName', e.target.value)} placeholder="Nom complet" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
+                <input type="text" value={form.recipientName} onChange={(e) => set('recipientName', e.target.value)} placeholder={t.recipientNamePlaceholder} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
               </div>
             </div>
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Téléphone</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.phoneLabel}</label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-kcb-pierre" />
-                <input type="tel" value={form.recipientPhone} onChange={(e) => set('recipientPhone', e.target.value)} placeholder="+33 6 00 00 00 00" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
+                <input type="tel" value={form.recipientPhone} onChange={(e) => set('recipientPhone', e.target.value)} placeholder={t.phonePlaceholder} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50 placeholder-kcb-pierre" />
               </div>
             </div>
           </div>
@@ -218,14 +227,14 @@ function ShippingTab() {
           {/* Dates */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Date de collecte</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.collectDateLabel}</label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-kcb-pierre" />
                 <input type="date" value={form.collectDate} onChange={(e) => set('collectDate', e.target.value)} min={new Date().toISOString().split('T')[0]} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50" />
               </div>
             </div>
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Date de livraison souhaitée</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.deliveryDateLabel}</label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-kcb-pierre" />
                 <input type="date" value={form.deliveryDate} onChange={(e) => set('deliveryDate', e.target.value)} min={form.collectDate || new Date().toISOString().split('T')[0]} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm pl-9 pr-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50" />
@@ -236,23 +245,23 @@ function ShippingTab() {
           {/* Package */}
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Taille</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.sizeLabel}</label>
               <select value={form.packageSize} onChange={(e) => set('packageSize', e.target.value)} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none appearance-none">
-                <option value="small">Petit</option>
-                <option value="medium">Moyen</option>
-                <option value="large">Grand</option>
+                <option value="small">{t.sizeSmall}</option>
+                <option value="medium">{t.sizeMedium}</option>
+                <option value="large">{t.sizeLarge}</option>
               </select>
             </div>
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Poids (kg)</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.weightLabel}</label>
               <input type="number" min="0.1" step="0.1" value={form.packageWeight} onChange={(e) => set('packageWeight', e.target.value)} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none focus:border-[#9B4D96]/50" />
             </div>
             <div>
-              <label className="text-xs text-kcb-pierre block mb-1.5">Priorité</label>
+              <label className="text-xs text-kcb-pierre block mb-1.5">{t.priorityLabel}</label>
               <select value={form.deliveryPriority} onChange={(e) => set('deliveryPriority', e.target.value)} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2.5 rounded-[4px] focus:outline-none appearance-none">
-                <option value="standard">Standard</option>
-                <option value="priority">Prioritaire</option>
-                <option value="express">Express</option>
+                <option value="standard">{t.priorityStandard}</option>
+                <option value="priority">{t.priorityPriority}</option>
+                <option value="express">{t.priorityExpress}</option>
               </select>
             </div>
           </div>
@@ -261,16 +270,16 @@ function ShippingTab() {
           {form.selectedZone && form.packageWeight && (
             <button type="button" onClick={calculateRate} disabled={loading} className="w-full flex items-center justify-center gap-2 py-2 bg-kcb-noir/60 hover:bg-white/[0.06] text-kcb-sable text-sm rounded-[4px] border border-white/[0.06] transition">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Calculator className="w-4 h-4" />}
-              {loading ? 'Calcul en cours…' : 'Calculer la cotation Logidoo'}
+              {loading ? t.calculating : t.calculateBtn}
             </button>
           )}
 
           {rates && (
             <div className="p-4 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] flex items-center justify-between">
               <div>
-                <p className="text-sm text-kcb-sable">Tarif estimé Logidoo</p>
-                {rates.estimatedDays && <p className="text-xs text-kcb-pierre">Délai : {rates.estimatedDays}</p>}
-                {rates.mock && <p className="text-xs text-amber-400">* Tarif approximatif (mode test)</p>}
+                <p className="text-sm text-kcb-sable">{t.estimatedRate}</p>
+                {rates.estimatedDays && <p className="text-xs text-kcb-pierre">{t.estimatedDelay(rates.estimatedDays)}</p>}
+                {rates.mock && <p className="text-xs text-amber-400">{t.approximateRate}</p>}
               </div>
               <span className="text-xl font-bold text-kcb-or">{rates.price ? `${rates.price} XOF` : '—'}</span>
             </div>
@@ -278,17 +287,17 @@ function ShippingTab() {
 
           <button type="submit" disabled={formLoading} className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-[4px] transition disabled:opacity-40 text-white" style={{ background: '#9B4D96' }}>
             {formLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Truck className="w-4 h-4" />}
-            {formLoading ? 'Création en cours…' : "Créer l'expédition Logidoo"}
+            {formLoading ? t.creating : t.createShipment}
           </button>
         </form>
       </div>
 
       <div className="bg-kcb-ardoise border border-[#9B4D96]/20 rounded-[4px] p-4">
         <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-          <Truck className="w-4 h-4 text-[#9B4D96]" /> Logidoo — Partenaire logistique exclusif Kucibok
+          <Truck className="w-4 h-4 text-[#9B4D96]" /> {t.logidooTitle}
         </h4>
         <div className="space-y-1.5">
-          {["Spécialiste transport d'art Afrique Ouest ↔ Europe", 'Suivi GPS en temps réel, notifications proactives', 'Emballage aux normes conservation muséale', "Gestion douane & formalités d'export intégrée", 'Couverture assurance art sur demande'].map((f, i) => (
+          {t.logidooFeatures.map((f, i) => (
             <p key={i} className="flex items-center gap-2 text-xs text-kcb-pierre">
               <CheckCircle className="w-3 h-3 text-emerald-400 flex-shrink-0" />{f}
             </p>
@@ -300,12 +309,20 @@ function ShippingTab() {
 }
 
 function PermitsTab() {
+  const t = useT(curatorT).logisticsHub
   const [expanded, setExpanded] = useState(null)
+
+  const urgencyLabel = (urgency) => {
+    if (urgency === 'ok') return t.urgencyStandard
+    if (urgency === 'warning') return t.urgencyWarning
+    return t.urgencyDanger
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 p-3 bg-amber-500/5 border border-amber-500/20 rounded-[4px] text-sm text-amber-300">
         <AlertCircle className="w-4 h-4 flex-shrink-0" />
-        Vérifiez les délais : certains permis prennent jusqu'à 60 jours ouvrés. Anticipez bien à l'avance.
+        {t.permitsWarning}
       </div>
       {PERMITS.map((p, i) => (
         <div key={i} className={`bg-kcb-ardoise border rounded-[4px] overflow-hidden ${p.urgency === 'danger' ? 'border-red-500/30' : p.urgency === 'warning' ? 'border-amber-500/30' : 'border-white/[0.06]'}`}>
@@ -319,7 +336,7 @@ function PermitsTab() {
             </div>
             <div className="flex items-center gap-3">
               <span className={`text-xs px-2 py-0.5 rounded-full ${p.urgency === 'danger' ? 'bg-red-400/10 text-red-300' : p.urgency === 'warning' ? 'bg-amber-400/10 text-amber-300' : 'bg-emerald-400/10 text-emerald-400'}`}>
-                {p.urgency === 'ok' ? 'Standard' : p.urgency === 'warning' ? '⚠ Attention' : '⚠ Complexe'}
+                {urgencyLabel(p.urgency)}
               </span>
               {expanded === i ? <ChevronDown className="w-4 h-4 text-kcb-pierre" /> : <ChevronRight className="w-4 h-4 text-kcb-pierre" />}
             </div>
@@ -329,11 +346,11 @@ function PermitsTab() {
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
                 <div className="px-4 pb-4 space-y-3 border-t border-white/[0.06]">
                   <div className="pt-3">
-                    <p className="text-xs text-kcb-pierre mb-1">Délai de traitement</p>
+                    <p className="text-xs text-kcb-pierre mb-1">{t.permitDelay}</p>
                     <p className="text-sm text-white">{p.delay}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-kcb-pierre mb-2">Documents requis</p>
+                    <p className="text-xs text-kcb-pierre mb-2">{t.permitDocs}</p>
                     <ul className="space-y-1">
                       {p.docs.map((d, j) => (
                         <li key={j} className="flex items-center gap-2 text-xs text-kcb-sable">
@@ -344,7 +361,7 @@ function PermitsTab() {
                   </div>
                   <p className="text-xs text-kcb-pierre bg-kcb-noir/40 rounded-[4px] p-2.5">{p.note}</p>
                   <button className="flex items-center gap-2 text-xs text-kcb-or hover:text-kcb-bronze transition">
-                    <Download className="w-3.5 h-3.5" /> Télécharger le guide complet
+                    <Download className="w-3.5 h-3.5" /> {t.downloadGuide}
                   </button>
                 </div>
               </motion.div>
@@ -357,6 +374,7 @@ function PermitsTab() {
 }
 
 function InsuranceTab() {
+  const t = useT(curatorT).logisticsHub
   const [value, setValue] = useState('')
   const rate = 0.4
   const premium = value ? ((Number(value) * rate) / 100).toFixed(0) : null
@@ -366,50 +384,42 @@ function InsuranceTab() {
       <div className="bg-kcb-ardoise border border-kcb-or/20 rounded-[4px] p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-xs text-[#9B4D96] uppercase tracking-wider mb-1">Partenaire officiel Kucibok</p>
+            <p className="text-xs text-[#9B4D96] uppercase tracking-wider mb-1">{t.insurancePartner}</p>
             <h3 className="text-lg font-semibold text-white">AXA Art</h3>
           </div>
           <Shield className="w-8 h-8 text-kcb-or" />
         </div>
         <div className="space-y-1.5 mb-4">
-          {[
-            'Couverture All Risk porte-à-porte (clou-à-clou)',
-            'Vol, dommages accidentels, catastrophes naturelles',
-            'Stockage temporaire inclus',
-            "Expertise KCB pour l'évaluation",
-            'Paiement sinistre sous 30 jours',
-          ].map((c, i) => (
+          {t.insuranceCoverages.map((c, i) => (
             <li key={i} className="flex items-center gap-2 text-xs text-kcb-sable list-none">
               <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />{c}
             </li>
           ))}
         </div>
         <button className="w-full py-2.5 bg-kcb-or text-kcb-noir text-sm font-semibold rounded-[4px] hover:bg-kcb-bronze transition">
-          Demander un devis AXA Art
+          {t.requestQuote}
         </button>
       </div>
 
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
         <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
           <Calculator className="w-4 h-4 text-kcb-or" />
-          Simulateur de prime
+          {t.simulatorTitle}
         </h4>
         <div className="space-y-3">
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1">Valeur déclarée des œuvres (€)</label>
+            <label className="text-xs text-kcb-pierre block mb-1">{t.declaredValueLabel}</label>
             <input type="number" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Ex : 85000" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2 rounded-[4px] focus:outline-none focus:border-kcb-or placeholder-kcb-pierre" />
           </div>
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1">Type de couverture</label>
+            <label className="text-xs text-kcb-pierre block mb-1">{t.coverageTypeLabel}</label>
             <select className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2 rounded-[4px] focus:outline-none appearance-none">
-              <option>All Risk clou-à-clou (0,40%)</option>
-              <option>Transport uniquement (0,20%)</option>
-              <option>Exposition uniquement (0,25%)</option>
+              {t.coverageOptions.map((opt, i) => <option key={i}>{opt}</option>)}
             </select>
           </div>
           {premium && (
             <div className="mt-3 p-3 bg-kcb-or/5 border border-kcb-or/20 rounded-[4px] flex items-center justify-between">
-              <span className="text-sm text-kcb-sable">Prime estimée / an</span>
+              <span className="text-sm text-kcb-sable">{t.estimatedPremium}</span>
               <span className="text-lg font-bold text-kcb-or">€{premium}</span>
             </div>
           )}
@@ -419,19 +429,8 @@ function InsuranceTab() {
   )
 }
 
-const DESTINATIONS = {
-  'France / UE': { duty: 0, vat: 'TVA 5,5% (taux réduit art)', handling: 250 },
-  'Royaume-Uni': { duty: 5, vat: 'Exonéré (œuvre originale)', handling: 320 },
-  'Suisse': { duty: 0, vat: 'TVA 2,6% (taux spécial art)', handling: 280 },
-  'USA': { duty: 0, vat: 'Exempt (Section 9801)', handling: 350 },
-  'Canada': { duty: 0, vat: 'GST 5% (remboursable)', handling: 300 },
-  'Japon': { duty: 0, vat: 'TVA 10%', handling: 400 },
-  'Émirats arabes unis': { duty: 0, vat: 'Exonéré (zone franche)', handling: 380 },
-}
-
-const ORIGINS = ['Sénégal', 'Ghana', "Côte d'Ivoire", 'Nigeria', 'Mali', 'Cameroun', 'Kenya', 'Afrique du Sud']
-
 function CustomsTab() {
+  const t = useT(curatorT).logisticsHub
   const [declaredValue, setDeclaredValue] = useState('')
   const [fromCountry, setFromCountry] = useState('Sénégal')
   const [toCountry, setToCountry] = useState('France / UE')
@@ -447,21 +446,21 @@ function CustomsTab() {
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
         <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
           <Calculator className="w-4 h-4 text-kcb-or" />
-          Calculateur droits d'importation
+          {t.customsTitle}
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1">Valeur totale (€)</label>
+            <label className="text-xs text-kcb-pierre block mb-1">{t.customsTotalValue}</label>
             <input type="number" value={declaredValue} onChange={(e) => setDeclaredValue(e.target.value)} placeholder="Ex : 85000" className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2 rounded-[4px] focus:outline-none focus:border-kcb-or placeholder-kcb-pierre" />
           </div>
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1">Pays d'origine</label>
+            <label className="text-xs text-kcb-pierre block mb-1">{t.customsOriginLabel}</label>
             <select value={fromCountry} onChange={(e) => setFromCountry(e.target.value)} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2 rounded-[4px] focus:outline-none appearance-none">
               {ORIGINS.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div>
-            <label className="text-xs text-kcb-pierre block mb-1">Pays de destination</label>
+            <label className="text-xs text-kcb-pierre block mb-1">{t.customsDestLabel}</label>
             <select value={toCountry} onChange={(e) => setToCountry(e.target.value)} className="w-full bg-kcb-noir border border-white/[0.08] text-white text-sm px-3 py-2 rounded-[4px] focus:outline-none appearance-none">
               {Object.keys(DESTINATIONS).map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -471,10 +470,10 @@ function CustomsTab() {
         {baseValue > 0 && (
           <div className="space-y-2">
             {[
-              { label: 'Valeur déclarée', value: `€${baseValue.toLocaleString()}` },
-              { label: `Droits d'import (${dest.duty}% — HS 9701–9705)`, value: dest.duty === 0 ? 'Exonéré' : `€${duty.toLocaleString()}` },
-              { label: 'Fiscalité locale', value: dest.vat },
-              { label: 'Frais de dédouanement (estimation)', value: `€${handling}` },
+              { label: t.customsDeclaredValue, value: `€${baseValue.toLocaleString()}` },
+              { label: t.customsDuties(dest.duty), value: dest.duty === 0 ? t.customsExempt : `€${duty.toLocaleString()}` },
+              { label: t.customsLocalTax, value: dest.vat },
+              { label: t.customsHandling, value: `€${handling}` },
             ].map((row, i) => (
               <div key={i} className="flex justify-between items-center py-2 border-b border-white/[0.04]">
                 <span className="text-sm text-kcb-pierre">{row.label}</span>
@@ -482,16 +481,16 @@ function CustomsTab() {
               </div>
             ))}
             <div className="flex justify-between items-center py-3 bg-kcb-or/5 rounded-[4px] px-3 mt-2">
-              <span className="text-sm font-semibold text-white">Total coût douane estimé</span>
+              <span className="text-sm font-semibold text-white">{t.customsTotal}</span>
               <span className="text-lg font-bold text-kcb-or">€{total.toLocaleString()}</span>
             </div>
           </div>
         )}
-        <p className="text-xs text-kcb-pierre mt-3">* Estimation indicative. Consultez un agent en douane agréé pour confirmation.</p>
+        <p className="text-xs text-kcb-pierre mt-3">{t.customsDisclaimer}</p>
       </div>
 
       <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4">
-        <h4 className="text-sm font-semibold text-white mb-3">Codes HS courants — Art africain</h4>
+        <h4 className="text-sm font-semibold text-white mb-3">{t.hsCodesTitle}</h4>
         <div className="space-y-2">
           {[
             { code: '9701', desc: 'Peintures, dessins, pastels (originaux)', rate: '0% UE/CH/USA · 5% UK' },
@@ -514,22 +513,32 @@ function CustomsTab() {
 }
 
 export function LogisticsHub() {
+  const t = useT(curatorT).logisticsHub
   const [activeTab, setActiveTab] = useState('shipping')
+
+  const TABS = [
+    { id: 'shipping', label: t.tabShipping, icon: Truck, locked: false },
+    { id: 'permits', label: t.tabPermits, icon: FileText, locked: true },
+    { id: 'insurance', label: t.tabInsurance, icon: Shield, locked: true },
+    { id: 'customs', label: t.tabCustoms, icon: Calculator, locked: false },
+  ]
+
+  const stats = [
+    { label: t.statCoveredCountries, value: '12', icon: MapPin, color: 'text-[#9B4D96]', bg: 'bg-[#9B4D96]/10' },
+    { label: t.statPermitCountries, value: '5', icon: FileText, color: 'text-amber-400', bg: 'bg-amber-400/10' },
+    { label: t.statProvider, value: 'Logidoo', icon: Package, color: 'text-kcb-or', bg: 'bg-kcb-or/10' },
+    { label: t.statInsurer, value: 'AXA Art', icon: Shield, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+  ]
 
   return (
     <div className="space-y-5 pb-8">
       <div>
-        <h2 className="font-playfair text-xl text-white">Centre Logistique</h2>
-        <p className="text-sm text-kcb-pierre mt-0.5">Transport, permis, assurance et douane — tout en un</p>
+        <h2 className="font-playfair text-xl text-white">{t.pageTitle}</h2>
+        <p className="text-sm text-kcb-pierre mt-0.5">{t.pageSubtitle}</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: 'Pays couverts', value: '12', icon: MapPin, color: 'text-[#9B4D96]', bg: 'bg-[#9B4D96]/10' },
-          { label: 'Pays avec permis requis', value: '5', icon: FileText, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-          { label: 'Prestataire logistique', value: 'Logidoo', icon: Package, color: 'text-kcb-or', bg: 'bg-kcb-or/10' },
-          { label: 'Assureur partenaire', value: 'AXA Art', icon: Shield, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-        ].map((s, i) => (
+        {stats.map((s, i) => (
           <div key={i} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4 flex items-center gap-3">
             <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${s.bg}`}>
               <s.icon className={`w-4 h-4 ${s.color}`} />
@@ -543,15 +552,15 @@ export function LogisticsHub() {
       </div>
 
       <div className="flex gap-1 bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-1 overflow-x-auto">
-        {TABS.map((t) => (
+        {TABS.map((tab) => (
           <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] text-xs font-medium whitespace-nowrap transition flex-shrink-0 ${activeTab === t.id ? 'bg-[#9B4D96]/20 text-[#c084d8] border border-[#9B4D96]/30' : 'text-kcb-pierre hover:text-white hover:bg-white/[0.04]'}`}
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] text-xs font-medium whitespace-nowrap transition flex-shrink-0 ${activeTab === tab.id ? 'bg-[#9B4D96]/20 text-[#c084d8] border border-[#9B4D96]/30' : 'text-kcb-pierre hover:text-white hover:bg-white/[0.04]'}`}
           >
-            <t.icon className="w-3.5 h-3.5" />
-            {t.label}
-            {t.locked && <Lock className="w-3 h-3 ml-0.5 opacity-60" />}
+            <tab.icon className="w-3.5 h-3.5" />
+            {tab.label}
+            {tab.locked && <Lock className="w-3 h-3 ml-0.5 opacity-60" />}
           </button>
         ))}
       </div>
@@ -562,8 +571,8 @@ export function LogisticsHub() {
           {activeTab === 'permits' && (
             <PlanGate
               minLevel={PLAN_STARTER}
-              feature="Permis d'export"
-              description="Accédez aux procédures détaillées de permis d'export par pays, délais, documents requis et guides téléchargeables — disponible à partir du plan Starter."
+              feature={t.planPermits}
+              description={t.planPermitsDesc}
             >
               <PermitsTab />
             </PlanGate>
@@ -571,8 +580,8 @@ export function LogisticsHub() {
           {activeTab === 'insurance' && (
             <PlanGate
               minLevel={PLAN_STARTER}
-              feature="Assurance œuvres"
-              description="Simulateur de prime AXA Art, couverture All Risk clou-à-clou et demande de devis d'assurance — disponible à partir du plan Starter."
+              feature={t.planInsurance}
+              description={t.planInsuranceDesc}
             >
               <InsuranceTab />
             </PlanGate>

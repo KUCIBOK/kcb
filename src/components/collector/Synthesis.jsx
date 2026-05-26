@@ -6,27 +6,23 @@ import { useDelivery } from '../../store/DeliveryStore'
 import { AddArtistAction } from '../professional/AddArtistAction'
 import { CreateCollection } from '../artworks/CreateCollection'
 import { KPICard, SkeletonKPI, EmptyState } from '../ui'
+import { useT } from '../../i18n'
+import { buyerT } from '../../i18n/buyer'
 
 /** Status considérés comme une livraison active (non finalisée). */
 const ACTIVE_STATUSES = ['pending', 'in_transit', 'processing', 'shipped']
 
-/**
- * Retourne un badge de statut de livraison localisé.
- *
- * @param {string} status - Statut brut de la livraison
- * @returns {JSX.Element}
- */
-function DeliveryStatusBadge({ status }) {
-  const CONFIG = {
-    pending: { label: 'En attente', className: 'bg-yellow-900/40 text-yellow-300' },
-    processing: { label: 'En cours', className: 'bg-kcb-or/20 text-kcb-sable' },
-    shipped: { label: 'Expédiée', className: 'bg-kcb-or/20 text-kcb-sable' },
-    in_transit: { label: 'En transit', className: 'bg-kcb-bronze/20 text-kcb-sable' },
-    delivered: { label: 'Livrée', className: 'bg-green-900/40 text-green-300' },
+function DeliveryStatusBadge({ status, t }) {
+  const STATUS_MAP = {
+    pending: { label: t.statusPending, cls: 'bg-yellow-900/40 text-yellow-300' },
+    processing: { label: t.statusProcessing, cls: 'bg-kcb-or/20 text-kcb-sable' },
+    shipped: { label: t.statusShipped, cls: 'bg-kcb-or/20 text-kcb-sable' },
+    in_transit: { label: t.statusInTransit, cls: 'bg-kcb-bronze/20 text-kcb-sable' },
+    delivered: { label: t.statusDelivered, cls: 'bg-green-900/40 text-green-300' },
   }
-  const cfg = CONFIG[status] ?? { label: status, className: 'bg-kcb-ardoise text-kcb-pierre' }
+  const cfg = STATUS_MAP[status] ?? { label: status, cls: 'bg-kcb-ardoise text-kcb-pierre' }
   return (
-    <span className={`text-xs font-medium px-2 py-0.5 rounded-[2px] ${cfg.className}`}>
+    <span className={`text-xs font-medium px-2 py-0.5 rounded-[2px] ${cfg.cls}`}>
       {cfg.label}
     </span>
   )
@@ -44,6 +40,7 @@ export function Synthesis() {
   const { buyed, loading: artworksLoading } = useArtworks()
   const { subscription } = useAuth()
   const { deliveries } = useDelivery()
+  const t = useT(buyerT).synthesis
 
   const totalValue = buyed?.reduce((acc, artwork) => acc + (artwork.price || 0), 0) ?? 0
 
@@ -67,28 +64,28 @@ export function Synthesis() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <KPICard
             icon={Bookmark}
-            label="Œuvres achetées"
+            label={t.kpiArtworks}
             value={buyed?.length ?? 0}
             iconColor="text-kcb-bronze"
             iconBgColor="bg-kcb-bronze/10"
           />
           <KPICard
             icon={TrendingUp}
-            label="Valeur totale collection"
-            value={`${totalValue.toLocaleString('fr-FR')} CFA`}
+            label={t.kpiValue}
+            value={`${totalValue.toLocaleString()} CFA`}
             iconColor="text-green-400"
             iconBgColor="bg-green-900/20"
           />
           <KPICard
             icon={Truck}
-            label="Livraisons actives"
+            label={t.kpiDeliveries}
             value={activeDeliveries.length}
             iconColor="text-kcb-or"
             iconBgColor="bg-kcb-or/10"
           />
           <KPICard
             icon={CreditCard}
-            label="Plan actuel"
+            label={t.kpiPlan}
             value={planName}
             iconColor="text-amber-400"
             iconBgColor="bg-amber-900/20"
@@ -100,7 +97,7 @@ export function Synthesis() {
       <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise p-4">
         <h3 className="flex items-center gap-2 text-white font-semibold mb-4">
           <Clock className="w-5 h-5 text-kcb-pierre" />
-          Actions rapides
+          {t.headingActions}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
@@ -108,7 +105,7 @@ export function Synthesis() {
             className="flex items-center justify-center gap-2 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/50 hover:bg-white/[0.08] text-kcb-sable text-sm font-medium py-3 px-4 transition-colors duration-200"
           >
             <Image className="w-4 h-4" />
-            Explorer le marketplace
+            {t.linkExplore}
           </Link>
           <AddArtistAction />
           <CreateCollection />
@@ -119,14 +116,14 @@ export function Synthesis() {
       <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise p-4">
         <h3 className="flex items-center gap-2 text-white font-semibold mb-4">
           <Package className="w-5 h-5 text-kcb-pierre" />
-          Dernières acquisitions
+          {t.headingAcquisitions}
         </h3>
         {lastAcquisitions.length === 0 ? (
           <EmptyState
             icon={Image}
-            title="Aucune acquisition"
-            description="Vous n'avez pas encore acheté d'œuvre. Explorez le marketplace pour commencer votre collection."
-            actionLabel="Explorer le marketplace"
+            title={t.emptyAcqTitle}
+            description={t.emptyAcqDescription}
+            actionLabel={t.emptyAcqAction}
             onAction={() => window.location.assign('/africa/catalogue')}
           />
         ) : (
@@ -151,7 +148,7 @@ export function Synthesis() {
                 {/* Info */}
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-white truncate">
-                    {artwork.title || 'Sans titre'}
+                    {artwork.title || t.noTitle}
                   </p>
                   <p className="text-xs text-kcb-pierre truncate">
                     {artwork.artist?.name || artwork.artistName || '—'}
@@ -170,13 +167,13 @@ export function Synthesis() {
       <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise p-4">
         <h3 className="flex items-center gap-2 text-white font-semibold mb-4">
           <Truck className="w-5 h-5 text-kcb-pierre" />
-          Livraisons en cours
+          {t.headingDeliveries}
         </h3>
         {activeDeliveries.length === 0 ? (
           <EmptyState
             icon={Truck}
-            title="Aucune livraison active"
-            description="Vous n'avez pas de livraison en cours pour le moment."
+            title={t.emptyDeliveryTitle}
+            description={t.emptyDeliveryDescription}
           />
         ) : (
           <ul className="space-y-2">
@@ -189,19 +186,19 @@ export function Synthesis() {
                   <p className="text-sm font-medium text-white truncate">
                     {delivery.artworkTitle ||
                       delivery.description ||
-                      `Livraison #${delivery._id?.slice(-6)}`}
+                      t.deliveryDefaultTitle(delivery._id?.slice(-6))}
                   </p>
                   <p className="text-xs text-kcb-pierre mt-0.5">
-                    {delivery.destination || 'Destination inconnue'}
+                    {delivery.destination || t.unknownDestination}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0 ml-4">
-                  <DeliveryStatusBadge status={delivery.status} />
+                  <DeliveryStatusBadge status={delivery.status} t={t} />
                   <Link
                     to={`/tracking/${delivery._id}`}
                     className="text-xs text-kcb-or hover:text-kcb-or/80 transition-colors"
                   >
-                    Suivre →
+                    {t.deliveryTrack}
                   </Link>
                 </div>
               </li>

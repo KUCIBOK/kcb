@@ -15,9 +15,12 @@ import {
   LayoutDashboard,
   Package,
   Settings,
+  Gift,
 } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useLang } from '../../store/LangContext'
+import { uiT } from '../../i18n/ui'
 import DashboardSidebar from '../../components/shared/DashboardSidebar'
 import { EmailVerificationBanner } from '../../components/shared/EmailVerificationBanner'
 import { ProfileCompletionBanner } from '../../components/shared/ProfileCompletionBanner'
@@ -34,54 +37,60 @@ import SupportTicketUser from '../../components/support/SupportTicketUser'
 import ArtistSales from '../../components/artist/ArtistSales'
 import ArtistNotifications from '../../components/artist/ArtistNotifications'
 import { ArtistCertificationTab } from '../../components/artist/ArtistCertificationTab'
+import { RewardsHub } from '../../components/artist/RewardsHub'
 
 export default function Artist() {
   const { user, artistProfile, loading } = useAuth()
   const [toggle, setToggle] = useState(false)
   const { myArtworks } = useArtworks()
   const [tab, setTab] = useState(0)
+  const { lang } = useLang()
+  const td = uiT[lang].dashboards.artist
 
-  // Menu structure with categories
   const menuStructure = [
     {
-      category: 'Tableau de Bord',
+      category: td.categories.dashboard,
       icon: <LayoutDashboard className="w-4 h-4" />,
       items: [
-        { name: 'Vue générale', icon: <TrendingUp className="w-4 h-4" />, index: 0 },
-        { name: 'Analytique', icon: <ChartColumn className="w-4 h-4" />, index: 4 },
+        { name: td.items.overview, icon: <TrendingUp className="w-4 h-4" />, index: 0 },
+        { name: td.items.analytics, icon: <ChartColumn className="w-4 h-4" />, index: 4 },
       ],
     },
     {
-      category: 'Mes Œuvres & Ventes',
+      category: td.categories.artworksAndSales,
       icon: <Package className="w-4 h-4" />,
       items: [
-        { name: 'Mes Œuvres', icon: <Image className="w-4 h-4" />, index: 1 },
-        { name: 'Certifications KCB', icon: <Shield className="w-4 h-4" />, index: 9 },
-        { name: 'Mes Ventes', icon: <DollarSign className="w-4 h-4" />, index: 5 },
+        { name: td.items.artworks, icon: <Image className="w-4 h-4" />, index: 1 },
+        { name: td.items.certifications, icon: <Shield className="w-4 h-4" />, index: 9 },
+        { name: td.items.sales, icon: <DollarSign className="w-4 h-4" />, index: 5 },
       ],
     },
     {
-      category: 'Clients & Communication',
+      category: td.categories.clientsAndComms,
       icon: <Users className="w-4 h-4" />,
       items: [
-        { name: 'Mes clients', icon: <Users className="w-4 h-4" />, index: 3 },
-        { name: 'Notifications', icon: <Bell className="w-4 h-4" />, index: 6 },
-        { name: 'Support', icon: <MessageSquare className="w-4 h-4" />, index: 7 },
+        { name: td.items.clients, icon: <Users className="w-4 h-4" />, index: 3 },
+        { name: td.items.notifications, icon: <Bell className="w-4 h-4" />, index: 6 },
+        { name: td.items.support, icon: <MessageSquare className="w-4 h-4" />, index: 7 },
       ],
     },
     {
-      category: 'Opérations',
+      category: td.categories.operations,
       icon: <Settings className="w-4 h-4" />,
-      items: [{ name: 'Logistique', icon: <Truck className="w-4 h-4" />, index: 2 }],
+      items: [{ name: td.items.logistics, icon: <Truck className="w-4 h-4" />, index: 2 }],
     },
     {
-      category: 'Compte',
+      category: td.categories.account,
       icon: <User className="w-4 h-4" />,
-      items: [{ name: 'Profil', icon: <User className="w-4 h-4" />, index: 8 }],
+      items: [{ name: td.items.profile, icon: <User className="w-4 h-4" />, index: 8 }],
+    },
+    {
+      category: td.categories.rewards,
+      icon: <Gift className="w-4 h-4" />,
+      items: [{ name: td.items.rewards, icon: <Gift className="w-4 h-4" />, index: 10 }],
     },
   ]
 
-  // Get current page info for breadcrumb
   const getCurrentPageInfo = () => {
     for (const menu of menuStructure) {
       const item = menu.items.find((i) => i.index === tab)
@@ -89,18 +98,18 @@ export default function Artist() {
         return { category: menu.category, page: item.name }
       }
     }
-    return { category: 'Dashboard', page: 'Vue générale' }
+    return { category: td.breadcrumb.defaultCategory, page: td.breadcrumb.defaultPage }
   }
 
   const renderTab = () => {
     switch (tab) {
       case 0:
-        return <Synthesis />
+        return <Synthesis setTab={setTab} />
       case 1:
         return (
           <ArtworksList
             user={user}
-            title="Statut de soumission des œuvres d'art"
+            title={td.titles.artworkSubmission}
             artworks={myArtworks}
           />
         )
@@ -112,7 +121,7 @@ export default function Artist() {
         return (
           <Analytics
             user={user}
-            title="Analytique des œuvres d'art"
+            title={td.titles.artworkAnalytics}
             artistProfile={artistProfile}
             artworks={myArtworks}
           />
@@ -127,6 +136,8 @@ export default function Artist() {
         return <Profile />
       case 9:
         return <ArtistCertificationTab />
+      case 10:
+        return <RewardsHub />
       default:
         return null
     }
@@ -170,7 +181,7 @@ export default function Artist() {
           setToggle={setToggle}
           cta={{
             to: 'submit-artwork',
-            label: 'Ajouter une œuvre',
+            label: td.cta,
             icon: <Plus className="w-4 h-4" />,
             className: 'bg-kcb-or text-kcb-noir hover:bg-kcb-bronze',
           }}

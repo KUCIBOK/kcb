@@ -13,6 +13,8 @@ import {
   ChevronRight,
   Activity,
 } from 'lucide-react'
+import { useT } from '../../i18n'
+import { advisorT } from '../../i18n/advisor'
 
 // ── Mock data ──────────────────────────────────────────────────────────────────
 
@@ -194,12 +196,6 @@ const MOCK_ACTIVITY = [
 ]
 
 const PIPELINE_STAGES = ['prospect', 'analysis', 'offer', 'closing']
-const STAGE_LABELS = {
-  prospect: 'Prospect',
-  analysis: 'Analyse',
-  offer: 'Offre',
-  closing: 'Closing',
-}
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -227,6 +223,15 @@ const PriorityDot = ({ p }) => {
 }
 
 export function AdvisorOverview({ setTab }) {
+  const t = useT(advisorT).overview
+
+  const STAGE_LABELS = {
+    prospect: t.stageProspect,
+    analysis: t.stageAnalysis,
+    offer: t.stageOffer,
+    closing: t.stageClosing,
+  }
+
   return (
     <div className="space-y-6 pb-8">
       {/* KPI header */}
@@ -238,30 +243,30 @@ export function AdvisorOverview({ setTab }) {
       >
         {[
           {
-            label: 'Total AUM',
+            label: t.kpiTotalAum,
             value: fmt(totalAUM),
-            sub: `${MOCK_CLIENTS.length} clients`,
+            sub: t.kpiAumSub(MOCK_CLIENTS.length),
             icon: TrendingUp,
             color: 'text-kcb-or',
           },
           {
-            label: 'Perf. YTD moy.',
+            label: t.kpiYtd,
             value: `+${avgYTD}%`,
-            sub: 'Tous portefeuilles',
+            sub: t.kpiYtdSub,
             icon: Activity,
             color: 'text-kcb-or',
           },
           {
-            label: 'Clients actifs',
+            label: t.kpiActiveClients,
             value: MOCK_CLIENTS.filter((c) => c.status === 'active').length,
-            sub: `${MOCK_CLIENTS.length} total`,
+            sub: t.kpiActiveClientsSub(MOCK_CLIENTS.length),
             icon: Users,
             color: 'text-kcb-bronze',
           },
           {
-            label: 'Deals pipeline',
+            label: t.kpiDeals,
             value: totalDeals,
-            sub: `${pendingReviews} revue(s) due(s)`,
+            sub: t.kpiDealsSub(pendingReviews),
             icon: Briefcase,
             color: 'text-kcb-bronze',
           },
@@ -291,13 +296,12 @@ export function AdvisorOverview({ setTab }) {
         >
           <AlertCircle className="w-4 h-4 text-kcb-bronze shrink-0" />
           <p className="text-kcb-sable">
-            {pendingReviews} portefeuille{pendingReviews > 1 ? 's' : ''} nécessite
-            {pendingReviews > 1 ? 'nt' : ''} une revue.{' '}
+            {t.alertPortfolio(pendingReviews)}{' '}
             <button
               onClick={() => setTab(1)}
               className="text-kcb-or underline hover:text-kcb-bronze"
             >
-              Voir les clients
+              {t.alertSeeClients}
             </button>
           </p>
         </motion.div>
@@ -313,13 +317,13 @@ export function AdvisorOverview({ setTab }) {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-white flex items-center gap-2">
             <Briefcase className="w-4 h-4 text-kcb-or" />
-            Deal Pipeline
+            {t.pipelineTitle}
           </h3>
           <button
             onClick={() => setTab(2)}
             className="text-xs text-kcb-or hover:text-kcb-bronze flex items-center gap-1 transition"
           >
-            Vue complète <ChevronRight className="w-3.5 h-3.5" />
+            {t.pipelineFullView} <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
@@ -348,7 +352,7 @@ export function AdvisorOverview({ setTab }) {
                     </div>
                   ))}
                   {deals.length > 2 && (
-                    <p className="text-[11px] text-kcb-pierre/60">+{deals.length - 2} autres</p>
+                    <p className="text-[11px] text-kcb-pierre/60">{t.pipelineMore(deals.length - 2)}</p>
                   )}
                 </div>
               </div>
@@ -368,7 +372,7 @@ export function AdvisorOverview({ setTab }) {
         >
           <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Activity className="w-4 h-4 text-kcb-bronze" />
-            Activité récente
+            {t.activityTitle}
           </h3>
           <div className="space-y-3">
             {MOCK_ACTIVITY.map((event) => (
@@ -393,13 +397,13 @@ export function AdvisorOverview({ setTab }) {
           transition={{ delay: 0.42 }}
           className="bg-kcb-ardoise rounded-[4px] border border-white/[0.06] p-4"
         >
-          <h3 className="text-sm font-semibold text-white mb-4">Actions rapides</h3>
+          <h3 className="text-sm font-semibold text-white mb-4">{t.quickActionsTitle}</h3>
           <div className="space-y-2">
             {[
-              { label: 'Nouveau client', icon: Users, tab: 1 },
-              { label: 'Créer un deal', icon: Plus, tab: 2 },
-              { label: 'Marché & intelligence', icon: TrendingUp, tab: 3 },
-              { label: 'Générer un rapport', icon: FileText, tab: 4 },
+              { label: t.quickNewClient, icon: Users, tab: 1 },
+              { label: t.quickCreateDeal, icon: Plus, tab: 2 },
+              { label: t.quickMarket, icon: TrendingUp, tab: 3 },
+              { label: t.quickReport, icon: FileText, tab: 4 },
             ].map((action, i) => (
               <button
                 key={i}
@@ -425,27 +429,27 @@ export function AdvisorOverview({ setTab }) {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-white flex items-center gap-2">
             <Users className="w-4 h-4 text-kcb-or" />
-            Clients — vue portefeuille
+            {t.clientsTitle}
           </h3>
           <button
             onClick={() => setTab(1)}
             className="text-xs text-kcb-or hover:text-kcb-bronze flex items-center gap-1 transition"
           >
-            Tous les clients <ChevronRight className="w-3.5 h-3.5" />
+            {t.clientsAll} <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                <th className="text-left py-2 px-2 text-xs text-kcb-pierre font-medium">Client</th>
-                <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium">AUM</th>
-                <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium">YTD</th>
+                <th className="text-left py-2 px-2 text-xs text-kcb-pierre font-medium">{t.colClient}</th>
+                <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium">{t.colAum}</th>
+                <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium">{t.colYtd}</th>
                 <th className="text-right py-2 px-2 text-xs text-kcb-pierre font-medium hidden sm:table-cell">
-                  Prochaine revue
+                  {t.colNextReview}
                 </th>
                 <th className="text-center py-2 px-2 text-xs text-kcb-pierre font-medium">
-                  Statut
+                  {t.colStatus}
                 </th>
               </tr>
             </thead>
@@ -482,10 +486,10 @@ export function AdvisorOverview({ setTab }) {
                       }`}
                     >
                       {client.status === 'active'
-                        ? 'Actif'
+                        ? t.statusActive
                         : client.status === 'review'
-                          ? 'Revue'
-                          : 'Inactif'}
+                          ? t.statusReview
+                          : t.statusInactive}
                     </span>
                   </td>
                 </tr>

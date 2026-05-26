@@ -22,88 +22,15 @@ import { useAuth } from '../../store/AuthContext'
 import { cancelMySubscription } from '../../api/useSubscriptions'
 import { getAllPlans } from '../../api/usePlans'
 import { toast } from 'sonner'
+import { useT } from '../../i18n'
+import { curatorT } from '../../i18n/curator'
 
-const PLANS = [
-  {
-    key: 'free',
-    name: 'Découverte',
-    price: 0,
-    currency: '€',
-    period: null,
-    badge: null,
-    color: 'text-kcb-pierre',
-    borderColor: 'border-white/[0.06]',
-    features: [
-      { label: '5 artistes en shortlist', ok: true },
-      { label: 'Annuaire artistes Kucibok', ok: true },
-      { label: 'Fiche œuvre certifiée (vue)', ok: true },
-      { label: 'Devis logistique Logidoo', ok: true },
-      { label: 'Market Research Tools', ok: false },
-      { label: 'Services Concierge', ok: false },
-      { label: 'Suivi budget', ok: false },
-      { label: 'Support prioritaire', ok: false },
-    ],
-  },
-  {
-    key: 'explorer',
-    name: 'Explorer',
-    price: 27,
-    currency: '€',
-    period: '/mois',
-    badge: null,
-    color: 'text-[#9B4D96]',
-    borderColor: 'border-[#9B4D96]/30',
-    features: [
-      { label: 'Shortlist illimitée', ok: true },
-      { label: 'Annuaire artistes complet + filtres', ok: true },
-      { label: 'Fiche œuvre certifiée (complète)', ok: true },
-      { label: 'Market Research Tools', ok: true },
-      { label: 'Devis logistique Logidoo', ok: true },
-      { label: 'Services Concierge', ok: false },
-      { label: 'Suivi budget', ok: false },
-      { label: 'Support prioritaire', ok: false },
-    ],
-  },
-  {
-    key: 'premium',
-    name: 'Premium',
-    price: 67,
-    currency: '€',
-    period: '/mois',
-    badge: 'Recommandé',
-    color: 'text-kcb-or',
-    borderColor: 'border-kcb-or/40',
-    features: [
-      { label: 'Shortlist illimitée', ok: true },
-      { label: 'Annuaire artistes complet + filtres', ok: true },
-      { label: 'Fiche œuvre certifiée (complète)', ok: true },
-      { label: 'Market Research Tools', ok: true },
-      { label: 'Devis logistique Logidoo', ok: true },
-      { label: 'Services Concierge (2/mois)', ok: true },
-      { label: 'Suivi budget complet', ok: true },
-      { label: 'Support prioritaire', ok: true },
-    ],
-  },
-  {
-    key: 'institutional',
-    name: 'Institutionnel',
-    price: 147,
-    currency: '€',
-    period: '/mois',
-    badge: 'Tout inclus',
-    color: 'text-emerald-400',
-    borderColor: 'border-emerald-400/30',
-    features: [
-      { label: 'Shortlist illimitée', ok: true },
-      { label: 'Annuaire artistes complet + filtres', ok: true },
-      { label: 'Fiche œuvre certifiée (complète)', ok: true },
-      { label: 'Market Research Tools + export', ok: true },
-      { label: 'Logistique Logidoo prioritaire', ok: true },
-      { label: 'Services Concierge illimités', ok: true },
-      { label: 'Suivi budget multi-projets', ok: true },
-      { label: 'Accès API + support dédié', ok: true },
-    ],
-  },
+// Structural plan data — non-translated (pricing, colors, feature ok/nok booleans)
+const PLAN_STRUCTURE = [
+  { key: 'free', price: 0, currency: '€', period: null, badge: null, color: 'text-kcb-pierre', borderColor: 'border-white/[0.06]', featureOks: [true, true, true, true, false, false, false, false] },
+  { key: 'explorer', price: 27, currency: '€', period: '/mois', badge: null, color: 'text-[#9B4D96]', borderColor: 'border-[#9B4D96]/30', featureOks: [true, true, true, true, true, false, false, false] },
+  { key: 'premium', price: 67, currency: '€', period: '/mois', badge: 'badge', color: 'text-kcb-or', borderColor: 'border-kcb-or/40', featureOks: [true, true, true, true, true, true, true, true] },
+  { key: 'institutional', price: 147, currency: '€', period: '/mois', badge: 'badge', color: 'text-emerald-400', borderColor: 'border-emerald-400/30', featureOks: [true, true, true, true, true, true, true, true] },
 ]
 
 function getPlanKey(planName) {
@@ -119,6 +46,18 @@ function getPlanKey(planName) {
 export function CuratorAbonnement() {
   const { subscription, loadSubscription } = useAuth()
   const navigate = useNavigate()
+  const t = useT(curatorT).subscription
+
+  const PLANS = PLAN_STRUCTURE.map((s) => ({
+    ...s,
+    name: t.plans[s.key]?.name ?? s.key,
+    badge: s.badge === 'badge' ? (t.plans[s.key]?.badge ?? null) : null,
+    features: (t.plans[s.key]?.features ?? []).map((label, i) => ({
+      label,
+      ok: s.featureOks[i] ?? false,
+    })),
+  }))
+
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const [cancelLoading, setCancelLoading] = useState(false)
   const [cancelError, setCancelError] = useState('')
@@ -159,25 +98,44 @@ export function CuratorAbonnement() {
     if (planIds[key]) {
       navigate(`/subscription-checkout/${planIds[key]}`)
     } else {
-      toast.error('Plan introuvable. Contactez l\'administrateur.')
+      toast.error(t.planNotFound)
     }
   }
+
+  const marketResearchItems = [
+    { icon: Globe, label: t.marketReports, desc: t.marketReportsDesc },
+    { icon: BarChart3, label: t.marketPriceAnalysis, desc: t.marketPriceAnalysisDesc },
+    { icon: Users, label: t.marketMapping, desc: t.marketMappingDesc },
+  ]
+
+  const featureHighlights = [
+    { icon: Search, label: t.featureMarket, desc: t.featureMarketDesc, plan: 'Explorer' },
+    { icon: Truck, label: t.featureLogistics, desc: t.featureLogisticsDesc, plan: 'Explorer' },
+    { icon: Star, label: t.featureConcierge, desc: t.featureConciergeDesc, plan: 'Premium' },
+  ]
+
+  const billingRows = subscription ? [
+    { label: t.billingStatus, value: subscription.status === 'active' ? t.statusActive : t.statusInactive, badge: subscription.status === 'active' ? 'emerald' : 'red' },
+    { label: t.billingPlan, value: subscription.plans?.name ?? subscription.plan?.name ?? '—' },
+    { label: t.billingAmount, value: subscription.amount ? `${subscription.amount.toLocaleString('fr-FR')} ${subscription.currency}` : '—' },
+    { label: t.billingStart, value: subscription.start_date ? new Date(subscription.start_date).toLocaleDateString('fr-FR') : '—' },
+    { label: t.billingRenewal, value: subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—' },
+  ] : []
 
   return (
     <div className="space-y-6 pb-8">
       <div>
-        <h2 className="font-playfair text-xl text-white">Mon Abonnement</h2>
-        <p className="text-sm text-kcb-pierre mt-0.5">Gérez votre plan Curateur International</p>
+        <h2 className="font-playfair text-xl text-white">{t.pageTitle}</h2>
+        <p className="text-sm text-kcb-pierre mt-0.5">{t.pageSubtitle}</p>
       </div>
 
       {isExpiringSoon && (
         <div className="flex items-start gap-3 bg-amber-900/20 border border-amber-700/30 rounded-[4px] px-4 py-3 text-sm">
           <Bell className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
           <p className="text-amber-200">
-            Votre abonnement expire dans{' '}
-            <strong>{daysLeft} jour{daysLeft > 1 ? 's' : ''}</strong>.{' '}
+            {t.expiringWarning(daysLeft)}{' '}
             <Link to="/global#pricing" className="text-amber-300 underline hover:text-amber-200">
-              Renouveler maintenant
+              {t.renewLink}
             </Link>
           </p>
         </div>
@@ -190,7 +148,7 @@ export function CuratorAbonnement() {
             <Crown className="w-5 h-5 text-[#9B4D96]" />
           </div>
           <div>
-            <p className="text-xs text-[#9B4D96] uppercase tracking-wider">Plan actif</p>
+            <p className="text-xs text-[#9B4D96] uppercase tracking-wider">{t.activePlan}</p>
             <p className="text-lg font-semibold text-white">
               {currentPlan.name}
               {currentPlan.price > 0 && (
@@ -201,7 +159,9 @@ export function CuratorAbonnement() {
             </p>
           </div>
           {subscription?.status === 'active' && (
-            <span className="ml-auto text-xs px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">Actif</span>
+            <span className="ml-auto text-xs px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
+              {t.statusActive}
+            </span>
           )}
         </div>
 
@@ -219,7 +179,7 @@ export function CuratorAbonnement() {
         {subscription?.end_date && (
           <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center gap-2 text-xs text-kcb-pierre">
             <Clock className="w-3.5 h-3.5" />
-            Renouvellement le {new Date(subscription.end_date).toLocaleDateString('fr-FR')}
+            {t.renewal(new Date(subscription.end_date).toLocaleDateString('fr-FR'))}
           </div>
         )}
       </div>
@@ -227,32 +187,28 @@ export function CuratorAbonnement() {
       {/* Market Research Tools highlight */}
       <div className="bg-[#9B4D96]/5 border border-[#9B4D96]/20 rounded-[4px] p-4">
         <p className="text-xs text-[#9B4D96] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-          <Search className="w-3.5 h-3.5" /> Market Research Tools
+          <Search className="w-3.5 h-3.5" /> {t.marketResearchTitle}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {[
-            { icon: Globe, label: 'Rapports marché', desc: 'Prix, tendances, volumes par pays' },
-            { icon: BarChart3, label: 'Analyse prix', desc: 'Évolution de cote des artistes' },
-            { icon: Users, label: 'Mapping acteurs', desc: 'Galeries, institutions, fondations' },
-          ].map((t, i) => (
+          {marketResearchItems.map((item, i) => (
             <div key={i} className="flex items-start gap-2">
-              <t.icon className="w-4 h-4 text-[#9B4D96] flex-shrink-0 mt-0.5" />
+              <item.icon className="w-4 h-4 text-[#9B4D96] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-white">{t.label}</p>
-                <p className="text-xs text-kcb-pierre">{t.desc}</p>
+                <p className="text-xs font-semibold text-white">{item.label}</p>
+                <p className="text-xs text-kcb-pierre">{item.desc}</p>
               </div>
             </div>
           ))}
         </div>
         {planKey === 'free' && (
-          <p className="mt-3 text-xs text-[#9B4D96]">Disponible à partir du plan Explorer (€27/mois)</p>
+          <p className="mt-3 text-xs text-[#9B4D96]">{t.marketFromPlan}</p>
         )}
       </div>
 
       {/* Plans comparison */}
       <div>
         <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-          <Zap className="w-4 h-4 text-kcb-or" /> Comparer les plans
+          <Zap className="w-4 h-4 text-kcb-or" /> {t.comparePlans}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
           {PLANS.map((plan) => {
@@ -269,12 +225,12 @@ export function CuratorAbonnement() {
                 )}
                 {isCurrent && (
                   <span className="absolute -top-2.5 right-3 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#9B4D96] text-white whitespace-nowrap">
-                    Actuel
+                    {t.currentBadge}
                   </span>
                 )}
                 <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${plan.color}`}>{plan.name}</p>
                 <p className="text-2xl font-bold text-white mb-3">
-                  {plan.price === 0 ? 'Gratuit' : `${plan.currency}${plan.price}`}
+                  {plan.price === 0 ? t.planFree : `${plan.currency}${plan.price}`}
                   {plan.period && <span className="text-sm font-normal text-kcb-pierre">{plan.period}</span>}
                 </p>
                 <ul className="space-y-1.5 mb-4">
@@ -292,14 +248,14 @@ export function CuratorAbonnement() {
                     onClick={() => goToCheckout(plan.key)}
                     className="flex items-center justify-center gap-1 w-full py-2 text-xs font-semibold rounded-[4px] border transition text-[#9B4D96] border-[#9B4D96]/30 hover:bg-[#9B4D96]/10"
                   >
-                    <ArrowUp className="w-3 h-3" /> Passer à {plan.name}
+                    <ArrowUp className="w-3 h-3" /> {t.upgradeTo(plan.name)}
                   </button>
                 )}
                 {!isCurrent && plan.price === 0 && (
-                  <p className="text-center text-xs text-kcb-pierre py-2">Plan de base</p>
+                  <p className="text-center text-xs text-kcb-pierre py-2">{t.basePlan}</p>
                 )}
                 {isCurrent && (
-                  <p className="text-center text-xs text-[#9B4D96] py-2 font-medium">Plan actif</p>
+                  <p className="text-center text-xs text-[#9B4D96] py-2 font-medium">{t.activePlanLabel}</p>
                 )}
               </div>
             )
@@ -309,11 +265,7 @@ export function CuratorAbonnement() {
 
       {/* Feature highlights */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {[
-          { icon: Search, label: 'Market Research', desc: 'Rapports, tendances, analyse de cote par artiste', plan: 'Explorer' },
-          { icon: Truck, label: 'Logidoo Logistique', desc: 'Devis & expéditions art Afrique ↔ Europe', plan: 'Explorer' },
-          { icon: Star, label: 'Services Concierge', desc: 'Agents certifiés sur le terrain en Afrique', plan: 'Premium' },
-        ].map((f, i) => (
+        {featureHighlights.map((f, i) => (
           <div key={i} className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-4">
             <div className="flex items-center gap-2 mb-2">
               <f.icon className="w-4 h-4 text-[#9B4D96]" />
@@ -329,16 +281,10 @@ export function CuratorAbonnement() {
       {subscription && (
         <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] p-5">
           <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-kcb-or" /> Facturation
+            <CreditCard className="w-4 h-4 text-kcb-or" /> {t.billingTitle}
           </h3>
           <div className="space-y-0 divide-y divide-white/[0.06]">
-            {[
-              { label: 'Statut', value: subscription.status === 'active' ? 'Actif' : 'Inactif', badge: subscription.status === 'active' ? 'emerald' : 'red' },
-              { label: 'Plan', value: subscription.plans?.name ?? subscription.plan?.name ?? '—' },
-              { label: 'Montant', value: subscription.amount ? `${subscription.amount.toLocaleString('fr-FR')} ${subscription.currency}` : '—' },
-              { label: 'Début', value: subscription.start_date ? new Date(subscription.start_date).toLocaleDateString('fr-FR') : '—' },
-              { label: 'Renouvellement', value: subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—' },
-            ].map((row, i) => (
+            {billingRows.map((row, i) => (
               <div key={i} className="flex justify-between items-center py-3">
                 <span className="text-xs text-kcb-pierre">{row.label}</span>
                 {row.badge ? (
@@ -356,14 +302,13 @@ export function CuratorAbonnement() {
             <div className="mt-4 pt-4 border-t border-white/[0.06]">
               {!showCancelConfirm ? (
                 <button onClick={() => setShowCancelConfirm(true)} className="text-xs text-red-400 hover:text-red-300 transition">
-                  Annuler l'abonnement
+                  {t.cancelSubscription}
                 </button>
               ) : (
                 <div className="bg-red-900/20 border border-red-700/40 rounded-[4px] p-4 space-y-3">
-                  <p className="text-sm text-red-200 font-medium">Confirmer l'annulation ?</p>
+                  <p className="text-sm text-red-200 font-medium">{t.cancelConfirmTitle}</p>
                   <p className="text-xs text-red-300/80">
-                    Votre accès reste actif jusqu'au{' '}
-                    {subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—'}. Irréversible.
+                    {t.cancelConfirmDesc(subscription.end_date ? new Date(subscription.end_date).toLocaleDateString('fr-FR') : '—')}
                   </p>
                   {cancelError && <p className="text-xs text-red-400">{cancelError}</p>}
                   <div className="flex gap-3">
@@ -372,13 +317,13 @@ export function CuratorAbonnement() {
                       disabled={cancelLoading}
                       className="px-4 py-1.5 bg-red-700 hover:bg-red-600 text-white text-xs rounded-[4px] transition disabled:opacity-50"
                     >
-                      {cancelLoading ? 'En cours…' : 'Confirmer'}
+                      {cancelLoading ? t.cancelLoading : t.cancelConfirmBtn}
                     </button>
                     <button
                       onClick={() => { setShowCancelConfirm(false); setCancelError('') }}
                       className="px-4 py-1.5 border border-white/10 text-kcb-pierre hover:text-white text-xs rounded-[4px] transition"
                     >
-                      Annuler
+                      {t.cancelDismiss}
                     </button>
                   </div>
                 </div>
@@ -391,15 +336,13 @@ export function CuratorAbonnement() {
       {!subscription && (
         <div className="bg-kcb-ardoise border border-[#9B4D96]/20 rounded-[4px] p-6 text-center">
           <Shield className="w-10 h-10 text-[#9B4D96] mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-white mb-2">Débloquez l'accès complet</h3>
-          <p className="text-sm text-kcb-pierre mb-5 max-w-md mx-auto">
-            Market Research Tools, logistique Logidoo, services Concierge et suivi budget — à partir de €27/mois.
-          </p>
+          <h3 className="text-lg font-bold text-white mb-2">{t.noSubTitle}</h3>
+          <p className="text-sm text-kcb-pierre mb-5 max-w-md mx-auto">{t.noSubDesc}</p>
           <button
             onClick={() => goToCheckout('explorer')}
             className="inline-flex items-center gap-2 bg-[#9B4D96] hover:bg-[#8B3D86] text-white px-6 py-2.5 rounded-[4px] transition font-medium text-sm"
           >
-            Souscrire — Explorer €27/mois <ArrowUp className="w-4 h-4" />
+            {t.noSubCta} <ArrowUp className="w-4 h-4" />
           </button>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { setSupabaseToken } from '../api/useAPI'
+import { setSupabaseToken, utils } from '../api/useAPI'
 import { changePassword, getUserProfile, updateProfile, updateUser } from '../api/useAuth'
 import { updateArtist } from '../api/useArtists'
 import { createLog } from '../api/useLog'
@@ -98,23 +98,31 @@ export function AuthContextProvider({ children }) {
   }, [])
 
   /**
-   * Récupère le rôle autoritatif depuis public.users (source de vérité DB).
-   * Timeout 4s : si Supabase ne répond pas, on applique le principe du moindre
-   * privilège — le rôle retombe à 'buyer' au lieu de faire confiance à user_metadata.
+   * Récupère le rôle autoritatif depuis /api/auth/me (service_role, bypass RLS).
+   * Fallback : query directe supabase si l'API échoue (token pas encore prêt, réseau, etc.)
    */
   const loadDbRole = useCallback(async (userId, fallbackRole) => {
     if (!userId) return fallbackRole ?? null
     try {
       const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('loadDbRole timeout')), 6000)
+        setTimeout(() => reject(new Error('loadDbRole timeout')), 5000)
       )
-      const query = supabase.from('users').select('role').eq('id', userId).single()
-      const { data } = await Promise.race([query, timeout])
-      return data?.role ?? fallbackRole ?? null
+      const query = fetch(`${utils.api}/auth/me`, { ...utils.options })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((body) => body?.data?.role ?? null)
+      const role = await Promise.race([query, timeout])
+      if (role) return role
     } catch {
-      // Timeout ou erreur réseau — on conserve le rôle user_metadata (posé par le serveur)
-      return fallbackRole ?? null
+      // fallback ci-dessous
     }
+    // Fallback : query directe (peut échouer si RLS non configurée, mais tente quand même)
+    try {
+      const { data } = await supabase.from('users').select('role').eq('id', userId).single()
+      if (data?.role) return data.role
+    } catch {
+      // ignore
+    }
+    return fallbackRole ?? null
   }, [])
 
   // ── Failsafe : si loading est encore true après 5s, forcer false ──────────
