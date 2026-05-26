@@ -28,8 +28,12 @@ export function AdminArtistsTab() {
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE))
   const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
-  const getStats = (artistId) => {
-    const works = (approved ?? []).filter((w) => w.artist_id === artistId)
+  const getStats = (artistId, artistUserId) => {
+    const works = (approved ?? []).filter(
+      (w) =>
+        (artistId && w.artist_id === artistId) ||
+        (artistUserId && w.user_id === artistUserId)
+    )
     const certified = works.filter((w) => w.kucibok_id)
     return { total: works.length, certified: certified.length }
   }
@@ -72,7 +76,7 @@ export function AdminArtistsTab() {
           </thead>
           <tbody>
             {paged.map((artist) => {
-              const stats = getStats(artist.id)
+              const stats = getStats(artist.id, artist.user_id)
               return (
                 <tr
                   key={artist.id}
