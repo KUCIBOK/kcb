@@ -46,7 +46,7 @@ vi.mock('../lib/storage', () => ({
   uploadProfileImage: vi.fn(),
 }))
 
-vi.mock('./useAPI', () => ({
+vi.mock('../api/useAPI', () => ({
   utils: {
     api: '/api',
     get options() {
