@@ -46,7 +46,10 @@ export default [
       'react-hooks/unsupported-syntax': 'off',
       'react-hooks/config': 'off',
       'react-hooks/gating': 'off',
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrors: 'none' },
+      ],
       'no-console': 'warn',
       'no-empty': 'warn',
       'react/prop-types': 'off',

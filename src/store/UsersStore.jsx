@@ -48,7 +48,7 @@ export function UserProvider({ children }) {
         setState((prev) => ({ ...prev, loading: false }))
       })
     } else {
-      setState((prev) => ({ ...prev, loading: false })) // eslint-disable-line react-hooks/set-state-in-effect
+      setState((prev) => ({ ...prev, loading: false }))  
     }
   }, [user?.id])
 

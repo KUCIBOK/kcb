@@ -6,7 +6,7 @@ import { DataLoader } from '../loaders/PageLoader'
 import { ConfirmDialog } from '../ui'
 import { createLog } from '../../api/useLog'
 
-export const ApproveAction = memo(({ artwork }) => {
+export const ApproveAction = memo(function ApproveAction({ artwork }) {
   const { approveArtwork } = useArtworks()
   const { user: adminUser } = useAuth()
   const [state, setState] = useState({

@@ -5,7 +5,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useCategoryStore } from '../../../store/CategoryStore'
 
-export const Step1 = memo(({ formState, setFormState }) => {
+export const Step1 = memo(function Step1({ formState, setFormState }) {
   const { categories } = useCategoryStore()
   const { makeToast } = useToast()
   const tagInputRef = useRef()

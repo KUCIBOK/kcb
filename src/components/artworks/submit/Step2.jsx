@@ -1,7 +1,7 @@
 import { Image } from 'lucide-react'
 import { memo } from 'react'
 
-export const Step2 = memo(({ formState, setFormState }) => {
+export const Step2 = memo(function Step2({ formState, setFormState }) {
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     if (file) {

@@ -311,7 +311,7 @@ export const ArtworksContextProvider = ({ children }) => {
           }
         }
       },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+       
     }),
     [state, user, makeToast]
   )

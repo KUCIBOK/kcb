@@ -1,4 +1,3 @@
-import React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { XCircle, ArrowLeft, RefreshCcw, HelpCircle } from 'lucide-react'
 import RevealOnScroll from '../components/landing/RevealOnScroll'

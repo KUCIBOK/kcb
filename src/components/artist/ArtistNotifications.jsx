@@ -29,7 +29,8 @@ export default function ArtistNotifications() {
           const list = Array.isArray(body.data) ? body.data : Array.isArray(body) ? body : []
           setNotifications(list)
         }
-      } catch (_) {
+      } catch {
+        // list stays empty on error
       } finally {
         setLoading(false)
       }

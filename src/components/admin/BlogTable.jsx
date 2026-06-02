@@ -9,7 +9,7 @@ export function BlogTable({ posts, loading = false }) {
     posts: posts,
   })
   useEffect(() => {
-    setState({ set: posts.slice(0, 5), posts }) // eslint-disable-line react-hooks/set-state-in-effect
+    setState({ set: posts.slice(0, 5), posts })  
   }, [posts])
 
   const handlePrev = () => {

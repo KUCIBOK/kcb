@@ -1,7 +1,7 @@
 import { Download } from 'lucide-react'
 import { memo, useState } from 'react'
 
-export const DownloadAction = memo(({ artwork }) => {
+export const DownloadAction = memo(function DownloadAction({ artwork }) {
   const [error, setError] = useState(null)
 
   const handleDownload = async () => {

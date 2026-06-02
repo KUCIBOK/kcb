@@ -1,4 +1,4 @@
-import React, { forwardRef, useId } from 'react'
+import { forwardRef, useId } from 'react'
 import { AlertCircle, CheckCircle, Info, HelpCircle } from 'lucide-react'
 import { Tooltip } from './Tooltip'
 

@@ -19,7 +19,7 @@ const initialState = {
 }
 const ArtistContext = createContext(initialState)
 
-export const ArtistContextProvider = memo(({ children }) => {
+export const ArtistContextProvider = memo(function ArtistContextProvider({ children }) {
   const { user } = useAuth()
   const [state, setState] = useState(initialState)
   const { makeToast } = useToast()

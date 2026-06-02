@@ -69,7 +69,7 @@ export function ContactsLists() {
     setLoading(false)
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   useEffect(() => {
     loadData()
   }, [activeTab, selectedStatus, selectedType])

@@ -1,4 +1,3 @@
-import React from 'react'
 
 /**
  * Design System - Card Component

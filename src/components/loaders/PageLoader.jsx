@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-export const PageLoader = memo(() => {
+export const PageLoader = memo(function PageLoader() {
   return (
     <div className="flex justify-center items-center h-screen w-screen bg-kcb-noir">
       <div className="relative flex flex-col items-center">
@@ -25,7 +25,7 @@ export const PageLoader = memo(() => {
   )
 })
 
-export const DataLoader = memo(() => {
+export const DataLoader = memo(function DataLoader() {
   return (
     <div className="flex justify-center">
       <div className="relative flex flex-col items-center">

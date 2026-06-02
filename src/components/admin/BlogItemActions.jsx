@@ -17,7 +17,8 @@ export function BlogItemActions({ post }) {
     setState((prev) => ({ ...prev, loading: true }))
     try {
       await publishPost(post?.id || post?._id)
-    } catch (_) {
+    } catch {
+      // error surfaced via toast in publishPost
     } finally {
       setState((prev) => ({ ...prev, loading: false }))
     }
@@ -27,7 +28,8 @@ export function BlogItemActions({ post }) {
     setState((prev) => ({ ...prev, loading: true }))
     try {
       await archivePost(post?.id || post?._id)
-    } catch (_) {
+    } catch {
+      // error surfaced via toast in archivePost
     } finally {
       setState((prev) => ({ ...prev, loading: false }))
     }

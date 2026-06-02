@@ -10,7 +10,7 @@ import { useToast } from '../../store/ToastContext'
  * - Approuvée + pas de certificat + admin → bouton "Générer"
  * - Approuvée + pas de certificat + autre rôle → "En attente"
  */
-export const GenerateCertificateAction = memo(({ artwork, user, onGenerated }) => {
+export const GenerateCertificateAction = memo(function GenerateCertificateAction({ artwork, user, onGenerated }) {
   const { makeToast } = useToast()
   const [generating, setGenerating] = useState(false)
   const [fetching, setFetching] = useState(false)

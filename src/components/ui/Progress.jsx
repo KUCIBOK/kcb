@@ -1,4 +1,4 @@
-import React from 'react'
+import { Fragment } from 'react'
 import { Check } from 'lucide-react'
 
 /**
@@ -127,7 +127,7 @@ export function StepProgress({ steps = [], currentStep = 0, className = '' }) {
           const isUpcoming = index > currentStep
 
           return (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               {/* Step */}
               <div className="flex flex-col items-center flex-1">
                 <div
@@ -179,7 +179,7 @@ export function StepProgress({ steps = [], currentStep = 0, className = '' }) {
                   />
                 </div>
               )}
-            </React.Fragment>
+            </Fragment>
           )
         })}
       </div>

@@ -7,7 +7,7 @@ import { LikeHeart } from './LikeHeart'
 /** @type {Map<string, object>} Cache artistes pour éviter N+1 fetches */
 const artistCache = new Map()
 
-export const ArtworkCard = memo(({ artwork, artist: artistProp }) => {
+export const ArtworkCard = memo(function ArtworkCard({ artwork, artist: artistProp }) {
   const [artist, setArtist] = useState(artistProp ?? {})
 
   useEffect(() => {

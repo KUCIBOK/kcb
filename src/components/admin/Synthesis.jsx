@@ -53,7 +53,8 @@ export function Synthesis({ setTab, setToggle }) {
             subscriptions: subscriptions.filter((item) => item?.status === 'active'),
           }))
         }
-      } catch (_) {
+      } catch {
+        // non-blocking, onSettle still runs
       } finally {
         onSettle()
       }
@@ -107,7 +108,9 @@ export function Synthesis({ setTab, setToggle }) {
       a.click()
       a.remove()
       window.URL.revokeObjectURL(url)
-    } catch (error) {}
+    } catch {
+      // download failure is non-blocking
+    }
   }
   return (
     <>

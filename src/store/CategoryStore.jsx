@@ -25,7 +25,9 @@ export const CategoryProvider = ({ children }) => {
           setState((prev) => ({ categories: categories }))
           return
         }
-      } catch (error) {}
+      } catch {
+        // categories stay empty on error
+      }
     }
     fetchCategories().finally(() => {
       setState((prev) => ({ ...prev, loading: false }))

@@ -16,7 +16,7 @@ const LINKS = [
  * Main site header — used by Layout for non-portal pages.
  * Aligned with the KCB noir/or design system.
  */
-export const Header = memo(() => {
+export const Header = memo(function Header() {
   const { user } = useAuth()
   const [open, setOpen] = useState(false)
   const location = useLocation()

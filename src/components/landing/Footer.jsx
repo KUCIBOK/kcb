@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom'
  * Main site footer — used by Layout for non-portal pages.
  * Aligned with the KCB noir/or design system.
  */
-export const Footer = memo(() => (
+export const Footer = memo(function Footer() {
+  return (
   <footer className="pt-20 pb-10 bg-kcb-noir-deep border-t border-white/[0.03] font-dm-sans">
     <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
       {/* Grid */}
@@ -170,4 +171,5 @@ export const Footer = memo(() => (
       </div>
     </div>
   </footer>
-))
+  )
+})

@@ -36,7 +36,8 @@ export default function SupportTicketTab() {
         resolu: list.filter((t) => t.status === 'resolu').length,
         ferme: list.filter((t) => t.status === 'ferme').length,
       })
-    } catch (_) {
+    } catch {
+      // list stays empty on error
     } finally {
       setLoading(false)
     }

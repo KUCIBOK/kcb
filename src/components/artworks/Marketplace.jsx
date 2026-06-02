@@ -3,7 +3,7 @@ import { ArtworkCard } from './ArtworkCard'
 import { Search } from 'lucide-react'
 import RevealOnScroll from '../decoratives/RevealOnScroll'
 
-export const Marketplace = memo(({ artworks }) => {
+export const Marketplace = memo(function Marketplace({ artworks }) {
   return (
     <div className="w-full">
       {artworks?.length >= 1 ? (
