@@ -75,62 +75,90 @@ export default function GoogleRoleSelection() {
                 Sélectionnez votre profil pour personnaliser votre expérience
               </p>
               <div className="space-y-3">
-                <div
+                <button
                   onClick={() => setRole('artist')}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setRole('artist')
+                    }
+                  }}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition focus-visible:ring-2 focus-visible:ring-kcb-or focus-visible:ring-offset-0 ${
                     role === 'artist'
                       ? 'border-kcb-or bg-kcb-or/10'
                       : 'border-white/[0.06] hover:border-kcb-or/40'
                   }`}
-                  style={{ userSelect: 'none' }}
+                  aria-pressed={role === 'artist'}
+                  type="button"
                 >
                   <span className="rounded-full bg-kcb-or/10 p-2">
                     <Brush className="text-kcb-or/80" />
                   </span>
                   <span className="text-white text-base font-medium">Artiste</span>
-                </div>
-                <div
+                </button>
+                <button
                   onClick={() => setRole('curator')}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setRole('curator')
+                    }
+                  }}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition focus-visible:ring-2 focus-visible:ring-kcb-or focus-visible:ring-offset-0 ${
                     role === 'curator'
                       ? 'border-kcb-or bg-kcb-or/10'
                       : 'border-white/[0.06] hover:border-kcb-or/40'
                   }`}
-                  style={{ userSelect: 'none' }}
+                  aria-pressed={role === 'curator'}
+                  type="button"
                 >
                   <span className="rounded-full bg-kcb-or/10 p-2">
                     <Award className="text-kcb-or/80" />
                   </span>
                   <span className="text-white text-base font-medium">Curateur</span>
-                </div>
-                <div
+                </button>
+                <button
                   onClick={() => setRole('advisor')}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setRole('advisor')
+                    }
+                  }}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition focus-visible:ring-2 focus-visible:ring-kcb-or focus-visible:ring-offset-0 ${
                     role === 'advisor'
                       ? 'border-kcb-or bg-kcb-or/10'
                       : 'border-white/[0.06] hover:border-kcb-or/40'
                   }`}
-                  style={{ userSelect: 'none' }}
+                  aria-pressed={role === 'advisor'}
+                  type="button"
                 >
                   <span className="rounded-full bg-kcb-or/10 p-2">
                     <TrendingUp className="text-kcb-or/80" />
                   </span>
                   <span className="text-white text-base font-medium">Advisor</span>
-                </div>
-                <div
+                </button>
+                <button
                   onClick={() => setRole('buyer')}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setRole('buyer')
+                    }
+                  }}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-[4px] border cursor-pointer transition focus-visible:ring-2 focus-visible:ring-kcb-or focus-visible:ring-offset-0 ${
                     role === 'buyer'
                       ? 'border-kcb-or bg-kcb-or/10'
                       : 'border-white/[0.06] hover:border-kcb-or/40'
                   }`}
-                  style={{ userSelect: 'none' }}
+                  aria-pressed={role === 'buyer'}
+                  type="button"
                 >
                   <span className="rounded-full bg-kcb-or/10 p-2">
                     <ShoppingBag className="text-kcb-or/80" />
                   </span>
                   <span className="text-white text-base font-medium">Collectionneur</span>
-                </div>
+                </button>
                 <button
                   onClick={handleSubmit}
                   disabled={!role || loading}
