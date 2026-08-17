@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import { useAuth } from './AuthContext'
 import { createUser, deleteUser, getAllUsers, setUserStatus, updateUser } from '../api/useUsers'
 import { createLog } from '../api/useLog'
@@ -48,15 +48,11 @@ export function UserProvider({ children }) {
         setState((prev) => ({ ...prev, loading: false }))
       })
     } else {
-      setState((prev) => ({ ...prev, loading: false }))  
+      setState((prev) => ({ ...prev, loading: false }))
     }
   }, [user?.id])
 
-  return (
-    <UserContext.Provider
-      value={{
-        ...state,
-        addUser: async (payload) => {
+  const addUserCtx = useCallback(async (payload) => {
           try {
             const user = await createUser(payload)
             if (user?.error) {
@@ -99,8 +95,9 @@ export function UserProvider({ children }) {
               error: error.message,
             }
           }
-        },
-        updateUser: async (id, payload) => {
+  }, [admin?.id, makeToast])
+
+  const updateUserCtx = useCallback(async (id, payload) => {
           try {
             const user = await updateUser(id, payload)
             if (user?.error) {
@@ -143,8 +140,9 @@ export function UserProvider({ children }) {
               error: error.message,
             }
           }
-        },
-        deleteUser: async (id) => {
+  }, [admin?.id, makeToast])
+
+  const deleteUserCtx = useCallback(async (id) => {
           try {
             const user = await deleteUser(id)
             if (!user?.id) {
@@ -187,8 +185,9 @@ export function UserProvider({ children }) {
               error: error.message,
             }
           }
-        },
-        setStatus: async (id) => {
+  }, [admin?.id, makeToast])
+
+  const setStatus = useCallback(async (id) => {
           try {
             const user = await setUserStatus(id)
             if (!user?.id) {
@@ -235,9 +234,18 @@ export function UserProvider({ children }) {
               error: error.message,
             }
           }
-        },
-      }}
-    >
+  }, [admin?.id, makeToast])
+
+  const value = useMemo(() => ({
+    ...state,
+    addUser: addUserCtx,
+    updateUser: updateUserCtx,
+    deleteUser: deleteUserCtx,
+    setStatus,
+  }), [state, addUserCtx, updateUserCtx, deleteUserCtx, setStatus])
+
+  return (
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   )

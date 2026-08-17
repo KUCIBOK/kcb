@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { useAuth } from './AuthContext'
 import {
   createNumerisation,
@@ -39,17 +39,11 @@ export const NumerisationProvider = ({ children }) => {
         setState((prev) => ({ ...prev, loading: false }))
       })
     } else {
-      setState((prev) => ({ ...prev, loading: false }))  
+      setState((prev) => ({ ...prev, loading: false }))
     }
   }, [user?.role])
 
-  return (
-    <NumerisationContext.Provider
-      value={{
-        numerisations: state.numerisations,
-        myNumerisations: state.myNumerisations,
-        loading: state.loading,
-        create: async (payload) => {
+  const create = useCallback(async (payload) => {
           const result = await createNumerisation(payload)
           if (result?._id) {
             setState((prev) => ({
@@ -62,8 +56,10 @@ export const NumerisationProvider = ({ children }) => {
             makeToast('Erreur', 'error', result.error)
           }
           return result
-        },
-        update: async (id, payload) => {
+        }
+  }, [makeToast])
+
+  const update = useCallback(async (id, payload) => {
           const result = await updateNumerisationRequest(id, payload)
           if (result?._id) {
             setState((prev) => ({
@@ -76,8 +72,10 @@ export const NumerisationProvider = ({ children }) => {
             makeToast('Erreur', 'error', result.error)
           }
           return result
-        },
-        updateStatus: async (id, payload) => {
+        }
+  }, [makeToast])
+
+  const updateStatus = useCallback(async (id, payload) => {
           const result = await updateNumerisationRequestStatus(id, payload)
           if (result?._id) {
             setState((prev) => ({
@@ -94,8 +92,10 @@ export const NumerisationProvider = ({ children }) => {
             makeToast('Erreur', 'error', result.error)
           }
           return result
-        },
-        delete: async (id) => {
+        }
+  }, [makeToast])
+
+  const deleteNumerisationCtx = useCallback(async (id) => {
           const result = await deleteNumerisationRequest(id)
           if (result?._id) {
             setState((prev) => ({
@@ -108,9 +108,21 @@ export const NumerisationProvider = ({ children }) => {
             makeToast('Erreur', 'error', result.error)
           }
           return result
-        },
-      }}
-    >
+        }
+  }, [makeToast])
+
+  const value = useMemo(() => ({
+    numerisations: state.numerisations,
+    myNumerisations: state.myNumerisations,
+    loading: state.loading,
+    create,
+    update,
+    updateStatus,
+    delete: deleteNumerisationCtx,
+  }), [state, create, update, updateStatus, deleteNumerisationCtx])
+
+  return (
+    <NumerisationContext.Provider value={value}>
       {children}
     </NumerisationContext.Provider>
   )
