@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import { createCollection, getCollections } from '../api/useCollection'
 import { useToast } from './ToastContext'
 import { useAuth } from './AuthContext'
@@ -43,31 +43,34 @@ export function CollectionProvider({ children }) {
       setState((prev) => ({ ...prev, loading: false }))
     })
   }, [user?.id, authLoading])
+
+  const addCollection = useCallback(async function (payload) {
+    try {
+      const collection = await createCollection(payload)
+      if (collection?._id) {
+        setState((prev) => ({ ...prev, myCollections: [collection, ...prev.myCollections] }))
+        makeToast('Succès', 'success', 'La collection a été ajoutée avec succès')
+        return collection
+      }
+      return {
+        error: collection?.error || collection?.message,
+      }
+    } catch (error) {
+      return { error: error.message }
+    }
+  }, [makeToast])
+
+  const value = useMemo(() => ({
+    // État des collections
+    myCollections: state.myCollections,
+    collections: state.collections,
+    loading: state.loading,
+    // Fonction pour ajouter une nouvelle collection
+    addCollection,
+  }), [state, addCollection])
+
   return (
-    <CollectionContext.Provider
-      value={{
-        // État des collections
-        myCollections: state.myCollections,
-        collections: state.collections,
-        loading: state.loading,
-        // Fonction pour ajouter une nouvelle collection
-        addCollection: async function (payload) {
-          try {
-            const collection = await createCollection(payload)
-            if (collection?._id) {
-              setState((prev) => ({ ...prev, myCollections: [collection, ...prev.myCollections] }))
-              makeToast('Succès', 'success', 'La collection a été ajoutée avec succès')
-              return collection
-            }
-            return {
-              error: collection?.error || collection?.message,
-            }
-          } catch (error) {
-            return { error: error.message }
-          }
-        },
-      }}
-    >
+    <CollectionContext.Provider value={value}>
       {children}
     </CollectionContext.Provider>
   )

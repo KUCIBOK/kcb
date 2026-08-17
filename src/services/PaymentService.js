@@ -1,4 +1,6 @@
-import apiService from './ApiService'
+import { apiRequestWithRetry, utils } from '../api/useAPI'
+
+const BASE_URL = utils.api || '/api'
 
 /**
  * Service pour les paiements PayDunya
@@ -14,8 +16,10 @@ class PaymentService {
     try {
       const body = { type: 'artwork', artwork_id: artworkId }
       if (guest) body.guest = guest
-      // apiService retourne { data: { payment_url, token, ref } }
-      const response = await apiService.post('/payments/paydunya-init', body)
+      const response = await apiRequestWithRetry(`${BASE_URL}/payments/paydunya-init`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      })
       const inner = response?.data ?? response
       return {
         success: true,
@@ -40,9 +44,9 @@ class PaymentService {
    */
   async initSubscriptionPayment(planId) {
     try {
-      const response = await apiService.post('/payments/paydunya-init', {
-        type: 'plan',
-        plan_id: planId,
+      const response = await apiRequestWithRetry(`${BASE_URL}/payments/paydunya-init`, {
+        method: 'POST',
+        body: JSON.stringify({ type: 'plan', plan_id: planId }),
       })
       const inner = response?.data ?? response
       return {
@@ -68,7 +72,10 @@ class PaymentService {
    */
   async verifyPayment(token) {
     try {
-      const response = await apiService.post('/payments/paydunya-callback', { token })
+      const response = await apiRequestWithRetry(`${BASE_URL}/payments/paydunya-callback`, {
+        method: 'POST',
+        body: JSON.stringify({ token }),
+      })
       return {
         success: true,
         data: response,
