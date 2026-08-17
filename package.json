@@ -22,6 +22,7 @@
     "@sentry/react": "^10.70.0",
     "@supabase/supabase-js": "^2.98.0",
     "@tailwindcss/vite": "^4.0.17",
+    "@upstash/redis": "^1.35.0",
     "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.9",
     "dompurify": "^3.3.3",
