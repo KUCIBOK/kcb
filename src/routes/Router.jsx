@@ -96,6 +96,7 @@ function PortalNavigateWithParams({ africaTo, globalTo }) {
 }
 
 const GatewayPage = lazy(() => import('../pages/GatewayPage'))
+const HomePage = lazy(() => import('../pages/HomePage'))
 const GlobalPage = lazy(() => import('../pages/GlobalPage'))
 const GlobalCataloguePage = lazy(() => import('../pages/GlobalCataloguePage'))
 const GlobalSourcingPage = lazy(() => import('../pages/GlobalSourcingPage'))
@@ -385,12 +386,12 @@ export function Router() {
             </ArtistContextProvider>
           }
         >
-          {/* Gateway */}
+          {/* HomePage — Professional Infrastructure */}
           <Route
             path="/"
             element={
               <Suspense fallback={<PageLoader />}>
-                <GatewayPage />
+                <HomePage />
               </Suspense>
             }
           />
