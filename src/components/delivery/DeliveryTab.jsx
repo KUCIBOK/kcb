@@ -237,13 +237,13 @@ export function DeliveryTab() {
             <ClockFading className="w-5 h-5 text-yellow-400" />
           </div>
         </div>
-        <div className="bg-gradient-to-br from-orange-900/30 to-gray-900 rounded-[4px] p-4 border border-orange-700/50">
+        <div className="bg-gradient-to-br from-kcb-alerte/30 to-gray-900 rounded-[4px] p-4 border border-kcb-alerte/50">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-xs text-kcb-pierre">En préparation</p>
-              <p className="text-2xl font-bold text-orange-400">{stats.inPreparation}</p>
+              <p className="text-2xl font-bold text-kcb-alerte">{stats.inPreparation}</p>
             </div>
-            <Package className="w-5 h-5 text-orange-400" />
+            <Package className="w-5 h-5 text-kcb-alerte" />
           </div>
         </div>
         <div className="bg-gradient-to-br from-kcb-or/10 to-gray-900 rounded-[4px] p-4 border border-kcb-or/30">
@@ -556,7 +556,7 @@ export function DeliveryTab() {
                             : delivery.status === 'on_the_way'
                               ? 'bg-kcb-or/10 text-kcb-or'
                               : delivery.status === 'in_preparation'
-                                ? 'bg-orange-900/30 text-orange-400'
+                                ? 'bg-kcb-alerte/30 text-kcb-alerte'
                                 : 'bg-yellow-900/30 text-yellow-400'
                         }`}
                       >

@@ -59,7 +59,7 @@ export default function FeaturedArtists() {
               <div className="text-center mt-12">
                 <a
                   href="/artists"
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#7170c4] hover:bg-[#5a5a9c] transition-colors"
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-[4px] text-white bg-[#7170c4] hover:bg-[#5a5a9c] transition-colors"
                 >
                   Voir tous les artistes
                 </a>

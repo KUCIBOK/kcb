@@ -9,7 +9,7 @@ export function RejectAction({ numerisation }) {
     <>
       <button
         onClick={() => setModal(true)}
-        className="p-2 rounded-md bg-red-600 shadow-sm hover:bg-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
+        className="p-2 rounded-[4px] bg-red-600 shadow-sm hover:bg-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400"
         aria-label="Rejeter la demande"
         title="Rejeter la demande"
       >

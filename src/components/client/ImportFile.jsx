@@ -52,7 +52,7 @@ const ImportFile = ({ onUpload }) => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="px-4 py-2 text-sm rounded-md border border-white/[0.06] text-kcb-sable hover:bg-kcb-ardoise transition flex items-center gap-1"
+        className="px-4 py-2 text-sm rounded-[4px] border border-white/[0.06] text-kcb-sable hover:bg-kcb-ardoise transition flex items-center gap-1"
       >
         <Upload className="h-4 w-4" />
         Importer CSV
@@ -72,7 +72,7 @@ const ImportFile = ({ onUpload }) => {
                 disabled={isLoading}
                 className="block w-full text-sm text-kcb-pierre
                   file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0
+                  file:rounded-[4px] file:border-0
                   file:text-sm file:font-semibold
                   file:bg-kcb-ardoise file:text-kcb-sable
                   hover:file:bg-kcb-ardoise
@@ -90,7 +90,7 @@ const ImportFile = ({ onUpload }) => {
 
             {result && (
               <div
-                className={`p-3 rounded-md text-sm ${
+                className={`p-3 rounded-[4px] text-sm ${
                   result.error ? 'bg-red-900/50 text-red-200' : 'bg-green-900/50 text-green-200'
                 }`}
               >

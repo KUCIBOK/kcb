@@ -115,7 +115,7 @@ export default function ArtistSales() {
       </div>
 
       {/* Transactions récentes */}
-      <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-6">
+      <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/40 p-6">
         <h3 className="text-base font-semibold text-white mb-4">{t.recentTransactions}</h3>
         {recent.length === 0 ? (
           <p className="text-kcb-pierre text-sm text-center py-8">{t.noSales}</p>
@@ -124,7 +124,7 @@ export default function ArtistSales() {
             {recent.map((tx) => (
               <div
                 key={tx.id ?? tx._id}
-                className="flex items-center justify-between p-3 rounded-lg bg-kcb-ardoise/60"
+                className="flex items-center justify-between p-3 rounded-[4px] bg-kcb-ardoise/60"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   {tx.artworks?.image ? (
@@ -164,7 +164,7 @@ export default function ArtistSales() {
       {/* Répartition */}
       {stats.totalRevenue > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-4">
+          <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/40 p-4">
             <p className="text-kcb-pierre text-xs mb-1">{t.avgPerSale}</p>
             <p className="text-2xl font-bold text-white">
               {fmt(
@@ -175,12 +175,12 @@ export default function ArtistSales() {
               )}
             </p>
           </div>
-          <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-4">
+          <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/40 p-4">
             <p className="text-kcb-pierre text-xs mb-1">{t.commissionRate}</p>
             <p className="text-2xl font-bold text-white">10 %</p>
             <p className="text-kcb-pierre text-xs mt-1">{t.commissionBy}</p>
           </div>
-          <div className="rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 p-4">
+          <div className="rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/40 p-4">
             <p className="text-kcb-pierre text-xs mb-1">{t.grossTotal}</p>
             <p className="text-2xl font-bold text-white">
               {fmt((stats.totalRevenue ?? 0) + (stats.totalCommission ?? 0), currency)}
@@ -200,7 +200,7 @@ function KPICard({ label, value, change, icon, color }) {
     kcb: 'bg-kcb-bronze/10 border-kcb-bronze/30 text-kcb-sable',
   }
   return (
-    <div className={`border rounded-lg p-4 ${colors[color]}`}>
+    <div className={`border rounded-[4px] p-4 ${colors[color]}`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium opacity-75">{label}</span>
         {icon}

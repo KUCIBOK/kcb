@@ -45,7 +45,7 @@ export function DeliveryRequestList({ deliveries, loading = false }) {
           className="w-full p-2 text-sm rounded-e-md border-y border-e border-border bg-kcb-noir text-white focus:outline-none"
         />
       </div>
-      <div className="overflow-auto rounded-md border border-white/[0.06] bg-kcb-ardoise px-0 py-0">
+      <div className="overflow-auto rounded-[4px] border border-white/[0.06] bg-kcb-ardoise px-0 py-0">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-kcb-ardoise text-white/80">

@@ -8,7 +8,7 @@ export function SeeAction({ delivery }) {
     <>
       <button
         onClick={() => setModal(true)}
-        className="p-2 rounded-md border border-white/[0.06] bg-kcb-ardoise shadow-sm hover:bg-kcb-ardoise transition-colors focus:outline-none focus:ring-2 focus:ring-kcb-or"
+        className="p-2 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise shadow-sm hover:bg-kcb-ardoise transition-colors focus:outline-none focus:ring-2 focus:ring-kcb-or"
         aria-label="Voir la livraison"
         title="Voir la livraison"
       >

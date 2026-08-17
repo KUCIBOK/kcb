@@ -49,7 +49,7 @@ export default function AuctionBidForm({ currentPrice, auctionId, onBidSuccess }
             min={currentPrice + 1000}
             value={bidAmount}
             onChange={(e) => setBidAmount(Number(e.target.value))}
-            className="w-full bg-kcb-ardoise border border-white/[0.08] rounded-md px-3 py-2 text-white"
+            className="w-full bg-kcb-ardoise border border-white/[0.08] rounded-[4px] px-3 py-2 text-white"
             required
           />
         </div>
@@ -57,7 +57,7 @@ export default function AuctionBidForm({ currentPrice, auctionId, onBidSuccess }
         {bidSuccess && <p className="text-green-400 text-sm">{bidSuccess}</p>}
         <button
           type="submit"
-          className="w-full bg-gradient hover:opacity-90 text-white py-2 px-4 rounded-md transition"
+          className="w-full bg-gradient hover:opacity-90 text-white py-2 px-4 rounded-[4px] transition"
         >
           Placer une enchère
         </button>

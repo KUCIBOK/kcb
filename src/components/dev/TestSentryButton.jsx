@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react'
 export default function TestSentryButton() {
   return (
     <button
-      className="px-4 py-2 bg-kcb-or text-kcb-noir rounded-md"
+      className="px-4 py-2 bg-kcb-or text-kcb-noir rounded-[4px]"
       onClick={() => {
         // Add a breadcrumb and send an info message before throwing
         Sentry.addBreadcrumb({ category: 'test', message: 'User clicked test error button' })

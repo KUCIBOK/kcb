@@ -105,7 +105,7 @@ export default function GalleriesTab() {
       <h2 className="text-xl font-semibold text-white/90 mb-6">Galeries & Institutions</h2>
 
       {/* Import / Export */}
-      <div className="mb-4 p-3 rounded-md border border-white/[0.06] bg-kcb-ardoise/40 flex flex-col md:flex-row gap-2 items-start md:items-center">
+      <div className="mb-4 p-3 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/40 flex flex-col md:flex-row gap-2 items-start md:items-center">
         <input
           type="file"
           accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -116,7 +116,7 @@ export default function GalleriesTab() {
         <button
           disabled={uploading}
           onClick={handleImport}
-          className="px-3 py-2 rounded-md bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm disabled:opacity-50"
+          className="px-3 py-2 rounded-[4px] bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm disabled:opacity-50"
         >
           {uploading ? 'Import en cours...' : 'Importer (CSV/XLSX)'}
         </button>
@@ -130,7 +130,7 @@ export default function GalleriesTab() {
         <div className="flex-1" />
         <button
           onClick={handleExport}
-          className="px-3 py-2 rounded-md bg-kcb-ardoise hover:bg-white/[0.08] text-white text-sm"
+          className="px-3 py-2 rounded-[4px] bg-kcb-ardoise hover:bg-white/[0.08] text-white text-sm"
         >
           Exporter CSV
         </button>
@@ -191,7 +191,7 @@ export default function GalleriesTab() {
           {state.galleries.length > 40 && (
             <div className="flex justify-end gap-2 mt-4">
               <button
-                className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
+                className="rounded-[4px] border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
                 onClick={() => {
                   if (state.set[0] !== state.galleries[0]) {
                     const startIndex = state.galleries.indexOf(state.set[0]) - 40
@@ -210,7 +210,7 @@ export default function GalleriesTab() {
                 {Math.ceil(state.galleries.length / 40)}
               </span>
               <button
-                className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
+                className="rounded-[4px] border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
                 onClick={() => {
                   const lastIndex = state.galleries.indexOf(state.set[state.set.length - 1])
                   if (lastIndex < state.galleries.length - 1) {

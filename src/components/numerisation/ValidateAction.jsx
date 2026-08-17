@@ -9,7 +9,7 @@ export function ValidateAction({ numerisation }) {
     <>
       <button
         onClick={() => setModal(true)}
-        className="p-2 rounded-md bg-green-600 shadow-sm hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="p-2 rounded-[4px] bg-green-600 shadow-sm hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400"
         aria-label="Approuver la demande"
         title="Approuver la demande"
       >

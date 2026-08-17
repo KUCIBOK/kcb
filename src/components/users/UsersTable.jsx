@@ -46,7 +46,7 @@ export function UsersTable({ users }) {
         <div className="relative w-full">
           <input
             type="text"
-            className="w-full rounded-md bg-kcb-ardoise border-none px-3 py-2 text-sm text-kcb-sable placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or/30 transition pr-9"
+            className="w-full rounded-[4px] bg-kcb-ardoise border-none px-3 py-2 text-sm text-kcb-sable placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or/30 transition pr-9"
             placeholder={`Rechercher un nom, un email, un numéro...`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}

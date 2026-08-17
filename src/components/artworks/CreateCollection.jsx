@@ -146,7 +146,7 @@ function AddCollectionModal({ closeModal }) {
                   value={state.title}
                   type="text"
                   placeholder="Série Horizons urbains 2023"
-                  className="py-1.5 px-3 rounded-md shadow-lg border text-white"
+                  className="py-1.5 px-3 rounded-[4px] shadow-lg border text-white"
                   required
                   minLength={10}
                 />
@@ -159,7 +159,7 @@ function AddCollectionModal({ closeModal }) {
                   theme="snow"
                   value={state.description}
                   onChange={(value) => setState({ ...state, description: value })}
-                  className="border bg-white text-black border-background rounded-md my-4"
+                  className="border bg-white text-black border-background rounded-[4px] my-4"
                   placeholder="Décrivez le thème et l'intention artistique de votre collection..."
                 />
               </div>
@@ -184,7 +184,7 @@ function AddCollectionModal({ closeModal }) {
                       }
                       name="artist"
                       id="artist"
-                      className="rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
+                      className="rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
                       required
                     >
                       <option>Vos artistes</option>
@@ -212,7 +212,7 @@ function AddCollectionModal({ closeModal }) {
                     onChange={(e) => setState({ ...state, tag: e.target.value })}
                     value={state.tag}
                     type="text"
-                    className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-2"
+                    className="w-full rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-2"
                     placeholder="Ajoutez des mots-clés"
                     minLength={3}
                     maxLength={12}
@@ -258,7 +258,7 @@ function AddCollectionModal({ closeModal }) {
                     onClick={() => {
                       setState({ ...state, artworks: [...(state?.artworks ?? []), artworkModel] })
                     }}
-                    className="rounded-[4px] p-2 bg-purple-700/30 text-white text-xs flex items-center gap-2"
+                    className="rounded-[4px] p-2 bg-kcb-pierre/30 text-white text-xs flex items-center gap-2"
                   >
                     <Plus className="w-4 h-4 text-white" />
                     Ajouter une oeuvre
@@ -268,12 +268,12 @@ function AddCollectionModal({ closeModal }) {
               </div>
 
               <div className="flex justify-end items-center gap-4 mt-8">
-                <button className="border py-2 px-3 rounded-md" onClick={() => closeModal()}>
+                <button className="border py-2 px-3 rounded-[4px]" onClick={() => closeModal()}>
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="rounded-md bg-green-600 hover:opacity-90 flex items-center gap-3 py-2 px-3"
+                  className="rounded-[4px] bg-green-600 hover:opacity-90 flex items-center gap-3 py-2 px-3"
                 >
                   {state?.loading ? (
                     <DataLoader />
@@ -383,7 +383,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
                 <Upload className="w-8 h-8 text-white mx-auto" />
                 <p className="text-sm mx-auto">Cliquez pour ajouter une image</p>
                 <input
-                  className="bg-kcb-ardoise w-1/2 text-sm mx-auto rounded-md border border-white/[0.06] px-3 py-1.5 cursor-pointer text-white font-medium"
+                  className="bg-kcb-ardoise w-1/2 text-sm mx-auto rounded-[4px] border border-white/[0.06] px-3 py-1.5 cursor-pointer text-white font-medium"
                   id="artwork-image"
                   type="file"
                   accept="image/*"
@@ -402,7 +402,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
               onChange={(e) => setState({ ...state, title: e.target.value })}
               value={state.title}
               type="text"
-              className="py-1 5 px-4 border rounded-md bg-kcb-noir"
+              className="py-1 5 px-4 border rounded-[4px] bg-kcb-noir"
               minLength={5}
               required
               placeholder="Titre de l'oeuvre"
@@ -414,7 +414,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
             </label>
             <textarea
               onChange={(e) => setState({ ...state, description: e.target.value })}
-              className="py-1 5 px-4 border rounded-md bg-kcb-noir"
+              className="py-1 5 px-4 border rounded-[4px] bg-kcb-noir"
               minLength={5}
               required
               placeholder="Description de l'oeuvre"
@@ -436,7 +436,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
               value={formState.category}
               name="category"
               id="category"
-              className="rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
+              className="rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
             >
               <option>Catégorie</option>
               {categories.map((category, index) => (
@@ -465,7 +465,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
             <label htmlFor="mensurations">Mensurations</label>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
               <input
-                className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
+                className="w-full rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
                 min={10}
                 max={500}
                 onChange={(e) => setState({ ...state, height: e.target.value })}
@@ -474,7 +474,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
                 placeholder="Taille de l'oeuvre en cm"
               />
               <input
-                className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
+                className="w-full rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
                 min={10}
                 max={500}
                 onChange={(e) => setState({ ...state, width: e.target.value })}
@@ -483,7 +483,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
                 placeholder="Largeur de l'oeuvre cm"
               />
               <input
-                className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
+                className="w-full rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
                 min={1}
                 max={1000}
                 onChange={(e) => setState({ ...state, weight: e.target.value })}
@@ -503,7 +503,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
               value={state.price}
               type="number"
               min={1}
-              className="rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
+              className="rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
               placeholder="Entrez le prix de l'oeuvre"
               required
             />
@@ -518,7 +518,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
                 onChange={(e) => setState({ ...state, tag: e.target.value })}
                 value={state.tag}
                 type="text"
-                className="w-full rounded-md bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
+                className="w-full rounded-[4px] bg-kcb-ardoise mt-1 border border-white/[0.06] px-3 py-1.5"
                 placeholder="Ajoutez des mots-clés"
                 minLength={3}
                 maxLength={12}
@@ -539,7 +539,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
               {state.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="bg-purple-700/50 flex animate-slide-left items-center gap-2 text-white rounded-full px-3 py-1 text-sm font-semibold mt-2 mr-2"
+                  className="bg-kcb-pierre/50 flex animate-slide-left items-center gap-2 text-white rounded-full px-3 py-1 text-sm font-semibold mt-2 mr-2"
                 >
                   {tag}{' '}
                   <span
@@ -562,7 +562,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
                   })
                 }
                 type="button"
-                className="p-2 bg-red-900 rounded-md"
+                className="p-2 bg-red-900 rounded-[4px]"
               >
                 <Trash2 className="w-4 h-4" />
               </button>

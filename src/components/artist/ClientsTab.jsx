@@ -1,4 +1,4 @@
-ï»¿import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
 import { Fragment, useEffect, useState } from 'react'
 import { useClients } from '../../store/ClientContext'
 import ImportFile from '../client/ImportFile'
@@ -19,7 +19,7 @@ export const ClientsTab = ({ user }) => {
   const [search, setSearch] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
 
-  // Initialiser les clients filtrÃ©s quand les clients changent
+  // Initialiser les clients filtrés quand les clients changent
   useEffect(() => {
     if (clients.length > 0) {
       const sortedClients = [...clients].sort(
@@ -93,7 +93,7 @@ export const ClientsTab = ({ user }) => {
           <input
             type="text"
             className="w-full rounded-s-md border-y border-s border-white/[0.06] bg-kcb-noir px-3 py-2 text-sm text-kcb-sable placeholder-kcb-pierre focus:outline-none"
-            placeholder="Rechercher un client par nom, prÃ©nom, email..."
+            placeholder="Rechercher un client par nom, prénom, email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -104,7 +104,7 @@ export const ClientsTab = ({ user }) => {
         <div className="flex gap-2">
           <button
             onClick={() => setShowAddForm(true)}
-            className="px-4 py-2 text-sm rounded-md bg-kcb-or text-kcb-noir hover:bg-kcb-or/90 transition flex items-center gap-1"
+            className="px-4 py-2 text-sm rounded-[4px] bg-kcb-or text-kcb-noir hover:bg-kcb-or/90 transition flex items-center gap-1"
           >
             <Plus className="h-4 w-4" />
             Ajouter un client
@@ -120,11 +120,11 @@ export const ClientsTab = ({ user }) => {
             <thead>
               <tr className="border-b border-white/[0.06]">
                 <th className="font-semibold py-2 text-left">Nom</th>
-                <th className="font-semibold py-2 text-left">PrÃ©nom</th>
+                <th className="font-semibold py-2 text-left">Prénom</th>
                 <th className="font-semibold py-2 text-left">Email</th>
-                <th className="font-semibold py-2 text-left">TÃ©lÃ©phone</th>
+                <th className="font-semibold py-2 text-left">Téléphone</th>
                 <th className="font-semibold py-2 text-left">Ville</th>
-                <th className="font-semibold py-2 text-left">AjoutÃ© le</th>
+                <th className="font-semibold py-2 text-left">Ajouté le</th>
                 <th className="font-semibold py-2 text-left">Actions</th>
               </tr>
             </thead>
@@ -154,7 +154,7 @@ export const ClientsTab = ({ user }) => {
           </table>
         ) : (
           <div className="text-center py-16 border border-white/[0.06] border-dashed rounded-[4px] w-full bg-white/[0.04]">
-            <h3 className="font-medium text-base text-kcb-pierre mb-1">Aucun client trouvÃ©</h3>
+            <h3 className="font-medium text-base text-kcb-pierre mb-1">Aucun client trouvé</h3>
             <p className="text-sm text-kcb-pierre">
               {search ? 'Essayez une autre recherche' : 'Commencez par ajouter un client'}
             </p>
@@ -166,18 +166,18 @@ export const ClientsTab = ({ user }) => {
       {filteredClients.length > 5 && (
         <div className="flex justify-end gap-2 mt-4">
           <button
-            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
+            className="rounded-[4px] border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
             onClick={handlePrevPage}
             disabled={currentSet[0] === filteredClients[0]}
           >
-            <ChevronLeft className="w-4 h-4 mr-1 inline-block" /> PrÃ©cÃ©dent
+            <ChevronLeft className="w-4 h-4 mr-1 inline-block" /> Précédent
           </button>
           <span className="text-xs text-kcb-pierre flex items-center px-2">
             Page {Math.floor(filteredClients.indexOf(currentSet[0]) / 40) + 1} /{' '}
             {Math.ceil(filteredClients.length / 40)}
           </span>
           <button
-            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
+            className="rounded-[4px] border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-white/[0.08] transition"
             onClick={handleNextPage}
             disabled={
               currentSet[currentSet.length - 1] === filteredClients[filteredClients.length - 1]

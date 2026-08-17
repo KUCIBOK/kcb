@@ -362,7 +362,7 @@ export function ArtistNumerisationTab() {
                         })
                       : '—'}
                     {req.priority === 'urgent' && (
-                      <span className="ml-2 text-orange-400 font-medium">· Urgent</span>
+                      <span className="ml-2 text-kcb-alerte font-medium">· Urgent</span>
                     )}
                   </p>
                 </div>
