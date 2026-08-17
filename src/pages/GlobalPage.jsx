@@ -9,6 +9,9 @@ import GlobalAdvisorsSection from '../components/landing/global/GlobalAdvisorsSe
 import GlobalLogisticsSection from '../components/landing/global/GlobalLogisticsSection'
 import LogisticsSimulatorSection from '../components/landing/global/LogisticsSimulatorSection'
 import GlobalPricingSection from '../components/landing/global/GlobalPricingSection'
+import GlobalTestimonialsSection from '../components/landing/global/GlobalTestimonialsSection'
+import GlobalCaseStudiesSection from '../components/landing/global/GlobalCaseStudiesSection'
+import GlobalComparisonSection from '../components/landing/global/GlobalComparisonSection'
 import GlobalCtaSection from '../components/landing/global/GlobalCtaSection'
 import { useLang } from '../store/LangContext'
 import { globalT } from '../i18n/global'
@@ -56,6 +59,18 @@ function GlobalContent() {
 
       {/* Pricing tiers */}
       <GlobalPricingSection />
+      <GeoLine />
+
+      {/* Testimonials */}
+      <GlobalTestimonialsSection />
+      <GeoLine />
+
+      {/* Case Studies */}
+      <GlobalCaseStudiesSection />
+      <GeoLine />
+
+      {/* Comparison Table */}
+      <GlobalComparisonSection />
       <GeoLine />
 
       {/* CTA & Enterprise */}
