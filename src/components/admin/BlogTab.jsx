@@ -17,7 +17,7 @@ export function BlogTab() {
 
   useEffect(() => {
     if (blogPosts.length > 0 || archive.length > 0) {
-      setLoading(false) // eslint-disable-line react-hooks/set-state-in-effect
+      setLoading(false)  
       return
     }
     const timer = setTimeout(() => setLoading(false), 500)

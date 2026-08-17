@@ -28,7 +28,7 @@ export function EnhancedDeliveryRequestList({ deliveries, loading: externalLoadi
     } else {
       filtered = deliveries
     }
-    setState((prev) => ({ ...prev, set: filtered })) // eslint-disable-line react-hooks/set-state-in-effect
+    setState((prev) => ({ ...prev, set: filtered }))  
   }, [state.search, deliveries])
 
   const handleSyncWithLogidoo = async () => {

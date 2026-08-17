@@ -1,4 +1,3 @@
-import React from 'react'
 import { CreditCard, Smartphone, Banknote } from 'lucide-react'
 
 const PaymentMethodSelector = ({

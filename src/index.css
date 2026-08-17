@@ -203,6 +203,12 @@ td {
     --kcb-steel: #1a1d24;
     --kcb-platinum: #d6dae0;
 
+    /* Functional semantic colors */
+    --kcb-succes: #2D6A4F;
+    --kcb-alerte: #D4A017;
+    --kcb-erreur: #8B1A1A;
+    --kcb-info: #1A3A5C;
+
     --font-display: 'Playfair Display', Georgia, serif;
     --font-body-kcb: 'DM Sans', system-ui, sans-serif;
     --font-mono-kcb: 'JetBrains Mono', monospace;
@@ -368,6 +374,12 @@ td {
   --color-kcb-silver-dark: #6b7280;
   --color-kcb-steel: #1a1d24;
   --color-kcb-platinum: #d6dae0;
+
+  /* Functional semantic colors */
+  --color-kcb-succes: #2D6A4F;
+  --color-kcb-alerte: #D4A017;
+  --color-kcb-erreur: #8B1A1A;
+  --color-kcb-info: #1A3A5C;
 }
 
 @keyframes slide-out-right {

@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useAuth } from '../../../store/AuthContext'
 import { useArtist } from '../../../store/ArtistContext'
 
-export const Step3 = memo(({ formState, setFormState }) => {
+export const Step3 = memo(function Step3({ formState, setFormState }) {
   const { user } = useAuth()
   const currencies = [
     // {name : "Euro", value : "EUR"},

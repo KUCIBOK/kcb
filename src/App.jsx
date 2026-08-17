@@ -79,7 +79,9 @@ function AppContent() {
       try {
         const newVisitor = await createVisitor(visitorData)
         setVisitor(newVisitor)
-      } catch {}
+      } catch {
+        // visitor creation is non-blocking
+      }
     }
 
     addVisitor()

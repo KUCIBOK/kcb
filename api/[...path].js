@@ -356,8 +356,19 @@ export default async function handler(req, res) {
 
   try {
     // ── Routes entièrement publiques (pas de clé API requise) ─────────────────
-    if (s0 === 'health' && s1 === 'payment') return await routeHealthPayment(req, res)
     if (s0 === 'health') return await routeHealth(req, res)
+
+    // ── /api/health/payment — Admin-only diagnostic (protégé) ──────────────────
+    if (s0 === 'health' && s1 === 'payment') {
+      const authResult = await requireAuth(req)
+      if (authResult.error) return fail(res, authResult.error, authResult.status)
+      const adminCheck = await requireAdmin(authResult.user)
+      if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status)
+      const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown'
+      if (!rateLimit(ip, 3_600_000, 5)) // 5 calls per hour
+        return fail(res, 'Trop de requêtes. Limite 5/heure.', 429)
+      return await routeHealthPayment(req, res)
+    }
 
     // ── /api/cron/expire-subscriptions — appelé par Vercel Cron uniquement ────
     if (s0 === 'cron' && s1 === 'expire-subscriptions')

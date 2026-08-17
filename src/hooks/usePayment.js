@@ -23,7 +23,7 @@ export const usePayment = () => {
       const result = await paymentService.initArtworkPayment(artworkId, guest)
 
       if (!result.success) {
-        throw new Error(result.error)
+        throw new Error(result.error || "Erreur lors de l'initialisation du paiement")
       }
 
       const { paymentUrl, token, transaction } = result.data
@@ -73,7 +73,7 @@ export const usePayment = () => {
       const result = await paymentService.initSubscriptionPayment(subscriptionId)
 
       if (!result.success) {
-        throw new Error(result.error)
+        throw new Error(result.error || "Erreur lors de l'initialisation du paiement")
       }
 
       const { paymentUrl, token, subscription } = result.data

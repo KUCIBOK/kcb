@@ -3,7 +3,7 @@ import { ArtistCard } from './ArtistCard'
 import { Search } from 'lucide-react'
 import RevealOnScroll from '../decoratives/RevealOnScroll'
 
-export const ArtistList = memo(({ artists }) => {
+export const ArtistList = memo(function ArtistList({ artists }) {
   return (
     <>
       {artists?.length >= 1 ? (

@@ -27,7 +27,7 @@ const LEVEL_MAP = {
  * @param {{ children: React.ReactNode }} props
  * @returns {JSX.Element}
  */
-export const ToastContextProvider = memo(({ children }) => {
+export const ToastContextProvider = memo(function ToastContextProvider({ children }) {
   const makeToast = useCallback((title, level = 'info', text = '') => {
     const method = LEVEL_MAP[level] || 'info'
     const options = text ? { description: text } : {}

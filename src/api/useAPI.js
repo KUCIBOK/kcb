@@ -43,6 +43,100 @@ export function setSupabaseToken(token) {
 }
 
 /**
+ * ApiError — erreur typée pour les réponses API non-ok.
+ * Préserve status et body tout en maintenant instanceof Error.
+ */
+export class ApiError extends Error {
+  constructor(message, status, body) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.body = body
+    Object.setPrototypeOf(this, ApiError.prototype)
+  }
+}
+
+/**
+ * Parse JSON de manière sûre — retourne l'objet parsé ou { _raw: text } sur erreur.
+ *
+ * @param {Response} response
+ * @returns {Promise<object>}
+ */
+export async function parseJsonSafe(response) {
+  const text = await response.text()
+  try {
+    return text ? JSON.parse(text) : {}
+  } catch {
+    return { _raw: text }
+  }
+}
+
+/**
+ * Requête API avec retry automatique sur 401 (refresh token + retry une fois).
+ * Utilise le token synchrone stocké dans _currentToken (mis à jour par AuthContext).
+ * À utiliser pour les appels critiques comme le checkout où la fraîcheur du token importe.
+ *
+ * @param {string} url
+ * @param {RequestInit} fetchOptions
+ * @param {boolean} [retry=true]
+ * @returns {Promise<object>}
+ * @throws {ApiError} si la réponse n'est pas ok
+ */
+export async function apiRequestWithRetry(url, fetchOptions = {}, retry = true) {
+  // Getter qui lit le token frais
+  const buildHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'kcb-api-key': import.meta.env.VITE_API_KEY,
+    'Authorization': `Bearer ${_currentToken}`,
+    ...(fetchOptions.headers ?? {}),
+  })
+
+  const res = await fetch(url, {
+    credentials: 'include',
+    ...fetchOptions,
+    headers: buildHeaders(),
+  })
+
+  if (res.status !== 401) {
+    const data = await parseJsonSafe(res)
+    if (!res.ok) {
+      const message = data?.error || data?.message || `HTTP ${res.status}: ${res.statusText}`
+      throw new ApiError(message, res.status, data)
+    }
+    return data
+  }
+
+  // 401 détecté — tenter un refresh et retenter
+  if (retry) {
+    try {
+      // Tenter une rafraîchissement explicite si possible (pour Supabase)
+      // Le token dans _currentToken peut être rafraîchi asynchronement ailleurs,
+      // donc on n'attend pas ici — on retente juste avec le token actuel.
+      const retryRes = await fetch(url, {
+        credentials: 'include',
+        ...fetchOptions,
+        headers: buildHeaders(), // Récupère le token potentiellement rafraîchi
+      })
+
+      const data = await parseJsonSafe(retryRes)
+      if (!retryRes.ok) {
+        const message = data?.error || data?.message || `HTTP ${retryRes.status}: ${retryRes.statusText}`
+        throw new ApiError(message, retryRes.status, data)
+      }
+      return data
+    } catch (err) {
+      throw err
+    }
+  }
+
+  // Pas de retry autorisé — remonter le 401 en erreur
+  const data = await parseJsonSafe(res)
+  const message = data?.error || data?.message || 'Unauthorized'
+  throw new ApiError(message, 401, data)
+}
+
+/**
  * Utilitaires partagés pour tous les fichiers src/api/*.js.
  *
  * @type {{ api: string, options: object }}

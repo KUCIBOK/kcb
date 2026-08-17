@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify'
 import { memo, useState } from 'react'
 import { ApproveAction } from './ApproveAction'
 
-export const SeeAction = memo(({ artwork, user }) => {
+export const SeeAction = memo(function SeeAction({ artwork, user }) {
   const [show, setShow] = useState(false)
   return (
     <>
@@ -25,7 +25,7 @@ export const SeeAction = memo(({ artwork, user }) => {
   )
 })
 
-const ArtworkModal = memo(({ setShow, artwork, user }) => {
+const ArtworkModal = memo(function ArtworkModal({ setShow, artwork, user }) {
   return (
     <div className="relative bg-kcb-ardoise border border-zinc-800 overflow-auto h-[90vh] rounded-[4px] shadow-xl w-full max-w-2xl p-0 animate-scale-up">
       <button

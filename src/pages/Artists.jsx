@@ -28,7 +28,7 @@ export default function Artists() {
       return true
     })
     return shuffleArray(unique)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [artists])
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')

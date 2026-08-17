@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { createCategory, deleteCategory, getAllCategories } from '../api/useCategory'
 import { useAuth } from './AuthContext'
 import { createLog } from '../api/useLog'
@@ -25,60 +25,66 @@ export const CategoryProvider = ({ children }) => {
           setState((prev) => ({ categories: categories }))
           return
         }
-      } catch (error) {}
+      } catch {
+        // categories stay empty on error
+      }
     }
     fetchCategories().finally(() => {
       setState((prev) => ({ ...prev, loading: false }))
     })
   }, [])
 
+  const addCategory = useCallback(async (payload) => {
+    try {
+      const category = await createCategory(payload)
+      if (category?.id) {
+        setState((prev) => ({
+          categories: [category, ...prev.categories],
+        }))
+        makeToast('Succès', 'success', 'La catégorie a été ajoutée avec succès')
+        await createLog({
+          description: `La catégorie ${category?.title} a été ajoutée`,
+          userId: user?._id,
+        })
+      }
+      return category
+    } catch (error) {
+      return {
+        error: error.message || "Erreur lors de l'ajout de la catégorie.",
+      }
+    }
+  }, [makeToast, user?._id])
+
+  const deleteCategoryCtx = useCallback(async (id) => {
+    try {
+      const category = await deleteCategory(id)
+      if (category?.id) {
+        setState((prev) => ({
+          categories: prev.categories.filter((cat) => cat.id !== id),
+        }))
+        makeToast('Succès', 'success', 'La catégorie a été supprimée avec succès')
+        await createLog({
+          description: `La catégorie ${category?.title} a été supprimé`,
+          userId: user?._id,
+        })
+      }
+      return category
+    } catch (error) {
+      return {
+        error: error.message || 'Erreur lors de la suppression de la catégorie.',
+      }
+    }
+  }, [makeToast, user?._id])
+
+  const value = useMemo(() => ({
+    categories: state.categories,
+    loading: state.loading,
+    addCategory,
+    deleteCategory: deleteCategoryCtx,
+  }), [state, addCategory, deleteCategoryCtx])
+
   return (
-    <CategoryContext.Provider
-      value={{
-        categories: state.categories,
-        loading: state.loading,
-        addCategory: async (payload) => {
-          try {
-            const category = await createCategory(payload)
-            if (category?.id) {
-              setState((prev) => ({
-                categories: [category, ...prev.categories],
-              }))
-              makeToast('Succès', 'success', 'La catégorie a été ajoutée avec succès')
-              await createLog({
-                description: `La catégorie ${category?.title} a été ajoutée`,
-                userId: user?._id,
-              })
-            }
-            return category
-          } catch (error) {
-            return {
-              error: error.message || "Erreur lors de l'ajout de la catégorie.",
-            }
-          }
-        },
-        deleteCategory: async (id) => {
-          try {
-            const category = await deleteCategory(id)
-            if (category?.id) {
-              setState((prev) => ({
-                categories: prev.categories.filter((cat) => cat.id !== id),
-              }))
-              makeToast('Succès', 'success', 'La catégorie a été supprimée avec succès')
-              await createLog({
-                description: `La catégorie ${category?.title} a été supprimé`,
-                userId: user?._id,
-              })
-            }
-            return category
-          } catch (error) {
-            return {
-              error: error.message || 'Erreur lors de la suppression de la catégorie.',
-            }
-          }
-        },
-      }}
-    >
+    <CategoryContext.Provider value={value}>
       {children}
     </CategoryContext.Provider>
   )

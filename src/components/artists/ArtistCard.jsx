@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { memo, useEffect, useState } from 'react'
 import { getArtistForSaleArtworks } from '../../api/useArtworks'
 
-export const ArtistCard = memo(({ artist }) => {
+export const ArtistCard = memo(function ArtistCard({ artist }) {
   const { id, name, image, country, coverImage } = artist
   const [artworks, setArtworks] = useState([])
 

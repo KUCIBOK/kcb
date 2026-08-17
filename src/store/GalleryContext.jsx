@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import { getAllGalleries } from '../api/useGallery'
 import { useToast } from './ToastContext'
 import { useAuth } from './AuthContext'
@@ -30,12 +30,12 @@ export const GalleryContextProvider = ({ children }) => {
         setState((prev) => ({ ...prev, loading: false }))
       })
     } else {
-      setState((prev) => ({ ...prev, loading: false })) // eslint-disable-line react-hooks/set-state-in-effect
+      setState((prev) => ({ ...prev, loading: false }))  
     }
   }, [user?.role])
 
   // expose a simple refresh method for components (e.g., after import)
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     const result = await getAllGalleries()
     setState({
       galleries: Array.isArray(result.galleries) ? result.galleries : [],
@@ -46,18 +46,18 @@ export const GalleryContextProvider = ({ children }) => {
     if (result?.error) {
       makeToast('Erreur', 'warning', result.error)
     }
-  }
+  }, [makeToast])
+
+  const value = useMemo(() => ({
+    galleries: state.galleries,
+    total: state.total,
+    filtered: state.filtered,
+    loading: state.loading,
+    refresh,
+  }), [state, refresh])
 
   return (
-    <GalleryContext.Provider
-      value={{
-        galleries: state.galleries,
-        total: state.total,
-        filtered: state.filtered,
-        loading: state.loading,
-        refresh,
-      }}
-    >
+    <GalleryContext.Provider value={value}>
       {children}
     </GalleryContext.Provider>
   )

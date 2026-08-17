@@ -114,7 +114,9 @@ export default function Artwork() {
       const res = await fetch(`${utils.api}/certificates/url/${artwork._id}`, utils.options)
       const body = await res.json()
       if (body?.data?.certificate_url) setCertUrl(body.data.certificate_url)
-    } catch {}
+    } catch {
+      // cert URL is optional
+    }
     setCertLoading(false)
   }, [artwork?._id, certUrl, certLoading])
 

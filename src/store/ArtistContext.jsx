@@ -1,4 +1,4 @@
-import { createContext, memo, useContext, useEffect, useState } from 'react'
+import { createContext, memo, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import {
   createArtist,
   getAllArtists,
@@ -19,7 +19,7 @@ const initialState = {
 }
 const ArtistContext = createContext(initialState)
 
-export const ArtistContextProvider = memo(({ children }) => {
+export const ArtistContextProvider = memo(function ArtistContextProvider({ children }) {
   const { user } = useAuth()
   const [state, setState] = useState(initialState)
   const { makeToast } = useToast()
@@ -66,74 +66,82 @@ export const ArtistContextProvider = memo(({ children }) => {
         .catch(() => {})
     }
   }, [user?._id, user?.role])
+
+  const getArtistByIdCtx = useCallback(async (id) => {
+    const artist = await getArtistById(id)
+    if (artist) {
+      return artist
+    }
+    makeToast('Erreur', 'warning', 'Serveur non disponible')
+  }, [makeToast])
+
+  const getArtistArtworks = useCallback(async (id) => {
+    const artworks = await getArtistForSaleArtworks(id)
+    if (artworks?.length >= 1) {
+      return artworks
+    }
+  }, [])
+
+  const create = useCallback(async (payload) => {
+    try {
+      const artist = await createArtist(payload)
+      if (artist?._id) {
+        setState((prev) => ({
+          ...prev,
+          myArtists: [artist, ...prev.myArtists],
+        }))
+        makeToast('Succès', 'success', 'Artiste créé avec succès')
+        return artist
+      }
+      makeToast('Erreur', 'warning', artist?.error || "Impossible de créer l'artiste")
+      return {
+        error: artist?.error,
+      }
+    } catch (error) {
+      return { error: error.message }
+    }
+  }, [makeToast])
+
+  const update = useCallback(async (id, payload) => {
+    try {
+      const artist = await updateManagedArtist(id, payload)
+      if (artist?._id) {
+        setState((prev) => ({
+          ...prev,
+          myArtists: [artist, ...prev.myArtists.filter((item) => item?._id != artist?._id)],
+        }))
+        makeToast('Succès', 'success', 'Artiste mis à jour avec succès')
+        return artist
+      }
+      makeToast(
+        'Erreur',
+        'warning',
+        artist?.error || "Impossible de mettre à jour l'artiste"
+      )
+      return {
+        error: artist?.error || 'Erreur mise à jour',
+      }
+    } catch (error) {
+      return {
+        error: error.message,
+      }
+    }
+  }, [makeToast])
+
+  const value = useMemo(() => ({
+    artists: state?.artists,
+    myArtists: state?.myArtists,
+    featuredArtists: state?.featured,
+    loading: state.loading,
+    getArtistById: getArtistByIdCtx,
+    getArtistArtworks,
+    create,
+    update,
+  }), [state, getArtistByIdCtx, getArtistArtworks, create, update])
+
   return (
     <>
-      <ArtistContext.Provider
-        value={{
-          artists: state?.artists,
-          myArtists: state?.myArtists,
-          featuredArtists: state?.featured,
-          loading: state.loading,
-          getArtistById: async (id) => {
-            const artist = await getArtistById(id)
-            if (artist) {
-              return artist
-            }
-            makeToast('Erreur', 'warning', 'Serveur non disponible')
-          },
-          getArtistArtworks: async (id) => {
-            const artworks = await getArtistForSaleArtworks(id)
-            if (artworks?.length >= 1) {
-              return artworks
-            }
-            // makeToast('Erreur','warning', artworks?.error)
-          },
-          create: async (payload) => {
-            try {
-              const artist = await createArtist(payload)
-              if (artist?._id) {
-                setState((prev) => ({
-                  ...prev,
-                  myArtists: [artist, ...prev.myArtists],
-                }))
-                makeToast('Succès', 'success', 'Artiste créé avec succès')
-                return artist
-              }
-              makeToast('Erreur', 'warning', artist?.error || "Impossible de créer l'artiste")
-              return {
-                error: artist?.error,
-              }
-            } catch (error) {
-              return { error: error.message }
-            }
-          },
-          update: async (id, payload) => {
-            try {
-              const artist = await updateManagedArtist(id, payload)
-              if (artist?._id) {
-                setState((prev) => ({
-                  ...prev,
-                  myArtists: [artist, ...prev.myArtists.filter((item) => item?._id != artist?._id)],
-                }))
-                makeToast('Succès', 'success', 'Artiste mis à jour avec succès')
-                return artist
-              }
-              makeToast(
-                'Erreur',
-                'warning',
-                artist?.error || "Impossible de mettre à jour l'artiste"
-              )
-              return {
-                error: artist?.error || 'Erreur mise à jour',
-              }
-            } catch (error) {
-              return {
-                error: error.message,
-              }
-            }
-          },
-        }}
-      >
+      <ArtistContext.Provider value={value}>
         {children}
       </ArtistContext.Provider>
     </>

@@ -6,7 +6,7 @@ import { useAuth } from '../../store/AuthContext'
 /**
  * User menu dropdown — aligned with KCB design system.
  */
-export const UserLinks = memo(() => {
+export const UserLinks = memo(function UserLinks() {
   const { user, artistProfile, buyerProfile, curatorProfile, logout } = useAuth()
   const [show, setShow] = useState(false)
   const dashboardPath = user?.role === 'buyer' ? '/account' : `/dashboard/${user?.role ?? 'buyer'}`

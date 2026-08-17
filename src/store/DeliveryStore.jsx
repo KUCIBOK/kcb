@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { useToast } from './ToastContext'
 import { useAuth } from './AuthContext'
 import {
@@ -42,89 +42,97 @@ export function DeliveryContextProvider({ children }) {
         setState((prev) => ({ ...prev, loading: false }))
       })
     } else {
-      setState((prev) => ({ ...prev, loading: false })) // eslint-disable-line react-hooks/set-state-in-effect
+      setState((prev) => ({ ...prev, loading: false }))  
     }
-  }, [user?.role])
+  }, [user?.role, makeToast])
+
+  const create = useCallback(async (payload) => {
+    try {
+      const delivery = await createDelivery(payload)
+      if (delivery?._id) {
+        setState((prev) => ({
+          ...prev,
+          deliveries: [delivery, ...prev.deliveries],
+          myDeliveries: [delivery, ...prev.myDeliveries],
+        }))
+        makeToast('Requête créée avec succès', 'success')
+        return delivery
+      }
+      makeToast(delivery?.error || 'Échec de la création de la livraison', 'error')
+    } catch (error) {
+      makeToast(error.message, 'error')
+    }
+  }, [makeToast])
+
+  const updateDeliveryCtx = useCallback(async (id, payload) => {
+    try {
+      const updatedDelivery = await updateDelivery(id, payload)
+      if (updatedDelivery?._id) {
+        setState((prev) => ({
+          ...prev,
+          deliveries: prev.deliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
+          myDeliveries: prev.myDeliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
+        }))
+        makeToast('Requête mise à jour avec succès', 'success')
+        return updatedDelivery
+      }
+      makeToast(updatedDelivery?.error || 'Échec de la mise à jour de la livraison', 'error')
+    } catch (error) {
+      makeToast(error.message, 'error')
+    }
+  }, [makeToast])
+
+  const changeStatus = useCallback(async (id, payload) => {
+    try {
+      const updatedDelivery = await changeDeliveryStatus(id, payload)
+      if (updatedDelivery?._id) {
+        setState((prev) => ({
+          ...prev,
+          deliveries: prev.deliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
+          myDeliveries: prev.myDeliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
+        }))
+        makeToast('Statut de la livraison mis à jour avec succès', 'success')
+        return updatedDelivery
+      }
+      makeToast(
+        updatedDelivery?.error || 'Échec de la mise à jour du statut de la livraison',
+        'error'
+      )
+      return updatedDelivery
+    } catch (error) {
+      makeToast(error.message, 'error')
+    }
+  }, [makeToast])
+
+  const deleteDeliveryCtx = useCallback(async (id) => {
+    try {
+      const response = await deleteDelivery(id)
+      if (response?.success) {
+        setState((prev) => ({
+          ...prev,
+          deliveries: prev.deliveries.filter((d) => d._id !== id),
+          myDeliveries: prev.myDeliveries.filter((d) => d._id !== id),
+        }))
+        makeToast('Requête supprimée avec succès', 'success')
+        return true
+      }
+      makeToast(response?.error || 'Échec de la suppression de la livraison', 'error')
+      return false
+    } catch (error) {
+      makeToast(error.message, 'error')
+    }
+  }, [makeToast])
+
+  const value = useMemo(() => ({
+    ...state,
+    create,
+    updateDelivery: updateDeliveryCtx,
+    changeStatus,
+    deleteDelivery: deleteDeliveryCtx,
+  }), [state, create, updateDeliveryCtx, changeStatus, deleteDeliveryCtx])
 
   return (
-    <DeliveryContext.Provider
-      value={{
-        ...state,
-        create: async (payload) => {
-          try {
-            const delivery = await createDelivery(payload)
-            if (delivery?._id) {
-              setState((prev) => ({
-                ...prev,
-                deliveries: [delivery, ...prev.deliveries],
-                myDeliveries: [delivery, ...prev.myDeliveries],
-              }))
-              makeToast('Requête créée avec succès', 'success')
-              return delivery
-            }
-            makeToast(delivery?.error || 'Échec de la création de la livraison', 'error')
-          } catch (error) {
-            makeToast(error.message, 'error')
-          }
-        },
-        updateDelivery: async (id, payload) => {
-          try {
-            const updatedDelivery = await updateDelivery(id, payload)
-            if (updatedDelivery?._id) {
-              setState((prev) => ({
-                ...prev,
-                deliveries: prev.deliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
-                myDeliveries: prev.myDeliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
-              }))
-              makeToast('Requête mise à jour avec succès', 'success')
-              return updatedDelivery
-            }
-            makeToast(updatedDelivery?.error || 'Échec de la mise à jour de la livraison', 'error')
-          } catch (error) {
-            makeToast(error.message, 'error')
-          }
-        },
-        changeStatus: async (id, payload) => {
-          try {
-            const updatedDelivery = await changeDeliveryStatus(id, payload)
-            if (updatedDelivery?._id) {
-              setState((prev) => ({
-                ...prev,
-                deliveries: prev.deliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
-                myDeliveries: prev.myDeliveries?.map((d) => (d._id === id ? updatedDelivery : d)),
-              }))
-              makeToast('Statut de la livraison mis à jour avec succès', 'success')
-              return updatedDelivery
-            }
-            makeToast(
-              updatedDelivery?.error || 'Échec de la mise à jour du statut de la livraison',
-              'error'
-            )
-            return updatedDelivery
-          } catch (error) {
-            makeToast(error.message, 'error')
-          }
-        },
-        deleteDelivery: async (id) => {
-          try {
-            const response = await deleteDelivery(id)
-            if (response?.success) {
-              setState((prev) => ({
-                ...prev,
-                deliveries: prev.deliveries.filter((d) => d._id !== id),
-                myDeliveries: prev.myDeliveries.filter((d) => d._id !== id),
-              }))
-              makeToast('Requête supprimée avec succès', 'success')
-              return true
-            }
-            makeToast(response?.error || 'Échec de la suppression de la livraison', 'error')
-            return false
-          } catch (error) {
-            makeToast(error.message, 'error')
-          }
-        },
-      }}
-    >
+    <DeliveryContext.Provider value={value}>
       {children}
     </DeliveryContext.Provider>
   )
