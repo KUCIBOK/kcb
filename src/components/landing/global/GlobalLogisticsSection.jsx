@@ -14,18 +14,18 @@ export default function GlobalLogisticsSection() {
   const t = globalT[lang].logistics
 
   return (
-    <section id="logistics" className="py-16 md:py-36">
-      {/* Header — constrained */}
-      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
-        <div className="flex justify-between items-end mb-16 flex-wrap gap-6">
-          <RevealOnScroll>
+    <section id="logistics" className="py-20 lg:py-40">
+      {/* Header — centered */}
+      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)] mb-20 lg:mb-24">
+        <RevealOnScroll>
+          <div className="text-center">
             <SectionLabel text={t.label} />
-            <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-3">
+            <h2 className="font-playfair font-bold text-[clamp(32px,4vw,48px)] text-white mt-6 mb-6">
               {t.title}
             </h2>
-            <p className="text-[15px] leading-[1.8] text-kcb-pierre max-w-[520px]">{t.desc}</p>
-          </RevealOnScroll>
-          <RevealOnScroll>
+            <p className="text-[15px] leading-[1.8] text-kcb-pierre max-w-[680px] mx-auto mb-8">
+              {t.desc}
+            </p>
             <button
               onClick={() =>
                 document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' })
@@ -34,8 +34,8 @@ export default function GlobalLogisticsSection() {
             >
               {t.cta} <ArrowRight className="w-3.5 h-3.5" />
             </button>
-          </RevealOnScroll>
-        </div>
+          </div>
+        </RevealOnScroll>
       </div>
 
       {/* World map — true full width */}

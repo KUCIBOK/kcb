@@ -9,18 +9,18 @@ export default function GlobalPricingSection() {
   const t = globalT[lang].pricing
 
   return (
-    <section id="pricing" className="py-16 md:py-36 bg-kcb-ivoire text-kcb-noir">
+    <section id="pricing" className="py-20 lg:py-40 bg-kcb-ivoire text-kcb-noir">
       <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <RevealOnScroll>
-          <div className="text-center mb-20">
+          <div className="text-center mb-24 lg:mb-32">
             <div className="font-jetbrains text-[10px] tracking-[0.25em] uppercase text-kcb-silver-dark inline-flex items-center gap-4">
               <span className="block w-12 h-px bg-kcb-silver-dark" />
               {t.label}
             </div>
-            <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-kcb-noir mt-6">
+            <h2 className="font-playfair font-bold text-[clamp(32px,4vw,48px)] text-kcb-noir mt-6 mb-6">
               {t.title}
             </h2>
-            <p className="text-[15px] text-kcb-pierre mt-3 max-w-[440px] mx-auto">{t.subtitle}</p>
+            <p className="text-[15px] text-kcb-pierre max-w-[600px] mx-auto">{t.subtitle}</p>
           </div>
         </RevealOnScroll>
 

@@ -13,15 +13,15 @@ export default function GlobalSourcingSection() {
   const t = globalT[lang].sourcing
 
   return (
-    <section className="py-16 md:py-36 bg-kcb-steel">
-      <div className="max-w-[1280px] mx-auto px-[clamp(16px,5vw,80px)]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 lg:gap-24 items-center">
+    <section className="py-20 lg:py-40 bg-kcb-steel">
+      <div className="max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <RevealOnScroll>
             <SectionLabel text={t.label} />
-            <h2 className="font-playfair font-bold text-[clamp(28px,3vw,40px)] text-white mt-6 mb-6">
+            <h2 className="font-playfair font-bold text-[clamp(32px,4vw,48px)] text-white mt-6 mb-6">
               {t.title}
             </h2>
-            <p className="text-[15px] leading-[1.8] text-kcb-pierre mb-10">{t.desc}</p>
+            <p className="text-[15px] leading-[1.8] text-kcb-pierre mb-10 max-w-[600px]">{t.desc}</p>
             <Link
               to="/global/sourcing"
               className="inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px no-underline"

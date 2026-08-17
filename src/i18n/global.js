@@ -15,7 +15,7 @@ export const globalT = {
       title2: 'African Art',
       titleAccent: 'at Scale',
       subtitle:
-        'The only SaaS platform connecting curators, advisors, and institutions to trade and scale African art globally. Complete infrastructure — from certification to logistics to transactions.',
+        'Trade, scale, and manage African art on one integrated platform. Complete infrastructure for curators, advisors, and institutions.',
       cta1: 'Explore Platform',
       cta2: 'Request Demo',
     },
@@ -43,8 +43,8 @@ export const globalT = {
     },
     logistics: {
       label: 'Global Logistics Network',
-      title: 'Africa to the World — Every Continent, One Standard',
-      desc: 'Museum-grade packing, climate-controlled transport, customs clearance, and last-mile delivery. From Dakar to Dubai, Abidjan to Tokyo — one fully managed corridor.',
+      title: 'Africa to the World',
+      desc: 'Museum-grade packing. Climate-controlled transport. Customs clearance. Real-time tracking. One fully managed corridor.',
       cta: 'Estimate in seconds',
       steps: [
         {
@@ -71,8 +71,8 @@ export const globalT = {
     },
     sourcing: {
       label: 'B2B Sourcing',
-      title: 'Source African Art for Your Programme',
-      desc: "Whether you're curating an exhibition, building a corporate collection, or scouting for a gallery programme — we connect you with verified African artists and handle everything from selection to delivery.",
+      title: 'Source Vetted African Art',
+      desc: "Curate exhibitions. Build collections. Scout galleries. We connect you with verified artists and handle every step from selection to delivery.",
       cta: 'Request Sourcing',
       features: [
         {
@@ -99,9 +99,9 @@ export const globalT = {
     },
     pricing: {
       label: 'Professional Pricing',
-      title: 'Plans Built for Professionals',
+      title: 'Plans for Every Role',
       subtitle:
-        'Choose the plan that fits your business. All plans include access to the certified catalogue, logistics integration, and certification tools.',
+        'All plans include certified catalogue access, logistics integration, and certification tools.',
       plans: [
         {
           name: 'Curator Plan',
@@ -151,8 +151,8 @@ export const globalT = {
       ],
     },
     cta: {
-      heading: 'Access the Collection',
-      sub: 'Join collectors, curators, and institutions sourcing certified African art through the Kucibok standard.',
+      heading: 'Start Scaling Now',
+      sub: 'Join professionals trading certified African art on Kucibok.',
       primary: 'Create Account',
       secondary: 'Contact Sales',
     },
@@ -238,7 +238,7 @@ export const globalT = {
       title2: "l'Art Africain",
       titleAccent: 'à Échelle',
       subtitle:
-        "La seule plateforme SaaS connectant curateurs, conseillers et institutions pour commercer et développer l'art africain mondialement. Infrastructure complète — de la certification à la logistique en passant par les transactions.",
+        "Commercer, développer et gérer l'art africain sur une seule plateforme. Infrastructure complète pour curateurs, conseillers et institutions.",
       cta1: 'Découvrir la Plateforme',
       cta2: 'Demander une Démo',
     },
@@ -266,8 +266,8 @@ export const globalT = {
     },
     logistics: {
       label: 'Réseau Logistique Global',
-      title: "L'Afrique vers le Monde — Tous les Continents, Un Seul Standard",
-      desc: "Emballage muséal, transport climatisé, dédouanement et livraison dernier kilomètre. De Dakar à Dubaï, d'Abidjan à Tokyo — un corridor entièrement géré.",
+      title: "L'Afrique vers le Monde",
+      desc: "Emballage muséal. Transport climatisé. Dédouanement. Tracking temps réel. Un corridor entièrement géré.",
       cta: 'Estimer en quelques secondes',
       steps: [
         {
@@ -294,8 +294,8 @@ export const globalT = {
     },
     sourcing: {
       label: 'Sourcing B2B',
-      title: "Sourcez l'Art Africain pour Votre Programme",
-      desc: "Que vous curiez une exposition, constituiez une collection d'entreprise ou cherchiez pour un programme de galerie — nous vous connectons à des artistes africains vérifiés et gérons tout de la sélection à la livraison.",
+      title: "Sourcez l'Art Africain Vérifié",
+      desc: "Curez des expositions. Constituez des collections. Explorez les galeries. Nous connectons vous à des artistes vérifiés et gérons chaque étape.",
       cta: 'Demander un Sourcing',
       features: [
         {
@@ -322,9 +322,9 @@ export const globalT = {
     },
     pricing: {
       label: 'Tarification Professionnelle',
-      title: 'Plans Conçus pour les Professionnels',
+      title: 'Plans pour Chaque Rôle',
       subtitle:
-        "Choisissez le plan qui correspond à votre activité. Tous les plans incluent l'accès au catalogue certifié, l'intégration logistique et les outils de certification.",
+        "Tous les plans incluent l'accès au catalogue certifié, l'intégration logistique et les outils de certification.",
       plans: [
         {
           name: 'Plan Curateur',
@@ -374,8 +374,8 @@ export const globalT = {
       ],
     },
     cta: {
-      heading: 'Accéder à la Collection',
-      sub: "Rejoignez les collectionneurs, curateurs et institutions qui sourcent l'art africain certifié via le standard Kucibok.",
+      heading: 'Commencez à Développer',
+      sub: "Rejoignez les professionnels qui commercent l'art africain certifié sur Kucibok.",
       primary: 'Créer un Compte',
       secondary: 'Contacter les Ventes',
     },

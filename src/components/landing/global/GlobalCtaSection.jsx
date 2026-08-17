@@ -12,15 +12,15 @@ export default function GlobalCtaSection() {
   const t = globalT[lang].cta
 
   return (
-    <section className="py-20 md:py-40 text-center relative">
+    <section className="py-24 lg:py-48 text-center relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-kcb-silver/[0.03] pointer-events-none" />
 
       <div className="relative z-[1] max-w-[1280px] mx-auto px-[clamp(24px,5vw,80px)]">
         <RevealOnScroll>
-          <h2 className="font-playfair font-bold text-[clamp(32px,4vw,52px)] mb-5">{t.heading}</h2>
+          <h2 className="font-playfair font-bold text-[clamp(36px,5vw,56px)] mb-6">{t.heading}</h2>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>
-          <p className="text-[15px] text-kcb-pierre mb-12 max-w-[460px] mx-auto">{t.sub}</p>
+          <p className="text-[15px] text-kcb-pierre mb-14 max-w-[600px] mx-auto">{t.sub}</p>
         </RevealOnScroll>
         <RevealOnScroll delay={0.2}>
           <div className="flex justify-center gap-4 flex-wrap">
