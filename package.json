@@ -22,7 +22,8 @@
     "@sentry/react": "^10.70.0",
     "@supabase/supabase-js": "^2.98.0",
     "@tailwindcss/vite": "^4.0.17",
-    "@upstash/redis": "^1.35.0",
+    "@tanstack/react-query": "5",
+    "@upstash/redis": "^1.38.2",
     "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.9",
     "dompurify": "^3.3.3",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@eslint/js": "9.17.0",
+    "@sentry/cli": "^2.4.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -60,7 +62,6 @@
     "prettier": "^3.8.1",
     "vite": "^6.3.2",
     "vitest": "^4.0.18"
-    ,"@sentry/cli": "^2.4.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
