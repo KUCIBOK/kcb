@@ -258,7 +258,7 @@ function AddCollectionModal({ closeModal }) {
                     onClick={() => {
                       setState({ ...state, artworks: [...(state?.artworks ?? []), artworkModel] })
                     }}
-                    className="rounded-[4px] p-2 bg-purple-700/30 text-white text-xs flex items-center gap-2"
+                    className="rounded-[4px] p-2 bg-kcb-pierre/30 text-white text-xs flex items-center gap-2"
                   >
                     <Plus className="w-4 h-4 text-white" />
                     Ajouter une oeuvre
@@ -539,7 +539,7 @@ function ArtworkShortListItem({ setFormState, formState, artwork, index }) {
               {state.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="bg-purple-700/50 flex animate-slide-left items-center gap-2 text-white rounded-full px-3 py-1 text-sm font-semibold mt-2 mr-2"
+                  className="bg-kcb-pierre/50 flex animate-slide-left items-center gap-2 text-white rounded-full px-3 py-1 text-sm font-semibold mt-2 mr-2"
                 >
                   {tag}{' '}
                   <span
