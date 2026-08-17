@@ -1,26 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
 import { getApprovedArtworks } from '../../../api/useArtworks'
+import { getCurrentFeaturedArtist, prioritizeFeaturedArtist } from '../../../lib/featuredArtistRotation'
 
 const ROTATION_INTERVAL = 4000
 
 /**
  * Artwork showcase frame with floating stat cards for Global hero.
  * Rotates through certified artworks every 4 seconds.
+ * Prioritizes featured artist's works (rotates weekly).
  */
 export default function HeroShowcase() {
   const [pool, setPool] = useState([])
   const [index, setIndex] = useState(0)
   const [visible, setVisible] = useState(true)
+  const [featuredArtist, setFeaturedArtist] = useState(null)
   const timerRef = useRef(null)
 
   useEffect(() => {
+    // Get this week's featured artist
+    const featured = getCurrentFeaturedArtist()
+    setFeaturedArtist(featured)
+
+    // Load artworks and prioritize featured artist
     getApprovedArtworks({ limit: 100 }).then((result) => {
       const list = Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : []
       const certified = list.filter((a) => a.kucibok_id && a.image)
       const candidates = certified.length > 0 ? certified : list.filter((a) => a.image)
       if (candidates.length === 0) return
-      // Shuffle so each session starts at a different artwork
-      const shuffled = [...candidates].sort(() => Math.random() - 0.5)
+
+      // Prioritize featured artist's works if one is scheduled for this week
+      const prioritized = featured ? prioritizeFeaturedArtist(candidates, featured) : candidates
+
+      // Shuffle within their group so each session starts at a different artwork
+      const shuffled = [...prioritized].sort(() => Math.random() - 0.5)
       setPool(shuffled)
     })
   }, [])
@@ -79,9 +91,16 @@ export default function HeroShowcase() {
             opacity: visible ? 1 : 0,
           }}
         >
-          <span className="inline-block bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-[9px] tracking-[0.1em] uppercase px-2 py-0.5 mb-2">
-            Certified
-          </span>
+          <div className="flex flex-col gap-2 mb-2">
+            <span className="inline-block bg-[var(--accent)] text-kcb-noir-deep font-dm-sans font-semibold text-[9px] tracking-[0.1em] uppercase px-2 py-0.5 w-fit">
+              Certified
+            </span>
+            {featuredArtist && artwork?.artist?.toLowerCase() === featuredArtist.toLowerCase() && (
+              <span className="inline-block bg-kcb-or text-kcb-noir-deep font-dm-sans font-semibold text-[9px] tracking-[0.1em] uppercase px-2 py-0.5 w-fit">
+                ⭐ Featured This Week
+              </span>
+            )}
+          </div>
           <div className="font-playfair font-semibold text-sm lg:text-lg text-white mb-1 line-clamp-2">
             {artwork?.title ?? '—'}
           </div>
