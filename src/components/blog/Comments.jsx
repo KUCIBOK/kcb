@@ -48,7 +48,7 @@ export function Comments({ post, setPostState, postState }) {
         Commentaires
       </h3>
       {state?.error && (
-        <div className="border border-red-500 bg-red-900/80 rounded-md p-3 text-xs text-red-200 mb-3">
+        <div className="border border-red-500 bg-red-900/80 rounded-[4px] p-3 text-xs text-red-200 mb-3">
           {state?.error}
         </div>
       )}

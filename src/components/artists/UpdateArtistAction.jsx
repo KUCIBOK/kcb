@@ -93,7 +93,7 @@ function Modal({ closeModal, artist }) {
             </button>
           </div>
           {state?.error && (
-            <div className="rounded-md flex gap-3 p-4 bg-red-700/60 border border-red-500 text-white-900">
+            <div className="rounded-[4px] flex gap-3 p-4 bg-red-700/60 border border-red-500 text-white-900">
               <AlertCircle className="w-5 h-5" /> {state?.error}
             </div>
           )}
@@ -118,7 +118,7 @@ function Modal({ closeModal, artist }) {
                 <button
                   type="button"
                   onClick={() => document.getElementById('profile-image').click()}
-                  className="border border-border bg-kcb-ardoise w-1/2 mx-auto rounded-md text-sm text-white font-medium px-4 py-2 my-2"
+                  className="border border-border bg-kcb-ardoise w-1/2 mx-auto rounded-[4px] text-sm text-white font-medium px-4 py-2 my-2"
                 >
                   Modifier la photo
                 </button>
@@ -143,7 +143,7 @@ function Modal({ closeModal, artist }) {
                 id="name"
                 name="name"
                 type="text"
-                className="border border-border rounded-md bg-stone-700/90 px-4 py-2 font-normal text-[16px]"
+                className="border border-border rounded-[4px] bg-stone-700/90 px-4 py-2 font-normal text-[16px]"
                 placeholder="Nom complet de l'artiste"
               />
             </div>
@@ -160,7 +160,7 @@ function Modal({ closeModal, artist }) {
                 id="username"
                 name="username"
                 type="text"
-                className="border border-border rounded-md bg-stone-700/90 px-4 py-2 font-normal text-[16px]"
+                className="border border-border rounded-[4px] bg-stone-700/90 px-4 py-2 font-normal text-[16px]"
                 placeholder="Pseudo"
               />
             </div>
@@ -171,7 +171,7 @@ function Modal({ closeModal, artist }) {
                 onChange={(e) => setState({ ...state, country: e.target.value })}
                 value={state.country}
                 id="country"
-                className="w-full border border-white/[0.06]/70  bg-kcb-ardoise rounded-md mt-[5px] py-[7px] px-2"
+                className="w-full border border-white/[0.06]/70  bg-kcb-ardoise rounded-[4px] mt-[5px] py-[7px] px-2"
                 required
               >
                 {state?.countries?.map((country, index) => (
@@ -190,7 +190,7 @@ function Modal({ closeModal, artist }) {
                 theme="snow"
                 value={state.biography}
                 onChange={(value) => setState({ ...state, biography: value })}
-                className="border bg-white text-black border-background rounded-md my-2"
+                className="border bg-white text-black border-background rounded-[4px] my-2"
                 placeholder="Parlez-nous de lui"
               />
             </div>
@@ -205,7 +205,7 @@ function Modal({ closeModal, artist }) {
                 id="portfolio"
                 cols="30"
                 rows="5"
-                className="w-full border border-border rounded-md bg-kcb-noir px-3 py-2 text-white mt-2"
+                className="w-full border border-border rounded-[4px] bg-kcb-noir px-3 py-2 text-white mt-2"
                 placeholder="Lien de votre portfolio"
               />
             </div>
@@ -213,11 +213,11 @@ function Modal({ closeModal, artist }) {
             <div className="flex items-center justify-end gap-4">
               <button
                 onClick={() => closeModal()}
-                className="border border-border rounded-md px-4 py-2"
+                className="border border-border rounded-[4px] px-4 py-2"
               >
                 Annuler
               </button>
-              <button type="submit" className="rounded-md px-4 py-2.5 bg-green-600">
+              <button type="submit" className="rounded-[4px] px-4 py-2.5 bg-green-600">
                 {state?.loading ? <DataLoader /> : 'Modifer'}
               </button>
             </div>

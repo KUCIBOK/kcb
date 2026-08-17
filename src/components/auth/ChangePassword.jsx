@@ -9,7 +9,7 @@ export function ChangePassword() {
     <>
       <button
         onClick={() => setState(true)}
-        className="px-4 py-2 text-white text-sm my-4 rounded-md flex justify-center items-center gap-2 bg-background mx-auto hover:bg-background/80"
+        className="px-4 py-2 text-white text-sm my-4 rounded-[4px] flex justify-center items-center gap-2 bg-background mx-auto hover:bg-background/80"
       >
         <PenBox className="w-4 h-4" />
         Modifier le mot de passe

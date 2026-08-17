@@ -179,7 +179,7 @@ export default function SubscriptionPlanCheckout() {
                   <button
                     disabled={!user?.id || user?.role !== state?.plan?.role || paymentLoading}
                     onClick={handlePayment}
-                    className="rounded-md flex justify-center items-center gap-2 w-full bg-kcb-or hover:bg-kcb-bronze transition shadow py-2 text-kcb-noir font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="rounded-[4px] flex justify-center items-center gap-2 w-full bg-kcb-or hover:bg-kcb-bronze transition shadow py-2 text-kcb-noir font-semibold text-base disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {!user?.id ? (
                       <Lock className="w-6 h-6 my-2" />

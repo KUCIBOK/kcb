@@ -35,13 +35,13 @@ export function PlansListItemActions({ plan }) {
           <>
             <button
               onClick={() => setState((prev) => ({ ...prev, updatePlan: true }))}
-              className="justify-center w-8/10 border rounded-md bg-kcb-noir text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-kcb-ardoise transition-colors duration-200"
+              className="justify-center w-8/10 border rounded-[4px] bg-kcb-noir text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-kcb-ardoise transition-colors duration-200"
             >
               <PenBoxIcon className="w-4 h-4 mr-2 text-white" /> Modifier
             </button>
             <button
               onClick={() => setState((prev) => ({ ...prev, confirmDelete: true }))}
-              className=" justify-center w-2/10 border rounded-md bg-red-900/90 text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-red-700/90 transition-colors duration-200"
+              className=" justify-center w-2/10 border rounded-[4px] bg-red-900/90 text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-red-700/90 transition-colors duration-200"
             >
               {state.loading ? <DataLoader /> : <Trash2 className=" text-white w-4 h-4" />}
             </button>
@@ -50,7 +50,7 @@ export function PlansListItemActions({ plan }) {
           plan?.price > 0 && (
             <Link
               to={`/subscription-checkout/${plan?._id}`}
-              className="justify-center w-full border rounded-md bg-kcb-noir text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-kcb-ardoise transition-colors duration-200"
+              className="justify-center w-full border rounded-[4px] bg-kcb-noir text-white font-medium py-2 px-2 md:py-2.5 md:px-4 flex items-center hover:bg-kcb-ardoise transition-colors duration-200"
             >
               Souscrire
             </Link>

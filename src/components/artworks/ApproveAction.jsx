@@ -40,7 +40,7 @@ export const ApproveAction = memo(function ApproveAction({ artwork }) {
           <button
             title="Approuver"
             onClick={() => setState((prev) => ({ ...prev, confirmApprove: true }))}
-            className="rounded-md bg-green-600 hover:opacity-90 flex items-center gap-3 p-2"
+            className="rounded-[4px] bg-green-600 hover:opacity-90 flex items-center gap-3 p-2"
           >
             {state?.loading ? <DataLoader /> : <Check className="w-5 h-5" />}
           </button>
@@ -49,7 +49,7 @@ export const ApproveAction = memo(function ApproveAction({ artwork }) {
           <button
             title="Rejeter"
             onClick={() => setState((prev) => ({ ...prev, confirmReject: true }))}
-            className="rounded-md bg-red-900 hover:opacity-90 flex items-center gap-3 p-2"
+            className="rounded-[4px] bg-red-900 hover:opacity-90 flex items-center gap-3 p-2"
           >
             {state?.loading ? <DataLoader /> : <X className="w-5 h-5" />}
           </button>

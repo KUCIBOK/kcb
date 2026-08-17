@@ -43,7 +43,7 @@ export function CollectorCertificatesTab() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
-          <div className="bg-green-900/20 text-green-400 p-2.5 rounded-lg">
+          <div className="bg-green-900/20 text-green-400 p-2.5 rounded-[4px]">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -60,7 +60,7 @@ export function CollectorCertificatesTab() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="bg-green-900/20 text-green-400 p-2.5 rounded-lg">
+        <div className="bg-green-900/20 text-green-400 p-2.5 rounded-[4px]">
           <ShieldCheck className="w-5 h-5" />
         </div>
         <div>
@@ -104,10 +104,10 @@ export function CollectorCertificatesTab() {
           {allArtworks.map((artwork) => (
             <div
               key={artwork.id ?? artwork._id}
-              className="flex items-center gap-4 p-4 rounded-xl border border-white/[0.06] bg-kcb-ardoise/40 hover:bg-kcb-ardoise/60 transition-colors"
+              className="flex items-center gap-4 p-4 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise/40 hover:bg-kcb-ardoise/60 transition-colors"
             >
               {/* Image */}
-              <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-kcb-ardoise">
+              <div className="w-14 h-14 rounded-[4px] overflow-hidden flex-shrink-0 bg-kcb-ardoise">
                 {artwork.image ? (
                   <img
                     src={artwork.image}
@@ -139,7 +139,7 @@ export function CollectorCertificatesTab() {
                     <Link
                       to={`/verify/${artwork.kucibok_id}`}
                       target="_blank"
-                      className="p-1.5 rounded-lg text-kcb-pierre hover:text-white hover:bg-white/[0.06] transition-colors"
+                      className="p-1.5 rounded-[4px] text-kcb-pierre hover:text-white hover:bg-white/[0.06] transition-colors"
                       title="Vérifier le certificat"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -150,7 +150,7 @@ export function CollectorCertificatesTab() {
                         target="_blank"
                         rel="noreferrer"
                         download
-                        className="p-1.5 rounded-lg text-kcb-pierre hover:text-kcb-or hover:bg-kcb-or/10 transition-colors"
+                        className="p-1.5 rounded-[4px] text-kcb-pierre hover:text-kcb-or hover:bg-kcb-or/10 transition-colors"
                         title="Télécharger le PDF"
                       >
                         <Download className="w-4 h-4" />

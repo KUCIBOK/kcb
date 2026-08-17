@@ -213,7 +213,7 @@ export default function DashboardSidebar({
           <div className="mt-auto flex flex-col gap-2">
             <button
               onClick={logout}
-              className="w-full px-3 py-2 flex gap-2 items-center text-white text-xs bg-[#8B1A1A]/80 hover:bg-[#8B1A1A] rounded-md transition justify-center"
+              className="w-full px-3 py-2 flex gap-2 items-center text-white text-xs bg-[#8B1A1A]/80 hover:bg-[#8B1A1A] rounded-[4px] transition justify-center"
             >
               <LogOut className="w-4 h-4 text-white" />
               <span>{t.logout}</span>

@@ -80,13 +80,13 @@ export default function ForgotPasswordForm() {
                   onChange={(e) => setState({ ...state, email: e.target.value })}
                   required
                   placeholder="Adresse email"
-                  className="w-full border border-white/[0.06] bg-kcb-noir-deep rounded-md px-3 py-2 text-sm text-white placeholder:text-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
+                  className="w-full border border-white/[0.06] bg-kcb-noir-deep rounded-[4px] px-3 py-2 text-sm text-white placeholder:text-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
                 />
               </div>
               <button
                 type="submit"
                 disabled={state?.loading}
-                className="w-full py-2 rounded-md bg-kcb-or text-white font-semibold text-sm hover:bg-kcb-bronze transition flex items-center justify-center min-h-[40px]"
+                className="w-full py-2 rounded-[4px] bg-kcb-or text-white font-semibold text-sm hover:bg-kcb-bronze transition flex items-center justify-center min-h-[40px]"
               >
                 {state?.loading ? 'Envoi en cours...' : 'Envoyer le lien'}
               </button>

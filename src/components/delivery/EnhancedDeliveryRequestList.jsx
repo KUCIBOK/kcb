@@ -107,7 +107,7 @@ export function EnhancedDeliveryRequestList({ deliveries, loading: externalLoadi
             value={state?.search}
             onChange={(e) => setState({ ...state, search: e.target.value })}
             placeholder="Rechercher par destinataire, trackingId, statut..."
-            className="w-full pl-10 pr-4 py-2 rounded-md border border-white/[0.06] bg-kcb-ardoise text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+            className="w-full pl-10 pr-4 py-2 rounded-[4px] border border-white/[0.06] bg-kcb-ardoise text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
           />
         </div>
 
@@ -115,7 +115,7 @@ export function EnhancedDeliveryRequestList({ deliveries, loading: externalLoadi
           <button
             onClick={handleSyncWithLogidoo}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 disabled:bg-kcb-or/50 text-kcb-noir rounded-md transition font-semibold"
+            className="flex items-center gap-2 px-4 py-2 bg-kcb-or hover:bg-kcb-or/90 disabled:bg-kcb-or/50 text-kcb-noir rounded-[4px] transition font-semibold"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             {loading ? 'Synchronisation...' : 'Sync avec Logidoo'}
@@ -125,7 +125,7 @@ export function EnhancedDeliveryRequestList({ deliveries, loading: externalLoadi
             onClick={() =>
               setState((prev) => ({ ...prev, showLogidooData: !prev.showLogidooData }))
             }
-            className="px-4 py-2 bg-kcb-bronze hover:bg-kcb-bronze/90 text-white rounded-md transition"
+            className="px-4 py-2 bg-kcb-bronze hover:bg-kcb-bronze/90 text-white rounded-[4px] transition"
           >
             {state.showLogidooData ? 'Masquer Logidoo' : 'Afficher Logidoo'}
           </button>
@@ -134,7 +134,7 @@ export function EnhancedDeliveryRequestList({ deliveries, loading: externalLoadi
 
       {/* Sync result notification */}
       {syncResult && (
-        <div className="mb-4 p-4 bg-green-900/20 border border-green-800 rounded-md">
+        <div className="mb-4 p-4 bg-green-900/20 border border-green-800 rounded-[4px]">
           <div className="flex items-center gap-2 text-green-400">
             <AlertCircle className="h-5 w-5" />
             <span>Synchronisation terminée: {syncResult.syncedCount} livraisons synchronisées</span>
@@ -143,7 +143,7 @@ export function EnhancedDeliveryRequestList({ deliveries, loading: externalLoadi
       )}
 
       {/* Deliveries table */}
-      <div className="overflow-auto rounded-md border border-white/[0.06] bg-kcb-ardoise">
+      <div className="overflow-auto rounded-[4px] border border-white/[0.06] bg-kcb-ardoise">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-kcb-ardoise text-kcb-sable">

@@ -11,7 +11,7 @@ export function RejectAction({ delivery }) {
         aria-label="Rejeter la demande"
         title="Rejeter la demande"
         onClick={() => setModal(true)}
-        className="text-white p-2 rounded-md bg-red-800 hover:bg-red-900 shadow-sm transition-colors"
+        className="text-white p-2 rounded-[4px] bg-red-800 hover:bg-red-900 shadow-sm transition-colors"
       >
         <X className="w-4 h-4 text-white" />
       </button>

@@ -10,7 +10,7 @@ export const SeeAction = memo(function SeeAction({ artwork, user }) {
       <button
         title="Voir"
         onClick={() => setShow(!show)}
-        className="border border-white/[0.06] rounded-md bg-kcb-ardoise hover:bg-kcb-ardoise p-2 flex items-center gap-3"
+        className="border border-white/[0.06] rounded-[4px] bg-kcb-ardoise hover:bg-kcb-ardoise p-2 flex items-center gap-3"
       >
         <Eye className="w-4 h-4" />
       </button>

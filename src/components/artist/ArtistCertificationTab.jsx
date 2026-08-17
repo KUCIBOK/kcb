@@ -143,7 +143,7 @@ export function ArtistCertificationTab() {
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-[4px] transition-colors ${
                   filter === f.value
                     ? 'bg-kcb-or text-kcb-noir'
                     : 'text-kcb-pierre hover:text-white'

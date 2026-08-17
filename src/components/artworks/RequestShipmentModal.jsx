@@ -81,7 +81,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
           </div>
           <button
             onClick={handleClose}
-            className="text-kcb-pierre hover:text-white transition p-1 rounded-md hover:bg-kcb-ardoise"
+            className="text-kcb-pierre hover:text-white transition p-1 rounded-[4px] hover:bg-kcb-ardoise"
           >
             <X className="w-5 h-5" />
           </button>
@@ -105,7 +105,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
             )}
             <button
               onClick={handleClose}
-              className="px-6 py-2.5 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-semibold rounded-md transition"
+              className="px-6 py-2.5 bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir text-sm font-semibold rounded-[4px] transition"
             >
               Fermer
             </button>
@@ -121,7 +121,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 <img
                   src={artwork.image}
                   alt={artwork.title}
-                  className="w-12 h-12 object-cover rounded-md shrink-0"
+                  className="w-12 h-12 object-cover rounded-[4px] shrink-0"
                 />
               )}
               <div>
@@ -136,7 +136,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
               <select
                 value={form.corridor}
                 onChange={(e) => set('corridor', e.target.value)}
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
               >
                 <option value="AF_TO_FR">Afrique → France</option>
                 <option value="FR_TO_AF">France → Afrique</option>
@@ -152,7 +152,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 required
                 value={form.originCountry}
                 onChange={(e) => set('originCountry', e.target.value)}
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
               >
                 <option value="">Sélectionner…</option>
                 {ORIGIN_COUNTRIES.map((c) => (
@@ -173,7 +173,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                   required
                   value={form.recipientName}
                   onChange={(e) => set('recipientName', e.target.value)}
-                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="Jean Dupont"
                 />
               </div>
@@ -185,7 +185,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                   required
                   value={form.recipientPhone}
                   onChange={(e) => set('recipientPhone', e.target.value)}
-                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="+33 6 00 00 00 00"
                 />
               </div>
@@ -200,7 +200,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 required
                 value={form.deliveryAddress}
                 onChange={(e) => set('deliveryAddress', e.target.value)}
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 placeholder="12 rue de l'Art, 75001 Paris, France"
               />
             </div>
@@ -213,7 +213,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                   type="date"
                   value={form.collectDate}
                   onChange={(e) => set('collectDate', e.target.value)}
-                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -222,7 +222,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                   type="date"
                   value={form.deliveryDate}
                   onChange={(e) => set('deliveryDate', e.target.value)}
-                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 />
               </div>
             </div>
@@ -234,7 +234,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 <select
                   value={form.packageSize}
                   onChange={(e) => set('packageSize', e.target.value)}
-                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 >
                   <option value="small">Petit (&lt;50cm)</option>
                   <option value="medium">Moyen</option>
@@ -250,7 +250,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                   max="500"
                   value={form.packageWeight}
                   onChange={(e) => set('packageWeight', e.target.value)}
-                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or"
                   placeholder="ex: 5"
                 />
               </div>
@@ -259,7 +259,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 <select
                   value={form.deliveryPriority}
                   onChange={(e) => set('deliveryPriority', e.target.value)}
-                  className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
+                  className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or"
                 >
                   <option value="standard">Standard</option>
                   <option value="express">Express</option>
@@ -298,7 +298,7 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
                 value={form.specialInstructions}
                 onChange={(e) => set('specialInstructions', e.target.value)}
                 rows={3}
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or resize-none"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-kcb-pierre focus:outline-none focus:ring-2 focus:ring-kcb-or resize-none"
                 placeholder="ex: œuvre fragile, nécessite klimatisation, accès difficile…"
               />
             </div>
@@ -314,14 +314,14 @@ export function RequestShipmentModal({ artwork, isOpen, onClose }) {
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 text-sm text-kcb-pierre hover:text-white border border-white/[0.06] rounded-md hover:bg-kcb-ardoise transition"
+                className="px-4 py-2 text-sm text-kcb-pierre hover:text-white border border-white/[0.06] rounded-[4px] hover:bg-kcb-ardoise transition"
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-5 py-2 text-sm font-semibold bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir rounded-md transition flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2 text-sm font-semibold bg-kcb-or hover:bg-kcb-or/90 text-kcb-noir rounded-[4px] transition flex items-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

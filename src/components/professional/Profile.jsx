@@ -1,4 +1,4 @@
-ï»¿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '../../store/AuthContext'
 import { Camera, Copy } from 'lucide-react'
 import ReactQuill from 'react-quill'
@@ -37,7 +37,7 @@ export const Profile = () => {
     const file = e.target.files[0]
     if (!file) return
     if (file.size > 5 * 1024 * 1024) {
-      setState((prev) => ({ ...prev, error: "L'image ne doit pas dÃ©passer 5 Mo." }))
+      setState((prev) => ({ ...prev, error: "L'image ne doit pas dépasser 5 Mo." }))
       return
     }
     const reader = new FileReader()
@@ -74,7 +74,7 @@ export const Profile = () => {
       const updatedProfile = await updateProfile(formData)
       if (updatedUser?._id && updatedProfile?._id) {
         setState((prev) => ({ ...prev, loading: false, error: '' }))
-        toast.success('Profil mis Ã  jour !')
+        toast.success('Profil mis à jour !')
       }
     } catch (error) {
       setState({
@@ -110,7 +110,7 @@ export const Profile = () => {
             placeholder={curatorProfile?.username}
           />
           <Input
-            label="TÃ©lÃ©phone"
+            label="Téléphone"
             type="tel"
             name="telephone"
             value={state?.telephone || ''}
@@ -118,7 +118,7 @@ export const Profile = () => {
             required
             minLength={13}
             maxLength={18}
-            placeholder="Votre numÃ©ro de tÃ©lÃ©phone"
+            placeholder="Votre numéro de téléphone"
           />
           <Input
             label="Email"
@@ -159,7 +159,7 @@ export const Profile = () => {
               value={state.qualifications || ''}
               onChange={(value) => setState({ ...state, qualifications: value })}
               className="border border-white/[0.06] rounded-[4px] bg-white text-black"
-              placeholder="DÃ©crivez vos qualifications"
+              placeholder="Décrivez vos qualifications"
             />
           </div>
         </div>
@@ -167,7 +167,7 @@ export const Profile = () => {
     },
     {
       value: 'security',
-      label: 'SÃ©curitÃ©',
+      label: 'Sécurité',
       content: (
         <div className="space-y-6">
           <div>
@@ -184,14 +184,14 @@ export const Profile = () => {
                 readOnly
               />
               <div>
-                <label className="block text-sm font-medium text-kcb-sable mb-2">ClÃ© privÃ©e</label>
+                <label className="block text-sm font-medium text-kcb-sable mb-2">Clé privée</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={
                       user?.wallet?.privateKey
                         ? user.wallet.privateKey.slice(0, 6) +
-                          'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢' +
+                          '••••••••••••••••••••' +
                           user.wallet.privateKey.slice(-4)
                         : ''
                     }
@@ -202,12 +202,12 @@ export const Profile = () => {
                     type="button"
                     onClick={() => navigator.clipboard.writeText(user?.wallet?.privateKey || '')}
                     className="px-4 py-2 border border-white/[0.06] bg-kcb-noir rounded-[4px] hover:bg-kcb-ardoise transition"
-                    title="Copier la clÃ© privÃ©e"
+                    title="Copier la clé privée"
                   >
                     <Copy className="w-4 h-4 text-kcb-pierre" />
                   </button>
                 </div>
-                <p className="text-xs text-yellow-600 mt-1">Ne partagez jamais votre clÃ© privÃ©e.</p>
+                <p className="text-xs text-yellow-600 mt-1">Ne partagez jamais votre clé privée.</p>
               </div>
             </div>
           </div>
@@ -220,7 +220,7 @@ export const Profile = () => {
     <section className="bg-kcb-ardoise rounded-[4px] shadow-md border border-white/[0.06] px-4 py-6 md:px-8 md:py-8 w-full mx-auto">
       <form onSubmit={handleUpdate} method="post" className="space-y-6">
         {state.error && (
-          <div className="text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
+          <div className="text-red-300 text-center bg-red-900/20 border border-red-900 rounded-[4px] p-2 text-xs">
             {state.error}
           </div>
         )}
@@ -244,7 +244,7 @@ export const Profile = () => {
               <button
                 type="button"
                 onClick={() => document.getElementById('profile-image').click()}
-                className="border border-white/[0.06] bg-kcb-ardoise w-full rounded-md text-xs text-kcb-sable font-medium px-3 py-2 hover:bg-kcb-ardoise transition"
+                className="border border-white/[0.06] bg-kcb-ardoise w-full rounded-[4px] text-xs text-kcb-sable font-medium px-3 py-2 hover:bg-kcb-ardoise transition"
               >
                 Modifier la photo
               </button>
@@ -258,7 +258,7 @@ export const Profile = () => {
             </div>
             <div className="w-full pt-4 border-t border-white/[0.06]">
               <div className="flex justify-between text-xs text-kcb-pierre">
-                <span>Compte crÃ©Ã©</span>
+                <span>Compte créé</span>
                 <span>{new Date(user?.created_at)?.toLocaleDateString()}</span>
               </div>
             </div>

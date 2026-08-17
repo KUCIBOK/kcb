@@ -10,7 +10,7 @@ export function DefineAuctionAction({ artwork }) {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="flex p-2 gap-2 items-center border bg-green-600 border-border rounded-lg"
+        className="flex p-2 gap-2 items-center border bg-green-600 border-border rounded-[4px]"
       >
         <PenBox className="w-4 h-4 text-white font-bold mx-auto" />
         <p className="mx-auto text-sm">Définir l'enchère</p>

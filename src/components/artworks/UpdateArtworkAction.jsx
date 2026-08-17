@@ -15,7 +15,7 @@ export function UpdateArtworkAction({ artwork }) {
     <>
       <button
         title="Mettre à jour"
-        className="rounded-md p-2 text-white flex items-center bg-forest/90"
+        className="rounded-[4px] p-2 text-white flex items-center bg-forest/90"
         onClick={() => setState({ ...state, modal: true })}
       >
         <PenBox className="w-4 h-4 text-white" />

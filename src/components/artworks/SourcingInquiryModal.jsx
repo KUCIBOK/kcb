@@ -93,7 +93,7 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
             </p>
             <button
               onClick={handleClose}
-              className="mt-2 px-5 py-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-md text-sm font-medium transition"
+              className="mt-2 px-5 py-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-[4px] text-sm font-medium transition"
             >
               Fermer
             </button>
@@ -129,7 +129,7 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
                 required
                 value={form.purpose}
                 onChange={(e) => setForm({ ...form, purpose: e.target.value })}
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
               >
                 <option value="">Sélectionner…</option>
                 {PURPOSE_OPTIONS.map((o) => (
@@ -150,7 +150,7 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
                 value={form.organization}
                 onChange={(e) => setForm({ ...form, organization: e.target.value })}
                 placeholder="ex: Musée d'Art Moderne, Galerie Templon…"
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
               />
             </div>
 
@@ -162,7 +162,7 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
                 value={form.budget}
                 onChange={(e) => setForm({ ...form, budget: e.target.value })}
                 placeholder="ex: €5 000 – €10 000, Sur demande…"
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-kcb-or transition"
               />
             </div>
 
@@ -175,7 +175,7 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 placeholder="Décrivez votre projet, votre intérêt pour cette œuvre…"
-                className="rounded-md bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-kcb-or transition resize-none"
+                className="rounded-[4px] bg-kcb-ardoise border border-white/[0.06] p-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-kcb-or transition resize-none"
               />
             </div>
 
@@ -192,7 +192,7 @@ export function SourcingInquiryModal({ artwork, isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 px-5 py-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-md text-sm font-medium transition disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2 bg-kcb-or hover:bg-kcb-or/90 text-white rounded-[4px] text-sm font-medium transition disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
                 {loading ? 'Envoi…' : 'Envoyer la demande'}
