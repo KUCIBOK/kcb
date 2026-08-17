@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "sentry:upload-sourcemaps": "sentry-cli releases -o $SENTRY_ORG -p $SENTRY_PROJECT new $SENTRY_RELEASE || true && sentry-cli releases -o $SENTRY_ORG -p $SENTRY_PROJECT files $SENTRY_RELEASE upload-sourcemaps ./dist --rewrite && sentry-cli releases -o $SENTRY_ORG -p $SENTRY_PROJECT finalize $SENTRY_RELEASE",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write src/",
@@ -18,7 +19,7 @@
     "prepare": "node -e \"if(process.env.CI){process.exit(0)}\" || husky"
   },
   "dependencies": {
-    "@sentry/react": "^10.7.0",
+    "@sentry/react": "^10.70.0",
     "@supabase/supabase-js": "^2.98.0",
     "@tailwindcss/vite": "^4.0.17",
     "browser-image-compression": "^2.0.2",
@@ -58,6 +59,7 @@
     "prettier": "^3.8.1",
     "vite": "^6.3.2",
     "vitest": "^4.0.18"
+    ,"@sentry/cli": "^2.4.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
