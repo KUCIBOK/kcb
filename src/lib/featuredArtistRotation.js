@@ -5,11 +5,13 @@
  */
 
 // List of featured artists - add/remove as needed
+// Rotation every 12 weeks (3 months cycle)
 const FEATURED_ARTISTS = [
-  { name: 'Gaetan', weeks: [0, 4, 8] }, // Weeks 0, 4, 8, etc. (every 2 weeks)
-  // Add more artists here:
-  // { name: 'Artist Name', weeks: [1, 5, 9] },
-  // { name: 'Another Artist', weeks: [2, 6, 10] },
+  { name: 'Gaetan', weeks: [0, 2, 4, 6, 8, 10] }, // Even weeks
+  { name: 'Abel-Toh', weeks: [1, 3, 5, 7, 9, 11] }, // Odd weeks
+  // Add more artists here to extend the rotation
+  // { name: 'Artist Name', weeks: [2, 5, 8, 11] },
+  // { name: 'Another Artist', weeks: [3, 6, 9] },
 ]
 
 /**
