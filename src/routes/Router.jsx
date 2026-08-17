@@ -99,6 +99,7 @@ const GatewayPage = lazy(() => import('../pages/GatewayPage'))
 const HomePage = lazy(() => import('../pages/HomePage'))
 const GlobalPage = lazy(() => import('../pages/GlobalPage'))
 const GlobalCataloguePage = lazy(() => import('../pages/GlobalCataloguePage'))
+const ForArtistsPage = lazy(() => import('../pages/ForArtistsPage'))
 const GlobalSourcingPage = lazy(() => import('../pages/GlobalSourcingPage'))
 const VerifyArtwork = lazy(() => import('../pages/VerifyArtwork'))
 const CataloguePro = lazy(() => import('../pages/CataloguePro'))
@@ -597,6 +598,17 @@ export function Router() {
               </Suspense>
             }
           />
+
+          {/* ── For Artists ── */}
+          <Route
+            path="/for-artists"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ForArtistsPage />
+              </Suspense>
+            }
+          />
+
           <Route
             path="/global/artists"
             element={
