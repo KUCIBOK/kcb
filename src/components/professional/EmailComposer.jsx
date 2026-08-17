@@ -82,7 +82,7 @@ export function EmailComposer() {
               title="Invitation Événement"
               description="Invitez à un vernissage"
               icon={<Type className="w-6 h-6" />}
-              color="bg-orange-500"
+              color="bg-kcb-alerte"
             />
           </div>
         </div>

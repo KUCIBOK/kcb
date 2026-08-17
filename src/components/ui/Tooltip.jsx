@@ -34,7 +34,7 @@ export function Tooltip({
     dark: 'bg-kcb-noir-deep text-white border-white/[0.06]',
     success: 'bg-green-900/90 text-green-100 border-green-700',
     danger: 'bg-red-900/90 text-red-100 border-red-700',
-    warning: 'bg-orange-900/90 text-orange-100 border-orange-700',
+    warning: 'bg-kcb-alerte/90 text-white border-kcb-alerte',
   }
 
   useEffect(() => {

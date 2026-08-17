@@ -54,7 +54,7 @@ export default function SupportTicketTab() {
   const priorityColors = {
     basse: 'bg-kcb-or/20 text-kcb-sable',
     normale: 'bg-gray-500/20 text-gray-300',
-    haute: 'bg-orange-500/20 text-orange-300',
+    haute: 'bg-kcb-alerte/20 text-kcb-alerte',
     critique: 'bg-red-500/20 text-red-300',
   }
   const getPriorityColor = (p) => priorityColors[p] ?? 'bg-white/10 text-kcb-pierre'
