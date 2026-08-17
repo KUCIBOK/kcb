@@ -49,10 +49,10 @@ export const Header = memo(function Header() {
 
           {/* Portal switches */}
           <Link
-            to="/africa"
+            to="/for-artists"
             className="text-xs tracking-[0.06em] uppercase text-kcb-pierre no-underline border border-white/[0.08] px-4 py-1.5 transition-colors hover:border-kcb-or hover:text-kcb-or"
           >
-            Afrique
+            Tu es artiste?
           </Link>
           <Link
             to="/global"
@@ -108,11 +108,11 @@ export const Header = memo(function Header() {
           ))}
           <div className="flex flex-col gap-2 pt-3 border-t border-white/[0.03]">
             <Link
-              to="/africa"
+              to="/for-artists"
               onClick={() => setOpen(false)}
               className="text-sm text-center text-kcb-or border border-kcb-or/20 py-2 no-underline hover:bg-kcb-or/5 transition-colors"
             >
-              Portail Afrique
+              Tu es artiste?
             </Link>
             <Link
               to="/global"

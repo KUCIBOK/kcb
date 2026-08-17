@@ -239,18 +239,24 @@ export default memo(function GlobalCuratorsSection() {
       <div className="max-w-[1280px] mx-auto">
         {/* Header */}
         <div className="mb-16 lg:mb-24">
+          <div className="inline-block bg-kcb-or/10 border border-kcb-or/20 rounded-[4px] px-4 py-2 mb-6">
+            <span className="font-jetbrains text-[10px] tracking-[0.15em] uppercase text-kcb-or">
+              For Curators
+            </span>
+          </div>
           <h2 className="font-playfair font-bold text-4xl lg:text-5xl text-white mb-4">
-            {t.heading}
+            <span className="text-kcb-or">{t.heading.split('.')[0]}.</span>{' '}
+            {t.heading.split('.').slice(1).join('.')}
           </h2>
-          <p className="text-kcb-sable text-lg max-w-3xl">
+          <p className="text-kcb-sable text-lg max-w-3xl border-l-2 border-kcb-or/30 pl-4">
             {t.subheading}
           </p>
         </div>
 
         {/* Dashboard Mock */}
         <div
-          className="w-full overflow-hidden bg-kcb-noir-deep border border-kcb-silver/[0.08] rounded-sm mb-6"
-          style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,168,76,0.06)' }}
+          className="w-full overflow-hidden bg-kcb-noir-deep border border-kcb-or/20 rounded-sm mb-6"
+          style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.55), 0 0 0 2px rgba(201,168,76,0.15)' }}
           onMouseEnter={() => { pausedRef.current = true }}
           onMouseLeave={() => { pausedRef.current = false }}
         >
