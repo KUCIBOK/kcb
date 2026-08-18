@@ -7,7 +7,7 @@ export const globalT = {
       sourcing: 'Sourcing',
       pricing: 'Pricing',
       cta: 'Sign Up',
-      switchPortal: 'Portail Afrique',
+      switchPortal: 'Tu es Artiste?',
     },
     hero: {
       label: 'Professional SaaS Infrastructure',
@@ -230,7 +230,7 @@ export const globalT = {
       sourcing: 'Sourcing',
       pricing: 'Tarifs',
       cta: 'Inscription',
-      switchPortal: 'Portail Afrique',
+      switchPortal: 'Tu es Artiste?',
     },
     hero: {
       label: 'Infrastructure Professionnelle',

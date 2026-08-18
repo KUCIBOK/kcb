@@ -93,7 +93,7 @@ export const Footer = memo(function Footer() {
                 to="/africa"
                 className="text-[13px] text-kcb-or no-underline transition-colors hover:text-white"
               >
-                Portail Afrique
+                Tu es Artiste?
               </Link>
             </li>
             <li>

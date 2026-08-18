@@ -45,7 +45,7 @@ export default function Gateway() {
             <GatewayKuzi hover={hover === 'africa'} />
           </div>
           <div className="font-jetbrains text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-kcb-or mb-2 md:mb-5">
-            Portail Afrique
+            Tu es Artiste?
           </div>
           <h2 className="font-playfair font-bold text-[clamp(18px,3.5vw,40px)] leading-[1.1] mb-2 md:mb-4">
             Votre art merite
