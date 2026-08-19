@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { useAuth } from './AuthContext'
 import {
   createNumerisation,
@@ -39,78 +39,86 @@ export const NumerisationProvider = ({ children }) => {
         setState((prev) => ({ ...prev, loading: false }))
       })
     } else {
-      setState((prev) => ({ ...prev, loading: false }))  
+      setState((prev) => ({ ...prev, loading: false }))
     }
   }, [user?.role])
 
+  const create = useCallback(async (payload) => {
+    const result = await createNumerisation(payload)
+    if (result?._id) {
+      setState((prev) => ({
+        ...prev,
+        myNumerisations: [result, ...prev.myNumerisations],
+      }))
+      makeToast('Succès', 'success', 'Demande de numérisation créée avec succès')
+    }
+    if (result?.error) {
+      makeToast('Erreur', 'error', result.error)
+    }
+    return result
+  }, [makeToast])
+
+  const update = useCallback(async (id, payload) => {
+    const result = await updateNumerisationRequest(id, payload)
+    if (result?._id) {
+      setState((prev) => ({
+        ...prev,
+        myNumerisations: prev.myNumerisations.map((req) => (req._id === id ? result : req)),
+      }))
+      makeToast('Succès', 'success', 'Demande de numérisation mise à jour avec succès')
+    }
+    if (result?.error) {
+      makeToast('Erreur', 'error', result.error)
+    }
+    return result
+  }, [makeToast])
+
+  const updateStatus = useCallback(async (id, payload) => {
+    const result = await updateNumerisationRequestStatus(id, payload)
+    if (result?._id) {
+      setState((prev) => ({
+        ...prev,
+        numerisations: prev.numerisations.map((req) => (req._id === id ? result : req)),
+      }))
+      makeToast(
+        'Succès',
+        'success',
+        'Statut de la demande de numérisation mis à jour avec succès'
+      )
+    }
+    if (result?.error) {
+      makeToast('Erreur', 'error', result.error)
+    }
+    return result
+  }, [makeToast])
+
+  const deleteNumerisationCtx = useCallback(async (id) => {
+    const result = await deleteNumerisationRequest(id)
+    if (result?._id) {
+      setState((prev) => ({
+        ...prev,
+        myNumerisations: prev.myNumerisations.filter((req) => req._id !== id),
+      }))
+      makeToast('Succès', 'success', 'Demande de numérisation supprimée avec succès')
+    }
+    if (result?.error) {
+      makeToast('Erreur', 'error', result.error)
+    }
+    return result
+  }, [makeToast])
+
+  const value = useMemo(() => ({
+    numerisations: state.numerisations,
+    myNumerisations: state.myNumerisations,
+    loading: state.loading,
+    create,
+    update,
+    updateStatus,
+    delete: deleteNumerisationCtx,
+  }), [state, create, update, updateStatus, deleteNumerisationCtx])
+
   return (
-    <NumerisationContext.Provider
-      value={{
-        numerisations: state.numerisations,
-        myNumerisations: state.myNumerisations,
-        loading: state.loading,
-        create: async (payload) => {
-          const result = await createNumerisation(payload)
-          if (result?._id) {
-            setState((prev) => ({
-              ...prev,
-              myNumerisations: [result, ...prev.myNumerisations],
-            }))
-            makeToast('Succès', 'success', 'Demande de numérisation créée avec succès')
-          }
-          if (result?.error) {
-            makeToast('Erreur', 'error', result.error)
-          }
-          return result
-        },
-        update: async (id, payload) => {
-          const result = await updateNumerisationRequest(id, payload)
-          if (result?._id) {
-            setState((prev) => ({
-              ...prev,
-              myNumerisations: prev.myNumerisations.map((req) => (req._id === id ? result : req)),
-            }))
-            makeToast('Succès', 'success', 'Demande de numérisation mise à jour avec succès')
-          }
-          if (result?.error) {
-            makeToast('Erreur', 'error', result.error)
-          }
-          return result
-        },
-        updateStatus: async (id, payload) => {
-          const result = await updateNumerisationRequestStatus(id, payload)
-          if (result?._id) {
-            setState((prev) => ({
-              ...prev,
-              numerisations: prev.numerisations.map((req) => (req._id === id ? result : req)),
-            }))
-            makeToast(
-              'Succès',
-              'success',
-              'Statut de la demande de numérisation mis à jour avec succès'
-            )
-          }
-          if (result?.error) {
-            makeToast('Erreur', 'error', result.error)
-          }
-          return result
-        },
-        delete: async (id) => {
-          const result = await deleteNumerisationRequest(id)
-          if (result?._id) {
-            setState((prev) => ({
-              ...prev,
-              myNumerisations: prev.myNumerisations.filter((req) => req._id !== id),
-            }))
-            makeToast('Succès', 'success', 'Demande de numérisation supprimée avec succès')
-          }
-          if (result?.error) {
-            makeToast('Erreur', 'error', result.error)
-          }
-          return result
-        },
-      }}
-    >
+    <NumerisationContext.Provider value={value}>
       {children}
     </NumerisationContext.Provider>
   )

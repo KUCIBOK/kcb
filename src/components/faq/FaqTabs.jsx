@@ -106,7 +106,7 @@ const FaqTabs = ({ onChange }) => {
   }
 
   return (
-    <div className="w-full  flex items-center justify-between relative rounded-lg" ref={tabRef}>
+    <div className="w-full  flex items-center justify-between relative rounded-[4px]" ref={tabRef}>
       {tabs.map((tab, index) => (
         <button
           className={`relative py-3 text-sm font-semibold transition-colors ${
@@ -120,7 +120,7 @@ const FaqTabs = ({ onChange }) => {
         </button>
       ))}
       <div
-        className="absolute inset-0 bg-kcb-ardoise rounded-lg mix-blend-exclusion transition-all duration-300"
+        className="absolute inset-0 bg-kcb-ardoise rounded-[4px] mix-blend-exclusion transition-all duration-300"
         style={{
           width: tabWidth,
           transform: `translateX(${currentTab * tabWidth}px)`,

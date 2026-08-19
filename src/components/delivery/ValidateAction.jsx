@@ -11,7 +11,7 @@ export function ValidateAction({ delivery }) {
         aria-label="Valider la demande"
         title="Valider la demande"
         onClick={() => setModal(true)}
-        className="text-green-500 hover:text-green-700 p-2 rounded-md bg-green-600 hover:bg-green-700 shadow-sm transition-colors"
+        className="text-green-500 hover:text-green-700 p-2 rounded-[4px] bg-green-600 hover:bg-green-700 shadow-sm transition-colors"
       >
         <Check className="w-4 h-4 text-white" />
       </button>

@@ -109,25 +109,21 @@ export async function apiRequestWithRetry(url, fetchOptions = {}, retry = true) 
 
   // 401 détecté — tenter un refresh et retenter
   if (retry) {
-    try {
-      // Tenter une rafraîchissement explicite si possible (pour Supabase)
-      // Le token dans _currentToken peut être rafraîchi asynchronement ailleurs,
-      // donc on n'attend pas ici — on retente juste avec le token actuel.
-      const retryRes = await fetch(url, {
-        credentials: 'include',
-        ...fetchOptions,
-        headers: buildHeaders(), // Récupère le token potentiellement rafraîchi
-      })
+    // Tenter une rafraîchissement explicite si possible (pour Supabase)
+    // Le token dans _currentToken peut être rafraîchi asynchronement ailleurs,
+    // donc on n'attend pas ici — on retente juste avec le token actuel.
+    const retryRes = await fetch(url, {
+      credentials: 'include',
+      ...fetchOptions,
+      headers: buildHeaders(), // Récupère le token potentiellement rafraîchi
+    })
 
-      const data = await parseJsonSafe(retryRes)
-      if (!retryRes.ok) {
-        const message = data?.error || data?.message || `HTTP ${retryRes.status}: ${retryRes.statusText}`
-        throw new ApiError(message, retryRes.status, data)
-      }
-      return data
-    } catch (err) {
-      throw err
+    const data = await parseJsonSafe(retryRes)
+    if (!retryRes.ok) {
+      const message = data?.error || data?.message || `HTTP ${retryRes.status}: ${retryRes.statusText}`
+      throw new ApiError(message, retryRes.status, data)
     }
+    return data
   }
 
   // Pas de retry autorisé — remonter le 401 en erreur

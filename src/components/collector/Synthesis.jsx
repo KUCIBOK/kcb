@@ -138,10 +138,10 @@ export function Synthesis() {
                   <img
                     src={artwork.image}
                     alt={artwork.title}
-                    className="w-14 h-14 rounded-md object-cover flex-shrink-0"
+                    className="w-14 h-14 rounded-[4px] object-cover flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-14 h-14 rounded-md bg-kcb-ardoise flex items-center justify-center flex-shrink-0">
+                  <div className="w-14 h-14 rounded-[4px] bg-kcb-ardoise flex items-center justify-center flex-shrink-0">
                     <Image className="w-6 h-6 text-kcb-pierre" />
                   </div>
                 )}

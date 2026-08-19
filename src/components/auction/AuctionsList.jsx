@@ -74,7 +74,7 @@ export const AuctionsList = ({ artworks, user }) => {
                 <Fragment key={index}>
                   <tr className="border-b border-white/[0.06] hover:bg-kcb-noir/60 transition">
                     <td className="py-2">
-                      <div className="h-10 w-10 rounded-md bg-kcb-ardoise flex items-center justify-center overflow-hidden">
+                      <div className="h-10 w-10 rounded-[4px] bg-kcb-ardoise flex items-center justify-center overflow-hidden">
                         <img
                           loading="lazy"
                           src={artwork.image}
@@ -111,7 +111,7 @@ export const AuctionsList = ({ artworks, user }) => {
       {state.artworks.length > 5 && (
         <div className="flex justify-end gap-2 mt-4">
           <button
-            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
+            className="rounded-[4px] border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
             onClick={() => {
               if (state.set[0] !== state.artworks[0]) {
                 const startIndex = state.artworks.indexOf(state.set[0]) - 40
@@ -130,7 +130,7 @@ export const AuctionsList = ({ artworks, user }) => {
             {Math.ceil(state.artworks.length / 40)}
           </span>
           <button
-            className="rounded-md border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
+            className="rounded-[4px] border border-white/[0.06] px-4 py-2 text-sm text-kcb-sable bg-transparent hover:bg-kcb-ardoise transition"
             onClick={() => {
               const lastIndex = state.artworks.indexOf(state.set[state.set.length - 1])
               if (lastIndex < state.artworks.length - 1) {

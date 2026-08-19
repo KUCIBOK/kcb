@@ -174,8 +174,8 @@ export function ContactsLists() {
               label="Désabonnés"
               value={stats.unsubscribed}
               trend={{ value: '-3%', direction: 'down' }}
-              iconColor="text-orange-400"
-              iconBgColor="bg-orange-900/20"
+              iconColor="text-kcb-alerte"
+              iconBgColor="bg-kcb-alerte/20"
               loading={loading}
             />
             <KPICard
@@ -440,7 +440,7 @@ function ContactsTable({ contacts, loading, onEdit, onDelete }) {
 function StatusBadge({ status }) {
   const colors = {
     active: 'bg-green-900/50 text-green-300',
-    unsubscribed: 'bg-orange-900/50 text-orange-300',
+    unsubscribed: 'bg-kcb-alerte/50 text-kcb-alerte',
     bounced: 'bg-red-900/50 text-red-300',
     spam: 'bg-red-900/50 text-red-300',
   }
@@ -480,7 +480,7 @@ function ListsGrid({ lists, loading }) {
               <div
                 className={`w-10 h-10 rounded-[4px] flex items-center justify-center ${
                   list.type === 'event'
-                    ? 'bg-orange-500'
+                    ? 'bg-kcb-alerte'
                     : list.type === 'dynamic'
                       ? 'bg-kcb-bronze'
                       : 'bg-kcb-or'
@@ -522,7 +522,7 @@ function ListsGrid({ lists, loading }) {
                 <div className="text-green-400">
                   ✓ {list.rsvps.filter((r) => r.status === 'confirmed').length} confirmés
                 </div>
-                <div className="text-orange-400">
+                <div className="text-kcb-alerte">
                   ? {list.rsvps.filter((r) => r.status === 'pending').length} en attente
                 </div>
               </div>

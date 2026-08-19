@@ -94,13 +94,13 @@ export default function ArtworkPurchaseFailed() {
           </div>
           <Link
             to={`/artwork-checkout/${state?.artwork?._id}`}
-            className="rounded-md flex items-center justify-center w-full text-sm font-medium bg-kcb-or hover:bg-kcb-bronze transition py-2 px-4 mt-6"
+            className="rounded-[4px] flex items-center justify-center w-full text-sm font-medium bg-kcb-or hover:bg-kcb-bronze transition py-2 px-4 mt-6"
           >
             Réessayer le paiement
           </Link>
           <Link
             to={`/artwork/${state?.artwork?._id}`}
-            className="rounded-md flex items-center justify-center w-full text-sm font-medium bg-kcb-noir-deep hover:bg-kcb-ardoise transition py-2 px-4 mt-2"
+            className="rounded-[4px] flex items-center justify-center w-full text-sm font-medium bg-kcb-noir-deep hover:bg-kcb-ardoise transition py-2 px-4 mt-2"
           >
             Retour à l'œuvre
           </Link>

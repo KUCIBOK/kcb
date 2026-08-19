@@ -16,7 +16,7 @@ function passwordStrength(pwd) {
 
 const STRENGTH_CONFIG = [
   { label: 'Trop court', color: 'bg-red-500' },
-  { label: 'Faible', color: 'bg-orange-500' },
+  { label: 'Faible', color: 'bg-kcb-alerte' },
   { label: 'Moyen', color: 'bg-yellow-400' },
   { label: 'Fort', color: 'bg-green-400' },
   { label: 'Très fort', color: 'bg-emerald-400' },

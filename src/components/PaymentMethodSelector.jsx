@@ -12,7 +12,7 @@ const PaymentMethodSelector = ({
       name: 'PayDunya',
       description: 'Mobile Money, Cartes bancaires',
       icon: CreditCard,
-      color: 'text-orange-500',
+      color: 'text-kcb-alerte',
       available: true,
       popular: true,
     },

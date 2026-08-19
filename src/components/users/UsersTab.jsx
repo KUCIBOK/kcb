@@ -1,4 +1,4 @@
-ï»¿import { Hammer, Image, Plus, Shield, User, Users } from 'lucide-react'
+import { Hammer, Image, Plus, Shield, User, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useUsersContext } from '../../store/UsersStore'
 import { UsersTable } from './UsersTable'
@@ -37,7 +37,7 @@ export function UsersTab() {
           <h2 className="text-xl font-semibold text-white/90">Gestion des utilisateurs</h2>
           <button
             onClick={() => setState({ ...state, addUser: true })}
-            className="rounded-md bg-kcb-or hover:bg-kcb-bronze text-kcb-noir text-white text-xs font-medium py-2 px-3 flex items-center gap-2 transition shadow-none border-none"
+            className="rounded-[4px] bg-kcb-or hover:bg-kcb-bronze text-kcb-noir text-white text-xs font-medium py-2 px-3 flex items-center gap-2 transition shadow-none border-none"
           >
             <Plus className="w-4 h-4 text-white" />
             Ajouter un admin
@@ -109,14 +109,14 @@ function AddUserModal({ closeModal }) {
         password: state.password,
       })
       if (user?._id) {
-        toast.success('âœ“ Admin ajoutÃ©')
+        toast.success('? Admin ajouté')
         closeModal()
       } else {
-        toast.error('Ã— ' + (user?.error || 'Erreur'))
+        toast.error('× ' + (user?.error || 'Erreur'))
       }
       setState((s) => ({ ...s, loading: false }))
     } catch (error) {
-      toast.error('Ã— Erreur serveur')
+      toast.error('× Erreur serveur')
       setState((s) => ({ ...s, loading: false }))
     }
   }
@@ -154,7 +154,7 @@ function AddUserModal({ closeModal }) {
         />
 
         <Select
-          label="RÃ´le"
+          label="Rôle"
           options={roleOptions}
           value={state.role}
           onChange={(value) => setState((s) => ({ ...s, role: value }))}

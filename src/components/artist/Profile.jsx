@@ -1,4 +1,4 @@
-ï»¿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '../../store/AuthContext'
 import { Camera, Copy } from 'lucide-react'
 import ReactQuill from 'react-quill'
@@ -243,7 +243,7 @@ export const Profile = () => {
                     value={
                       user?.wallet?.privateKey
                         ? user.wallet.privateKey.slice(0, 6) +
-                          'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢' +
+                          '••••••••••••••••••••' +
                           user.wallet.privateKey.slice(-4)
                         : ''
                     }
@@ -271,7 +271,7 @@ export const Profile = () => {
     <section className="bg-kcb-ardoise rounded-[4px] shadow-md border border-white/[0.06] px-4 py-6 md:px-8 md:py-8 w-full mx-auto">
       <form onSubmit={handleUpdate} method="post" className="space-y-6">
         {state.error && (
-          <div className="text-red-300 text-center bg-red-900/20 border border-red-900 rounded-md p-2 text-xs">
+          <div className="text-red-300 text-center bg-red-900/20 border border-red-900 rounded-[4px] p-2 text-xs">
             {state.error}
           </div>
         )}
@@ -295,7 +295,7 @@ export const Profile = () => {
               <button
                 type="button"
                 onClick={() => document.getElementById('profile-image').click()}
-                className="border border-white/[0.06] bg-kcb-ardoise w-full rounded-md text-xs text-kcb-sable font-medium px-3 py-2 hover:bg-kcb-ardoise transition"
+                className="border border-white/[0.06] bg-kcb-ardoise w-full rounded-[4px] text-xs text-kcb-sable font-medium px-3 py-2 hover:bg-kcb-ardoise transition"
               >
                 {t.avatar.editPhoto}
               </button>

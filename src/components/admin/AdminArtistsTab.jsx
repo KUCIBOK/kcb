@@ -56,13 +56,13 @@ export function AdminArtistsTab() {
               setPage(1)
             }}
             placeholder="Nom, pays, médium…"
-            className="bg-kcb-ardoise border border-white/[0.06] text-white text-sm rounded-md pl-9 pr-3 py-2 w-64 focus:outline-none focus:ring-1 focus:ring-kcb-or placeholder:text-gray-600"
+            className="bg-kcb-ardoise border border-white/[0.06] text-white text-sm rounded-[4px] pl-9 pr-3 py-2 w-64 focus:outline-none focus:ring-1 focus:ring-kcb-or placeholder:text-gray-600"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-lg border border-white/[0.06]">
+      <div className="overflow-x-auto rounded-[4px] border border-white/[0.06]">
         <table className="w-full text-sm text-left">
           <thead className="bg-kcb-ardoise">
             <tr className="text-kcb-pierre text-xs uppercase tracking-wider">

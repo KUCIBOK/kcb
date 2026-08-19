@@ -9,7 +9,7 @@ export function BlogTableItem({ post }) {
             loading="lazy"
             src={post?.image}
             alt={post?.excerpt}
-            className="object-cover max-w-15 min-h-15 mx-auto transition duration-300 rounded-lg shadow-md hover:scale-110 transform hover:-translate-y-2"
+            className="object-cover max-w-15 min-h-15 mx-auto transition duration-300 rounded-[4px] shadow-md hover:scale-110 transform hover:-translate-y-2"
           />
         </td>
         <td>{post?.title}</td>

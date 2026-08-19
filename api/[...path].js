@@ -59,6 +59,7 @@ import { createClient } from '@supabase/supabase-js'
 import { randomBytes, createHash } from 'crypto'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { checkRateLimit, addRateLimitHeaders } from './_lib/rateLimit.js'
 
 // ─── Validation des variables d'environnement ────────────────────────────────
 
@@ -73,6 +74,8 @@ const REQUIRED_ENV = [
   'PAYDUNYA_MASTER_KEY',
   'PAYDUNYA_PRIVATE_KEY',
   'PAYDUNYA_TOKEN',
+  'UPSTASH_REDIS_REST_URL',
+  'UPSTASH_REDIS_REST_TOKEN',
 ]
 
 for (const key of REQUIRED_ENV) {
@@ -101,15 +104,9 @@ const _allowedOrigins = (process.env.CORS_ORIGIN || 'https://kucibok.com')
   .map((o) => o.trim())
   .filter(Boolean)
 
-// ─── Rate limiting (in-memory, par instance Vercel) ─────────────────────────
-const _rlMap = new Map()
-function rateLimit(ip, windowMs = 60_000, max = 5) {
-  const now = Date.now()
-  const hits = (_rlMap.get(ip) ?? []).filter((t) => now - t < windowMs)
-  hits.push(now)
-  _rlMap.set(ip, hits)
-  return hits.length <= max
-}
+// ─── Rate limiting (Upstash Redis — centralisé) ────────────────────────────
+// Migré de Map in-memory vers Upstash pour cross-instance consistency.
+// checkRateLimit() et addRateLimitHeaders() importés de ./_lib/rateLimit.js
 
 // ─── HTML Sanitizer (serveur) ────────────────────────────────────────────────
 // Défense en profondeur : le frontend sanitise via DOMPurify, mais on filtre
@@ -355,6 +352,37 @@ export default async function handler(req, res) {
   const [s0, s1, s2] = segments
 
   try {
+    // ── Rate Limiting (Upstash Redis) ─────────────────────────────────────────
+    // Exempt: health checks, cron jobs, public verification (no auth required)
+    const isPublicRoute = (s0 === 'health' || s0 === 'cron' ||
+                          (s0 === 'artworks' && s1 === 'verify') ||
+                          (s0 === 'delivery' && s1 === 'track'))
+
+    if (!isPublicRoute) {
+      // Extract identifier: user ID if authenticated, IP otherwise
+      let identifier = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? req.socket.remoteAddress ?? 'unknown'
+      let isAuthenticated = false
+
+      const authHeader = req.headers.authorization ?? ''
+      const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+      if (token) {
+        const { data: { user } } = await supabaseAdmin.auth.getUser(token).catch(() => ({ data: {} }))
+        if (user?.id) {
+          identifier = `user:${user.id}`
+          isAuthenticated = true
+        }
+      }
+
+      // Check rate limit
+      const rlResult = await checkRateLimit(identifier, rawPath, isAuthenticated)
+      addRateLimitHeaders(res, rlResult)
+
+      if (!rlResult.allowed) {
+        const retryAfter = Math.ceil((rlResult.resetAt - Date.now()) / 1000)
+        res.setHeader('Retry-After', retryAfter.toString())
+        return fail(res, 'Trop de requêtes. Veuillez réessayer plus tard.', 429)
+      }
+    }
     // ── Routes entièrement publiques (pas de clé API requise) ─────────────────
     if (s0 === 'health') return await routeHealth(req, res)
 
@@ -364,9 +392,7 @@ export default async function handler(req, res) {
       if (authResult.error) return fail(res, authResult.error, authResult.status)
       const adminCheck = await requireAdmin(authResult.user)
       if (!adminCheck.ok) return fail(res, adminCheck.error, adminCheck.status)
-      const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown'
-      if (!rateLimit(ip, 3_600_000, 5)) // 5 calls per hour
-        return fail(res, 'Trop de requêtes. Limite 5/heure.', 429)
+      // Rate limiting now handled centrally by Upstash Redis (see top of handler)
       return await routeHealthPayment(req, res)
     }
 
@@ -1771,7 +1797,7 @@ async function routeArtworks(req, res) {
       ...a,
       _id: a.id,
       artist: a.artists?.name ?? a.artist ?? null,
-      image: a.image?.includes('backend.kucibok.com') ? null : (a.image ?? null),
+      image: a.image ?? null,
     }))
     return ok(res, normalized, 200, { page, limit, total: count })
   }
@@ -1899,7 +1925,7 @@ async function routeArtworkById(req, res, id) {
         await supabaseAdmin.rpc('increment_artwork_visited', { artwork_id: id })
       } catch {}
     })()
-    const image = data.image?.includes('backend.kucibok.com') ? null : (data.image ?? null)
+    const image = data.image ?? null
     return ok(res, {
       ...data,
       _id: data.id,

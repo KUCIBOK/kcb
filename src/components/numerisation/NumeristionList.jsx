@@ -2,7 +2,7 @@ import { NumerisationListItem } from './NumeristationListItem'
 
 export function NumerisationList({ numerisations }) {
   return (
-    <div className="overflow-auto rounded-md border border-white/[0.06] bg-kcb-ardoise px-0 py-0">
+    <div className="overflow-auto rounded-[4px] border border-white/[0.06] bg-kcb-ardoise px-0 py-0">
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-kcb-ardoise text-white/80">
