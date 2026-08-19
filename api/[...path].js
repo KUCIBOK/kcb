@@ -1776,10 +1776,9 @@ async function routeArtworks(req, res) {
     const authHeader = req.headers.authorization ?? ''
     const authToken = authHeader.replace(/^Bearer\s+/i, '').trim()
     if (authToken) {
-      const {
-        data: { user: authUser },
-      } = await supabaseAdmin.auth.getUser(authToken)
-      if (authUser) callerIsAdmin = (await getDbRole(authUser.id)) === 'admin'
+      const { data, error } = await supabaseAdmin.auth.getUser(authToken)
+      const authUser = data?.user
+      if (authUser && !error) callerIsAdmin = (await getDbRole(authUser.id)) === 'admin'
     }
 
     // Sécurité : forcer status=approved pour les non-admins AVANT tout filtre
