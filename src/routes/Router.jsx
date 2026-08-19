@@ -387,15 +387,8 @@ export function Router() {
             </ArtistContextProvider>
           }
         >
-          {/* HomePage — Professional Infrastructure */}
-          <Route
-            path="/"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <HomePage />
-              </Suspense>
-            }
-          />
+          {/* Redirect root to /global */}
+          <Route path="/" element={<Navigate to="/global" replace />} />
 
           {/* Paiement + résultats + tracking */}
           <Route element={<Layout />}>
