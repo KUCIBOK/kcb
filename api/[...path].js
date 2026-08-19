@@ -374,10 +374,15 @@ export default async function handler(req, res) {
       const authHeader = req.headers.authorization ?? ''
       const token = authHeader.replace(/^Bearer\s+/i, '').trim()
       if (token) {
-        const { data: { user } } = await supabaseAdmin.auth.getUser(token).catch(() => ({ data: {} }))
-        if (user?.id) {
-          identifier = `user:${user.id}`
-          isAuthenticated = true
+        try {
+          const { data, error } = await supabaseAdmin.auth.getUser(token)
+          const user = data?.user
+          if (user?.id && !error) {
+            identifier = `user:${user.id}`
+            isAuthenticated = true
+          }
+        } catch (e) {
+          // Ignore auth errors, fall back to IP-based rate limiting
         }
       }
 
