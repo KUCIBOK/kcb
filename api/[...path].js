@@ -1797,7 +1797,7 @@ async function routeArtworks(req, res) {
       ...a,
       _id: a.id,
       artist: a.artists?.name ?? a.artist ?? null,
-      image: a.image?.includes('backend.kucibok.com') ? null : (a.image ?? null),
+      image: a.image ?? null,
     }))
     return ok(res, normalized, 200, { page, limit, total: count })
   }
@@ -1925,7 +1925,7 @@ async function routeArtworkById(req, res, id) {
         await supabaseAdmin.rpc('increment_artwork_visited', { artwork_id: id })
       } catch {}
     })()
-    const image = data.image?.includes('backend.kucibok.com') ? null : (data.image ?? null)
+    const image = data.image ?? null
     return ok(res, {
       ...data,
       _id: data.id,
