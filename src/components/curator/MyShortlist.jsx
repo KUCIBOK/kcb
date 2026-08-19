@@ -185,4 +185,5 @@ export function MyShortlist() {
   )
 }
 
-export default MyShortlist
+// Named export (used in dashboards)
+// export default MyShortlist
