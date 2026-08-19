@@ -106,9 +106,9 @@ export const globalT = {
         {
           name: 'Curator Plan',
           desc: 'For individual curators & small galleries',
-          price: '21-49',
-          priceSuffix: ' EUR',
-          period: 'per month',
+          price: '27',
+          priceSuffix: '€ / month',
+          period: 'Includes 14-day free trial',
           features: [
             'Inventory Management Dashboard',
             'Digital Certification & Provenance',
@@ -121,9 +121,9 @@ export const globalT = {
         {
           name: 'Advisor Plan',
           desc: 'For art advisors & portfolio managers',
-          price: '49-99',
-          priceSuffix: ' EUR',
-          period: 'per month',
+          price: '67',
+          priceSuffix: '€ / month',
+          period: 'Includes 14-day free trial',
           features: [
             'Client Portfolio Management',
             'Curated Deal Flow & Sourcing',
@@ -329,9 +329,9 @@ export const globalT = {
         {
           name: 'Plan Curateur',
           desc: 'Pour les curateurs indépendants et petites galeries',
-          price: '21-49',
-          priceSuffix: ' EUR',
-          period: 'par mois',
+          price: '27',
+          priceSuffix: '€ / mois',
+          period: 'Essai gratuit 14 jours inclus',
           features: [
             'Tableau de bord de Gestion d\'Inventaire',
             'Certification & Provenance Numériques',
@@ -344,9 +344,9 @@ export const globalT = {
         {
           name: 'Plan Conseiller',
           desc: 'Pour les conseillers en art et gestionnaires de portefeuille',
-          price: '49-99',
-          priceSuffix: ' EUR',
-          period: 'par mois',
+          price: '67',
+          priceSuffix: '€ / mois',
+          period: 'Essai gratuit 14 jours inclus',
           features: [
             'Gestion du Portefeuille Client',
             'Flux d\'Affaires & Sourçage Curés',

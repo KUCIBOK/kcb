@@ -8,9 +8,13 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { ShieldCheck, SlidersHorizontal, Search, X, Loader2 } from 'lucide-react'
+import { ShieldCheck, SlidersHorizontal, Search, X, Loader2, Heart } from 'lucide-react'
 import { getCataloguePro } from '../../api/useSourcing'
 import { SourcingInquiryModal } from '../artworks/SourcingInquiryModal'
+import { useAddToShortlist, useRemoveFromShortlist } from '../../api/useShortlist'
+import { ShortlistGate } from '../shared/ShortlistGate'
+import { canShortlist } from '../../utils/planUtils'
+import { useAuth } from '../../store/AuthContext'
 
 const AVAILABILITY_LABELS = {
   available: { label: 'Disponible', color: 'text-green-400 bg-green-900/30 border-green-800/40' },
@@ -42,13 +46,58 @@ function validImageUrl(url) {
   return url
 }
 
+/**
+ * ArtworkShortlistButton — Composant pour ajouter/retirer du shortlist
+ */
+function ArtworkShortlistButton({ artworkId, isShortlisted, onToggle }) {
+  const [loading, setLoading] = useState(false)
+
+  const handleToggle = async () => {
+    setLoading(true)
+    try {
+      if (isShortlisted) {
+        const result = await useRemoveFromShortlist(artworkId)
+        if (result.success) {
+          onToggle(false)
+        }
+      } else {
+        const result = await useAddToShortlist(artworkId)
+        if (result.success) {
+          onToggle(true)
+        }
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleToggle}
+      disabled={loading}
+      className={`flex-1 text-xs py-1.5 rounded-[4px] transition flex items-center justify-center gap-1 ${
+        isShortlisted
+          ? 'bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500/30'
+          : 'bg-kcb-or/10 text-kcb-or border border-kcb-or/30 hover:bg-kcb-or/20'
+      } disabled:opacity-50 disabled:cursor-not-allowed`}
+    >
+      <Heart className={`w-3 h-3 ${isShortlisted ? 'fill-current' : ''}`} />
+      <span>{isShortlisted ? 'Saved' : 'Save'}</span>
+    </button>
+  )
+}
+
 export function CuratorCatalogue() {
+  const { subscription } = useAuth()
+  const canShortlistFeature = canShortlist(subscription)
+
   const [filters, setFilters] = useState(INITIAL_FILTERS)
   const [pending, setPending] = useState(INITIAL_FILTERS)
   const [catalogue, setCatalogue] = useState({ data: [], total: 0, pages: 1 })
   const [loading, setLoading] = useState(true)
   const [selectedArtwork, setSelectedArtwork] = useState(null)
   const [showFilters, setShowFilters] = useState(false)
+  const [shortlistedSet, setShortlistedSet] = useState(new Set()) // Track shortlisted items locally
 
   const fetchCatalogue = useCallback(async (params) => {
     setLoading(true)
@@ -272,13 +321,38 @@ export function CuratorCatalogue() {
                     </p>
                   )}
 
-                  {/* Actions — pas de Link vers /artwork, juste Contacter */}
-                  <div className="mt-auto pt-3">
+                  {/* Actions */}
+                  <div className="mt-auto pt-3 flex gap-2">
+                    {/* Shortlist Button */}
+                    {canShortlistFeature ? (
+                      <ArtworkShortlistButton
+                        artworkId={artwork.id}
+                        isShortlisted={shortlistedSet.has(artwork.id)}
+                        onToggle={(isNow) => {
+                          const newSet = new Set(shortlistedSet)
+                          if (isNow) newSet.add(artwork.id)
+                          else newSet.delete(artwork.id)
+                          setShortlistedSet(newSet)
+                        }}
+                      />
+                    ) : (
+                      <ShortlistGate minimal>
+                        <button
+                          disabled
+                          className="flex-1 text-xs py-1.5 rounded-[4px] bg-kcb-or/20 text-kcb-or opacity-50 cursor-not-allowed transition"
+                        >
+                          <Heart className="w-3 h-3 inline mr-1" />
+                          Save
+                        </button>
+                      </ShortlistGate>
+                    )}
+
+                    {/* Contact Button */}
                     <button
                       onClick={() => setSelectedArtwork(artwork)}
-                      className="w-full text-xs py-1.5 rounded-[4px] bg-kcb-or hover:bg-kcb-or/90 text-white transition"
+                      className="flex-1 text-xs py-1.5 rounded-[4px] bg-kcb-or hover:bg-kcb-or/90 text-white transition"
                     >
-                      Contacter
+                      Contact
                     </button>
                   </div>
                 </div>

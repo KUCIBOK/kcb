@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ChevronDown, ChevronRight, Crown, LogOut, Search, X } from 'lucide-react'
+import { ArrowLeft, ChevronDown, ChevronRight, Crown, LogOut, Search, X, Clock } from 'lucide-react'
 import { useAuth } from '../../store/AuthContext'
 import { useLang } from '../../store/LangContext'
 import { uiT } from '../../i18n/ui'
@@ -31,7 +31,7 @@ export default function DashboardSidebar({
   subscription,
   pricingPath,
 }) {
-  const { user, logout } = useAuth()
+  const { user, logout, isTrialActive, isTrialExpiringSoon, trialDaysLeft, isTrialExpired } = useAuth()
   const { lang } = useLang()
   const t = uiT[lang].sidebar
   const [expandedMenu, setExpandedMenu] = useState(0)
@@ -111,6 +111,53 @@ export default function DashboardSidebar({
               <span className="text-white text-lg font-playfair font-bold truncate">
                 {profile.name}
               </span>
+            </div>
+          )}
+
+          {/* Trial Banner */}
+          {isTrialExpired && (
+            <div className="mb-4 p-3 bg-red-900/20 border border-red-700/40 rounded-[4px]">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 text-red-400" />
+                <span className="text-xs font-semibold text-red-300 uppercase">Trial Expired</span>
+              </div>
+              <p className="text-xs text-red-300 mb-2">Your trial has ended. Please upgrade to continue.</p>
+              <Link
+                to={pricingPath || '/global#pricing'}
+                className="text-xs bg-red-700 hover:bg-red-600 text-white px-2 py-1 rounded transition inline-block"
+              >
+                Upgrade Now
+              </Link>
+            </div>
+          )}
+
+          {isTrialExpiringSoon && !isTrialExpired && (
+            <div className="mb-4 p-3 bg-amber-900/20 border border-amber-700/30 rounded-[4px]">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 text-amber-400" />
+                <span className="text-xs font-semibold text-amber-300 uppercase">Trial Ending</span>
+              </div>
+              <p className="text-xs text-amber-200 mb-2">
+                {trialDaysLeft} {trialDaysLeft === 1 ? 'day' : 'days'} left in your trial
+              </p>
+              <Link
+                to={pricingPath || '/global#pricing'}
+                className="text-xs bg-amber-600 hover:bg-amber-500 text-white px-2 py-1 rounded transition inline-block"
+              >
+                Upgrade to Continue
+              </Link>
+            </div>
+          )}
+
+          {isTrialActive && !isTrialExpiringSoon && (
+            <div className="mb-4 p-3 bg-emerald-900/20 border border-emerald-700/30 rounded-[4px]">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-semibold text-emerald-300 uppercase">Trial Active</span>
+              </div>
+              <p className="text-xs text-emerald-200">
+                {trialDaysLeft} {trialDaysLeft === 1 ? 'day' : 'days'} remaining
+              </p>
             </div>
           )}
 

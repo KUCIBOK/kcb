@@ -11,6 +11,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   Settings,
+  Heart,
 } from 'lucide-react'
 import { useAuth } from '../../store/AuthContext'
 import { useLang } from '../../store/LangContext'
@@ -22,6 +23,7 @@ import { AdvisorClients } from '../../components/advisor/AdvisorClients'
 import { AdvisorDealPipeline } from '../../components/advisor/AdvisorDealPipeline'
 import { AdvisorMarket } from '../../components/advisor/AdvisorMarket'
 import { CuratorCatalogue } from '../../components/curator/CuratorCatalogue'
+import { MyShortlist } from '../../components/curator/MyShortlist'
 import { AdvisorReports } from '../../components/advisor/AdvisorReports'
 import { AdvisorAbonnement } from '../../components/advisor/AdvisorAbonnement'
 import { Profile } from '../../components/professional/Profile'
@@ -49,6 +51,7 @@ export default function Advisor() {
         { name: td.items.clients, icon: <Users className="w-4 h-4" />, index: 1 },
         { name: td.items.dealPipeline, icon: <Briefcase className="w-4 h-4" />, index: 2 },
         { name: td.items.catalogue, icon: <FileText className="w-4 h-4" />, index: 7 },
+        { name: 'My Shortlist', icon: <Heart className="w-4 h-4" />, index: 8 },
       ],
     },
     {
@@ -86,6 +89,8 @@ export default function Advisor() {
         return <AdvisorMarket />
       case 7:
         return <CuratorCatalogue />
+      case 8:
+        return <MyShortlist />
       case 4:
         return <AdvisorReports />
       case 5:

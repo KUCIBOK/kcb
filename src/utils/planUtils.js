@@ -42,3 +42,33 @@ export function getUpgradeTarget(currentLevel) {
   if (currentLevel < PLAN_INSTITUTIONAL) return currentLevel + 1
   return null
 }
+
+/**
+ * Feature access helpers
+ * Check if user can access specific features based on their plan
+ */
+
+export function canShortlist(subscription) {
+  // Shortlisting requires: Explorer/Pro (27€+) = PLAN_STARTER minimum
+  return canAccess(subscription, PLAN_STARTER)
+}
+
+export function canUseMarketResearch(subscription) {
+  // Market research requires: Explorer/Pro (27€+)
+  return canAccess(subscription, PLAN_STARTER)
+}
+
+export function canTrackBudget(subscription) {
+  // Budget tracking requires: Premium (67€+)
+  return canAccess(subscription, PLAN_PREMIUM)
+}
+
+export function canUseConcierge(subscription) {
+  // Concierge services require: Premium (67€+)
+  return canAccess(subscription, PLAN_PREMIUM)
+}
+
+export function canExportReports(subscription) {
+  // Report export requires: Premium (67€+)
+  return canAccess(subscription, PLAN_PREMIUM)
+}

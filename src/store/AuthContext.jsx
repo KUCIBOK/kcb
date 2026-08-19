@@ -315,6 +315,22 @@ export function AuthContextProvider({ children }) {
   )
 
   // ─────────────────────────────────────────────────────────────────────────
+  // Trial computed values
+  // ─────────────────────────────────────────────────────────────────────────
+  const trialDaysLeft = subscription?.trial_end_date
+    ? Math.ceil(
+        (new Date(subscription.trial_end_date) - new Date()) / (1000 * 60 * 60 * 24)
+      )
+    : null
+
+  const isTrialExpired =
+    subscription?.is_trial && trialDaysLeft !== null && trialDaysLeft <= 0
+
+  const isTrialActive = subscription?.is_trial && !isTrialExpired
+
+  const isTrialExpiringSoon = isTrialActive && trialDaysLeft !== null && trialDaysLeft <= 7
+
+  // ─────────────────────────────────────────────────────────────────────────
   const value = useMemo(
     () => ({
       user,
@@ -333,6 +349,11 @@ export function AuthContextProvider({ children }) {
       updateArtist: updateArtistCtx,
       updateProfile: updateProfileCtx,
       changePassword: changePasswordCtx,
+      // Trial helper values
+      trialDaysLeft,
+      isTrialExpired,
+      isTrialActive,
+      isTrialExpiringSoon,
     }),
     [
       user,
@@ -351,6 +372,10 @@ export function AuthContextProvider({ children }) {
       updateArtistCtx,
       updateProfileCtx,
       changePasswordCtx,
+      trialDaysLeft,
+      isTrialExpired,
+      isTrialActive,
+      isTrialExpiringSoon,
     ]
   )
 

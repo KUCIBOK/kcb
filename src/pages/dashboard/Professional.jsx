@@ -11,6 +11,7 @@ import {
   CreditCard,
   Menu,
   ChevronRight,
+  Heart,
 } from 'lucide-react'
 import { useLang } from '../../store/LangContext'
 import { uiT } from '../../i18n/ui'
@@ -24,6 +25,7 @@ import { useAuth } from '../../store/AuthContext'
 import { CuratorOverview } from '../../components/curator/CuratorOverview'
 import { ArtistDiscovery } from '../../components/curator/ArtistDiscovery'
 import { CuratorCatalogue } from '../../components/curator/CuratorCatalogue'
+import { MyShortlist } from '../../components/curator/MyShortlist'
 import { LogisticsHub } from '../../components/curator/LogisticsHub'
 import { ConciergeService } from '../../components/curator/ConciergeService'
 import { BudgetTracker } from '../../components/curator/BudgetTracker'
@@ -47,6 +49,7 @@ export default function Professional() {
       icon: <Users className="w-4 h-4" />,
       items: [
         { name: td.items.catalogue, icon: <Star className="w-4 h-4" />, index: 1 },
+        { name: 'My Shortlist', icon: <Heart className="w-4 h-4" />, index: 9 },
       ],
     },
     {
@@ -95,6 +98,7 @@ export default function Professional() {
       case 5: return <LearningHub />
       case 6: return <Profile />
       case 7: return <CuratorAbonnement />
+      case 9: return <MyShortlist />
       default: return <CuratorOverview setTab={setTab} />
     }
   }

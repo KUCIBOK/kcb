@@ -78,6 +78,27 @@ export async function SignUpUser(charge) {
     const userId = body?.data?.user?.id ?? body?.user?.id
     if (!userId) return { error: 'Erreur inconnue' }
 
+    // ─────────────────────────────────────────────────────────────
+    // NEW: Create trial subscription (14 days auto-expiring)
+    // ─────────────────────────────────────────────────────────────
+    try {
+      const trialRes = await fetch(`${utils.api}/subscriptions/create-trial`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId }),
+      })
+      const trialBody = await trialRes.json()
+      if (!trialRes.ok) {
+        console.warn('[Trial Creation Warning]', trialBody?.error)
+        // Non-blocking: Continue even if trial creation fails
+      }
+    } catch (trialErr) {
+      console.warn('[Trial Creation Error]', trialErr.message)
+      // Non-blocking: Continue signup even if trial API fails
+    }
+
     // Upload de la photo de profil avec le vrai userId
     let imageUrl = null
     if (role === 'artist' && image instanceof File) {

@@ -1,0 +1,497 @@
+<title>Audit Dashboard 2026</title>
+<style>
+:root {
+  --noir: #0a0a0a;
+  --ardoise: #1a1a2e;
+  --pierre: #7a7a8e;
+  --or: #d4a574;
+  --ivoire: #f5f1ed;
+  --emerald: #10b981;
+  --red: #ef4444;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--noir);
+  color: var(--ivoire);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+  border-bottom: 2px solid var(--or);
+  padding-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
+  color: var(--or);
+}
+
+.header p {
+  font-size: 0.9rem;
+  color: var(--pierre);
+  margin: 0;
+}
+
+.gaps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
+}
+
+.gap-card {
+  background: var(--ardoise);
+  border-left: 4px solid var(--or);
+  padding: 25px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.gap-card.critical {
+  border-left-color: var(--red);
+}
+
+.gap-card.medium {
+  border-left-color: #f59e0b;
+}
+
+.gap-number {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 2rem;
+  opacity: 0.3;
+  color: var(--or);
+}
+
+.gap-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ivoire);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gap-title .severity {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.gap-title .critical-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--red);
+}
+
+.gap-title .medium-badge {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.gap-desc {
+  font-size: 0.9rem;
+  color: var(--pierre);
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.gap-example {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: var(--or);
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.gap-impact {
+  font-size: 0.85rem;
+  color: var(--red);
+  padding: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 4px;
+  margin-top: 12px;
+}
+
+.matrix-section {
+  margin-bottom: 50px;
+}
+
+.matrix-section h2 {
+  font-size: 1.5rem;
+  color: var(--or);
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--pierre);
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--ardoise);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.matrix-table thead {
+  background: rgba(212, 165, 116, 0.1);
+}
+
+.matrix-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--or);
+  font-size: 0.9rem;
+}
+
+.matrix-table td {
+  padding: 12px 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
+}
+
+.matrix-table tr:hover {
+  background: rgba(212, 165, 116, 0.05);
+}
+
+.check {
+  color: var(--emerald);
+  font-weight: bold;
+}
+
+.x {
+  color: var(--pierre);
+  font-weight: bold;
+}
+
+.unknown {
+  color: var(--pierre);
+  font-style: italic;
+}
+
+.summary-section {
+  background: var(--ardoise);
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+
+.summary-section h2 {
+  color: var(--or);
+  margin-top: 0;
+}
+
+.summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.summary-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.95rem;
+}
+
+.summary-list li:last-child {
+  border-bottom: none;
+}
+
+.summary-list strong {
+  color: var(--or);
+}
+
+.cta-section {
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(16, 185, 129, 0.05));
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+
+.cta-section h2 {
+  color: var(--or);
+  margin-top: 0;
+}
+
+.cta-section p {
+  font-size: 1rem;
+  color: var(--pierre);
+  margin-bottom: 20px;
+}
+
+.phases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.phase {
+  background: var(--noir);
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+
+.phase h3 {
+  color: var(--or);
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.phase ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--pierre);
+}
+
+.phase li {
+  padding: 6px 0;
+}
+
+.phase li:before {
+  content: "→ ";
+  color: var(--or);
+  margin-right: 8px;
+}
+</style>
+
+<div class="container">
+  <div class="header">
+    <h1>🔍 Audit Système — Dashboards 2026</h1>
+    <p>Cohérence logique, plans, trial & fonctionnalités manquantes</p>
+  </div>
+
+  <div class="gaps-grid">
+    <div class="gap-card critical">
+      <div class="gap-number">1</div>
+      <h3 class="gap-title">
+        💰 Incohérence de Pricing
+        <span class="severity critical-badge">🔴 HIGH</span>
+      </h3>
+      <p class="gap-desc">Landing page affiche "21-49 EUR" mais backend facture "27€"</p>
+      <div class="gap-example">
+        Landing: 21-49 EUR
+        Backend: 27€ (explorer)
+               67€ (premium)
+      </div>
+      <p class="gap-impact">⚠️ Utilisateurs voient un prix, en paient un autre au checkout</p>
+    </div>
+
+    <div class="gap-card critical">
+      <div class="gap-number">2</div>
+      <h3 class="gap-title">
+        🎁 Trial 14 Jours Manquant
+        <span class="severity critical-badge">🔴 HIGH</span>
+      </h3>
+      <p class="gap-desc">Landing dit "Start Free Trial" mais zéro implémentation backend</p>
+      <div class="gap-example">
+        - Pas de trial_started_at
+        - Pas de trial_days
+        - Pas de logique expiry
+        - Free plan = forever, pas 14j
+      </div>
+      <p class="gap-impact">⚠️ Promesse marketing non tenue</p>
+    </div>
+
+    <div class="gap-card critical">
+      <div class="gap-number">3</div>
+      <h3 class="gap-title">
+        ⭐ Shortlisting Absent
+        <span class="severity critical-badge">🔴 HIGH</span>
+      </h3>
+      <p class="gap-desc">Dashboard affiche "Artistes shortlistés: 0" — mais pas de fonctionnalité</p>
+      <div class="gap-example">
+        Catalogues affichent "Contacter"
+        Zéro "Save", "Add to list", etc.
+        Table shortlist n'existe pas
+      </div>
+      <p class="gap-impact">⚠️ UI fait croire à une fonction qui n'existe pas</p>
+    </div>
+
+    <div class="gap-card medium">
+      <div class="gap-number">4</div>
+      <h3 class="gap-title">
+        📊 Feature Matrix Floue
+        <span class="severity medium-badge">🟡 MEDIUM</span>
+      </h3>
+      <p class="gap-desc">8 features par plan mais pas documenté ce que c'est</p>
+      <div class="gap-example">
+        [true, true, true, true, false, ...]
+        Qu'est-ce que feature[5]?
+        Shortlist? Reports? Autre?
+      </div>
+      <p class="gap-impact">⚠️ Code incompréhensible</p>
+    </div>
+
+    <div class="gap-card medium">
+      <div class="gap-number">5</div>
+      <h3 class="gap-title">
+        🔐 Gating des Features Incomplet
+        <span class="severity medium-badge">🟡 MEDIUM</span>
+      </h3>
+      <p class="gap-desc">Seulement 2/8 features sont gated par plan</p>
+      <div class="gap-example">
+        ✓ Budget: gated (premium+)
+        ✓ Concierge: gated (premium+)
+        ✗ Catalogue: not gated
+        ✗ Artist discovery: not gated
+        ✗ Sourcing: not gated
+      </div>
+      <p class="gap-impact">⚠️ Free users accèdent aux mêmes features que paid</p>
+    </div>
+  </div>
+
+  <div class="matrix-section">
+    <h2>📋 Matrice: Quoi peut faire qui?</h2>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Free</th>
+          <th>Explorer/Pro (27€)</th>
+          <th>Premium (67€)</th>
+          <th>Institutional (147€)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Voir catalogue</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Rechercher artistes</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Demander sourcing</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Shortlister artistes</td>
+          <td><span class="x">✗</span></td>
+          <td><span class="x">✗</span></td>
+          <td><span class="x">✗</span></td>
+          <td><span class="x">✗</span></td>
+        </tr>
+        <tr>
+          <td>Gérer budget</td>
+          <td><span class="x">✗</span></td>
+          <td><span class="x">✗</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Services concierge</td>
+          <td><span class="x">✗</span></td>
+          <td><span class="x">✗</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Suivi logistique</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Market intelligence</td>
+          <td><span class="x">✗</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Comparer artistes</td>
+          <td><span class="x">✗</span></td>
+          <td><span class="x">✗</span></td>
+          <td><span class="unknown">?</span></td>
+          <td><span class="unknown">?</span></td>
+        </tr>
+        <tr>
+          <td>Exporter rapports</td>
+          <td><span class="x">✗</span></td>
+          <td><span class="x">✗</span></td>
+          <td><span class="unknown">?</span></td>
+          <td><span class="unknown">?</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="summary-section">
+    <h2>🎯 Résumé: 5 Gaps à Traiter</h2>
+    <ul class="summary-list">
+      <li><strong>Gap #1 — Pricing mismatch:</strong> Landing "21-49" ≠ Backend "27€" | Sévérité: 🔴 HIGH | Effort: 2h</li>
+      <li><strong>Gap #2 — Trial manquant:</strong> "Start Free Trial" n'existe pas backend | Sévérité: 🔴 HIGH | Effort: 8h</li>
+      <li><strong>Gap #3 — Shortlisting absent:</strong> UI affiche, backend n'existe pas | Sévérité: 🔴 HIGH | Effort: 16h</li>
+      <li><strong>Gap #4 — Feature matrix floue:</strong> Pas de doc sur features[0..7] | Sévérité: 🟡 MEDIUM | Effort: 4h</li>
+      <li><strong>Gap #5 — Gating incomplet:</strong> Seulement 2/8 features gated | Sévérité: 🟡 MEDIUM | Effort: 6h</li>
+    </ul>
+  </div>
+
+  <div class="cta-section">
+    <h2>🚀 Prochaines Étapes</h2>
+    <p>Total estimé: <strong>36h</strong> pour corriger tous les gaps</p>
+
+    <div class="phases">
+      <div class="phase">
+        <h3>Phase 1 — Clarification (2-3h)</h3>
+        <ul>
+          <li>Trial = 14j gratuit ou marketing?</li>
+          <li>Définir feature matrix exaact</li>
+          <li>Décider: pricing landing 27€?</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <h3>Phase 2 — Core Features (16h)</h3>
+        <ul>
+          <li>Implement trial (trigger + expiry)</li>
+          <li>Add shortlisting (table + API + UI)</li>
+          <li>Complete feature gating</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <h3>Phase 3 — Alignment (10h)</h3>
+        <ul>
+          <li>Align pricing (i18n + checkout)</li>
+          <li>Document feature matrix</li>
+          <li>QA & testing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
