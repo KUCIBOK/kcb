@@ -54,7 +54,9 @@ export default async function handler(req, res) {
           limit = 100,
         } = req.query
 
-        let query = supabaseAdmin.from('artworks').select('*')
+        let query = supabaseAdmin
+          .from('artworks')
+          .select('*, artists(id, name, profile_pic)')
 
         if (status) query = query.eq('status', status)
         if (for_sale === 'true') query = query.eq('for_sale', true)
@@ -74,10 +76,16 @@ export default async function handler(req, res) {
           })
         }
 
+        // Map artist data: add 'artist' field with the artist name
+        const mappedData = (data || []).map((artwork) => ({
+          ...artwork,
+          artist: artwork.artists?.[0]?.name || artwork.artist || 'Unknown artist',
+        }))
+
         return res.status(200).json({
           success: true,
-          artworks: data || [],
-          count: (data || []).length,
+          artworks: mappedData,
+          count: mappedData.length,
         })
       }
 
