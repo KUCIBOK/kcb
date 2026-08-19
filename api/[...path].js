@@ -189,6 +189,52 @@ export default async function handler(req, res) {
     }
 
     // ─────────────────────────────────────────────────────────────
+    // ARTISTS ROUTES
+    // ─────────────────────────────────────────────────────────────
+
+    if (s0 === 'artists') {
+      // GET /api/artists — List all artists
+      if (req.method === 'GET' && !s1) {
+        const { data, error } = await supabaseAdmin
+          .from('artists')
+          .select('*')
+          .order('name', { ascending: true })
+
+        if (error) {
+          return res.status(500).json({
+            error: error.message,
+            success: false,
+            artists: [],
+          })
+        }
+
+        return res.status(200).json({
+          success: true,
+          artists: data || [],
+          count: (data || []).length,
+        })
+      }
+
+      // GET /api/artists/:id — Get single artist
+      if (req.method === 'GET' && s1) {
+        const { data, error } = await supabaseAdmin
+          .from('artists')
+          .select('*')
+          .eq('id', s1)
+          .single()
+
+        if (error) {
+          return res.status(404).json({ error: 'Artist not found' })
+        }
+
+        return res.status(200).json({
+          success: true,
+          data,
+        })
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
     // HEALTH CHECK
     // ─────────────────────────────────────────────────────────────
 
