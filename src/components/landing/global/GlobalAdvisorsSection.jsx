@@ -250,7 +250,7 @@ export default memo(function GlobalAdvisorsSection() {
   }
 
   return (
-    <section className="py-20 lg:py-32 px-[clamp(24px,5vw,80px)] bg-kcb-noir-deep">
+    <section id="advisors" className="py-20 lg:py-32 px-[clamp(24px,5vw,80px)] bg-kcb-noir-deep">
       <div className="max-w-[1280px] mx-auto">
         {/* Header */}
         <div className="mb-16 lg:mb-24">

@@ -5,11 +5,11 @@ import { UserLinks } from './UserLinks'
 import { Menu, X } from 'lucide-react'
 
 const LINKS = [
-  { name: 'Catalogue', path: '/africa/catalogue' },
-  { name: 'Artistes', path: '/africa/artists' },
-  { name: 'Blog', path: '/africa/blog' },
-  { name: 'FAQ', path: '/africa/faq' },
-  { name: 'Contact', path: '/africa/contact' },
+  { name: 'Accueil', path: '/' },
+  { name: 'Pour Curateurs', path: '/global#curators' },
+  { name: 'Pour Advisors', path: '/global#advisors' },
+  { name: 'Pricing', path: '/global#pricing' },
+  { name: 'Pour Artistes', path: '/for-artists' },
 ]
 
 /**
