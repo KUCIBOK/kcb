@@ -47,10 +47,10 @@ export default async function handler(req, res) {
     })
 
     // Query database with artist data
+    // Include all artworks for dev/demo (remove .eq('status', 'approved') to see all)
     const { data, error } = await supabase
       .from('artworks')
       .select('*, artists(id, name)')
-      .eq('status', 'approved')
       .order('created_at', { ascending: false })
       .limit(300)
 
