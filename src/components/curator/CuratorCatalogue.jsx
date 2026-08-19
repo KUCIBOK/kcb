@@ -63,6 +63,16 @@ export function CuratorCatalogue() {
     fetchCatalogue(filters)
   }, [filters, fetchCatalogue])
 
+  // Shuffle artworks randomly
+  const shuffledData = () => {
+    const arr = [...catalogue.data]
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr
+  }
+
   const activeFiltersCount = Object.values({
     availabilityStatus: filters.availabilityStatus,
     priceMin: filters.priceMin,
@@ -202,7 +212,7 @@ export function CuratorCatalogue() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {catalogue.data.map((artwork) => {
+          {shuffledData().map((artwork) => {
             const avail = artwork.availabilityStatus
               ? AVAILABILITY_LABELS[artwork.availabilityStatus]
               : null

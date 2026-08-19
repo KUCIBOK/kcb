@@ -46,8 +46,7 @@ export default function Professional() {
       category: td.categories.discovery,
       icon: <Users className="w-4 h-4" />,
       items: [
-        { name: td.items.verifiedArtists, icon: <Users className="w-4 h-4" />, index: 1 },
-        { name: td.items.catalogue, icon: <Star className="w-4 h-4" />, index: 8 },
+        { name: td.items.catalogue, icon: <Star className="w-4 h-4" />, index: 1 },
       ],
     },
     {
@@ -89,8 +88,7 @@ export default function Professional() {
   const renderTab = () => {
     switch (tab) {
       case 0: return <CuratorOverview setTab={setTab} demoMode={user?.role === 'admin'} />
-      case 1: return <ArtistDiscovery />
-      case 8: return <CuratorCatalogue />
+      case 1: return <CuratorCatalogue />
       case 2: return <LogisticsHub />
       case 3: return <ConciergeService />
       case 4: return <BudgetTracker />
