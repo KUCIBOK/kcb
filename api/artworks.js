@@ -65,7 +65,7 @@ export default async function handler(req, res) {
     // Map artist data: add 'artist' field with artist name
     const artworksWithArtistNames = (data || []).map((artwork) => ({
       ...artwork,
-      artist: artwork.artists?.[0]?.name || artwork.artist || 'Unknown artist',
+      artist: artwork.artists?.name || artwork.artist || 'Unknown artist',
     }))
 
     // Return artworks
