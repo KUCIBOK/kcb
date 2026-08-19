@@ -332,17 +332,17 @@ export default memo(function GlobalAdvisorsSection() {
           </div>
         </div>
 
-        {/* Feature Tabs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5">
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { num: '01', title: 'Client Portfolio Management', desc: 'Track collections and manage client relationships' },
-            { num: '02', title: 'Curated Deal Flow', desc: 'Access pre-vetted artworks & direct sourcing' },
-            { num: '03', title: 'Commission Tracking', desc: 'Automated revenue reporting & payments' },
+            { num: '01', title: 'Client Portfolio Management', desc: 'Track collections and manage client relationships', icon: '👥' },
+            { num: '02', title: 'Curated Deal Flow', desc: 'Access pre-vetted artworks & direct sourcing', icon: '🎯' },
+            { num: '03', title: 'Commission Tracking', desc: 'Automated revenue reporting & payments', icon: '💰' },
           ].map((f, i) => (
             <button
               key={f.num}
               onClick={() => goTo(i)}
-              className="text-left bg-kcb-noir p-4 md:p-8 h-full relative overflow-hidden focus:outline-none group transition-colors duration-300"
+              className="text-left bg-kcb-noir border border-kcb-silver/[0.08] rounded-[4px] p-6 h-full relative overflow-hidden focus:outline-none group transition-all duration-300 hover:border-kcb-silver/[0.15] hover:bg-kcb-noir/80"
               style={{
                 borderTop: i === active ? '2px solid var(--accent)' : '2px solid transparent',
               }}
@@ -357,15 +357,19 @@ export default memo(function GlobalAdvisorsSection() {
                   }}
                 />
               )}
+              <div className="mb-4 text-3xl">{f.icon}</div>
               <span className="font-jetbrains text-[10px] tracking-[0.15em]" style={{ color: i === active ? 'var(--accent)' : 'rgba(201,168,76,0.4)' }}>
                 {f.num}
               </span>
-              <p className={`font-dm-sans font-semibold text-sm mt-3 mb-2 transition-colors duration-300 ${i === active ? 'text-white' : 'text-white/50'}`}>
+              <p className={`font-dm-sans font-bold text-base lg:text-lg mt-3 mb-2 transition-colors duration-300 ${i === active ? 'text-white' : 'text-white/70'}`}>
                 {f.title}
               </p>
-              <p className={`font-dm-sans text-xs leading-relaxed transition-colors duration-300 ${i === active ? 'text-kcb-pierre' : 'text-kcb-pierre/40'}`}>
+              <p className={`font-dm-sans text-sm leading-relaxed mb-4 transition-colors duration-300 ${i === active ? 'text-kcb-pierre' : 'text-kcb-pierre/50'}`}>
                 {f.desc}
               </p>
+              <div className="flex items-center gap-1 text-xs font-semibold transition-colors duration-300" style={{ color: i === active ? 'var(--accent)' : 'rgba(201,168,76,0.5)' }}>
+                Learn more <span>→</span>
+              </div>
             </button>
           ))}
         </div>

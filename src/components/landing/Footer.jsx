@@ -90,6 +90,14 @@ export const Footer = memo(function Footer() {
             </li>
             <li>
               <Link
+                to="/for-artists"
+                className="text-[13px] text-kcb-or no-underline transition-colors hover:text-white"
+              >
+                For Artists
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/africa"
                 className="text-[13px] text-kcb-or no-underline transition-colors hover:text-white"
               >

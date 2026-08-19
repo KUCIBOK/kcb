@@ -52,13 +52,22 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
             <RevealOnScroll delay={0.3}>
               <div className="flex gap-3 lg:gap-4 flex-wrap pb-8 lg:pb-24">
                 {actions.map((a, i) => {
-                  const cls = a.primary
-                    ? 'inline-flex items-center gap-2 bg-[var(--accent)] text-kcb-noir font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-6 lg:px-9 py-3.5 transition-all hover:bg-[var(--accent-dark)] hover:-translate-y-px'
-                    : 'inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase py-2.5 transition-colors hover:text-[var(--accent)]'
+                  let cls = 'inline-flex items-center gap-2 font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-6 lg:px-9 py-3.5 transition-all hover:-translate-y-px rounded-[4px]'
+
+                  if (a.variant === 'curator') {
+                    cls += ' bg-purple-600 text-white hover:bg-purple-700'
+                  } else if (a.variant === 'advisor') {
+                    cls += ' bg-slate-700 text-white hover:bg-slate-800'
+                  } else if (a.primary) {
+                    cls += ' bg-[var(--accent)] text-kcb-noir hover:bg-[var(--accent-dark)]'
+                  } else {
+                    cls = 'inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase py-2.5 transition-colors hover:text-[var(--accent)]'
+                  }
+
                   const content = (
                     <>
                       {a.text}
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      {(a.primary || a.variant) && <ArrowRight className="w-3.5 h-3.5" />}
                     </>
                   )
                   if (a.to) {

@@ -33,8 +33,9 @@ function GlobalContent() {
         }
         subtitle={t.hero.subtitle}
         actions={[
-          { text: t.hero.cta1, to: '/global/catalogue', primary: true },
-          { text: t.hero.cta2, to: '/global/sourcing' },
+          { text: 'For Curators', to: '#curators', variant: 'curator' },
+          { text: 'For Advisors', to: '#advisors', variant: 'advisor' },
+          { text: 'Request Demo', to: '/contact', primary: true },
         ]}
       >
         <HeroShowcase />
