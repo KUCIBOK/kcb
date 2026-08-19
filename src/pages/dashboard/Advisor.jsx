@@ -21,6 +21,7 @@ import { AdvisorOverview } from '../../components/advisor/AdvisorOverview'
 import { AdvisorClients } from '../../components/advisor/AdvisorClients'
 import { AdvisorDealPipeline } from '../../components/advisor/AdvisorDealPipeline'
 import { AdvisorMarket } from '../../components/advisor/AdvisorMarket'
+import { CuratorCatalogue } from '../../components/curator/CuratorCatalogue'
 import { AdvisorReports } from '../../components/advisor/AdvisorReports'
 import { AdvisorAbonnement } from '../../components/advisor/AdvisorAbonnement'
 import { Profile } from '../../components/professional/Profile'
@@ -47,6 +48,7 @@ export default function Advisor() {
       items: [
         { name: td.items.clients, icon: <Users className="w-4 h-4" />, index: 1 },
         { name: td.items.dealPipeline, icon: <Briefcase className="w-4 h-4" />, index: 2 },
+        { name: td.items.catalogue, icon: <FileText className="w-4 h-4" />, index: 7 },
       ],
     },
     {
@@ -82,6 +84,8 @@ export default function Advisor() {
         return <AdvisorDealPipeline />
       case 3:
         return <AdvisorMarket />
+      case 7:
+        return <CuratorCatalogue />
       case 4:
         return <AdvisorReports />
       case 5:

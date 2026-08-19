@@ -23,6 +23,7 @@ import { useAuth } from '../../store/AuthContext'
 
 import { CuratorOverview } from '../../components/curator/CuratorOverview'
 import { ArtistDiscovery } from '../../components/curator/ArtistDiscovery'
+import { CuratorCatalogue } from '../../components/curator/CuratorCatalogue'
 import { LogisticsHub } from '../../components/curator/LogisticsHub'
 import { ConciergeService } from '../../components/curator/ConciergeService'
 import { BudgetTracker } from '../../components/curator/BudgetTracker'
@@ -44,7 +45,10 @@ export default function Professional() {
     {
       category: td.categories.discovery,
       icon: <Users className="w-4 h-4" />,
-      items: [{ name: td.items.verifiedArtists, icon: <Users className="w-4 h-4" />, index: 1 }],
+      items: [
+        { name: td.items.verifiedArtists, icon: <Users className="w-4 h-4" />, index: 1 },
+        { name: td.items.catalogue, icon: <Star className="w-4 h-4" />, index: 8 },
+      ],
     },
     {
       category: td.categories.operations,
@@ -86,6 +90,7 @@ export default function Professional() {
     switch (tab) {
       case 0: return <CuratorOverview setTab={setTab} demoMode={user?.role === 'admin'} />
       case 1: return <ArtistDiscovery />
+      case 8: return <CuratorCatalogue />
       case 2: return <LogisticsHub />
       case 3: return <ConciergeService />
       case 4: return <BudgetTracker />

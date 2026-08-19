@@ -96,6 +96,7 @@ export const uiT = {
           marketIntelligence: 'Intelligence marché',
           clients: 'Mes clients',
           dealPipeline: 'Deal pipeline',
+          catalogue: 'Catalogue & Sourcing',
           reports: 'Rapports',
           profile: 'Profil',
           subscription: 'Abonnement',
@@ -115,6 +116,7 @@ export const uiT = {
         items: {
           overview: 'Vue générale',
           verifiedArtists: 'Artistes vérifiés',
+          catalogue: 'Catalogue & Sourcing',
           logisticsHub: 'Centre logistique',
           conciergeServices: 'Services Concierge',
           budgetTracking: 'Suivi budget',
@@ -235,6 +237,7 @@ export const uiT = {
           marketIntelligence: 'Market Intelligence',
           clients: 'My Clients',
           dealPipeline: 'Deal Pipeline',
+          catalogue: 'Catalogue & Sourcing',
           reports: 'Reports',
           profile: 'Profile',
           subscription: 'Subscription',
@@ -254,6 +257,7 @@ export const uiT = {
         items: {
           overview: 'Overview',
           verifiedArtists: 'Verified Artists',
+          catalogue: 'Catalogue & Sourcing',
           logisticsHub: 'Logistics Hub',
           conciergeServices: 'Concierge Services',
           budgetTracking: 'Budget Tracking',
