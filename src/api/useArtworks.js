@@ -38,7 +38,8 @@ async function fetchArtworks(params = {}) {
     })
     const body = await response.json()
     if (!response.ok) return { error: body?.error || 'Erreur serveur' }
-    return body?.data ?? body
+    // Extrait correctement le tableau d'artworks de la réponse
+    return Array.isArray(body) ? body : (body?.artworks ?? body?.data ?? [])
   } catch (err) {
     return { error: err.message }
   }
