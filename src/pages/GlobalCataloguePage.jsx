@@ -124,16 +124,12 @@ function CatalogueContent() {
       getAllArtworks({ status: 'approved', limit: 1000 }),
       getAllArtists({ limit: 500 }),
     ]).then(([artRes, artisRes]) => {
-      const artList = Array.isArray(artRes?.data)
-        ? artRes.data
-        : Array.isArray(artRes)
-          ? artRes
-          : []
-      const artistList = Array.isArray(artisRes?.data)
-        ? artisRes.data
-        : Array.isArray(artisRes)
-          ? artisRes
-          : []
+      const artList = Array.isArray(artRes)
+        ? artRes
+        : (artRes?.artworks ?? artRes?.data ?? [])
+      const artistList = Array.isArray(artisRes)
+        ? artisRes
+        : (artisRes?.artists ?? artisRes?.data ?? [])
       setAllArtworks(shuffle(artList))
       setAllArtists(artistList)
       setLoading(false)
