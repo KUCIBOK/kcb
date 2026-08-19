@@ -49,10 +49,10 @@ export default async function handler(req, res) {
     // Query database
     const { data, error } = await supabase
       .from('artworks')
-      .select('*')
+      .select('*, artists(id, name, profile_pic)')
       .eq('status', 'approved')
       .order('created_at', { ascending: false })
-      .limit(100)
+      .limit(300)
 
     if (error) {
       return res.status(500).json({
@@ -62,11 +62,17 @@ export default async function handler(req, res) {
       })
     }
 
+    // Map artist data: add 'artist' field with the artist name
+    const mappedData = (data || []).map((artwork) => ({
+      ...artwork,
+      artist: artwork.artists?.[0]?.name || artwork.artist || 'Unknown artist',
+    }))
+
     // Return artworks
     res.status(200).json({
       success: true,
-      artworks: data || [],
-      count: (data || []).length,
+      artworks: mappedData,
+      count: mappedData.length,
     })
   } catch (error) {
     res.status(500).json({
