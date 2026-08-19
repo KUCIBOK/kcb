@@ -1783,8 +1783,8 @@ async function routeArtworks(req, res) {
     }
 
     // Sécurité : forcer status=approved pour les non-admins AVANT tout filtre
-    // DEBUG:     const effectiveStatus = callerIsAdmin ? status : 'approved'
-    // DEBUG:     if (effectiveStatus) query = query.eq('status', effectiveStatus)
+    const effectiveStatus = callerIsAdmin ? status : 'approved'
+    if (effectiveStatus) query = query.eq('status', effectiveStatus)
     if (category) query = query.eq('category', category)
     if (for_sale) query = query.eq('for_sale', for_sale === 'true')
     if (featured) query = query.eq('featured', featured === 'true')
