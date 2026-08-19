@@ -58,12 +58,12 @@ function GlobalContent() {
       <GeoLine />
       <LogisticsSimulatorSection />
 
-      {/* Pricing tiers */}
-      <GlobalPricingSection />
-      <GeoLine />
-
       {/* Testimonials */}
       <GlobalTestimonialsSection />
+      <GeoLine />
+
+      {/* Pricing tiers */}
+      <GlobalPricingSection />
       <GeoLine />
 
       {/* Case Studies */}

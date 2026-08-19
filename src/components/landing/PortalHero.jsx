@@ -52,14 +52,14 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
             <RevealOnScroll delay={0.3}>
               <div className="flex gap-3 lg:gap-4 flex-wrap pb-8 lg:pb-24">
                 {actions.map((a, i) => {
-                  let cls = 'inline-flex items-center gap-2 font-dm-sans font-bold text-xs tracking-[0.1em] uppercase px-7 lg:px-11 py-4 transition-all hover:-translate-y-1 rounded-[4px] border-2'
+                  let cls = 'inline-flex items-center gap-2 font-dm-sans font-bold text-sm tracking-[0.1em] uppercase px-8 lg:px-12 py-4 transition-all hover:-translate-y-1 rounded-[4px] shadow-lg'
 
                   if (a.variant === 'curator') {
-                    cls += ' bg-indigo-600 text-white hover:bg-indigo-700 border-indigo-600 hover:border-indigo-700 shadow-lg hover:shadow-indigo-600/40'
+                    cls += ' bg-[#9B4D96] text-white hover:bg-[#B366B3] hover:shadow-[#9B4D96]/50'
                   } else if (a.variant === 'advisor') {
-                    cls += ' bg-slate-600 text-white hover:bg-slate-700 border-slate-600 hover:border-slate-700 shadow-lg hover:shadow-slate-600/40'
+                    cls += ' bg-[#1E2761] text-white hover:bg-[#2A3580] hover:shadow-[#1E2761]/50'
                   } else if (a.primary) {
-                    cls += ' bg-[var(--accent)] text-kcb-noir hover:bg-[var(--accent-dark)] border-[var(--accent)] hover:border-[var(--accent-dark)] shadow-lg hover:shadow-[var(--accent)]/40'
+                    cls += ' bg-[#F39C12] text-[#1a1a1a] hover:bg-[#F4B341] hover:shadow-[#F39C12]/50'
                   } else {
                     cls = 'inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase py-2.5 transition-colors hover:text-[var(--accent)]'
                   }
