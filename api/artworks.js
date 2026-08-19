@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       return res.status(503).json({
         error: 'Database not configured',
         success: false,
-        artworks: [],
+        data: [],
       })
     }
 
@@ -46,19 +46,29 @@ export default async function handler(req, res) {
       auth: { autoRefreshToken: false, persistSession: false },
     })
 
+    // Parse query params
+    const { status, page = '1', limit = '12' } = req.query
+
     // Query database with artist data
-    // Include all artworks for dev/demo (remove .eq('status', 'approved') to see all)
-    const { data, error } = await supabase
+    // For dev: include all statuses (status param is ignored)
+    let query = supabase
       .from('artworks')
       .select('*, artists(id, name)')
       .order('created_at', { ascending: false })
-      .limit(300)
+
+    // Optionally filter by status if provided
+    if (status && status !== 'all') {
+      query = query.eq('status', status)
+    }
+
+    query = query.limit(300)
+    const { data, error } = await query
 
     if (error) {
       return res.status(500).json({
         error: error.message,
         success: false,
-        artworks: [],
+        data: [],
       })
     }
 
@@ -68,11 +78,12 @@ export default async function handler(req, res) {
       artist: artwork.artists?.name || artwork.artist || 'Unknown artist',
     }))
 
-    // Return artworks
+    // Return artworks in format expected by frontend
     res.status(200).json({
       success: true,
-      artworks: artworksWithArtistNames,
+      data: artworksWithArtistNames,
       count: artworksWithArtistNames.length,
+      pagination: { total: artworksWithArtistNames.length },
     })
   } catch (error) {
     res.status(500).json({
