@@ -387,8 +387,15 @@ export function Router() {
             </ArtistContextProvider>
           }
         >
-          {/* Redirect root to /global */}
-          <Route path="/" element={<Navigate to="/global" replace />} />
+          {/* Root now displays GlobalPage (same as /global) */}
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <GlobalPage />
+              </Suspense>
+            }
+          />
 
           {/* Paiement + résultats + tracking */}
           <Route element={<Layout />}>
