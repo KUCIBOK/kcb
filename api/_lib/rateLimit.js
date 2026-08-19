@@ -1,28 +1,39 @@
 /**
- * Rate Limiting via Upstash Redis
+ * Rate Limiting via Upstash Redis (with in-memory fallback)
  * Sliding window counter: tracks requests per IP (unauthenticated) or user ID (authenticated)
+ *
+ * ULTRA-SAFE: Never crashes, always has fallback
  */
 
-import { Redis } from '@upstash/redis'
-
-// Initialize Redis only if Upstash is configured
+let Redis = null
 let redis = null
 let useRedis = false
 
-if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+// Lazy-load Redis only when actually needed
+async function initRedis() {
+  if (useRedis === true) return redis // Already initialized successfully
+  if (useRedis === false && redis !== null) return null // Already tried and failed
+
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return null // Redis not configured
+  }
+
   try {
+    if (!Redis) {
+      const mod = await import('@upstash/redis')
+      Redis = mod.Redis
+    }
     redis = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL,
       token: process.env.UPSTASH_REDIS_REST_TOKEN,
     })
     useRedis = true
-    console.log('[rateLimit] Upstash Redis initialized')
+    return redis
   } catch (error) {
-    console.warn('[rateLimit] Failed to initialize Upstash Redis:', error.message)
+    console.warn('[rateLimit] Redis init failed:', error.message)
     useRedis = false
+    return null
   }
-} else {
-  console.warn('[rateLimit] Upstash not configured — using in-memory fallback')
 }
 
 // In-memory fallback for rate limiting (not distributed, for dev/single instance)
@@ -88,25 +99,25 @@ export async function checkRateLimit(identifier, path, isAuthenticated = false) 
     const now = Date.now()
     const windowKey = Math.floor(now / (windowSeconds * 1000))
     const key = `ratelimit:${identifier}:${windowKey}`
-    const ttl = windowSeconds + 10 // Keep 10s extra to avoid race conditions
+    const ttl = windowSeconds + 10
 
     let count
-    const allowed = true // Fail open by default
 
-    if (useRedis && redis) {
-      try {
-        // Use Upstash Redis if available
-        const pipeline = redis.pipeline()
+    // Try Redis if available, fallback to in-memory
+    try {
+      const redisClient = await initRedis()
+      if (redisClient) {
+        const pipeline = redisClient.pipeline()
         pipeline.incr(key)
         pipeline.expire(key, ttl)
         const results = await pipeline.exec()
         count = results[0]
-      } catch (redisError) {
-        console.error('[rateLimit] Redis error, using fallback:', redisError.message)
+      } else {
         count = getInMemoryCount(key)
       }
-    } else {
-      // Use in-memory fallback
+    } catch (redisError) {
+      // Redis failed, use in-memory
+      console.warn('[rateLimit] Using in-memory fallback:', redisError.message)
       count = getInMemoryCount(key)
     }
 
@@ -119,10 +130,10 @@ export async function checkRateLimit(identifier, path, isAuthenticated = false) 
       resetAt,
     }
   } catch (error) {
-    // On any error, fail open (allow request) but log
+    // On any error, fail open
     console.error('[rateLimit] Rate limit check failed:', error.message)
     return {
-      allowed: true, // Fail open
+      allowed: true,
       limit: -1,
       remaining: -1,
       resetAt: Date.now(),
