@@ -52,14 +52,14 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
             <RevealOnScroll delay={0.3}>
               <div className="flex gap-3 lg:gap-4 flex-wrap pb-8 lg:pb-24">
                 {actions.map((a, i) => {
-                  let cls = 'inline-flex items-center gap-2 font-dm-sans font-semibold text-xs tracking-[0.08em] uppercase px-6 lg:px-9 py-3.5 transition-all hover:-translate-y-px rounded-[4px]'
+                  let cls = 'inline-flex items-center gap-2 font-dm-sans font-bold text-xs tracking-[0.1em] uppercase px-7 lg:px-11 py-4 transition-all hover:-translate-y-1 rounded-[4px] border-2'
 
                   if (a.variant === 'curator') {
-                    cls += ' bg-purple-600 text-white hover:bg-purple-700'
+                    cls += ' bg-indigo-600 text-white hover:bg-indigo-700 border-indigo-600 hover:border-indigo-700 shadow-lg hover:shadow-indigo-600/40'
                   } else if (a.variant === 'advisor') {
-                    cls += ' bg-slate-700 text-white hover:bg-slate-800'
+                    cls += ' bg-slate-600 text-white hover:bg-slate-700 border-slate-600 hover:border-slate-700 shadow-lg hover:shadow-slate-600/40'
                   } else if (a.primary) {
-                    cls += ' bg-[var(--accent)] text-kcb-noir hover:bg-[var(--accent-dark)]'
+                    cls += ' bg-[var(--accent)] text-kcb-noir hover:bg-[var(--accent-dark)] border-[var(--accent)] hover:border-[var(--accent-dark)] shadow-lg hover:shadow-[var(--accent)]/40'
                   } else {
                     cls = 'inline-flex items-center gap-1.5 text-kcb-pierre font-dm-sans font-medium text-xs tracking-[0.05em] uppercase py-2.5 transition-colors hover:text-[var(--accent)]'
                   }
@@ -67,7 +67,7 @@ export default function PortalHero({ label, title, subtitle, actions = [], child
                   const content = (
                     <>
                       {a.text}
-                      {(a.primary || a.variant) && <ArrowRight className="w-3.5 h-3.5" />}
+                      {(a.primary || a.variant) && <ArrowRight className="w-4 h-4 ml-1" />}
                     </>
                   )
                   if (a.to) {

@@ -254,9 +254,9 @@ export default memo(function GlobalAdvisorsSection() {
       <div className="max-w-[1280px] mx-auto">
         {/* Header */}
         <div className="mb-16 lg:mb-24">
-          <div className="inline-block bg-kcb-or/10 border border-kcb-or/20 rounded-[4px] px-4 py-2 mb-6">
-            <span className="font-jetbrains text-[10px] tracking-[0.15em] uppercase text-kcb-or">
-              For Advisors
+          <div className="mb-8">
+            <span className="font-jetbrains text-[11px] tracking-[0.2em] uppercase text-kcb-or font-bold text-lg">
+              ➜ FOR ADVISORS
             </span>
           </div>
           <h2 className="font-playfair font-bold text-4xl lg:text-5xl text-white mb-4">
@@ -333,7 +333,7 @@ export default memo(function GlobalAdvisorsSection() {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { num: '01', title: 'Client Portfolio Management', desc: 'Track collections and manage client relationships', icon: '👥' },
             { num: '02', title: 'Curated Deal Flow', desc: 'Access pre-vetted artworks & direct sourcing', icon: '🎯' },
@@ -342,9 +342,9 @@ export default memo(function GlobalAdvisorsSection() {
             <button
               key={f.num}
               onClick={() => goTo(i)}
-              className="text-left bg-kcb-noir border border-kcb-silver/[0.08] rounded-[4px] p-6 h-full relative overflow-hidden focus:outline-none group transition-all duration-300 hover:border-kcb-silver/[0.15] hover:bg-kcb-noir/80"
+              className="text-left bg-kcb-noir border border-kcb-silver/[0.12] rounded-[4px] p-8 lg:p-10 h-full relative overflow-hidden focus:outline-none group transition-all duration-300 hover:border-kcb-silver/[0.25] hover:bg-kcb-noir/60 hover:shadow-lg hover:-translate-y-1"
               style={{
-                borderTop: i === active ? '2px solid var(--accent)' : '2px solid transparent',
+                borderTop: i === active ? '3px solid var(--accent)' : '3px solid transparent',
               }}
             >
               {i === active && (
@@ -357,18 +357,18 @@ export default memo(function GlobalAdvisorsSection() {
                   }}
                 />
               )}
-              <div className="mb-4 text-3xl">{f.icon}</div>
-              <span className="font-jetbrains text-[10px] tracking-[0.15em]" style={{ color: i === active ? 'var(--accent)' : 'rgba(201,168,76,0.4)' }}>
+              <div className="mb-6 text-5xl">{f.icon}</div>
+              <span className="font-jetbrains text-[11px] tracking-[0.2em] font-bold" style={{ color: i === active ? 'var(--accent)' : 'rgba(201,168,76,0.5)' }}>
                 {f.num}
               </span>
-              <p className={`font-dm-sans font-bold text-base lg:text-lg mt-3 mb-2 transition-colors duration-300 ${i === active ? 'text-white' : 'text-white/70'}`}>
+              <p className={`font-dm-sans font-bold text-lg lg:text-xl mt-4 mb-3 leading-tight transition-colors duration-300 ${i === active ? 'text-white' : 'text-white/75'}`}>
                 {f.title}
               </p>
-              <p className={`font-dm-sans text-sm leading-relaxed mb-4 transition-colors duration-300 ${i === active ? 'text-kcb-pierre' : 'text-kcb-pierre/50'}`}>
+              <p className={`font-dm-sans text-sm lg:text-base leading-[1.8] mb-6 transition-colors duration-300 ${i === active ? 'text-kcb-pierre' : 'text-kcb-pierre/60'}`}>
                 {f.desc}
               </p>
-              <div className="flex items-center gap-1 text-xs font-semibold transition-colors duration-300" style={{ color: i === active ? 'var(--accent)' : 'rgba(201,168,76,0.5)' }}>
-                Learn more <span>→</span>
+              <div className="flex items-center gap-2 text-sm font-semibold transition-colors duration-300" style={{ color: i === active ? 'var(--accent)' : 'rgba(201,168,76,0.6)' }}>
+                Learn more <span className="text-base">→</span>
               </div>
             </button>
           ))}

@@ -158,7 +158,7 @@ export const globalT = {
     },
     simulator: {
       label: 'Interactive Tools',
-      title: 'Experience the Platform',
+      title: 'Try Our Tools Live',
       desc: "Test our shipping calculator and see exactly how Kucibok handles your artworks — from packing to delivery. Try it live with your own parameters.",
       step1: '01 — Shipment Parameters',
       step2: '02 — Cost Breakdown',
@@ -381,7 +381,7 @@ export const globalT = {
     },
     simulator: {
       label: 'Outils Interactifs',
-      title: 'Explorez la Plateforme',
+      title: 'Testez Nos Outils en Direct',
       desc: "Testez notre calculatrice de frais et voyez comment Kucibok gère vos œuvres — de l'emballage à la livraison. Essayez en direct avec vos paramètres.",
       step1: "01 — Paramètres d'Expédition",
       step2: '02 — Détail des Coûts',
