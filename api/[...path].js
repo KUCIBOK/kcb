@@ -51,7 +51,7 @@ export default async function handler(req, res) {
           artist_id,
           user_id,
           category,
-          limit = 100,
+          limit = 300,
         } = req.query
 
         let query = supabaseAdmin
