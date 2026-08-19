@@ -81,10 +81,10 @@ const OPTIONAL_ENV = [
   'UPSTASH_REDIS_REST_TOKEN',
 ]
 
-for (const key of REQUIRED_ENV) {
-  if (!process.env[key]) {
-    throw new Error(`[API] Variable d'environnement manquante : ${key}`)
-  }
+// Check required env vars but DON'T CRASH — log warnings instead
+const missingEnv = REQUIRED_ENV.filter(key => !process.env[key])
+if (missingEnv.length > 0) {
+  console.warn('[API] Missing env vars (will fail on use, not on startup):', missingEnv.join(', '))
 }
 
 // Log warning si Upstash manque (rate limiting en fallback)
