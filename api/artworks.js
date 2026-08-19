@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     // Query database with artist data
     const { data, error } = await supabase
       .from('artworks')
-      .select('*, artists(id, name, profile_pic)')
+      .select('*, artists(id, name)')
       .eq('status', 'approved')
       .order('created_at', { ascending: false })
       .limit(300)
