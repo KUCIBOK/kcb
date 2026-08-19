@@ -161,10 +161,11 @@ export async function getPendingArtworks() {
 /**
  * GET /api/artworks?status=approved — Œuvres approuvées (admin).
  *
+ * @param {object} [params] - Additional query parameters (limit, category, etc.)
  * @returns {Promise<object>}
  */
-export async function getApprovedArtworks() {
-  return fetchArtworks({ status: 'approved' })
+export async function getApprovedArtworks(params = {}) {
+  return fetchArtworks({ status: 'approved', ...params })
 }
 
 /**
