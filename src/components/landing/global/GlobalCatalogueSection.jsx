@@ -29,7 +29,7 @@ export default function GlobalCatalogueSection() {
 
   useEffect(() => {
     getApprovedArtworks({ limit: 200 }).then((result) => {
-      const list = Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : []
+      const list = Array.isArray(result) ? result : (result?.artworks ?? result?.data ?? [])
       // Prefer certified artworks with image, shuffle randomly, take 4 unique
       const withImage = list.filter((a) => a.image)
       const certified = withImage.filter((a) => a.kucibok_id)

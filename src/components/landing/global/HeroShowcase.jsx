@@ -23,7 +23,7 @@ export default function HeroShowcase() {
 
     // Load artworks and prioritize featured artist
     getApprovedArtworks({ limit: 100 }).then((result) => {
-      const list = Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : []
+      const list = Array.isArray(result) ? result : (result?.artworks ?? result?.data ?? [])
       const certified = list.filter((a) => a.kucibok_id && a.image)
       const candidates = certified.length > 0 ? certified : list.filter((a) => a.image)
       if (candidates.length === 0) return
