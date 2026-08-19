@@ -74,6 +74,9 @@ const REQUIRED_ENV = [
   'PAYDUNYA_MASTER_KEY',
   'PAYDUNYA_PRIVATE_KEY',
   'PAYDUNYA_TOKEN',
+]
+
+const OPTIONAL_ENV = [
   'UPSTASH_REDIS_REST_URL',
   'UPSTASH_REDIS_REST_TOKEN',
 ]
@@ -82,6 +85,11 @@ for (const key of REQUIRED_ENV) {
   if (!process.env[key]) {
     throw new Error(`[API] Variable d'environnement manquante : ${key}`)
   }
+}
+
+// Log warning si Upstash manque (rate limiting en fallback)
+if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+  console.warn('[API] Upstash Redis non configuré — rate limiting en fallback (in-memory)')
 }
 
 if (process.env.CORS_ORIGIN === '*') {

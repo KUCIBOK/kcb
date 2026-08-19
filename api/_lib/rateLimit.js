@@ -5,10 +5,28 @@
 
 import { Redis } from '@upstash/redis'
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-})
+// Initialize Redis only if Upstash is configured
+let redis = null
+let useRedis = false
+
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  try {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+    useRedis = true
+    console.log('[rateLimit] Upstash Redis initialized')
+  } catch (error) {
+    console.warn('[rateLimit] Failed to initialize Upstash Redis:', error.message)
+    useRedis = false
+  }
+} else {
+  console.warn('[rateLimit] Upstash not configured — using in-memory fallback')
+}
+
+// In-memory fallback for rate limiting (not distributed, for dev/single instance)
+const inMemoryStore = new Map()
 
 /**
  * Rate limit configuration by endpoint pattern
@@ -68,31 +86,41 @@ export async function checkRateLimit(identifier, path, isAuthenticated = false) 
     const limit = isAuthenticated ? config.limits.authenticated : config.limits.unauthenticated
     const windowSeconds = config.windowSeconds
     const now = Date.now()
-    const windowStart = now - windowSeconds * 1000
-
-    // Redis key: `ratelimit:identifier:window`
-    const key = `ratelimit:${identifier}:${Math.floor(now / (windowSeconds * 1000))}`
+    const windowKey = Math.floor(now / (windowSeconds * 1000))
+    const key = `ratelimit:${identifier}:${windowKey}`
     const ttl = windowSeconds + 10 // Keep 10s extra to avoid race conditions
 
-    // Increment counter
-    const pipeline = redis.pipeline()
-    pipeline.incr(key)
-    pipeline.expire(key, ttl)
-    const results = await pipeline.exec()
-    const count = results[0]
+    let count
+    const allowed = true // Fail open by default
 
-    const allowed = count <= limit
-    const resetAt = Math.floor((Math.floor(now / (windowSeconds * 1000)) + 1) * windowSeconds * 1000)
+    if (useRedis && redis) {
+      try {
+        // Use Upstash Redis if available
+        const pipeline = redis.pipeline()
+        pipeline.incr(key)
+        pipeline.expire(key, ttl)
+        const results = await pipeline.exec()
+        count = results[0]
+      } catch (redisError) {
+        console.error('[rateLimit] Redis error, using fallback:', redisError.message)
+        count = getInMemoryCount(key)
+      }
+    } else {
+      // Use in-memory fallback
+      count = getInMemoryCount(key)
+    }
+
+    const resetAt = Math.floor((windowKey + 1) * windowSeconds * 1000)
 
     return {
-      allowed,
+      allowed: count <= limit,
       limit,
       remaining: Math.max(0, limit - count),
       resetAt,
     }
   } catch (error) {
-    // On Redis error, fail open (allow request) but log
-    console.error('Rate limit check failed:', error.message)
+    // On any error, fail open (allow request) but log
+    console.error('[rateLimit] Rate limit check failed:', error.message)
     return {
       allowed: true, // Fail open
       limit: -1,
@@ -100,6 +128,23 @@ export async function checkRateLimit(identifier, path, isAuthenticated = false) 
       resetAt: Date.now(),
     }
   }
+}
+
+/**
+ * Get and increment counter in in-memory store (fallback)
+ */
+function getInMemoryCount(key) {
+  const now = Date.now()
+  let entry = inMemoryStore.get(key)
+
+  if (!entry || entry.expiresAt < now) {
+    entry = { count: 0, expiresAt: now + 60 * 60 * 1000 } // 1 hour TTL
+  }
+
+  entry.count++
+  inMemoryStore.set(key, entry)
+
+  return entry.count
 }
 
 /**
