@@ -1,204 +1,232 @@
 /**
- * Professional Analytics API
- * Provides market intelligence, trends, and insights for advisors
- * Data aggregated from artworks, transactions, and artist tables
+ * Professional Analytics API — Enhanced Version
+ * Hybrid strategy: Real Kucibok data + intelligent data-driven insights
+ * Uses RPC functions for optimized queries + caching (5min TTL)
  */
 
 import { supabaseAdmin } from './_lib/supabase.js'
 import { respondError, respondJSON } from './_lib/response.js'
 
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
 /**
  * GET /api/professional-analytics
- * Get market analytics for advisors
+ * Market intelligence dashboard data
  * Query: ?period=month
  */
 async function handleGetAnalytics(req) {
   const url = new URL(req.url, 'http://localhost')
   const period = url.searchParams.get('period') || 'month'
+  const cacheKey = `analytics:${period}`
 
   try {
-    // Get country trends (group artworks by country, calc avg price, count artists)
-    const { data: countryStats } = await supabaseAdmin.rpc('get_country_market_trends', {
-      time_period: period,
-    })
+    // Try cache first
+    const { data: cachedData } = await supabaseAdmin
+      .from('analytics_cache')
+      .select('data')
+      .eq('cache_key', cacheKey)
+      .gt('expires_at', new Date().toISOString())
+      .single()
 
-    // Get top artists by trending metrics
-    const { data: topArtists } = await supabaseAdmin
-      .from('artworks')
-      .select('artist_id, artists(name, country)')
-      .limit(100)
+    if (cachedData?.data) {
+      return respondJSON(200, { data: cachedData.data, cached: true })
+    }
 
-    // Get medium breakdown (group by medium, calc growth)
-    const { data: mediumStats } = await supabaseAdmin.rpc('get_medium_trends', {
-      time_period: period,
-    })
+    // Fetch fresh data using RPC functions
+    const [countryTrends, topArtists, mediumTrends, emergingArtists] = await Promise.all([
+      supabaseAdmin.rpc('get_country_market_trends', { time_period: period }),
+      supabaseAdmin.rpc('get_artist_trends', { time_period: period }),
+      supabaseAdmin.rpc('get_medium_trends', { time_period: period }),
+      supabaseAdmin.rpc('detect_emerging_artists', { min_sales: 2 }),
+    ])
 
-    // Market opportunities (emerging artists, high growth regions)
-    const { data: opportunities } = await supabaseAdmin.rpc('get_market_opportunities', {
-      time_period: period,
-    })
+    // Generate data-driven opportunities
+    const opportunities = generateOpportunities(
+      countryTrends.data,
+      topArtists.data,
+      mediumTrends.data,
+      emergingArtists.data
+    )
 
-    return respondJSON(200, {
-      data: {
-        countryTrends: countryStats || [],
-        topArtists: formatTopArtists(topArtists || []),
-        mediumTrends: mediumStats || [],
-        opportunities: opportunities || [],
+    const analyticsData = {
+      countryTrends: formatCountryTrends(countryTrends.data),
+      topArtists: formatTopArtists(topArtists.data),
+      mediumTrends: formatMediumTrends(mediumTrends.data),
+      emergingArtists: formatEmergingArtists(emergingArtists.data),
+      opportunities,
+      metadata: {
+        period,
+        dataSource: 'Kucibok Platform (Verified Artworks)',
         lastUpdated: new Date().toISOString(),
+        cacheStatus: 'fresh',
       },
-    })
+    }
+
+    // Cache the result
+    await supabaseAdmin
+      .from('analytics_cache')
+      .upsert(
+        {
+          cache_key: cacheKey,
+          data: analyticsData,
+          expires_at: new Date(Date.now() + CACHE_TTL).toISOString(),
+        },
+        { onConflict: 'cache_key' }
+      )
+      .catch(() => {}) // Non-critical if caching fails
+
+    return respondJSON(200, { data: analyticsData })
   } catch (err) {
     console.error('handleGetAnalytics error:', err)
-    // Return fallback data if RPC fails (functions not created yet)
-    return handleGetAnalyticsWithSQL()(res)
+    // Fallback to cached data if RPC fails
+    const { data: fallbackCache } = await supabaseAdmin
+      .from('analytics_cache')
+      .select('data')
+      .eq('cache_key', cacheKey)
+      .order('expires_at', { ascending: false })
+      .limit(1)
+      .single()
+      .catch(() => ({ data: null }))
+
+    if (fallbackCache?.data) {
+      return respondJSON(200, { data: fallbackCache.data, cached: true, stale: true })
+    }
+
+    return respondError(500, 'Unable to fetch analytics data')(res)
   }
 }
 
 /**
- * Fallback: SQL-based analytics if RPC functions don't exist
- * This provides basic market data aggregation
+ * Generate data-driven opportunities based on real trends
+ * Not mocked — derived from actual Kucibok data
  */
-function handleGetAnalyticsWithSQL() {
-  return async (res) => {
-    try {
-      // Country trends from artworks + transactions
-      const { data: artworks, error: artworksError } = await supabaseAdmin
-        .from('artworks')
-        .select('artist_id, price, medium, created_at, artists(country)')
-        .not('price', 'is', null)
-        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) // Last 30 days
+function generateOpportunities(countryTrends, topArtists, mediumTrends, emergingArtists) {
+  const opportunities = []
 
-      if (artworksError) {
-        return respondError(500, artworksError.message)(res)
-      }
-
-      // Aggregate by country
-      const countryData = {}
-      const artistCounts = {}
-      let totalVolume = 0
-      let totalArtworks = 0
-
-      artworks.forEach((artwork) => {
-        const country = artwork.artists?.[0]?.country || 'Unknown'
-
-        if (!countryData[country]) {
-          countryData[country] = {
-            country,
-            volume: 0,
-            count: 0,
-            prices: [],
-            artists: new Set(),
-          }
-        }
-
-        countryData[country].volume += artwork.price || 0
-        countryData[country].count++
-        countryData[country].prices.push(artwork.price || 0)
-        if (artwork.artist_id) {
-          countryData[country].artists.add(artwork.artist_id)
-        }
-
-        totalVolume += artwork.price || 0
-        totalArtworks++
+  // Opportunity 1: Highest growth country
+  if (countryTrends && countryTrends.length > 0) {
+    const topCountry = countryTrends[0]
+    if (topCountry.growth_pct > 10) {
+      opportunities.push({
+        type: 'buy',
+        priority: 'high',
+        text: `${topCountry.country} — ${topCountry.growth_pct}% YoY growth, ${topCountry.artworks_count} verified artworks. Strong momentum.`,
+        metric: `+${topCountry.growth_pct}%`,
       })
-
-      // Calculate statistics per country
-      const countryTrends = Object.values(countryData).map((c) => ({
-        country: c.country,
-        volume: `€${Math.round(c.volume / 1000)}K`,
-        avgPrice: `€${Math.round(c.volume / (c.count || 1))}`,
-        artists: c.artists.size,
-        growth: Math.round(Math.random() * 40 - 10), // Placeholder
-        trending: Math.random() > 0.5,
-      }))
-
-      // Medium breakdown
-      const mediumStats = {}
-      artworks.forEach((artwork) => {
-        const medium = artwork.medium || 'Other'
-        if (!mediumStats[medium]) {
-          mediumStats[medium] = 0
-        }
-        mediumStats[medium]++
-      })
-
-      const mediumTrends = Object.entries(mediumStats)
-        .map(([medium, count]) => ({
-          medium,
-          growth: Math.round(count * (Math.random() * 50)),
-        }))
-        .sort((a, b) => b.growth - a.growth)
-
-      // Mock top artists for now
-      const topArtists = [
-        { name: 'Aminata Diop', country: 'Sénégal', appreciation: '+28%', buzz: 94, exhibitions: 4 },
-        { name: 'Ngozi Adeyemi', country: 'Nigeria', appreciation: '+41%', buzz: 88, exhibitions: 6 },
-        { name: 'Kofi Mensah', country: 'Ghana', appreciation: '+19%', buzz: 72, exhibitions: 3 },
-        { name: 'Bineta Sow', country: 'Sénégal', appreciation: '+35%', buzz: 81, exhibitions: 5 },
-        { name: 'Cheick Mbaye', country: 'Sénégal', appreciation: '+22%', buzz: 68, exhibitions: 2 },
-        { name: 'Emeka Okonkwo', country: 'Nigeria', appreciation: '+17%', buzz: 65, exhibitions: 4 },
-      ]
-
-      // Market opportunities
-      const opportunities = [
-        {
-          type: 'buy',
-          text: 'Sénégal — emerging market, +25% YoY growth. Strong potential in emerging artists.',
-        },
-        {
-          type: 'sell',
-          text: 'Nigeria artworks outperforming — avg +15% appreciation. Consider portfolio rebalancing.',
-        },
-        {
-          type: 'watch',
-          text: 'Photography gaining traction (+42% category growth). Collect while valuations are accessible.',
-        },
-      ]
-
-      return respondJSON(200, {
-        data: {
-          countryTrends: countryTrends.sort((a, b) => {
-            const aVol = parseInt(a.volume)
-            const bVol = parseInt(b.volume)
-            return bVol - aVol
-          }),
-          topArtists,
-          mediumTrends,
-          opportunities,
-          lastUpdated: new Date().toISOString(),
-        },
-      })(res)
-    } catch (err) {
-      console.error('handleGetAnalyticsWithSQL error:', err)
-      return respondError(500, err.message)(res)
     }
   }
+
+  // Opportunity 2: Emerging artists
+  if (emergingArtists && emergingArtists.length > 0) {
+    const emerging = emergingArtists[0]
+    opportunities.push({
+      type: 'buy',
+      priority: 'medium',
+      text: `Rising artist: ${emerging.artist_name} (${emerging.country}) — ${emerging.recent_sales} recent sales, avg €${Math.round(emerging.avg_price)}. Early collection opportunity.`,
+      metric: `${emerging.recent_sales} sales`,
+    })
+  }
+
+  // Opportunity 3: Trending medium
+  if (mediumTrends && mediumTrends.length > 0) {
+    const hottestMedium = mediumTrends.find((m) => m.growth_pct > 20)
+    if (hottestMedium) {
+      opportunities.push({
+        type: 'watch',
+        priority: 'medium',
+        text: `${hottestMedium.medium} category trending — ${hottestMedium.growth_pct}% growth, avg €${Math.round(hottestMedium.avg_price)}. Monitor valuations.`,
+        metric: `+${hottestMedium.growth_pct}%`,
+      })
+    }
+  }
+
+  // Opportunity 4: Price volatility play
+  if (countryTrends && countryTrends.length > 1) {
+    const volatile = countryTrends.find((c) => c.price_volatility > 5000)
+    if (volatile) {
+      opportunities.push({
+        type: 'sell',
+        priority: 'low',
+        text: `High volatility detected in ${volatile.country} — price swings €${Math.round(volatile.price_volatility)} avg. Consider portfolio rebalancing.`,
+        metric: `€${Math.round(volatile.price_volatility)} volatility`,
+      })
+    }
+  }
+
+  // Fallback if no real opportunities generated
+  if (opportunities.length === 0) {
+    opportunities.push(
+      {
+        type: 'watch',
+        priority: 'medium',
+        text: 'Market stable — limited trading data available. More insights as platform grows.',
+        metric: 'Monitoring',
+      }
+    )
+  }
+
+  return opportunities
 }
 
-function formatTopArtists(artworks) {
-  // Group by artist and count
-  const artistCounts = {}
-  artworks.forEach((a) => {
-    const name = a.artists?.name || 'Unknown'
-    if (!artistCounts[name]) {
-      artistCounts[name] = {
-        name,
-        country: a.artists?.country || 'Unknown',
-        count: 0,
-      }
-    }
-    artistCounts[name].count++
-  })
+/**
+ * Format country trends for display
+ */
+function formatCountryTrends(data) {
+  if (!data) return []
+  return data.map((c) => ({
+    country: c.country || 'Unknown',
+    volume: c.volume ? `€${Math.round(c.volume / 1000)}K` : '€0',
+    avgPrice: c.avg_price ? `€${Math.round(c.avg_price)}` : '—',
+    medianPrice: c.median_price ? `€${Math.round(c.median_price)}` : '—',
+    artists: c.artists || 0,
+    artworks: c.artworks_count || 0,
+    growth: c.growth_pct ? Math.round(c.growth_pct) : 0,
+    volatility: c.price_volatility ? Math.round(c.price_volatility) : 0,
+    trending: c.trending || false,
+  }))
+}
 
-  return Object.values(artistCounts)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 6)
-    .map((artist) => ({
-      ...artist,
-      appreciation: `+${Math.round(Math.random() * 40)}%`,
-      buzz: Math.round(Math.random() * 100),
-      exhibitions: Math.round(Math.random() * 8),
-    }))
+/**
+ * Format top artists
+ */
+function formatTopArtists(data) {
+  if (!data) return []
+  return data.slice(0, 8).map((a) => ({
+    name: a.artist_name || 'Unknown',
+    country: a.country || 'Unknown',
+    appreciation: a.appreciation_pct ? `${a.appreciation_pct > 0 ? '+' : ''}${Math.round(a.appreciation_pct)}%` : '—',
+    buzz: a.buzz_score || 0,
+    exhibitions: a.exhibitions || 0,
+    recentSales: a.recent_sales || 0,
+    avgPrice: a.avg_price ? `€${Math.round(a.avg_price)}` : '—',
+  }))
+}
+
+/**
+ * Format medium trends
+ */
+function formatMediumTrends(data) {
+  if (!data) return []
+  return data.map((m) => ({
+    medium: m.medium || 'Other',
+    growth: m.growth_pct ? Math.round(m.growth_pct) : 0,
+    count: m.count || 0,
+    avgPrice: m.avg_price ? Math.round(m.avg_price) : 0,
+  }))
+}
+
+/**
+ * Format emerging artists
+ */
+function formatEmergingArtists(data) {
+  if (!data) return []
+  return data.slice(0, 5).map((a) => ({
+    name: a.artist_name || 'Unknown',
+    country: a.country || 'Unknown',
+    recentSales: a.recent_sales || 0,
+    avgPrice: a.avg_price ? `€${Math.round(a.avg_price)}` : '—',
+    momentumScore: a.momentum_score ? Math.round(a.momentum_score * 10) : 0,
+  }))
 }
 
 /**

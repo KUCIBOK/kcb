@@ -196,6 +196,41 @@ function AdvisorMarketContent() {
         <Bar data={chartData} options={chartOptions} />
       </motion.div>
 
+      {/* Emerging Artists */}
+      {analytics.data?.emergingArtists && analytics.data.emergingArtists.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="bg-kcb-ardoise border border-white/[0.06] rounded-[4px] overflow-hidden"
+        >
+          <div className="px-6 py-4 border-b border-white/[0.06]">
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-kcb-or" /> Emerging Artists
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
+            {analytics.data.emergingArtists.map((artist, i) => (
+              <div key={i} className="bg-kcb-noir border border-white/[0.06] rounded-[4px] p-4">
+                <p className="text-sm font-semibold text-white">{artist.name}</p>
+                <p className="text-xs text-kcb-pierre">{artist.country}</p>
+                <div className="mt-3 space-y-1">
+                  <p className="text-xs">
+                    <span className="text-kcb-pierre">Recent sales:</span> <span className="text-white font-semibold">{artist.recentSales}</span>
+                  </p>
+                  <p className="text-xs">
+                    <span className="text-kcb-pierre">Avg price:</span> <span className="text-kcb-or font-semibold">{artist.avgPrice}</span>
+                  </p>
+                  <p className="text-xs">
+                    <span className="text-kcb-pierre">Momentum:</span> <span className="text-emerald-400 font-semibold">{artist.momentumScore}</span>
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
       {/* Market Opportunities */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -211,23 +246,43 @@ function AdvisorMarketContent() {
         <div className="divide-y divide-white/[0.04]">
           {opportunities.map((opp, i) => (
             <div key={i} className="px-6 py-4 flex gap-4">
-              <div
-                className={`w-2 h-2 rounded-full flex-shrink-0 mt-1.5 ${
-                  opp.type === 'buy'
-                    ? 'bg-emerald-400'
-                    : opp.type === 'sell'
-                      ? 'bg-red-400'
-                      : 'bg-kcb-or'
-                }`}
-              />
-              <p className="text-sm text-kcb-pierre">
-                <span className="font-semibold text-white capitalize">{opp.type}: </span>
-                {opp.text}
-              </p>
+              <div className="flex-shrink-0">
+                <div
+                  className={`w-2 h-2 rounded-full mt-1.5 ${
+                    opp.type === 'buy'
+                      ? 'bg-emerald-400'
+                      : opp.type === 'sell'
+                        ? 'bg-red-400'
+                        : 'bg-kcb-or'
+                  }`}
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-kcb-pierre">
+                  <span className={`font-semibold capitalize ${
+                    opp.type === 'buy'
+                      ? 'text-emerald-400'
+                      : opp.type === 'sell'
+                        ? 'text-red-400'
+                        : 'text-kcb-or'
+                  }`}>
+                    {opp.type}
+                  </span>
+                  {' '} — {opp.text}
+                </p>
+                {opp.metric && <p className="text-xs text-kcb-pierre/60 mt-1">Metric: {opp.metric}</p>}
+              </div>
             </div>
           ))}
         </div>
       </motion.div>
+
+      {/* Data Source Footer */}
+      <div className="text-xs text-kcb-pierre/60 text-center space-y-1">
+        <p>📊 Data source: {analytics.data?.metadata?.dataSource}</p>
+        <p>Updated {new Date(analytics.data?.metadata?.lastUpdated).toLocaleString()}</p>
+        {analytics.cached && <p className="text-kcb-or/60">💾 Cached (5-min TTL)</p>}
+      </div>
 
       {/* Last Updated */}
       <div className="text-xs text-kcb-pierre/60 text-center">
