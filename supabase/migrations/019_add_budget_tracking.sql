@@ -145,8 +145,16 @@ CREATE POLICY budget_transactions_delete_policy ON budget_transactions
   );
 
 -- ============================================================================
--- TRIGGER: auto-update updated_at
+-- FUNCTION & TRIGGER: auto-update updated_at
 -- ============================================================================
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS budget_records_updated_at ON budget_records;
 CREATE TRIGGER budget_records_updated_at
