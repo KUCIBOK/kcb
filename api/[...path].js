@@ -245,6 +245,113 @@ export default async function handler(req, res) {
     // PROFESSIONAL ANALYTICS ROUTE
     // ─────────────────────────────────────────────────────────────
 
+    // ─────────────────────────────────────────────────────────────
+    // AUTH ROUTES
+    // ─────────────────────────────────────────────────────────────
+
+    if (s0 === 'auth') {
+      // POST /api/auth/google-callback — Handle Google OAuth callback
+      if (req.method === 'POST' && s1 === 'google-callback') {
+        try {
+          const { access_token } = req.body
+          if (!access_token) {
+            return res.status(400).json({ error: 'access_token is required' })
+          }
+
+          // Get user from Supabase using admin client
+          const { data: { user }, error: getUserError } = await supabaseAdmin.auth.admin.getUserById(access_token)
+
+          // Alternative: Use the token directly from the request
+          // Supabase should have already created the user session
+          const { data: { user: authUser } } = await supabaseAdmin.auth.getUser(access_token)
+
+          if (!authUser) {
+            return res.status(401).json({ error: 'Invalid access token' })
+          }
+
+          // Check if user exists in public.users
+          const { data: existingUser, error: checkError } = await supabaseAdmin
+            .from('users')
+            .select('*')
+            .eq('id', authUser.id)
+            .single()
+
+          if (checkError && checkError.code !== 'PGRST116') {
+            // PGRST116 = no rows found (expected for new users)
+            return res.status(500).json({ error: checkError.message })
+          }
+
+          if (!existingUser) {
+            // New user - create profile
+            const { error: createError } = await supabaseAdmin
+              .from('users')
+              .insert({
+                id: authUser.id,
+                email: authUser.email,
+                role: 'buyer', // Default role
+                name: authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'User',
+              })
+
+            if (createError) {
+              console.error('[Google Callback - Create User Error]', createError)
+              return res.status(500).json({ error: 'Failed to create user profile' })
+            }
+
+            return res.status(200).json({
+              success: true,
+              data: {
+                user: { id: authUser.id, email: authUser.email, role: 'buyer' },
+                needs_role_selection: true,
+              },
+            })
+          }
+
+          // Existing user
+          return res.status(200).json({
+            success: true,
+            data: {
+              user: existingUser,
+              needs_role_selection: !existingUser.role || existingUser.role === 'buyer',
+            },
+          })
+        } catch (err) {
+          console.error('[Google Callback Error]', err.message)
+          return res.status(500).json({ error: err.message || 'OAuth callback failed' })
+        }
+      }
+
+      // GET /api/auth/me — Get current user
+      if (req.method === 'GET' && s1 === 'me') {
+        try {
+          const authHeader = req.headers.authorization
+          if (!authHeader?.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'Missing or invalid authorization header' })
+          }
+
+          const token = authHeader.substring(7)
+          const { data: { user }, error } = await supabaseAdmin.auth.getUser(token)
+
+          if (error || !user) {
+            return res.status(401).json({ error: 'Invalid token' })
+          }
+
+          // Get full user profile
+          const { data: profile } = await supabaseAdmin
+            .from('users')
+            .select('*')
+            .eq('id', user.id)
+            .single()
+
+          return res.status(200).json({
+            data: profile || { id: user.id, email: user.email, role: 'buyer' },
+          })
+        } catch (err) {
+          console.error('[Auth Me Error]', err)
+          return res.status(500).json({ error: err.message })
+        }
+      }
+    }
+
     if (s0 === 'professional-analytics' && req.method === 'GET' && !s1) {
       try {
         const url = new URL(req.url, 'http://localhost')
