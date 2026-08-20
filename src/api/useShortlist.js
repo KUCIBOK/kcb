@@ -115,11 +115,13 @@ export async function useGetMyShortlist() {
     const body = await res.json()
 
     if (!res.ok) {
-      return { success: false, error: body?.error ?? 'Failed to fetch shortlist', data: [] }
+      console.error('[useGetMyShortlist]', res.status, body?.error)
+      return { success: false, error: body?.error ?? `Failed to fetch shortlist (${res.status})`, data: [] }
     }
 
     return { success: true, data: body.data || [], count: body.count || 0 }
   } catch (err) {
+    console.error('[useGetMyShortlist Exception]', err.message)
     return { success: false, error: err.message, data: [] }
   }
 }

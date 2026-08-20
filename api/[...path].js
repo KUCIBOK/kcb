@@ -537,7 +537,12 @@ export default async function handler(req, res) {
             .order('created_at', { ascending: false })
 
           if (error) {
-            return res.status(500).json({ error: error.message })
+            console.error('[GET /api/shortlist Error]', error.code, error.message)
+            // If table doesn't exist, provide helpful message
+            if (error.code === 'PGRST116') {
+              return res.status(200).json({ success: true, data: [], count: 0 })
+            }
+            return res.status(500).json({ error: error.message, code: error.code })
           }
 
           return res.status(200).json({
@@ -546,7 +551,7 @@ export default async function handler(req, res) {
             count: (data || []).length,
           })
         } catch (err) {
-          console.error('[Shortlist Get Error]', err)
+          console.error('[Shortlist Get Exception]', err.message)
           return res.status(500).json({ error: err.message })
         }
       }
