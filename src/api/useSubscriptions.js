@@ -107,3 +107,89 @@ export async function getMySubscription() {
     return null
   }
 }
+
+// ─────────────────────────────────────────────────────────────
+// NEW: Trial & Subscription Management (Phase 2)
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Get active subscription for a user
+ * @param {string} userId
+ * @returns {Promise<{data, error}>}
+ */
+export async function getActiveSubscription(userId) {
+  if (!userId) return { error: 'userId required' }
+
+  try {
+    const res = await fetch(`${api}/subscriptions/active/${userId}`)
+    const body = await res.json()
+
+    if (!res.ok) return { error: body?.error ?? 'Failed to fetch subscription' }
+    return { data: body.data }
+  } catch (err) {
+    return { error: err.message }
+  }
+}
+
+/**
+ * Create trial subscription for new user
+ * @param {string} userId
+ * @returns {Promise<{data, error}>}
+ */
+export async function createTrialSubscription(userId) {
+  if (!userId) return { error: 'userId required' }
+
+  try {
+    const res = await fetch(`${api}/subscriptions/create-trial`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId }),
+    })
+
+    const body = await res.json()
+
+    if (!res.ok) return { error: body?.error ?? 'Failed to create trial' }
+    return { data: body.data }
+  } catch (err) {
+    return { error: err.message }
+  }
+}
+
+/**
+ * Calculate days remaining in trial
+ * @param {Date|string} trialEndDate
+ * @returns {number} days left (negative if expired)
+ */
+export function getTrialDaysLeft(trialEndDate) {
+  if (!trialEndDate) return null
+
+  const now = new Date()
+  const end = new Date(trialEndDate)
+  const diffMs = end - now
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+
+  return diffDays
+}
+
+/**
+ * Check if trial is expired
+ * @param {Date|string} trialEndDate
+ * @returns {boolean}
+ */
+export function isTrialExpired(trialEndDate) {
+  const daysLeft = getTrialDaysLeft(trialEndDate)
+  return daysLeft !== null && daysLeft <= 0
+}
+
+/**
+ * Get trial status badge text
+ * @param {number} daysLeft
+ * @returns {string}
+ */
+export function getTrialStatusText(daysLeft) {
+  if (daysLeft === null) return null
+  if (daysLeft < 0) return 'Trial expired'
+  if (daysLeft === 0) return 'Trial expires today'
+  if (daysLeft === 1) return 'Trial expires tomorrow'
+  return `Trial expires in ${daysLeft} days`
+}

@@ -343,6 +343,247 @@ export default async function handler(req, res) {
       }
     }
 
+    // ─────────────────────────────────────────────────────────────
+    // SUBSCRIPTIONS ROUTES
+    // ─────────────────────────────────────────────────────────────
+
+    if (s0 === 'subscriptions') {
+      // POST /api/subscriptions/create-trial — Create 14-day trial
+      if (req.method === 'POST' && s1 === 'create-trial') {
+        const { user_id } = req.body
+
+        if (!user_id) {
+          return res.status(400).json({ error: 'user_id is required' })
+        }
+
+        try {
+          const trialEndDate = new Date()
+          trialEndDate.setDate(trialEndDate.getDate() + 14)
+
+          const { data, error } = await supabaseAdmin
+            .from('subscriptions')
+            .insert({
+              user_id,
+              plan_id: null,
+              status: 'trial',
+              is_trial: true,
+              trial_started_at: new Date(),
+              trial_end_date: trialEndDate,
+              start_date: new Date(),
+              end_date: trialEndDate,
+            })
+            .select()
+            .single()
+
+          if (error) {
+            console.error('[Trial Creation Error]', error)
+            return res.status(500).json({ error: error.message })
+          }
+
+          return res.status(201).json({
+            success: true,
+            data,
+            message: 'Trial subscription created',
+          })
+        } catch (err) {
+          console.error('[Trial Creation Exception]', err)
+          return res.status(500).json({ error: err.message })
+        }
+      }
+
+      // GET /api/subscriptions/active/:user_id — Get active subscription
+      if (req.method === 'GET' && s1 === 'active' && s2) {
+        const { data, error } = await supabaseAdmin
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', s2)
+          .in('status', ['active', 'trial'])
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+
+        if (error && error.code !== 'PGRST116') {
+          // PGRST116 = no rows found
+          return res.status(500).json({ error: error.message })
+        }
+
+        return res.status(200).json({
+          success: true,
+          data: data || null,
+        })
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // SHORTLIST ROUTES
+    // ─────────────────────────────────────────────────────────────
+
+    if (s0 === 'shortlist') {
+      // POST /api/shortlist/:artworkId — Add to shortlist
+      if (req.method === 'POST' && s1) {
+        const userId = req.headers.authorization?.split(' ')[1]
+        // In production, extract user_id from JWT token properly
+        // For now, expect it in body
+        const { user_id } = req.body
+
+        if (!user_id || !s1) {
+          return res.status(400).json({ error: 'user_id and artworkId are required' })
+        }
+
+        try {
+          const { data, error } = await supabaseAdmin
+            .from('shortlisted_artworks')
+            .insert({
+              user_id,
+              artwork_id: s1,
+              notes: req.body.notes || '',
+            })
+            .select()
+            .single()
+
+          if (error && error.code === '23505') {
+            // Unique constraint violation = already shortlisted
+            return res.status(409).json({
+              error: 'Artwork already shortlisted',
+              success: false,
+            })
+          }
+
+          if (error) {
+            return res.status(500).json({ error: error.message })
+          }
+
+          return res.status(201).json({
+            success: true,
+            data,
+            message: 'Added to shortlist',
+          })
+        } catch (err) {
+          console.error('[Shortlist Add Error]', err)
+          return res.status(500).json({ error: err.message })
+        }
+      }
+
+      // DELETE /api/shortlist/:artworkId — Remove from shortlist
+      if (req.method === 'DELETE' && s1) {
+        const { user_id } = req.body
+
+        if (!user_id || !s1) {
+          return res.status(400).json({ error: 'user_id and artworkId are required' })
+        }
+
+        try {
+          const { error } = await supabaseAdmin
+            .from('shortlisted_artworks')
+            .delete()
+            .eq('user_id', user_id)
+            .eq('artwork_id', s1)
+
+          if (error) {
+            return res.status(500).json({ error: error.message })
+          }
+
+          return res.status(200).json({
+            success: true,
+            message: 'Removed from shortlist',
+          })
+        } catch (err) {
+          console.error('[Shortlist Remove Error]', err)
+          return res.status(500).json({ error: err.message })
+        }
+      }
+
+      // GET /api/shortlist/check/:artworkId — Check if shortlisted
+      if (req.method === 'GET' && s1 === 'check' && s2) {
+        const { user_id } = req.query
+
+        if (!user_id) {
+          return res.status(400).json({ error: 'user_id query param is required' })
+        }
+
+        try {
+          const { data, error } = await supabaseAdmin
+            .from('shortlisted_artworks')
+            .select('id')
+            .eq('user_id', user_id)
+            .eq('artwork_id', s2)
+            .single()
+
+          return res.status(200).json({
+            success: true,
+            isShortlisted: !!data && !error,
+          })
+        } catch (err) {
+          return res.status(200).json({
+            success: true,
+            isShortlisted: false,
+          })
+        }
+      }
+
+      // GET /api/shortlist — Get user's shortlist
+      if (req.method === 'GET' && !s1) {
+        const { user_id } = req.query
+
+        if (!user_id) {
+          return res.status(400).json({ error: 'user_id query param is required' })
+        }
+
+        try {
+          const { data, error } = await supabaseAdmin
+            .from('shortlisted_artworks')
+            .select('*, artworks(*)')
+            .eq('user_id', user_id)
+            .order('created_at', { ascending: false })
+
+          if (error) {
+            return res.status(500).json({ error: error.message })
+          }
+
+          return res.status(200).json({
+            success: true,
+            data: data || [],
+            count: (data || []).length,
+          })
+        } catch (err) {
+          console.error('[Shortlist Get Error]', err)
+          return res.status(500).json({ error: err.message })
+        }
+      }
+
+      // PATCH /api/shortlist/:artworkId — Update notes
+      if (req.method === 'PATCH' && s1) {
+        const { user_id, notes } = req.body
+
+        if (!user_id || !s1) {
+          return res.status(400).json({ error: 'user_id and artworkId are required' })
+        }
+
+        try {
+          const { data, error } = await supabaseAdmin
+            .from('shortlisted_artworks')
+            .update({ notes: notes || '' })
+            .eq('user_id', user_id)
+            .eq('artwork_id', s1)
+            .select()
+            .single()
+
+          if (error) {
+            return res.status(500).json({ error: error.message })
+          }
+
+          return res.status(200).json({
+            success: true,
+            data,
+            message: 'Notes updated',
+          })
+        } catch (err) {
+          console.error('[Shortlist Update Error]', err)
+          return res.status(500).json({ error: err.message })
+        }
+      }
+    }
+
     if (s0 === 'health') {
       return res.status(200).json({
         status: 'ok',

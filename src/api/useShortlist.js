@@ -1,34 +1,47 @@
 /**
- * useShortlist.js — Hooks pour gérer le shortlisting d'artworks
+ * useShortlist.js — Hooks pour gérer le shortlisting d'artworks (Phase 2)
  */
 
 import { useCallback, useState } from 'react'
 import { utils } from './useAPI'
 import { supabase } from '../lib/supabase'
 
-/**
- * Hook pour ajouter une artwork à la shortlist
- * @param {string} artworkId — UUID de l'artwork
- * @returns {Promise<{ success: boolean, data?: object, error?: string }>}
- */
-export async function useAddToShortlist(artworkId) {
-  try {
-    const { data: session } = await supabase.auth.getSession()
-    if (!session?.session?.access_token) {
-      return { success: false, error: 'Not authenticated' }
-    }
+const { api } = utils
 
-    const res = await fetch(`${utils.api}/subscriptions/shortlist/${artworkId}`, {
+/**
+ * Get user's shortlist with artworks
+ */
+export async function getMyShortlist(userId) {
+  if (!userId) return { success: false, error: 'userId required', data: [] }
+
+  try {
+    const res = await fetch(`${api}/shortlist?user_id=${userId}`)
+    const body = await res.json()
+
+    if (!res.ok) return { success: false, error: body?.error ?? 'Failed to fetch shortlist', data: [] }
+    return { success: true, data: body.data || [], count: body.count || 0 }
+  } catch (err) {
+    return { success: false, error: err.message, data: [] }
+  }
+}
+
+/**
+ * Add artwork to shortlist
+ */
+export async function addToShortlist(userId, artworkId, notes = '') {
+  if (!userId || !artworkId) return { success: false, error: 'userId and artworkId required' }
+
+  try {
+    const res = await fetch(`${api}/shortlist/${artworkId}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.session.access_token}`,
-      },
-      body: JSON.stringify({ notes: null }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, notes }),
     })
 
     const body = await res.json()
+
     if (!res.ok) {
+      if (res.status === 409) return { success: false, error: 'Already shortlisted' }
       return { success: false, error: body?.error ?? 'Failed to add to shortlist' }
     }
 
@@ -39,29 +52,21 @@ export async function useAddToShortlist(artworkId) {
 }
 
 /**
- * Hook pour retirer une artwork de la shortlist
- * @param {string} artworkId — UUID de l'artwork
- * @returns {Promise<{ success: boolean, error?: string }>}
+ * Remove artwork from shortlist
  */
-export async function useRemoveFromShortlist(artworkId) {
-  try {
-    const { data: session } = await supabase.auth.getSession()
-    if (!session?.session?.access_token) {
-      return { success: false, error: 'Not authenticated' }
-    }
+export async function removeFromShortlist(userId, artworkId) {
+  if (!userId || !artworkId) return { success: false, error: 'userId and artworkId required' }
 
-    const res = await fetch(`${utils.api}/subscriptions/shortlist/${artworkId}`, {
+  try {
+    const res = await fetch(`${api}/shortlist/${artworkId}`, {
       method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${session.session.access_token}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId }),
     })
 
     const body = await res.json()
-    if (!res.ok) {
-      return { success: false, error: body?.error ?? 'Failed to remove from shortlist' }
-    }
 
+    if (!res.ok) return { success: false, error: body?.error ?? 'Failed to remove from shortlist' }
     return { success: true }
   } catch (err) {
     return { success: false, error: err.message }
@@ -69,94 +74,38 @@ export async function useRemoveFromShortlist(artworkId) {
 }
 
 /**
- * Hook pour récupérer la shortlist de l'utilisateur
- * @returns {Promise<{ success: boolean, data?: array, error?: string }>}
+ * Check if artwork is shortlisted
  */
-export async function useGetMyShortlist() {
+export async function checkIsShortlisted(userId, artworkId) {
+  if (!userId || !artworkId) return { success: false, isShortlisted: false }
+
   try {
-    const { data: session } = await supabase.auth.getSession()
-    if (!session?.session?.access_token) {
-      return { success: false, error: 'Not authenticated' }
-    }
-
-    const res = await fetch(`${utils.api}/subscriptions/my-shortlist`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${session.session.access_token}`,
-      },
-    })
-
+    const res = await fetch(`${api}/shortlist/check/${artworkId}?user_id=${userId}`)
     const body = await res.json()
-    if (!res.ok) {
-      return { success: false, error: body?.error ?? 'Failed to fetch shortlist' }
-    }
 
-    return { success: true, data: body.data || [] }
+    if (!res.ok) return { success: false, isShortlisted: false }
+    return { success: true, isShortlisted: body.isShortlisted || false }
   } catch (err) {
-    return { success: false, error: err.message }
+    return { success: false, isShortlisted: false }
   }
 }
 
 /**
- * Hook pour vérifier si une artwork est shortlistée
- * @param {string} artworkId — UUID de l'artwork
- * @returns {Promise<{ success: boolean, isShortlisted?: boolean, error?: string }>}
+ * Update shortlist notes
  */
-export async function useCheckShortlisted(artworkId) {
+export async function updateShortlistNotes(userId, artworkId, notes) {
+  if (!userId || !artworkId) return { success: false, error: 'userId and artworkId required' }
+
   try {
-    const { data: session } = await supabase.auth.getSession()
-    if (!session?.session?.access_token) {
-      return { success: false, error: 'Not authenticated' }
-    }
-
-    const res = await fetch(
-      `${utils.api}/subscriptions/shortlist/check/${artworkId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${session.session.access_token}`,
-        },
-      }
-    )
-
-    const body = await res.json()
-    if (!res.ok) {
-      return { success: false, error: body?.error ?? 'Failed to check shortlist' }
-    }
-
-    return { success: true, isShortlisted: body.isShortlisted ?? false }
-  } catch (err) {
-    return { success: false, error: err.message }
-  }
-}
-
-/**
- * Hook pour mettre à jour les notes d'un shortlist item
- * @param {string} artworkId — UUID de l'artwork
- * @param {string} notes — Notes personnelles
- * @returns {Promise<{ success: boolean, data?: object, error?: string }>}
- */
-export async function useUpdateShortlistNotes(artworkId, notes) {
-  try {
-    const { data: session } = await supabase.auth.getSession()
-    if (!session?.session?.access_token) {
-      return { success: false, error: 'Not authenticated' }
-    }
-
-    const res = await fetch(`${utils.api}/subscriptions/shortlist/${artworkId}`, {
+    const res = await fetch(`${api}/shortlist/${artworkId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.session.access_token}`,
-      },
-      body: JSON.stringify({ notes }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, notes }),
     })
 
     const body = await res.json()
-    if (!res.ok) {
-      return { success: false, error: body?.error ?? 'Failed to update notes' }
-    }
 
+    if (!res.ok) return { success: false, error: body?.error ?? 'Failed to update notes' }
     return { success: true, data: body.data }
   } catch (err) {
     return { success: false, error: err.message }
@@ -164,8 +113,8 @@ export async function useUpdateShortlistNotes(artworkId, notes) {
 }
 
 /**
- * Hook helper pour toggle shortlist status
- * Returns { isShortlisted, toggle, loading }
+ * Hook: Toggle shortlist status for an artwork
+ * Returns { isShortlisted, toggle, loading, checkStatus }
  */
 export function useShortlistToggle(artworkId) {
   const [isShortlisted, setIsShortlisted] = useState(false)
@@ -173,25 +122,24 @@ export function useShortlistToggle(artworkId) {
 
   const toggle = useCallback(async () => {
     setLoading(true)
+    const { data: session } = await supabase.auth.getSession()
+    const userId = session?.user?.id
+
     if (isShortlisted) {
-      const result = await useRemoveFromShortlist(artworkId)
-      if (result.success) {
-        setIsShortlisted(false)
-      }
+      const result = await removeFromShortlist(userId, artworkId)
+      if (result.success) setIsShortlisted(false)
     } else {
-      const result = await useAddToShortlist(artworkId)
-      if (result.success) {
-        setIsShortlisted(true)
-      }
+      const result = await addToShortlist(userId, artworkId)
+      if (result.success) setIsShortlisted(true)
     }
     setLoading(false)
   }, [artworkId, isShortlisted])
 
   const checkStatus = useCallback(async () => {
-    const result = await useCheckShortlisted(artworkId)
-    if (result.success) {
-      setIsShortlisted(result.isShortlisted)
-    }
+    const { data: session } = await supabase.auth.getSession()
+    const userId = session?.user?.id
+    const result = await checkIsShortlisted(userId, artworkId)
+    if (result.success) setIsShortlisted(result.isShortlisted)
   }, [artworkId])
 
   return { isShortlisted, toggle, loading, checkStatus }
