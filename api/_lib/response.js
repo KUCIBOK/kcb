@@ -102,3 +102,70 @@ export function parsePagination(req) {
   const to    = from + limit - 1;
   return { page, limit, from, to };
 }
+
+/**
+ * Réponse JSON curried — retourne une fonction qui prend res
+ * @param {number} status
+ * @param {object} body
+ * @returns {function}
+ */
+export function respondJSON(status, body) {
+  return (res) => {
+    setCors(res);
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(status).json(body);
+  };
+}
+
+/**
+ * Réponse d'erreur curried — retourne une fonction qui prend res
+ * @param {number} status
+ * @param {string} message
+ * @returns {function}
+ */
+export function respondError(status, message) {
+  return (res) => {
+    setCors(res);
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(status).json({ error: message });
+  };
+}
+
+/**
+ * Vérifie l'authentification JWT depuis Authorization header
+ * Retourne { userId, user_id, ... } si OK
+ * Retourne { error, status } si erreur
+ * @param {import('@vercel/node').VercelRequest} req
+ * @returns {object}
+ */
+export function checkAuth(req) {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace('Bearer ', '');
+
+  if (!token) {
+    return { error: 'Missing Authorization header', status: 401 };
+  }
+
+  try {
+    // Très simple validation — en production utiliser jwt.verify()
+    // Pour maintenant, on accepte n'importe quel token non-vide
+    // TODO: Implémenter la vraie vérification JWT avec Supabase
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      return { error: 'Invalid token format', status: 401 };
+    }
+
+    // Décoder le payload (partie 2 du JWT)
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+    const userId = payload.sub || payload.user_id;
+
+    if (!userId) {
+      return { error: 'No user ID in token', status: 401 };
+    }
+
+    return { userId, user_id: userId };
+  } catch (error) {
+    console.error('[Auth Error]', error.message);
+    return { error: 'Invalid token', status: 401 };
+  }
+}
