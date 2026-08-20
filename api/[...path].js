@@ -338,8 +338,40 @@ export default async function handler(req, res) {
 
         return res.status(200).json({ data: analyticsData })
       } catch (err) {
-        console.error('Analytics error:', err)
-        return res.status(500).json({ error: 'Unable to fetch analytics data' })
+        console.error('[Professional Analytics Error]', err.message, err.code)
+        // If RPC functions don't exist, return mock data
+        if (err.message?.includes('does not exist') || err.code === 'PGRST116') {
+          console.warn('[Using Mock Analytics Data] RPC functions not found')
+          const mockAnalytics = {
+            countryTrends: [
+              { country: 'Senegal', growth: 25, volume: 150, avgPrice: '€8,500', artists: 45 },
+              { country: 'Nigeria', growth: 18, volume: 220, avgPrice: '€12,000', artists: 78 },
+              { country: 'Ghana', growth: 12, volume: 95, avgPrice: '€6,800', artists: 32 },
+            ],
+            topArtists: [
+              { name: 'Aïssatou Diallo', country: 'Senegal', appreciation: '+35%', buzz: 92, exhibitions: 8 },
+              { name: 'Kwesi Mensah', country: 'Ghana', appreciation: '+22%', buzz: 85, exhibitions: 6 },
+            ],
+            mediumTrends: [
+              { medium: 'Painting', growth: 28, count: 450, avgPrice: 9500 },
+              { medium: 'Sculpture', growth: 15, count: 180, avgPrice: 14200 },
+            ],
+            emergingArtists: [
+              { name: 'Zainab Hassan', country: 'Senegal', recentSales: 5, avgPrice: '€4,200', momentumScore: 87 },
+            ],
+            opportunities: [
+              { type: 'buy', text: 'Emerging artists show +40% momentum in photography', metric: 'Medium growth' },
+              { type: 'sell', text: 'Contemporary painting prices stabilizing after Q2 rally', metric: 'Price volatility -15%' },
+            ],
+            metadata: {
+              period: period || 'month',
+              dataSource: 'Kucibok Platform (Mock - RPC functions pending)',
+              lastUpdated: new Date().toISOString(),
+            },
+          }
+          return res.status(200).json({ data: mockAnalytics, mock: true })
+        }
+        return res.status(500).json({ error: 'Unable to fetch analytics data: ' + err.message })
       }
     }
 
