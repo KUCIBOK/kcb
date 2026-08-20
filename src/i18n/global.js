@@ -2,9 +2,9 @@ export const globalT = {
   en: {
     nav: {
       home: 'Home',
-      catalogue: 'Catalogue',
-      logistics: 'Logistics',
-      sourcing: 'Sourcing',
+      forCurators: 'For Curators',
+      forAdvisors: 'For Advisors',
+      forArtists: 'For Artists',
       pricing: 'Pricing',
       cta: 'Sign Up',
       switchPortal: 'Tu es Artiste?',
@@ -225,9 +225,9 @@ export const globalT = {
   fr: {
     nav: {
       home: 'Accueil',
-      catalogue: 'Catalogue',
-      logistics: 'Logistique',
-      sourcing: 'Sourcing',
+      forCurators: 'Pour Curateurs',
+      forAdvisors: 'Pour Conseillers',
+      forArtists: 'Pour Artistes',
       pricing: 'Tarifs',
       cta: 'Inscription',
       switchPortal: 'Tu es Artiste?',

@@ -33,16 +33,26 @@ export default function PortalNav({ portal }) {
         ]
       : [
           { label: t.home, to: '/global', exact: true },
-          { label: t.catalogue, to: '/global/catalogue' },
-          { label: t.sourcing, to: '/global/sourcing' },
+          { label: t.forCurators, to: '/global#curators' },
+          { label: t.forAdvisors, to: '/global#advisors' },
+          { label: t.forArtists, to: '/africa' },
+          { label: t.pricing, to: '/global#pricing' },
         ]
 
   /**
    * Check if a link matches the current page.
    * Uses exact match for home links, startsWith for the rest.
+   * Handles anchor links (#section) by comparing with location.hash.
    */
-  const isActive = (to, exact) =>
-    exact ? pathname === to : pathname === to || pathname.startsWith(to + '/')
+  const isActive = (to, exact) => {
+    // If link is an anchor (contains #), compare with location.hash
+    if (to.includes('#')) {
+      const anchorPart = to.split('#')[1]
+      return window.location.hash === `#${anchorPart}`
+    }
+    // Otherwise, compare pathname
+    return exact ? pathname === to : pathname === to || pathname.startsWith(to + '/')
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] py-4 bg-kcb-noir-deep/[0.92] backdrop-blur-xl border-b border-white/[0.03]">

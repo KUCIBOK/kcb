@@ -1,4 +1,14 @@
 export const africaT = {
+  en: {
+    nav: {
+      home: 'Home',
+      catalogue: 'Catalogue',
+      artists: 'Artists',
+      blog: 'Blog',
+      cta: 'Sign Up',
+      switchPortal: 'Global Portal',
+    },
+  },
   fr: {
     nav: {
       home: 'Accueil',
