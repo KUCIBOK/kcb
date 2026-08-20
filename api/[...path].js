@@ -4,9 +4,6 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import analyticsHandler from './analytics.js'
-import budgetHandler from './budget.js'
-import conciergeHandler from './concierge.js'
 
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -235,30 +232,6 @@ export default async function handler(req, res) {
           data,
         })
       }
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // BUDGET ROUTES
-    // ─────────────────────────────────────────────────────────────
-
-    if (s0 === 'budgets' || s0 === 'budget') {
-      return budgetHandler(req, res)
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // CONCIERGE ROUTES
-    // ─────────────────────────────────────────────────────────────
-
-    if (s0 === 'concierge') {
-      return conciergeHandler(req, res)
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // PROFESSIONAL ANALYTICS ROUTES
-    // ─────────────────────────────────────────────────────────────
-
-    if (s0 === 'professional-analytics') {
-      return analyticsHandler(req, res)
     }
 
     // ─────────────────────────────────────────────────────────────
