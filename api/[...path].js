@@ -320,6 +320,74 @@ export default async function handler(req, res) {
         }
       }
 
+      // POST /api/auth/signup — Register new user
+      if (req.method === 'POST' && s1 === 'signup') {
+        try {
+          const { email, password, role, name, country, institution } = req.body
+
+          if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' })
+          }
+
+          if (password.length < 8) {
+            return res.status(400).json({ error: 'Password must be at least 8 characters' })
+          }
+
+          // Create auth user via Supabase admin
+          const { data, error } = await supabaseAdmin.auth.admin.createUser({
+            email,
+            password,
+            email_confirm: false, // User must verify email
+            user_metadata: {
+              role: role || 'buyer',
+              name: name || email.split('@')[0],
+              country: country || null,
+              institution: institution || null,
+            },
+          })
+
+          if (error) {
+            console.error('[Signup Auth Error]', error.message)
+            return res.status(400).json({
+              error: error.message.includes('already exists')
+                ? 'This email is already registered'
+                : error.message,
+            })
+          }
+
+          // Create user profile in public.users
+          const { error: profileError } = await supabaseAdmin.from('users').insert({
+            id: data.user.id,
+            email: data.user.email,
+            role: role || 'buyer',
+            name: name || email.split('@')[0],
+            country: country || null,
+            institution: institution || null,
+          })
+
+          if (profileError) {
+            console.error('[Signup Profile Error]', profileError)
+            // Note: Auth user created but profile failed - may need cleanup
+            return res.status(500).json({ error: 'Failed to create user profile' })
+          }
+
+          return res.status(201).json({
+            success: true,
+            data: {
+              user: {
+                id: data.user.id,
+                email: data.user.email,
+                role: role || 'buyer',
+              },
+              message: 'Check your email to verify your account',
+            },
+          })
+        } catch (err) {
+          console.error('[Signup Exception]', err.message)
+          return res.status(500).json({ error: err.message || 'Signup failed' })
+        }
+      }
+
       // GET /api/auth/me — Get current user
       if (req.method === 'GET' && s1 === 'me') {
         try {
