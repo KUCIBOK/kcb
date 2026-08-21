@@ -47,6 +47,9 @@ export default async function handler(req, res) {
     const s1 = path[1] // Second segment
     const s2 = path[2] // Third segment
 
+    // DEBUG: Log all requests for troubleshooting
+    console.log(`[API Route] method=${req.method} url=${req.url} pathname=${urlObj.pathname} path=${JSON.stringify(path)} s0=${s0} s1=${s1}`)
+
     // ─────────────────────────────────────────────────────────────
     // ARTWORKS ROUTES
     // ─────────────────────────────────────────────────────────────
