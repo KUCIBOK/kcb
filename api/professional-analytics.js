@@ -4,8 +4,13 @@
  * Uses RPC functions for optimized queries + caching (5min TTL)
  */
 
-import { supabaseAdmin } from './_lib/supabase.js'
+import { createClient } from '@supabase/supabase-js'
 import { respondError, respondJSON } from './_lib/response.js'
+
+// Initialize Supabase admin client directly (same as [...path].js)
+const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false },
+})
 
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
