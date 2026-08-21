@@ -9,6 +9,11 @@ import { respondJSON, respondError } from './_lib/response.js'
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
+// Log env status (for debugging)
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('[api/[...path].js] Missing env: SUPABASE_URL=' + !!SUPABASE_URL + ', SERVICE_ROLE=' + !!SUPABASE_SERVICE_ROLE_KEY)
+}
+
 // Initialize Supabase admin client
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
@@ -258,11 +263,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'access_token is required' })
           }
 
-          // Get user from Supabase using admin client
-          const { data: { user }, error: getUserError } = await supabaseAdmin.auth.admin.getUserById(access_token)
-
-          // Alternative: Use the token directly from the request
-          // Supabase should have already created the user session
+          // Get user from token (Supabase has already created session)
           const { data: { user: authUser } } = await supabaseAdmin.auth.getUser(access_token)
 
           if (!authUser) {
