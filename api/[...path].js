@@ -40,8 +40,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Parse the URL path
-    const path = req.query.path || []
+    // Parse the URL path from req.url (Vercel Node.js Functions)
+    const urlObj = new URL(req.url, 'http://localhost')
+    const path = urlObj.pathname.replace(/^\/api\//, '').split('/').filter(p => p)
     const s0 = path[0] // First segment: 'artworks', 'auth', etc.
     const s1 = path[1] // Second segment
     const s2 = path[2] // Third segment
