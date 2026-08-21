@@ -421,7 +421,7 @@ export default async function handler(req, res) {
       }
     }
 
-    if (s0 === 'professional-analytics' && req.method === 'GET' && !s1) {
+    if (s0 === 'professional' && s1 === 'analytics' && req.method === 'GET' && !s2) {
       try {
         const url = new URL(req.url, 'http://localhost')
         const period = url.searchParams.get('period') || 'month'
