@@ -92,7 +92,7 @@ async function handleGetAnalytics(req) {
       return respondJSON(200, { data: fallbackCache.data, cached: true, stale: true })
     }
 
-    return respondError(500, 'Unable to fetch analytics data')(res)
+    return respondError(500, 'Unable to fetch analytics data')
   }
 }
 
@@ -238,7 +238,8 @@ export default async function handler(req, res) {
 
   // GET /api/professional-analytics
   if (segments[1] === 'professional-analytics' && !segments[2] && req.method === 'GET') {
-    return handleGetAnalytics(req)(res)
+    const responseFunction = await handleGetAnalytics(req)
+    return responseFunction(res)
   }
 
   return respondError(404, 'Route not found')(res)
