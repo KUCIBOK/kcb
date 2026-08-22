@@ -801,6 +801,121 @@ export default async function handler(req, res) {
       }
     }
 
+    // ─────────────────────────────────────────────────────────────
+    // PLANS ROUTE
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'plan' && req.method === 'GET' && !s1) {
+      const mockPlans = [
+        { id: 1, name: 'Starter', price: 27, features: ['Feature 1', 'Feature 2'], trial_days: 14 },
+        { id: 2, name: 'Professional', price: 57, features: ['All Starter', 'Feature 3', 'Feature 4'], trial_days: 14 },
+      ]
+      return res.status(200).json({ success: true, data: mockPlans })
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // ARTIST ROUTES
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'artist' && req.method === 'GET' && !s1) {
+      try {
+        const { data, error } = await supabaseAdmin
+          .from('artists')
+          .select('*')
+          .limit(100)
+        if (error) {
+          return res.status(200).json({ success: true, data: [], count: 0 })
+        }
+        return res.status(200).json({ success: true, data: data || [], count: (data || []).length })
+      } catch (err) {
+        return res.status(200).json({ success: true, data: [], count: 0 })
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CATEGORY ROUTES
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'category' && req.method === 'GET' && !s1) {
+      const mockCategories = [
+        { id: 1, name: 'Painting', slug: 'painting' },
+        { id: 2, name: 'Sculpture', slug: 'sculpture' },
+        { id: 3, name: 'Photography', slug: 'photography' },
+        { id: 4, name: 'Mixed Media', slug: 'mixed-media' },
+      ]
+      return res.status(200).json({ success: true, data: mockCategories })
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // BLOG ROUTES
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'blog' && (s1 === 'published' || s1 === 'archived') && req.method === 'GET') {
+      return res.status(200).json({ success: true, data: [], count: 0 })
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // VISITOR ROUTE (tracking)
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'visitor' && req.method === 'POST') {
+      // Just log and return success — no database required
+      console.log('[Visitor Tracked]', req.body)
+      return res.status(200).json({ success: true, message: 'Visitor tracked' })
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // COLLECTION ROUTE
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'collection' && req.method === 'GET' && !s1) {
+      return res.status(200).json({ success: true, data: [], count: 0 })
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // DELIVERY ROUTE
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'delivery' && req.method === 'GET' && !s1) {
+      return res.status(200).json({ success: true, data: [] })
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // PROFILE ROUTE
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'profile' && s1 && req.method === 'GET') {
+      try {
+        const { data, error } = await supabaseAdmin
+          .from('users')
+          .select('*')
+          .eq('id', s1)
+          .single()
+        if (error) {
+          return res.status(404).json({ error: 'Profile not found' })
+        }
+        return res.status(200).json({ success: true, data })
+      } catch (err) {
+        return res.status(404).json({ error: 'Profile not found' })
+      }
+    }
+
+    if (s0 === 'profile' && s1 && req.method === 'PUT') {
+      try {
+        const { data, error } = await supabaseAdmin
+          .from('users')
+          .update(req.body)
+          .eq('id', s1)
+          .select()
+          .single()
+        if (error) {
+          return res.status(500).json({ error: error.message })
+        }
+        return res.status(200).json({ success: true, data })
+      } catch (err) {
+        return res.status(500).json({ error: err.message })
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // NUMERISATION ROUTE
+    // ─────────────────────────────────────────────────────────────
+    if (s0 === 'numerisation' && (s1 === 'my' || req.method === 'GET')) {
+      return res.status(200).json({ success: true, data: [] })
+    }
+
     if (s0 === 'health') {
       return res.status(200).json({
         status: 'ok',
