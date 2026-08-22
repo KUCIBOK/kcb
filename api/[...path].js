@@ -40,6 +40,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    // DEBUG CRITICAL: Log raw request before any processing
+    console.log(`[DEBUG RAW] req.url=${req.url} req.originalUrl=${req.originalUrl} req.path=${req.path}`)
+
     // Parse the URL path from req.url (Vercel Node.js Functions)
     const urlObj = new URL(req.url, 'http://localhost')
     const path = urlObj.pathname.replace(/^\/api\//, '').split('/').filter(p => p)
@@ -48,7 +51,7 @@ export default async function handler(req, res) {
     const s2 = path[2] // Third segment
 
     // DEBUG: Log all requests for troubleshooting
-    console.log(`[API Route] method=${req.method} url=${req.url} pathname=${urlObj.pathname} path=${JSON.stringify(path)} s0=${s0} s1=${s1}`)
+    console.log(`[API Route] method=${req.method} pathname=${urlObj.pathname} path=${JSON.stringify(path)} s0=${s0} s1=${s1}`)
 
     // ─────────────────────────────────────────────────────────────
     // ARTWORKS ROUTES
