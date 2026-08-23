@@ -60,12 +60,12 @@ BEGIN
       COUNT(*) AS cnt,
       PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY amount) AS median_p,
       AVG(amount) AS avg_p,
-      STDDEV_POP(amount) AS volatility,
+      STDDEV_POP(amount)::NUMERIC AS volatility,
       MIN(amount) AS min_p,
       MAX(amount) AS max_p,
-      currency AS curr
+      confirmed_sales.currency
     FROM confirmed_sales
-    GROUP BY currency
+    GROUP BY confirmed_sales.currency
   )
   SELECT
     time_period,
@@ -82,7 +82,7 @@ BEGIN
     ps.volatility,
     ps.min_p,
     ps.max_p,
-    ps.curr,
+    ps.currency,
     'confirmed_transactions',
     ps.cnt < 5
   FROM price_stats ps;
@@ -133,25 +133,21 @@ BEGIN
     SELECT
       buyer_country,
       COUNT(*) AS cnt,
-      PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY amount) AS median_p,
-      SUM(amount) AS total_vol,
+      PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY amount)::NUMERIC AS median_p,
+      SUM(amount)::NUMERIC AS total_vol,
       currency
     FROM confirmed_sales
     GROUP BY buyer_country, currency
   )
   SELECT
-    cs.buyer_country,
-    cs.cnt,
-    cs.median_p,
-    cs.total_vol,
-    cs.cnt,
-    CASE
-      WHEN cs.cnt < 5 THEN 0.3
-      WHEN cs.cnt < 20 THEN 0.6
-      ELSE 0.9
-    END,
-    cs.currency,
-    cs.cnt < 5
+    cs.buyer_country::VARCHAR,
+    cs.cnt::INT,
+    cs.median_p::NUMERIC,
+    cs.total_vol::NUMERIC,
+    cs.cnt::INT,
+    (CASE WHEN cs.cnt < 5 THEN 0.3::NUMERIC WHEN cs.cnt < 20 THEN 0.6::NUMERIC ELSE 0.9::NUMERIC END)::NUMERIC,
+    cs.currency::TEXT,
+    (cs.cnt < 5)::BOOLEAN
   FROM country_stats cs
   ORDER BY cs.cnt DESC;
 END;
@@ -189,8 +185,8 @@ BEGIN
     SELECT
       COALESCE(a.medium, 'Other') AS artwork_medium,
       COUNT(*) AS sale_count,
-      PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY t.amount) AS median_p,
-      AVG(t.amount) AS avg_p
+      PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY t.amount)::NUMERIC AS median_p,
+      AVG(t.amount)::NUMERIC AS avg_p
     FROM transactions t
     LEFT JOIN artworks a ON t.artwork_id = a.id
     WHERE t.status = 'confirmed'
@@ -207,19 +203,14 @@ BEGIN
     GROUP BY medium
   )
   SELECT
-    cs.artwork_medium,
-    cs.sale_count,
-    cs.median_p,
-    cs.avg_p,
-    cs.sale_count,
-    CASE
-      WHEN cs.sale_count < 5 THEN 0.3
-      WHEN cs.sale_count < 20 THEN 0.6
-      ELSE 0.9
-    END,
-    -- Sale rate = confirmed transactions / total artworks published
-    ROUND((cs.sale_count::NUMERIC / NULLIF(amc.total_count, 0) * 100)::NUMERIC, 2),
-    cs.sale_count < 5
+    cs.artwork_medium::VARCHAR,
+    cs.sale_count::INT,
+    cs.median_p::NUMERIC,
+    cs.avg_p::NUMERIC,
+    cs.sale_count::INT,
+    (CASE WHEN cs.sale_count < 5 THEN 0.3::NUMERIC WHEN cs.sale_count < 20 THEN 0.6::NUMERIC ELSE 0.9::NUMERIC END)::NUMERIC,
+    ROUND((cs.sale_count::NUMERIC / NULLIF(amc.total_count, 0) * 100)::NUMERIC, 2)::NUMERIC,
+    (cs.sale_count < 5)::BOOLEAN
   FROM confirmed_sales cs
   LEFT JOIN all_medium_count amc ON cs.artwork_medium = amc.artwork_medium
   ORDER BY cs.sale_count DESC;
@@ -267,24 +258,20 @@ BEGIN
     SELECT
       cat,
       COUNT(*) AS cnt,
-      AVG(budget) AS avg_b,
-      PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY budget) AS median_b,
+      AVG(budget)::NUMERIC AS avg_b,
+      PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY budget)::NUMERIC AS median_b,
       ARRAY_AGG(DISTINCT country) FILTER (WHERE country IS NOT NULL) AS countries
     FROM sourcing_data
     GROUP BY cat
   )
   SELECT
-    cs.cat,
-    cs.cnt,
-    cs.avg_b,
-    cs.median_b,
-    cs.countries,
-    cs.cnt,
-    CASE
-      WHEN cs.cnt < 5 THEN 0.3
-      WHEN cs.cnt < 20 THEN 0.6
-      ELSE 0.9
-    END
+    cs.cat::VARCHAR,
+    cs.cnt::INT,
+    cs.avg_b::NUMERIC,
+    cs.median_b::NUMERIC,
+    cs.countries::VARCHAR[],
+    cs.cnt::INT,
+    (CASE WHEN cs.cnt < 5 THEN 0.3::NUMERIC WHEN cs.cnt < 20 THEN 0.6::NUMERIC ELSE 0.9::NUMERIC END)::NUMERIC
   FROM category_stats cs
   ORDER BY cs.cnt DESC;
 END;
@@ -328,19 +315,19 @@ BEGIN
       COUNT(DISTINCT CASE WHEN t.status = 'confirmed' THEN a.id END) AS artworks_sold
     FROM artworks a
     LEFT JOIN sourcing_inquiries si ON a.id = si.artwork_id AND si.created_at >= date_filter
-    LEFT JOIN transactions t ON a.id = t.artwork_id AND t.created_at >= date_filter
+    LEFT JOIN transactions t ON a.id = t.artwork_id AND t.created_at >= date_filter AND t.status = 'confirmed'
     WHERE a.created_at >= date_filter
   )
   SELECT
-    fd.total_artworks,
-    fd.artworks_with_views,
-    fd.artworks_with_likes,
-    fd.artworks_with_inquiries,
-    fd.artworks_sold,
-    ROUND((fd.artworks_with_likes::NUMERIC / NULLIF(fd.artworks_with_views, 0) * 100)::NUMERIC, 2),
-    ROUND((fd.artworks_with_inquiries::NUMERIC / NULLIF(fd.artworks_with_likes, 0) * 100)::NUMERIC, 2),
-    ROUND((fd.artworks_sold::NUMERIC / NULLIF(fd.artworks_with_inquiries, 0) * 100)::NUMERIC, 2),
-    ROUND((fd.artworks_sold::NUMERIC / NULLIF(fd.total_artworks, 0) * 100)::NUMERIC, 2)
+    fd.total_artworks::INT,
+    fd.artworks_with_views::INT,
+    fd.artworks_with_likes::INT,
+    fd.artworks_with_inquiries::INT,
+    fd.artworks_sold::INT,
+    ROUND((fd.artworks_with_likes::NUMERIC / NULLIF(fd.artworks_with_views, 0) * 100)::NUMERIC, 2)::NUMERIC,
+    ROUND((fd.artworks_with_inquiries::NUMERIC / NULLIF(fd.artworks_with_likes, 0) * 100)::NUMERIC, 2)::NUMERIC,
+    ROUND((fd.artworks_sold::NUMERIC / NULLIF(fd.artworks_with_inquiries, 0) * 100)::NUMERIC, 2)::NUMERIC,
+    ROUND((fd.artworks_sold::NUMERIC / NULLIF(fd.total_artworks, 0) * 100)::NUMERIC, 2)::NUMERIC
   FROM funnel_data;
 END;
 $$ LANGUAGE plpgsql STABLE;
