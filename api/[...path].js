@@ -556,51 +556,6 @@ export default async function handler(req, res) {
           .catch(() => {})
 
         return res.status(200).json({ data: analyticsData })
-          avgPrice: m.avg_price ? Math.round(m.avg_price) : 0,
-        }))
-
-        const emergingArtistsFormatted = (emergingArtists.data || []).slice(0, 5).map((a) => ({
-          name: a.artist_name || 'Unknown',
-          country: a.country || 'Unknown',
-          recentSales: a.recent_sales || 0,
-          avgPrice: a.avg_price ? `€${Math.round(a.avg_price)}` : '—',
-          momentumScore: a.momentum_score ? Math.round(a.momentum_score * 10) : 0,
-        }))
-
-        // Generate opportunities
-        const opportunities = [
-          { type: 'buy', text: 'Emerging artists show +40% momentum in photography', metric: 'Medium growth' },
-          { type: 'sell', text: 'Contemporary painting prices stabilizing after Q2 rally', metric: 'Price volatility -15%' },
-          { type: 'watch', text: 'West African artists gaining international traction', metric: 'Exhibitions +8' },
-        ]
-
-        const analyticsData = {
-          countryTrends: countryTrendsFormatted,
-          topArtists: topArtistsFormatted,
-          mediumTrends: mediumTrendsFormatted,
-          emergingArtists: emergingArtistsFormatted,
-          opportunities,
-          metadata: {
-            period,
-            dataSource: 'Kucibok Platform (Verified Artworks)',
-            lastUpdated: new Date().toISOString(),
-          },
-        }
-
-        // Cache result
-        await supabaseAdmin
-          .from('analytics_cache')
-          .upsert(
-            {
-              cache_key: cacheKey,
-              data: analyticsData,
-              expires_at: new Date(Date.now() + CACHE_TTL).toISOString(),
-            },
-            { onConflict: 'cache_key' }
-          )
-          .catch(() => {})
-
-        return res.status(200).json({ data: analyticsData })
       } catch (err) {
         console.error('[Professional Analytics Error]', err.message, err.code)
         // Return error response, NOT fallback mock data
