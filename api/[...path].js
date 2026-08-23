@@ -448,35 +448,114 @@ export default async function handler(req, res) {
           return res.status(200).json({ data: cachedData.data, cached: true })
         }
 
-        // Fetch fresh data using RPC functions
-        const [countryTrends, topArtists, mediumTrends, emergingArtists] = await Promise.all([
-          supabaseAdmin.rpc('get_country_market_trends', { time_period: period }),
-          supabaseAdmin.rpc('get_artist_trends', { time_period: period }),
-          supabaseAdmin.rpc('get_medium_trends', { time_period: period }),
-          supabaseAdmin.rpc('detect_emerging_artists', { min_sales: 2 }),
+        // Fetch fresh data using CORRECTED RPC functions (migration 022)
+        // Only use confirmed transactions with real pricing data
+        const [marketTrends, countryTrends, mediumPerformance, sourcing, conversionFunnel] = await Promise.all([
+          supabaseAdmin.rpc('get_real_market_trends', { time_period: period }),
+          supabaseAdmin.rpc('get_sales_volume_by_country', { time_period: period }),
+          supabaseAdmin.rpc('get_medium_performance', { time_period: period }),
+          supabaseAdmin.rpc('get_sourcing_intelligence', { time_period: period }),
+          supabaseAdmin.rpc('get_conversion_funnel', { time_period: period }),
         ])
 
-        // Format trends
+        // Format trends - REAL DATA ONLY from confirmed transactions
+        const marketTrendData = marketTrends.data?.[0]
+        const marketTrendFormatted = marketTrendData ? {
+          value: Math.round(marketTrendData.median_price || 0),
+          unit: 'EUR',
+          period,
+          sampleSize: marketTrendData.sample_size,
+          sourceType: marketTrendData.source_type,
+          confidence: marketTrendData.confidence_score,
+          insufficientData: marketTrendData.insufficient_data,
+          label: 'Median Realized Price',
+          volatility: marketTrendData.price_volatility,
+          range: {
+            min: Math.round(marketTrendData.min_price || 0),
+            max: Math.round(marketTrendData.max_price || 0),
+          },
+        } : null
+
         const countryTrendsFormatted = (countryTrends.data || []).map((c) => ({
           country: c.country || 'Unknown',
-          growth: c.growth_pct ? Math.round(c.growth_pct) : 0,
-          volume: c.volume ? Math.round(c.volume) : 0,
-          avgPrice: c.avg_price ? `€${Math.round(c.avg_price)}` : '—',
-          artists: c.artists || 0,
+          value: Math.round(c.transaction_count || 0),
+          unit: 'transactions',
+          medianPrice: c.median_price ? Math.round(c.median_price) : null,
+          volume: Math.round(c.total_volume || 0),
+          sampleSize: c.sample_size,
+          confidence: c.confidence_score,
+          insufficientData: c.insufficient_data,
+          currency: c.currency || 'EUR',
         }))
 
-        const topArtistsFormatted = (topArtists.data || []).map((a) => ({
-          name: a.artist_name || 'Unknown',
-          country: a.country || 'Unknown',
-          appreciation: a.appreciation_pct ? `+${Math.round(a.appreciation_pct)}%` : '—',
-          buzz: a.buzz_score || 0,
-          exhibitions: a.exhibitions || 0,
-        }))
-
-        const mediumTrendsFormatted = (mediumTrends.data || []).map((m) => ({
+        const mediumPerformanceFormatted = (mediumPerformance.data || []).map((m) => ({
           medium: m.medium || 'Other',
-          growth: m.growth_pct ? Math.round(m.growth_pct) : 0,
-          count: m.count || 0,
+          value: Math.round(m.transaction_count || 0),
+          unit: 'sales',
+          medianPrice: m.median_price ? Math.round(m.median_price) : null,
+          avgPrice: m.avg_price ? Math.round(m.avg_price) : null,
+          saleRate: m.sale_rate,
+          sampleSize: m.sample_size,
+          confidence: m.confidence_score,
+          insufficientData: m.insufficient_data,
+          label: 'Sale Volume by Medium',
+        }))
+
+        const sourcingFormatted = (sourcing.data || []).map((s) => ({
+          category: s.category || 'Other',
+          value: s.inquiry_count,
+          unit: 'inquiries',
+          avgBudget: s.avg_budget ? Math.round(s.avg_budget) : null,
+          medianBudget: s.median_budget ? Math.round(s.median_budget) : null,
+          buyerCountries: s.buyer_countries || [],
+          sampleSize: s.sample_size,
+          confidence: s.confidence_score,
+        }))
+
+        const conversionData = conversionFunnel.data?.[0]
+        const conversionFormatted = conversionData ? {
+          views: conversionData.artworks_with_views,
+          likes: conversionData.artworks_with_likes,
+          inquiries: conversionData.artworks_with_inquiries,
+          sales: conversionData.artworks_sold,
+          rates: {
+            viewToLike: conversionData.view_to_like_rate,
+            likeToInquiry: conversionData.like_to_inquiry_rate,
+            inquiryToSale: conversionData.inquiry_to_sale_rate,
+            overallSaleRate: conversionData.overall_sale_rate,
+          },
+        } : null
+
+        const analyticsData = {
+          period,
+          timestamp: new Date().toISOString(),
+          dataSource: 'Kucibok Platform (Confirmed Transactions Only)',
+          marketTrend: marketTrendFormatted,
+          countryTrends: countryTrendsFormatted,
+          mediumPerformance: mediumPerformanceFormatted,
+          sourcing: sourcingFormatted,
+          conversion: conversionFormatted,
+          dataQuality: {
+            onlyConfirmedTransactions: true,
+            excludesListingsWithoutSales: true,
+            noRandomizedMetrics: true,
+          },
+        }
+
+        // Cache result
+        await supabaseAdmin
+          .from('analytics_cache')
+          .upsert(
+            {
+              cache_key: cacheKey,
+              data: analyticsData,
+              expires_at: new Date(Date.now() + CACHE_TTL).toISOString(),
+            },
+            { onConflict: 'cache_key' }
+          )
+          .catch(() => {})
+
+        return res.status(200).json({ data: analyticsData })
           avgPrice: m.avg_price ? Math.round(m.avg_price) : 0,
         }))
 
@@ -524,36 +603,15 @@ export default async function handler(req, res) {
         return res.status(200).json({ data: analyticsData })
       } catch (err) {
         console.error('[Professional Analytics Error]', err.message, err.code)
-        // If RPC functions fail (for any reason), return mock data for graceful degradation
-        console.warn('[Using Mock Analytics Data] RPC query failed:', err.message)
-        const mockAnalytics = {
-          countryTrends: [
-            { country: 'Senegal', growth: 25, volume: 150, avgPrice: '€8,500', artists: 45 },
-            { country: 'Nigeria', growth: 18, volume: 220, avgPrice: '€12,000', artists: 78 },
-            { country: 'Ghana', growth: 12, volume: 95, avgPrice: '€6,800', artists: 32 },
-          ],
-          topArtists: [
-            { name: 'Aïssatou Diallo', country: 'Senegal', appreciation: '+35%', buzz: 92, exhibitions: 8 },
-            { name: 'Kwesi Mensah', country: 'Ghana', appreciation: '+22%', buzz: 85, exhibitions: 6 },
-          ],
-          mediumTrends: [
-            { medium: 'Painting', growth: 28, count: 450, avgPrice: 9500 },
-            { medium: 'Sculpture', growth: 15, count: 180, avgPrice: 14200 },
-          ],
-          emergingArtists: [
-            { name: 'Zainab Hassan', country: 'Senegal', recentSales: 5, avgPrice: '€4,200', momentumScore: 87 },
-          ],
-          opportunities: [
-            { type: 'buy', text: 'Emerging artists show +40% momentum in photography', metric: 'Medium growth' },
-            { type: 'sell', text: 'Contemporary painting prices stabilizing after Q2 rally', metric: 'Price volatility -15%' },
-          ],
-          metadata: {
-            period: period || 'month',
-            dataSource: 'Kucibok Platform (Mock Data - Analytics RPC unavailable)',
-            lastUpdated: new Date().toISOString(),
-          },
-        }
-        return res.status(200).json({ data: mockAnalytics, mock: true })
+        // Return error response, NOT fallback mock data
+        // This ensures data integrity: real data or error message, never fictitious data
+        return res.status(500).json({
+          error: 'Failed to fetch market analytics',
+          message: err.message,
+          period,
+          source: 'error',
+          timestamp: new Date().toISOString(),
+        })
       }
     }
 
