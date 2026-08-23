@@ -14,17 +14,25 @@ export async function handleProfessionalAnalytics(supabaseAdmin, period = 'year'
       year: 365,
     }[period] || 365
 
+    // For historical data (e.g., 2024 transactions viewed in 2026), use ALL data
+    // If specific period needed, apply time filter
     const dateFilter = new Date()
     dateFilter.setDate(dateFilter.getDate() - periodDays)
+    const useTimeFilter = period !== 'year' // Only filter if not 'year'
 
     // ====================================================================
     // 1. MARKET TRENDS - Direct query to transactions
     // ====================================================================
-    const { data: marketData } = await supabaseAdmin
+    let marketQuery = supabaseAdmin
       .from('transactions')
       .select('amount, currency')
       .eq('status', 'confirmed')
-      .gte('created_at', dateFilter.toISOString())
+
+    if (useTimeFilter) {
+      marketQuery = marketQuery.gte('created_at', dateFilter.toISOString())
+    }
+
+    const { data: marketData } = await marketQuery
 
     let marketTrendData = null
     if (marketData && marketData.length > 0) {
@@ -55,11 +63,16 @@ export async function handleProfessionalAnalytics(supabaseAdmin, period = 'year'
     // ====================================================================
     // 2. COUNTRY TRENDS - Group by buyer country
     // ====================================================================
-    const { data: countryData } = await supabaseAdmin
+    let countryQuery = supabaseAdmin
       .from('transactions')
       .select('amount, currency, buyer_id')
       .eq('status', 'confirmed')
-      .gte('created_at', dateFilter.toISOString())
+
+    if (useTimeFilter) {
+      countryQuery = countryQuery.gte('created_at', dateFilter.toISOString())
+    }
+
+    const { data: countryData } = await countryQuery
 
     // Get user countries
     const countryTrendsMap = {}
@@ -107,11 +120,16 @@ export async function handleProfessionalAnalytics(supabaseAdmin, period = 'year'
     // ====================================================================
     // 3. MEDIUM PERFORMANCE - Group by artwork medium
     // ====================================================================
-    const { data: mediumData } = await supabaseAdmin
+    let mediumQuery = supabaseAdmin
       .from('transactions')
       .select('amount, artwork_id')
       .eq('status', 'confirmed')
-      .gte('created_at', dateFilter.toISOString())
+
+    if (useTimeFilter) {
+      mediumQuery = mediumQuery.gte('created_at', dateFilter.toISOString())
+    }
+
+    const { data: mediumData } = await mediumQuery
 
     const mediumTrendsMap = {}
     if (mediumData && mediumData.length > 0) {
