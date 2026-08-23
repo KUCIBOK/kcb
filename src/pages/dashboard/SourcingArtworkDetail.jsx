@@ -19,11 +19,28 @@ import { useAuth } from '../../store/AuthContext'
 import { canShortlist } from '../../utils/planUtils'
 import { ShortlistGate } from '../../components/shared/ShortlistGate'
 import { SourcingInquiryModal } from '../../components/artworks/SourcingInquiryModal'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseClient = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
 
 function validImageUrl(url) {
   if (!url) return null
   if (url.includes('backend.kucibok.com')) return null
   return url
+}
+
+function sanitizeHTML(html) {
+  // Remove HTML tags and decode entities
+  if (!html) return ''
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
 }
 
 export default function SourcingArtworkDetail() {
@@ -33,6 +50,7 @@ export default function SourcingArtworkDetail() {
   const canShortlistFeature = canShortlist(subscription)
 
   const [artwork, setArtwork] = useState(null)
+  const [artist, setArtist] = useState(null)
   const [portfolioWorks, setPortfolioWorks] = useState([])
   const [loading, setLoading] = useState(true)
   const [isShortlisted, setIsShortlisted] = useState(false)
@@ -49,9 +67,23 @@ export default function SourcingArtworkDetail() {
           const found = result.data.find((w) => w.id === artworkId || w._id === artworkId)
           if (found) {
             setArtwork(found)
+
+            // Fetch artist data using artist_id
+            if (found.artist_id) {
+              const { data: artistData } = await supabaseClient
+                .from('artists')
+                .select('*')
+                .eq('id', found.artist_id)
+                .single()
+
+              if (artistData) {
+                setArtist(artistData)
+              }
+            }
+
             // Get portfolio works by same artist (excluding current)
             const sameArtist = result.data
-              .filter((w) => w.artist === found.artist && (w.id !== artworkId && w._id !== artworkId))
+              .filter((w) => w.artist_id === found.artist_id && (w.id !== artworkId && w._id !== artworkId))
               .slice(0, 4)
             setPortfolioWorks(sameArtist)
           }
@@ -288,71 +320,128 @@ export default function SourcingArtworkDetail() {
         </div>
 
         {/* Artist Card */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[8px] p-6 sm:p-8">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-kcb-pierre mb-6">
-              À propos de l'artiste
-            </h3>
+        {artist && (
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+            <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[8px] p-6 sm:p-8">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-kcb-pierre mb-6">
+                À propos de l'artiste
+              </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-              {/* Artist Info */}
-              <div className="sm:col-span-2 space-y-6">
-                <div>
-                  <h4 className="text-xl font-semibold text-white mb-2">{artwork.artist}</h4>
-                  <p className="text-sm text-kcb-pierre">Franco-Sénégalais · Installé depuis plus de 10 ans</p>
-                </div>
-
-                {artwork.artist_bio && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                {/* Artist Info */}
+                <div className="sm:col-span-2 space-y-6">
                   <div>
-                    <p className="text-xs text-kcb-pierre uppercase tracking-wide font-semibold mb-2">
-                      Démarche
-                    </p>
-                    <p className="text-sm text-white leading-relaxed">{artwork.artist_bio}</p>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/[0.06]">
-                  <div>
-                    <p className="text-xs text-kcb-pierre uppercase tracking-wide mb-1">Zone de pratique</p>
-                    <div className="flex items-center gap-1 text-sm text-white">
-                      <MapPin className="w-3.5 h-3.5 text-kcb-or" />
-                      Lac Rose, Sénégal
+                    <h4 className="text-xl font-semibold text-white mb-2">{artist.name}</h4>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm text-kcb-pierre">{artist.country}</span>
+                      {artist.years_experience && (
+                        <span className="text-sm text-kcb-pierre">
+                          · {artist.years_experience}
+                          {artist.years_experience > 1 ? ' années' : ' année'} d'expérience
+                        </span>
+                      )}
                     </div>
+                    {artist.tier && (
+                      <span className="inline-flex items-center text-xs font-medium px-2 py-1 mt-2 rounded-full bg-kcb-or/10 text-kcb-or border border-kcb-or/30">
+                        {artist.tier}
+                      </span>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-xs text-kcb-pierre uppercase tracking-wide mb-1">Présence marché</p>
-                    <a
-                      href="https://abac.art"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-sm text-kcb-or hover:text-kcb-or/80 transition"
-                    >
-                      <Globe className="w-3.5 h-3.5" />
-                      ABAC.art
-                    </a>
+
+                  {artist.disciplines && artist.disciplines.length > 0 && (
+                    <div>
+                      <p className="text-xs text-kcb-pierre uppercase tracking-wide font-semibold mb-2">
+                        Disciplines
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {artist.disciplines.map((disc) => (
+                          <span key={disc} className="text-sm text-kcb-sable bg-kcb-noir/40 px-2 py-1 rounded-[4px]">
+                            {disc}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {artist.biography && (
+                    <div>
+                      <p className="text-xs text-kcb-pierre uppercase tracking-wide font-semibold mb-2">
+                        Bio
+                      </p>
+                      <p className="text-sm text-white leading-relaxed">
+                        {sanitizeHTML(artist.biography)}
+                      </p>
+                    </div>
+                  )}
+
+                  {artist.artistic_statement && (
+                    <div>
+                      <p className="text-xs text-kcb-pierre uppercase tracking-wide font-semibold mb-2">
+                        Démarche
+                      </p>
+                      <p className="text-sm text-white leading-relaxed italic">{artist.artistic_statement}</p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/[0.06]">
+                    {artist.location && (
+                      <div>
+                        <p className="text-xs text-kcb-pierre uppercase tracking-wide mb-1">Zone de pratique</p>
+                        <div className="flex items-center gap-1 text-sm text-white">
+                          <MapPin className="w-3.5 h-3.5 text-kcb-or" />
+                          {artist.location}
+                        </div>
+                      </div>
+                    )}
+                    {artist.market_presence && (
+                      <div>
+                        <p className="text-xs text-kcb-pierre uppercase tracking-wide mb-1">Présence marché</p>
+                        <a
+                          href="https://abac.art"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-sm text-kcb-or hover:text-kcb-or/80 transition"
+                        >
+                          <Globe className="w-3.5 h-3.5" />
+                          {artist.market_presence}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
 
-              {/* Contact Artist */}
-              <div className="bg-kcb-noir/50 border border-white/[0.06] rounded-[4px] p-4 h-fit">
-                <p className="text-xs text-kcb-pierre uppercase tracking-wide font-semibold mb-3">
-                  Contact artiste
-                </p>
-                <button
-                  onClick={() => setShowContactModal(true)}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[4px] bg-kcb-or/10 text-kcb-or border border-kcb-or/30 hover:bg-kcb-or/20 transition text-xs font-medium mb-2"
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  Contacter
-                </button>
-                <p className="text-xs text-kcb-pierre text-center mt-3">
-                  +221 77 837 59 99
-                </p>
+                {/* Contact Artist */}
+                <div className="bg-kcb-noir/50 border border-white/[0.06] rounded-[4px] p-4 h-fit">
+                  <p className="text-xs text-kcb-pierre uppercase tracking-wide font-semibold mb-3">
+                    Contact artiste
+                  </p>
+                  <button
+                    onClick={() => setShowContactModal(true)}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-[4px] bg-kcb-or/10 text-kcb-or border border-kcb-or/30 hover:bg-kcb-or/20 transition text-xs font-medium mb-2"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    Contacter
+                  </button>
+                  <p className="text-xs text-kcb-pierre text-center mt-3">
+                    +221 77 837 59 99
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Artwork Description */}
+        {artwork?.description && (
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+            <div className="bg-kcb-ardoise border border-white/[0.06] rounded-[8px] p-6 sm:p-8">
+              <h3 className="text-lg font-semibold text-white mb-4">À propos de cette œuvre</h3>
+              <p className="text-sm text-white leading-relaxed whitespace-pre-wrap">
+                {sanitizeHTML(artwork.description)}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Portfolio */}
         {portfolioWorks.length > 0 && (
