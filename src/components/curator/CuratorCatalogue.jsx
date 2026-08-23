@@ -8,9 +8,9 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { ShieldCheck, SlidersHorizontal, Search, X, Loader2, Heart } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ShieldCheck, SlidersHorizontal, Search, X, Loader2, Heart, FileText } from 'lucide-react'
 import { getCataloguePro } from '../../api/useSourcing'
-import { SourcingInquiryModal } from '../artworks/SourcingInquiryModal'
 import { useAddToShortlist, useRemoveFromShortlist } from '../../api/useShortlist'
 import { ShortlistGate } from '../shared/ShortlistGate'
 import { canShortlist } from '../../utils/planUtils'
@@ -95,7 +95,6 @@ export function CuratorCatalogue() {
   const [pending, setPending] = useState(INITIAL_FILTERS)
   const [catalogue, setCatalogue] = useState({ data: [], total: 0, pages: 1 })
   const [loading, setLoading] = useState(true)
-  const [selectedArtwork, setSelectedArtwork] = useState(null)
   const [showFilters, setShowFilters] = useState(false)
   const [shortlistedSet, setShortlistedSet] = useState(new Set()) // Track shortlisted items locally
 
@@ -347,13 +346,14 @@ export function CuratorCatalogue() {
                       </ShortlistGate>
                     )}
 
-                    {/* Contact Button */}
-                    <button
-                      onClick={() => setSelectedArtwork(artwork)}
-                      className="flex-1 text-xs py-1.5 rounded-[4px] bg-kcb-or hover:bg-kcb-or/90 text-white transition"
+                    {/* Detail Link Button */}
+                    <Link
+                      to={`/dashboard/curator/sourcing/${artwork.id || artwork._id}`}
+                      className="flex-1 text-xs py-1.5 rounded-[4px] bg-kcb-or hover:bg-kcb-or/90 text-white transition flex items-center justify-center gap-1"
                     >
-                      Contact
-                    </button>
+                      <FileText className="w-3 h-3" />
+                      Détails
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -385,14 +385,7 @@ export function CuratorCatalogue() {
         </div>
       )}
 
-      {/* Modal sourcing */}
-      {selectedArtwork && (
-        <SourcingInquiryModal
-          artwork={selectedArtwork}
-          isOpen={!!selectedArtwork}
-          onClose={() => setSelectedArtwork(null)}
-        />
-      )}
+      {/* Note: Modal sourcing removed — use detail page instead */}
     </>
   )
 }

@@ -23,6 +23,7 @@ const Artist = lazy(() => import('../pages/dashboard/Artist'))
 const SubmitArtwork = lazy(() => import('../pages/dashboard/SubmitArtwork'))
 const Professional = lazy(() => import('../pages/dashboard/Professional'))
 const Advisor = lazy(() => import('../pages/dashboard/Advisor'))
+const SourcingArtworkDetail = lazy(() => import('../pages/dashboard/SourcingArtworkDetail'))
 const BuyerAccount = lazy(() => import('../pages/dashboard/BuyerAccount'))
 const Admin = lazy(() => import('../pages/dashboard/Admin'))
 const ArtworkCheckout = lazy(() => import('../pages/ArtworkCheckout'))
@@ -750,6 +751,14 @@ export function Router() {
               element={
                 <Suspense fallback={<PageLoader />}>
                   <SubmitArtwork />
+                </Suspense>
+              }
+            />
+            <Route
+              path="sourcing/:artworkId"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <SourcingArtworkDetail />
                 </Suspense>
               }
             />
