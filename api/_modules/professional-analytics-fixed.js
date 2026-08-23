@@ -4,7 +4,7 @@
  * Returns REAL market data from confirmed transactions
  */
 
-export async function handleProfessionalAnalytics(supabaseAdmin, period = 'month') {
+export async function handleProfessionalAnalytics(supabaseAdmin, period = 'year') {
   try {
     // Define period in days
     const periodDays = {
@@ -12,7 +12,7 @@ export async function handleProfessionalAnalytics(supabaseAdmin, period = 'month
       month: 30,
       quarter: 90,
       year: 365,
-    }[period] || 30
+    }[period] || 365
 
     const dateFilter = new Date()
     dateFilter.setDate(dateFilter.getDate() - periodDays)
