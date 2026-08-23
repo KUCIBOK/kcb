@@ -542,18 +542,22 @@ export default async function handler(req, res) {
           },
         }
 
-        // Cache result
-        await supabaseAdmin
-          .from('analytics_cache')
-          .upsert(
-            {
-              cache_key: cacheKey,
-              data: analyticsData,
-              expires_at: new Date(Date.now() + CACHE_TTL).toISOString(),
-            },
-            { onConflict: 'cache_key' }
-          )
-          .catch(() => {})
+        // Cache result (silent fail if cache unavailable)
+        try {
+          await supabaseAdmin
+            .from('analytics_cache')
+            .upsert(
+              {
+                cache_key: cacheKey,
+                data: analyticsData,
+                expires_at: new Date(Date.now() + CACHE_TTL).toISOString(),
+              },
+              { onConflict: 'cache_key' }
+            )
+        } catch (cacheErr) {
+          // Silent fail - cache is optional
+          console.warn('[Analytics Cache] Warning:', cacheErr.message)
+        }
 
         return res.status(200).json({ data: analyticsData })
       } catch (err) {
