@@ -5,6 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { respondJSON, respondError } from './_lib/response.js'
+import { handleProfessionalAnalytics } from './_modules/professional-analytics-fixed.js'
 
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -448,99 +449,8 @@ export default async function handler(req, res) {
           return res.status(200).json({ data: cachedData.data, cached: true })
         }
 
-        // Fetch fresh data using CORRECTED RPC functions (migration 022)
-        // Only use confirmed transactions with real pricing data
-        const [marketTrends, countryTrends, mediumPerformance, sourcing, conversionFunnel] = await Promise.all([
-          supabaseAdmin.rpc('get_real_market_trends', { time_period: period }),
-          supabaseAdmin.rpc('get_sales_volume_by_country', { time_period: period }),
-          supabaseAdmin.rpc('get_medium_performance', { time_period: period }),
-          supabaseAdmin.rpc('get_sourcing_intelligence', { time_period: period }),
-          supabaseAdmin.rpc('get_conversion_funnel', { time_period: period }),
-        ])
-
-        // Format trends - REAL DATA ONLY from confirmed transactions
-        const marketTrendData = marketTrends.data?.[0]
-        const marketTrendFormatted = marketTrendData ? {
-          value: Math.round(marketTrendData.median_price || 0),
-          unit: 'EUR',
-          period,
-          sampleSize: marketTrendData.sample_size,
-          sourceType: marketTrendData.source_type,
-          confidence: marketTrendData.confidence_score,
-          insufficientData: marketTrendData.insufficient_data,
-          label: 'Median Realized Price',
-          volatility: marketTrendData.price_volatility,
-          range: {
-            min: Math.round(marketTrendData.min_price || 0),
-            max: Math.round(marketTrendData.max_price || 0),
-          },
-        } : null
-
-        const countryTrendsFormatted = (countryTrends.data || []).map((c) => ({
-          country: c.country || 'Unknown',
-          value: Math.round(c.transaction_count || 0),
-          unit: 'transactions',
-          medianPrice: c.median_price ? Math.round(c.median_price) : null,
-          volume: Math.round(c.total_volume || 0),
-          sampleSize: c.sample_size,
-          confidence: c.confidence_score,
-          insufficientData: c.insufficient_data,
-          currency: c.currency || 'EUR',
-        }))
-
-        const mediumPerformanceFormatted = (mediumPerformance.data || []).map((m) => ({
-          medium: m.medium || 'Other',
-          value: Math.round(m.transaction_count || 0),
-          unit: 'sales',
-          medianPrice: m.median_price ? Math.round(m.median_price) : null,
-          avgPrice: m.avg_price ? Math.round(m.avg_price) : null,
-          saleRate: m.sale_rate,
-          sampleSize: m.sample_size,
-          confidence: m.confidence_score,
-          insufficientData: m.insufficient_data,
-          label: 'Sale Volume by Medium',
-        }))
-
-        const sourcingFormatted = (sourcing.data || []).map((s) => ({
-          category: s.category || 'Other',
-          value: s.inquiry_count,
-          unit: 'inquiries',
-          avgBudget: s.avg_budget ? Math.round(s.avg_budget) : null,
-          medianBudget: s.median_budget ? Math.round(s.median_budget) : null,
-          buyerCountries: s.buyer_countries || [],
-          sampleSize: s.sample_size,
-          confidence: s.confidence_score,
-        }))
-
-        const conversionData = conversionFunnel.data?.[0]
-        const conversionFormatted = conversionData ? {
-          views: conversionData.artworks_with_views,
-          likes: conversionData.artworks_with_likes,
-          inquiries: conversionData.artworks_with_inquiries,
-          sales: conversionData.artworks_sold,
-          rates: {
-            viewToLike: conversionData.view_to_like_rate,
-            likeToInquiry: conversionData.like_to_inquiry_rate,
-            inquiryToSale: conversionData.inquiry_to_sale_rate,
-            overallSaleRate: conversionData.overall_sale_rate,
-          },
-        } : null
-
-        const analyticsData = {
-          period,
-          timestamp: new Date().toISOString(),
-          dataSource: 'Kucibok Platform (Confirmed Transactions Only)',
-          marketTrend: marketTrendFormatted,
-          countryTrends: countryTrendsFormatted,
-          mediumPerformance: mediumPerformanceFormatted,
-          sourcing: sourcingFormatted,
-          conversion: conversionFormatted,
-          dataQuality: {
-            onlyConfirmedTransactions: true,
-            excludesListingsWithoutSales: true,
-            noRandomizedMetrics: true,
-          },
-        }
+        // Fetch REAL data using direct transaction queries (bypasses buggy RPC)
+        const analytics = await handleProfessionalAnalytics(supabaseAdmin, period)
 
         // Cache result (silent fail if cache unavailable)
         try {
@@ -549,7 +459,7 @@ export default async function handler(req, res) {
             .upsert(
               {
                 cache_key: cacheKey,
-                data: analyticsData,
+                data: analytics.data,
                 expires_at: new Date(Date.now() + CACHE_TTL).toISOString(),
               },
               { onConflict: 'cache_key' }
@@ -559,7 +469,7 @@ export default async function handler(req, res) {
           console.warn('[Analytics Cache] Warning:', cacheErr.message)
         }
 
-        return res.status(200).json({ data: analyticsData })
+        return res.status(200).json(analytics)
       } catch (err) {
         console.error('[Professional Analytics Error]', err.message, err.code)
         // Return error response, NOT fallback mock data
