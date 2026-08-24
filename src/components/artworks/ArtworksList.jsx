@@ -49,11 +49,22 @@ export const ArtworksList = ({ artworks, user }) => {
     {
       header: 'Aperçu',
       accessor: 'image',
-      render: (value, row) => (
-        <div className="h-10 w-10 rounded-[4px] bg-kcb-noir flex items-center justify-center overflow-hidden">
-          <img loading="lazy" src={value} alt={row.title} className="h-full w-full object-cover" />
-        </div>
-      ),
+      render: (value, row) => {
+        const imageUrl = value || '/images/placeholder-artwork.svg'
+        return (
+          <div className="h-10 w-10 rounded-[4px] bg-kcb-noir flex items-center justify-center overflow-hidden">
+            <img
+              loading="lazy"
+              src={imageUrl}
+              alt={row.title}
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = '/images/placeholder-artwork.svg'
+              }}
+            />
+          </div>
+        )
+      },
     },
     {
       header: 'Titre',
