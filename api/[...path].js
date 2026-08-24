@@ -1005,15 +1005,50 @@ export default async function handler(req, res) {
     // ─────────────────────────────────────────────────────────────
     if (s0 === 'profile' && s1 && req.method === 'GET') {
       try {
-        const { data, error } = await supabaseAdmin
+        // First, get the user to determine their role
+        const { data: userData, error: userError } = await supabaseAdmin
+          .from('users')
+          .select('role')
+          .eq('id', s1)
+          .single()
+
+        if (userError) {
+          return res.status(404).json({ error: 'Profile not found' })
+        }
+
+        // If user is artist, return artist profile (with artist.id for artwork queries)
+        if (userData?.role === 'artist') {
+          const { data: artistData, error: artistError } = await supabaseAdmin
+            .from('artists')
+            .select('*')
+            .eq('user_id', s1)
+            .single()
+
+          if (artistError || !artistData) {
+            // Fallback to users table if artist profile not found
+            const { data: fallbackData } = await supabaseAdmin
+              .from('users')
+              .select('*')
+              .eq('id', s1)
+              .single()
+            return res.status(200).json({ success: true, data: fallbackData })
+          }
+
+          return res.status(200).json({ success: true, data: artistData })
+        }
+
+        // For non-artists (buyer, curator, advisor, admin), return users table
+        const { data: profileData, error: profileError } = await supabaseAdmin
           .from('users')
           .select('*')
           .eq('id', s1)
           .single()
-        if (error) {
+
+        if (profileError) {
           return res.status(404).json({ error: 'Profile not found' })
         }
-        return res.status(200).json({ success: true, data })
+
+        return res.status(200).json({ success: true, data: profileData })
       } catch (err) {
         return res.status(404).json({ error: 'Profile not found' })
       }
