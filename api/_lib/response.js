@@ -133,12 +133,14 @@ export function respondError(status, message) {
 
 /**
  * Vérifie l'authentification JWT depuis Authorization header
- * Retourne { userId, user_id, ... } si OK
+ * Retourne { userId, user_id, user } si OK
  * Retourne { error, status } si erreur
+ * ✅ Utilise Supabase pour vérifier la signature du JWT
  * @param {import('@vercel/node').VercelRequest} req
- * @returns {object}
+ * @param {object} supabaseAdmin - Client Supabase admin
+ * @returns {Promise<object>}
  */
-export function checkAuth(req) {
+export async function checkAuth(req, supabaseAdmin) {
   const authHeader = req.headers.authorization || '';
   const token = authHeader.replace('Bearer ', '');
 
@@ -147,23 +149,14 @@ export function checkAuth(req) {
   }
 
   try {
-    // Très simple validation — en production utiliser jwt.verify()
-    // Pour maintenant, on accepte n'importe quel token non-vide
-    // TODO: Implémenter la vraie vérification JWT avec Supabase
-    const parts = token.split('.');
-    if (parts.length !== 3) {
-      return { error: 'Invalid token format', status: 401 };
+    // ✅ VRAI vérification JWT avec Supabase
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+
+    if (error || !user) {
+      return { error: 'Invalid or expired token', status: 401 };
     }
 
-    // Décoder le payload (partie 2 du JWT)
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-    const userId = payload.sub || payload.user_id;
-
-    if (!userId) {
-      return { error: 'No user ID in token', status: 401 };
-    }
-
-    return { userId, user_id: userId };
+    return { userId: user.id, user_id: user.id, user };
   } catch (error) {
     console.error('[Auth Error]', error.message);
     return { error: 'Invalid token', status: 401 };

@@ -4,7 +4,8 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { respondJSON, respondError } from './_lib/response.js'
+import { respondJSON, respondError, checkAuth } from './_lib/response.js'
+import { requireAuth } from './_lib/auth.js'
 import { handleProfessionalAnalytics } from './_modules/professional-analytics-fixed.js'
 
 const SUPABASE_URL = process.env.SUPABASE_URL
@@ -23,10 +24,18 @@ const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || '*')
+  // ✅ CORS headers — with validation, NO WILDCARD
+  const corsOrigin = process.env.CORS_ORIGIN || 'https://kucibok.com'
+  if (!corsOrigin || corsOrigin === '*') {
+    console.error('[SECURITY] CORS_ORIGIN not properly configured, using default')
+  }
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin)
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, kcb-api-key')
+
+  // ✅ Security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'DENY')
 
   // Disable caching completely
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
@@ -41,9 +50,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // DEBUG CRITICAL: Log raw request before any processing
-    console.log(`[DEBUG RAW] req.url=${req.url} req.originalUrl=${req.originalUrl} req.path=${req.path}`)
-
     // Parse the URL path from req.url (Vercel Node.js Functions)
     const urlObj = new URL(req.url, 'http://localhost')
     const path = urlObj.pathname.replace(/^\/api\//, '').split('/').filter(p => p)
@@ -51,8 +57,34 @@ export default async function handler(req, res) {
     const s1 = path[1] // Second segment
     const s2 = path[2] // Third segment
 
-    // DEBUG: Log all requests for troubleshooting
-    console.log(`[API Route] method=${req.method} pathname=${urlObj.pathname} path=${JSON.stringify(path)} s0=${s0} s1=${s1}`)
+    // ✅ Helper function: Validate artwork data
+    const validateArtwork = (data) => {
+      const errors = []
+      if (data.price !== undefined && data.price !== null) {
+        const price = parseFloat(data.price)
+        if (isNaN(price) || price < 0) errors.push('price must be a positive number')
+      }
+      if (data.status && !['pending', 'approved', 'rejected', 'archived'].includes(data.status)) {
+        errors.push('status must be one of: pending, approved, rejected, archived')
+      }
+      if (data.for_sale !== undefined && typeof data.for_sale !== 'boolean') {
+        errors.push('for_sale must be a boolean')
+      }
+      if (data.currency && !['USD', 'EUR', 'FCFA', 'XOF'].includes(data.currency.toUpperCase())) {
+        errors.push('currency must be one of: USD, EUR, FCFA, XOF')
+      }
+      return errors
+    }
+
+    // ✅ Helper function: Get authenticated user
+    const getAuthUser = async () => {
+      const auth = await requireAuth(req)
+      if (auth.error) {
+        res.status(auth.status).json({ error: auth.error })
+        return null
+      }
+      return auth.user
+    }
 
     // ─────────────────────────────────────────────────────────────
     // ARTWORKS ROUTES
@@ -141,7 +173,20 @@ export default async function handler(req, res) {
 
       // POST /api/artworks — Create artwork
       if (req.method === 'POST' && !s1) {
-        const { data, error } = await supabaseAdmin.from('artworks').insert([req.body]).select()
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
+
+        // ✅ CRITICAL: Validate input
+        const validationErrors = validateArtwork(req.body)
+        if (validationErrors.length > 0) {
+          return res.status(400).json({ error: 'Validation failed', errors: validationErrors })
+        }
+
+        // ✅ CRITICAL: Ensure user_id matches authenticated user (no spoofing)
+        const body = { ...req.body, user_id: user.id, artist_id: user.id }
+
+        const { data, error } = await supabaseAdmin.from('artworks').insert([body]).select()
 
         if (error) {
           return res.status(500).json({ error: error.message })
@@ -155,9 +200,39 @@ export default async function handler(req, res) {
 
       // PUT /api/artworks/:id — Update artwork
       if (req.method === 'PUT' && s1 && s1 !== 'verify') {
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
+
+        // ✅ CRITICAL: Validate input
+        const validationErrors = validateArtwork(req.body)
+        if (validationErrors.length > 0) {
+          return res.status(400).json({ error: 'Validation failed', errors: validationErrors })
+        }
+
+        // ✅ CRITICAL: Verify ownership
+        const { data: existing, error: fetchError } = await supabaseAdmin
+          .from('artworks')
+          .select('user_id')
+          .eq('id', s1)
+          .single()
+
+        if (fetchError || !existing) {
+          return res.status(404).json({ error: 'Artwork not found' })
+        }
+
+        if (existing.user_id !== user.id) {
+          return res.status(403).json({ error: 'You can only edit your own artworks' })
+        }
+
+        // ✅ Prevent user from changing user_id (ownership spoofing)
+        const body = { ...req.body }
+        delete body.user_id
+        delete body.artist_id
+
         const { data, error } = await supabaseAdmin
           .from('artworks')
-          .update(req.body)
+          .update(body)
           .eq('id', s1)
           .select()
 
@@ -173,6 +248,33 @@ export default async function handler(req, res) {
 
       // PATCH /api/artworks/:id — Change status
       if (req.method === 'PATCH' && s1) {
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
+
+        // ✅ CRITICAL: Validate status enum
+        const validStatus = ['pending', 'approved', 'rejected', 'archived']
+        if (!validStatus.includes(req.body.status)) {
+          return res.status(400).json({
+            error: `Invalid status. Must be one of: ${validStatus.join(', ')}`
+          })
+        }
+
+        // ✅ CRITICAL: Verify ownership
+        const { data: existing, error: fetchError } = await supabaseAdmin
+          .from('artworks')
+          .select('user_id')
+          .eq('id', s1)
+          .single()
+
+        if (fetchError || !existing) {
+          return res.status(404).json({ error: 'Artwork not found' })
+        }
+
+        if (existing.user_id !== user.id) {
+          return res.status(403).json({ error: 'You can only change status of your own artworks' })
+        }
+
         const { data, error } = await supabaseAdmin
           .from('artworks')
           .update({ status: req.body.status })
@@ -191,6 +293,25 @@ export default async function handler(req, res) {
 
       // DELETE /api/artworks/:id — Delete artwork
       if (req.method === 'DELETE' && s1) {
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
+
+        // ✅ CRITICAL: Verify ownership
+        const { data: existing, error: fetchError } = await supabaseAdmin
+          .from('artworks')
+          .select('user_id')
+          .eq('id', s1)
+          .single()
+
+        if (fetchError || !existing) {
+          return res.status(404).json({ error: 'Artwork not found' })
+        }
+
+        if (existing.user_id !== user.id) {
+          return res.status(403).json({ error: 'You can only delete your own artworks' })
+        }
+
         const { error } = await supabaseAdmin.from('artworks').delete().eq('id', s1)
 
         if (error) {
@@ -562,13 +683,16 @@ export default async function handler(req, res) {
     if (s0 === 'shortlist') {
       // POST /api/shortlist/:artworkId — Add to shortlist
       if (req.method === 'POST' && s1) {
-        const userId = req.headers.authorization?.split(' ')[1]
-        // In production, extract user_id from JWT token properly
-        // For now, expect it in body
-        const { user_id } = req.body
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
 
-        if (!user_id || !s1) {
-          return res.status(400).json({ error: 'user_id and artworkId are required' })
+        // ✅ CRITICAL: Use authenticated user_id, NOT from body
+        const user_id = user.id
+        const artworkId = s1
+
+        if (!user_id || !artworkId) {
+          return res.status(400).json({ error: 'Missing artworkId' })
         }
 
         try {
@@ -576,7 +700,7 @@ export default async function handler(req, res) {
             .from('shortlisted_artworks')
             .insert({
               user_id,
-              artwork_id: s1,
+              artwork_id: artworkId,
               notes: req.body.notes || '',
             })
             .select()
@@ -607,10 +731,16 @@ export default async function handler(req, res) {
 
       // DELETE /api/shortlist/:artworkId — Remove from shortlist
       if (req.method === 'DELETE' && s1) {
-        const { user_id } = req.body
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
 
-        if (!user_id || !s1) {
-          return res.status(400).json({ error: 'user_id and artworkId are required' })
+        // ✅ CRITICAL: Use authenticated user_id, NOT from body
+        const user_id = user.id
+        const artworkId = s1
+
+        if (!user_id || !artworkId) {
+          return res.status(400).json({ error: 'Missing artworkId' })
         }
 
         try {
@@ -618,7 +748,7 @@ export default async function handler(req, res) {
             .from('shortlisted_artworks')
             .delete()
             .eq('user_id', user_id)
-            .eq('artwork_id', s1)
+            .eq('artwork_id', artworkId)
 
           if (error) {
             return res.status(500).json({ error: error.message })
@@ -636,10 +766,16 @@ export default async function handler(req, res) {
 
       // GET /api/shortlist/check/:artworkId — Check if shortlisted
       if (req.method === 'GET' && s1 === 'check' && s2) {
-        const { user_id } = req.query
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
 
-        if (!user_id) {
-          return res.status(400).json({ error: 'user_id query param is required' })
+        // ✅ CRITICAL: Use authenticated user_id, NOT from query
+        const user_id = user.id
+        const artworkId = s2
+
+        if (!artworkId) {
+          return res.status(400).json({ error: 'Missing artworkId' })
         }
 
         try {
@@ -647,7 +783,7 @@ export default async function handler(req, res) {
             .from('shortlisted_artworks')
             .select('id')
             .eq('user_id', user_id)
-            .eq('artwork_id', s2)
+            .eq('artwork_id', artworkId)
             .single()
 
           return res.status(200).json({
@@ -823,9 +959,23 @@ export default async function handler(req, res) {
 
     if (s0 === 'profile' && s1 && req.method === 'PUT') {
       try {
+        // ✅ CRITICAL: Require authentication
+        const user = await getAuthUser()
+        if (!user) return
+
+        // ✅ CRITICAL: Verify user can only modify their own profile
+        if (user.id !== s1) {
+          return res.status(403).json({ error: 'You can only modify your own profile' })
+        }
+
+        // ✅ CRITICAL: Prevent privilege escalation (role change)
+        const body = { ...req.body }
+        delete body.role  // Users cannot change their own role
+        delete body.is_active  // Users cannot deactivate themselves
+
         const { data, error } = await supabaseAdmin
           .from('users')
-          .update(req.body)
+          .update(body)
           .eq('id', s1)
           .select()
           .single()
