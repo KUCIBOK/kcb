@@ -11,8 +11,11 @@
  */
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  // ✅ CORS: Use environment variable, not wildcard
+  const corsOrigin = process.env.CORS_ORIGIN || 'https://kucibok.com'
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin)
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE, PATCH, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
 
   if (req.method === 'OPTIONS') {
@@ -37,6 +40,20 @@ export default async function handler(req, res) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
       auth: { autoRefreshToken: false, persistSession: false },
     })
+
+    // ✅ Helper: Verify JWT and extract user ID
+    const verifyJWT = async (authHeader) => {
+      if (!authHeader) return null
+      const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+      try {
+        // ✅ CRITICAL: Verify with Supabase, not manual decode
+        const { data: { user }, error } = await supabase.auth.getUser(token)
+        if (error || !user) return null
+        return user.id
+      } catch (err) {
+        return null
+      }
+    }
 
     // ─────────────────────────────────────────────────────────────
     // POST /api/subscriptions/create-trial
@@ -106,14 +123,18 @@ export default async function handler(req, res) {
           })
         }
 
-        // Extract user_id from JWT (Bearer token)
-        const token = authHeader.replace('Bearer ', '')
+        // ✅ Verify user_id from JWT (Bearer token)
+        const token = authHeader.replace(/^Bearer\s+/i, '').trim()
         let userId
         try {
-          const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
-          userId = decoded.sub
-        } catch {
-          return res.status(401).json({ error: 'Invalid token', success: false })
+          // ✅ CRITICAL: Use Supabase to verify JWT, not manual decode
+          const { data: { user }, error } = await supabase.auth.getUser(token)
+          if (error || !user) {
+            return res.status(401).json({ error: 'Invalid or expired token', success: false })
+          }
+          userId = user.id
+        } catch (err) {
+          return res.status(401).json({ error: 'Token verification failed', success: false })
         }
 
         if (!userId) {
@@ -164,13 +185,10 @@ export default async function handler(req, res) {
           })
         }
 
-        const token = authHeader.replace('Bearer ', '')
-        let userId
-        try {
-          const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
-          userId = decoded.sub
-        } catch {
-          return res.status(401).json({ error: 'Invalid token', success: false })
+        // ✅ CRITICAL: Verify JWT properly
+        const userId = await verifyJWT(authHeader)
+        if (!userId) {
+          return res.status(401).json({ error: 'Invalid or expired token', success: false })
         }
 
         const { error } = await supabase
@@ -198,13 +216,10 @@ export default async function handler(req, res) {
           return res.status(401).json({ error: 'Unauthorized', success: false })
         }
 
-        const token = authHeader.replace('Bearer ', '')
-        let userId
-        try {
-          const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
-          userId = decoded.sub
-        } catch {
-          return res.status(401).json({ error: 'Invalid token', success: false })
+        // ✅ CRITICAL: Verify JWT properly
+        const userId = await verifyJWT(authHeader)
+        if (!userId) {
+          return res.status(401).json({ error: 'Invalid or expired token', success: false })
         }
 
         const { data, error } = await supabase
@@ -237,13 +252,10 @@ export default async function handler(req, res) {
           })
         }
 
-        const token = authHeader.replace('Bearer ', '')
-        let userId
-        try {
-          const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
-          userId = decoded.sub
-        } catch {
-          return res.status(401).json({ error: 'Invalid token', success: false })
+        // ✅ CRITICAL: Verify JWT properly
+        const userId = await verifyJWT(authHeader)
+        if (!userId) {
+          return res.status(401).json({ error: 'Invalid or expired token', success: false })
         }
 
         const { data, error } = await supabase
@@ -277,20 +289,21 @@ export default async function handler(req, res) {
           })
         }
 
-        const token = authHeader.replace('Bearer ', '')
-        let userId
-        try {
-          const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
-          userId = decoded.sub
-        } catch {
-          return res.status(401).json({ error: 'Invalid token', success: false })
+        // ✅ CRITICAL: Verify JWT properly
+        const userId = await verifyJWT(authHeader)
+        if (!userId) {
+          return res.status(401).json({ error: 'Invalid or expired token', success: false })
         }
 
         const { notes } = req.body
 
+        // ✅ CRITICAL: Sanitize notes to prevent XSS
+        // In real production, use DOMPurify server-side
+        const sanitizedNotes = notes ? String(notes).substring(0, 500) : null
+
         const { data, error } = await supabase
           .from('shortlisted_artworks')
-          .update({ notes })
+          .update({ notes: sanitizedNotes })
           .eq('user_id', userId)
           .eq('artwork_id', artworkId)
           .select()

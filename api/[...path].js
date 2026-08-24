@@ -6,6 +6,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { respondJSON, respondError, checkAuth } from './_lib/response.js'
 import { requireAuth } from './_lib/auth.js'
+import { checkRateLimit, addRateLimitHeaders } from './_lib/rateLimit.js'
 import { handleProfessionalAnalytics } from './_modules/professional-analytics-fixed.js'
 
 const SUPABASE_URL = process.env.SUPABASE_URL
@@ -84,6 +85,39 @@ export default async function handler(req, res) {
         return null
       }
       return auth.user
+    }
+
+    // ✅ Rate Limiting Check
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+                     req.socket?.remoteAddress ||
+                     'unknown'
+
+    // Get user from auth header if available (for authenticated rate limit)
+    let authUser = null
+    try {
+      const auth = await requireAuth(req)
+      authUser = auth.user
+    } catch (e) {
+      // Not authenticated, that's OK for rate limit purposes
+    }
+
+    const identifier = authUser?.id || clientIp
+    const isAuthenticated = !!authUser
+    const rateLimitResult = await checkRateLimit(
+      identifier,
+      urlObj.pathname,
+      isAuthenticated
+    )
+
+    // Add rate limit headers to response
+    addRateLimitHeaders(res, rateLimitResult)
+
+    // Check if rate limited
+    if (!rateLimitResult.allowed) {
+      return res.status(429).json({
+        error: 'Too many requests',
+        retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000),
+      })
     }
 
     // ─────────────────────────────────────────────────────────────

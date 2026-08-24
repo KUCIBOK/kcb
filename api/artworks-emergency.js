@@ -6,9 +6,11 @@
 
 export default async function handler(req, res) {
   try {
-    // CORS
-    res.setHeader('Access-Control-Allow-Origin', '*')
+    // ✅ CORS: Use environment variable, not wildcard
+    const corsOrigin = process.env.CORS_ORIGIN || 'https://kucibok.com'
+    res.setHeader('Access-Control-Allow-Origin', corsOrigin)
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
     
     if (req.method === 'OPTIONS') {
       res.status(200).end()

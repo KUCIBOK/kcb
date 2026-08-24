@@ -7,8 +7,11 @@
  */
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  // ✅ CORS: Use environment variable, not wildcard
+  const corsOrigin = process.env.CORS_ORIGIN || 'https://kucibok.com'
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin)
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
   res.setHeader('Pragma', 'no-cache')
   res.setHeader('Expires', '0')
