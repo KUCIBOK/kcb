@@ -21,7 +21,7 @@ import { EmailVerificationBanner } from '../../components/shared/EmailVerificati
 import { AdvisorOverview } from '../../components/advisor/AdvisorOverview'
 import { AdvisorClients } from '../../components/advisor/AdvisorClients'
 import { AdvisorDealPipeline } from '../../components/advisor/AdvisorDealPipeline'
-import { AdvisorMarket } from '../../components/advisor/AdvisorMarket'
+import { AdvisorMarketIntelligence } from '../../components/advisor/AdvisorMarketIntelligence'
 import { CuratorCatalogue } from '../../components/curator/CuratorCatalogue'
 import { MyShortlist } from '../../components/curator/MyShortlist'
 import { AdvisorReports } from '../../components/advisor/AdvisorReports'
@@ -86,7 +86,7 @@ export default function Advisor() {
       case 2:
         return <AdvisorDealPipeline />
       case 3:
-        return <AdvisorMarket />
+        return <AdvisorMarketIntelligence />
       case 7:
         return <CuratorCatalogue />
       case 8:
