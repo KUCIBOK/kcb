@@ -121,8 +121,14 @@ export const ArtworksContextProvider = ({ children }) => {
             rejected: Array.isArray(rejected) ? [...rejected].reverse() : [],
           }))
         }
-        if (user?.role == 'artist' && artistProfile?.id) {
-          const myArtworks = await getMyArtworks(artistProfile?.id)
+        if (user?.role == 'artist') {
+          // Use user_id as fallback in case artistProfile.id is not set correctly
+          // Both user_id and artist_id should exist in artworks table
+          const artworkQueryId = artistProfile?.id || user?._id
+          const myArtworks = await (artistProfile?.id
+            ? getMyArtworks(artistProfile?.id)
+            : fetchArtworks({ user_id: user?._id, status: 'approved', limit: 1000 })
+          )
           setState((prev) => ({
             ...prev,
             myArtworks: myArtworks?.length > 0 ? myArtworks : [],
