@@ -58,7 +58,9 @@ export function ok(res, data, status = 200, pagination) {
 }
 
 /**
- * Réponse d'erreur.
+ * Réponse d'erreur standardisée.
+ *
+ * Format: { error: string, status: number, timestamp: ISO8601 }
  *
  * @param {import('@vercel/node').VercelResponse} res
  * @param {string} message
@@ -66,7 +68,29 @@ export function ok(res, data, status = 200, pagination) {
  */
 export function fail(res, message, status = 400) {
   setCors(res);
-  return res.status(status).json({ error: message });
+  return res.status(status).json({
+    error: message,
+    status,
+    timestamp: new Date().toISOString()
+  });
+}
+
+/**
+ * Réponse d'erreur avec détails additionnels (validation errors, etc)
+ *
+ * @param {import('@vercel/node').VercelResponse} res
+ * @param {string} message
+ * @param {object} [details] - Additionaldetails (e.g., validation errors)
+ * @param {number} [status=400]
+ */
+export function failWithDetails(res, message, details = {}, status = 400) {
+  setCors(res);
+  return res.status(status).json({
+    error: message,
+    details,
+    status,
+    timestamp: new Date().toISOString()
+  });
 }
 
 /**

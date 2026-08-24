@@ -37,6 +37,23 @@ export default async function handler(req, res) {
   // ✅ Security headers
   res.setHeader('X-Content-Type-Options', 'nosniff')
   res.setHeader('X-Frame-Options', 'DENY')
+  res.setHeader('X-XSS-Protection', '1; mode=block')
+
+  // ✅ HSTS — Enforce HTTPS for all future requests (1 year)
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+
+  // ✅ Content Security Policy (CSP) — Prevent XSS, injection attacks
+  res.setHeader('Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' https://cdn.jsdelivr.net; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "font-src 'self' https://fonts.gstatic.com; " +
+    "img-src 'self' data: https:; " +
+    "connect-src 'self' https://wyrmpddlhldjzoiwbshj.supabase.co https://api.sentry.io; " +
+    "frame-ancestors 'none'; " +
+    "base-uri 'self'; " +
+    "form-action 'self'"
+  )
 
   // Disable caching completely
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
@@ -57,6 +74,12 @@ export default async function handler(req, res) {
     const s0 = path[0] // First segment: 'artworks', 'auth', etc.
     const s1 = path[1] // Second segment
     const s2 = path[2] // Third segment
+
+    // ✅ Helper function: Validate email
+    const validateEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      return emailRegex.test(email)
+    }
 
     // ✅ Helper function: Validate artwork data
     const validateArtwork = (data) => {
@@ -491,6 +514,11 @@ export default async function handler(req, res) {
 
           if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' })
+          }
+
+          // ✅ Validate email format
+          if (!validateEmail(email)) {
+            return res.status(400).json({ error: 'Invalid email format' })
           }
 
           if (password.length < 8) {

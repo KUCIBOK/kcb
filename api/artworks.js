@@ -13,6 +13,14 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+
+  // ✅ Security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'DENY')
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+  res.setHeader('Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; img-src 'self' data: https:; frame-ancestors 'none'"
+  )
   res.setHeader('Pragma', 'no-cache')
   res.setHeader('Expires', '0')
   res.removeHeader('ETag')
