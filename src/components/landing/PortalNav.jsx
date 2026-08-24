@@ -35,7 +35,6 @@ export default function PortalNav({ portal }) {
           { label: t.home, to: '/global', exact: true },
           { label: t.forCurators, to: '/global#curators' },
           { label: t.forAdvisors, to: '/global#advisors' },
-          { label: t.forArtists, to: '/africa' },
           { label: t.pricing, to: '/global#pricing' },
         ]
 
