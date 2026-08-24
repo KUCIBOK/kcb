@@ -11,9 +11,9 @@ export const globalT = {
     },
     hero: {
       label: 'Professional SaaS Infrastructure',
-      title1: 'Professional Infrastructure for',
-      title2: 'African Art',
-      titleAccent: 'at Scale',
+      title1: 'The Operating System',
+      title2: 'for African Art',
+      titleAccent: '',
       subtitle:
         'Trade, scale, and manage African art on one integrated platform. Complete infrastructure for curators, advisors, and institutions.',
       cta1: 'Explore Platform',
@@ -234,9 +234,9 @@ export const globalT = {
     },
     hero: {
       label: 'Infrastructure Professionnelle',
-      title1: "L'Infrastructure Professionnelle pour",
-      title2: "l'Art Africain",
-      titleAccent: 'à Échelle',
+      title1: "Le Système d'Exploitation",
+      title2: "de l'Art Africain",
+      titleAccent: '',
       subtitle:
         "Commercer, développer et gérer l'art africain sur une seule plateforme. Infrastructure complète pour curateurs, conseillers et institutions.",
       cta1: 'Découvrir la Plateforme',
