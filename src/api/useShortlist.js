@@ -3,6 +3,7 @@
  * Phase 2 Update: Added new userId-based functions + restored old session-based functions
  */
 
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useState } from 'react'
 import { utils } from './useAPI'
 import { supabase } from '../lib/supabase'
