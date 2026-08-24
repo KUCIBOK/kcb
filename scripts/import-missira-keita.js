@@ -276,7 +276,7 @@ async function main() {
         width: parseHeight(sculpture.width),
         price: sculpture.price,
         currency: sculpture.currency,
-        status: sculpture.status,
+        status: "approved",  // ✅ FIX: Use 'approved' (not 'available')
         for_sale: sculpture.status === "available",
         sold: sculpture.status === "sold",
         category_id: SCULPTURE_CATEGORY_ID,

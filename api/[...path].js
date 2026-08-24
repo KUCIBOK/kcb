@@ -1054,6 +1054,40 @@ export default async function handler(req, res) {
       }
     }
 
+    // DEBUG ENDPOINT: Test profile fix for Missira
+    if (s0 === 'debug' && s1 === 'missira-profile') {
+      try {
+        // Find Missira's user_id
+        const { data: missiraUser } = await supabaseAdmin
+          .from('users')
+          .select('id, role, username')
+          .eq('username', 'missira_keita')
+          .single()
+
+        if (!missiraUser) {
+          return res.status(404).json({ error: 'Missira not found' })
+        }
+
+        // Call profile endpoint manually to test it
+        const profileRes = await supabaseAdmin
+          .from('artists')
+          .select('*')
+          .eq('user_id', missiraUser.id)
+          .single()
+
+        return res.status(200).json({
+          debug: {
+            missira_user_id: missiraUser.id,
+            missira_role: missiraUser.role,
+            missira_artist_id: profileRes.data?.id,
+            artist_profile: profileRes.data,
+          },
+        })
+      } catch (err) {
+        return res.status(500).json({ error: err.message })
+      }
+    }
+
     if (s0 === 'profile' && s1 && req.method === 'PUT') {
       try {
         // ✅ CRITICAL: Require authentication
