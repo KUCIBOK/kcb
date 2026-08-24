@@ -159,19 +159,17 @@ function getInMemoryCount(key) {
 }
 
 /**
- * Add rate limit headers to response
- * @param {Response} response
+ * Add rate limit headers to response (Vercel compat)
+ * @param {Response|ServerResponse} response - Vercel ServerResponse object
  * @param {object} rateLimitResult - Result from checkRateLimit
- * @returns {Response} Response with rate limit headers
  */
 export function addRateLimitHeaders(response, rateLimitResult) {
   const { limit, remaining, resetAt } = rateLimitResult
 
   if (limit > 0) {
-    response.headers.set('X-RateLimit-Limit', limit.toString())
-    response.headers.set('X-RateLimit-Remaining', remaining.toString())
-    response.headers.set('X-RateLimit-Reset', Math.ceil(resetAt / 1000).toString()) // Unix timestamp
+    // ✅ Use setHeader() for Vercel ServerResponse, not headers.set()
+    response.setHeader('X-RateLimit-Limit', limit.toString())
+    response.setHeader('X-RateLimit-Remaining', remaining.toString())
+    response.setHeader('X-RateLimit-Reset', Math.ceil(resetAt / 1000).toString())
   }
-
-  return response
 }

@@ -105,9 +105,9 @@ export default async function handler(req, res) {
       const auth = await requireAuth(req)
       if (auth.error) {
         res.status(auth.status).json({ error: auth.error })
-        return null
+        return null // EARLY RETURN — prevents further execution
       }
-      return auth.user
+      return auth.user || null
     }
 
     // ✅ Rate Limiting Check
